@@ -48,6 +48,7 @@
 		3873E5BE2804C50A000BCB03 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3873E5C22804C50A000BCB03 /* PhoenixUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITests.swift; sourceTree = "<group>"; };
 		3873E5C42804C50A000BCB03 /* PhoenixUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		38BA7BB62804C65C00BE3B9F /* PackageRepresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageRepresentation; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +99,7 @@
 		3873E5A22804C509000BCB03 /* Phoenix */ = {
 			isa = PBXGroup;
 			children = (
+				38BA7BB32804C58E00BE3B9F /* Modules */,
 				3873E5A32804C509000BCB03 /* PhoenixApp.swift */,
 				3873E5A52804C509000BCB03 /* PhoenixDocument.swift */,
 				3873E5A72804C509000BCB03 /* ContentView.swift */,
@@ -132,6 +134,22 @@
 				3873E5C42804C50A000BCB03 /* PhoenixUITestsLaunchTests.swift */,
 			);
 			path = PhoenixUITests;
+			sourceTree = "<group>";
+		};
+		38BA7BB32804C58E00BE3B9F /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				38BA7BB42804C59500BE3B9F /* Entities */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		38BA7BB42804C59500BE3B9F /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				38BA7BB62804C65C00BE3B9F /* PackageRepresentation */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
