@@ -1,5 +1,7 @@
 protocol ComponentModulesProviding {
-    func modules(for component: Component) -> [ModulePackageDescription]
+    func modules(for component: Component,
+                 dependencies: [ModuleType: [ModuleDescription]]
+    ) -> [ModulePackageDescription]
 }
 
 struct ComponentModulesProvider: ComponentModulesProviding {
@@ -9,22 +11,22 @@ struct ComponentModulesProvider: ComponentModulesProviding {
         self.moduleFullNameProvider = moduleFullNameProvider
     }
 
-    func modules(for component: Component) -> [ModulePackageDescription] {
-        component.description.types.compactMap { type in
+    func modules(for component: Component, dependencies: [ModuleType : [ModuleDescription]]) -> [ModulePackageDescription] {
+        component.types.compactMap { type in
             switch type {
             case .contract:
-                return contractModule(for: component)
+                return contractModule(for: component, dependencies: dependencies[.contract])
             case .implementation:
-                return implementationModule(for: component)
+                return implementationModule(for: component, dependencies: dependencies[.implementation])
             case .mock:
-                return mockModule(for: component)
+                return mockModule(for: component, dependencies: dependencies[.mock])
             }
         }
     }
 
-    private func contractModule(for component: Component) -> ModulePackageDescription {
-        let name = moduleFullNameProvider.name(for: ModuleDescription(name: component.description.name, type: .contract))
-        return ModulePackageDescription(module: ModuleDescription(name: component.description.name,
+    private func contractModule(for component: Component, dependencies: [ModuleDescription]?) -> ModulePackageDescription {
+        let name = moduleFullNameProvider.name(for: ModuleDescription(name: component.name, type: .contract))
+        return ModulePackageDescription(module: ModuleDescription(name: component.name,
                                                                   type: .contract),
                                         package: PackageDescription(name: name,
                                                                     platforms: component.platforms,
@@ -41,32 +43,38 @@ struct ComponentModulesProvider: ComponentModulesProviding {
         )
     }
 
-    private func implementationModule(for component: Component) -> ModulePackageDescription {
-        let name = moduleFullNameProvider.name(for: ModuleDescription(name: component.description.name, type: .implementation))
-        return ModulePackageDescription(module: ModuleDescription(name: component.description.name,
+    private func implementationModule(for component: Component, dependencies: [ModuleDescription]?) -> ModulePackageDescription {
+        let implementationModuleDescription = ModuleDescription(name: component.name, type: .implementation)
+        let fullName = moduleFullNameProvider.name(for: implementationModuleDescription)
+        return ModulePackageDescription(module: ModuleDescription(name: component.name,
                                                                   type: .implementation),
-                                        package: PackageDescription(name: name,
+                                        package: PackageDescription(name: fullName,
                                                                     platforms: component.platforms,
                                                                     products: [
-                                                                        .library(.init(name: name,
+                                                                        .library(.init(name: fullName,
                                                                                        type: .static,
-                                                                                       targets: [name]))
+                                                                                       targets: [fullName]))
                                                                     ],
                                                                     targets: [
-                                                                        Target(name: name,
-                                                                               dependencies: [name + "Contract"],
+                                                                        Target(name: fullName,
+                                                                               dependencies: [
+                                                                                ModuleDescription(name: component.name,
+                                                                                                  type: .contract)]
+                                                                               + dependencies?.map { dependency in
+                                                                                   ModuleDescription(name: dependency.name, type: dependency.types)
+                                                                               } ?? [],
                                                                                isTest: false),
-                                                                        Target(name: name + "Tests",
-                                                                               dependencies: [name],
+                                                                        Target(name: fullName + "Tests",
+                                                                               dependencies: [implementationModuleDescription],
                                                                                isTest: true)
                                                                     ])
         )
     }
 
-    private func mockModule(for component: Component) -> ModulePackageDescription {
-        let contractName = moduleFullNameProvider.name(for: ModuleDescription(name: component.description.name, type: .contract))
-        let mockName = moduleFullNameProvider.name(for: ModuleDescription(name: component.description.name, type: .mock))
-        return ModulePackageDescription(module: ModuleDescription(name: component.description.name,
+    private func mockModule(for component: Component, dependencies: [ModuleDescription]?) -> ModulePackageDescription {
+        let contractModuleDescription = ModuleDescription(name: component.name, type: .contract)
+        let mockName = moduleFullNameProvider.name(for: ModuleDescription(name: component.name, type: .mock))
+        return ModulePackageDescription(module: ModuleDescription(name: component.name,
                                                                   type: .mock),
                                         package: PackageDescription(name: mockName,
                                                                     platforms: component.platforms,
@@ -77,7 +85,7 @@ struct ComponentModulesProvider: ComponentModulesProviding {
                                                                     ],
                                                                     targets: [
                                                                         Target(name: mockName,
-                                                                               dependencies: [contractName],
+                                                                               dependencies: [contractModuleDescription],
                                                                                isTest: false)])
         )
     }

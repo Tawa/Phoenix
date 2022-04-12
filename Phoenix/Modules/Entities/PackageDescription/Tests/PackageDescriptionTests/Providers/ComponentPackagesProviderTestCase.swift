@@ -5,22 +5,23 @@ class ComponentModulesProviderTestCase: XCTestCase {
     
     func testComponentWithNoDependencies() throws {
         // Given
-        let dataStoreDependency = ComponentDescription(name: Name(given: "Wordpress", family: "DataStore"), types: .all)
-        let component = Component(description: ComponentDescription(name: Name(given: "Wordpress", family: "Repository"),
-                                                                    types: .all),
-                                  platforms: [.macOS(.v12)],
-                                  dependencies: [dataStoreDependency])
+        let dataStoreDependency = Component(name: Name(given: "Wordpress", family: "DataStore"), types: .all, platforms: [])
+        let component = Component(name: Name(given: "Wordpress", family: "Repository"),
+                                  types: .all,
+                                  platforms: [.macOS(.v12)])
         let moduleFullNameProvider = ModuleFullNameProvider()
         let sut = ComponentModulesProvider(moduleFullNameProvider: moduleFullNameProvider)
         
         // When
-        let modules = sut.modules(for: component)
-        
+        let modules = sut.modules(for: component, dependencies: [
+            ModuleType.implementation : [ModuleDescription(name: dataStoreDependency.name, type: .contract)],
+        ])
+
         // Then
         XCTAssertEqual(modules.count, 3)
         
-        XCTAssertEqual(modules[0].module.name, Name(given: "Wordpress", family: "Repository"))
-        XCTAssertEqual(modules[0].module.type, .contract)
+        XCTAssertEqual(modules[0].name, Name(given: "Wordpress", family: "Repository"))
+        XCTAssertEqual(modules[0].type, .contract)
         XCTAssertEqual(modules[0].package.platforms, [.macOS(.v12)])
         XCTAssertEqual(modules[0].package.products, [.library(.init(name: "WordpressRepositoryContract",
                                                                     type: .dynamic,

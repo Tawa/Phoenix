@@ -9,8 +9,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 extension UTType {
-    static var exampleText: UTType {
-        UTType(importedAs: "com.example.plain-text")
+    static var ash: UTType {
+        UTType(exportedAs: "com.tawanicolas.ash")
     }
 }
 
@@ -21,7 +21,7 @@ struct PhoenixDocument: FileDocument {
         self.text = text
     }
 
-    static var readableContentTypes: [UTType] { [.exampleText] }
+    static var readableContentTypes: [UTType] { [.ash] }
 
     init(configuration: ReadConfiguration) throws {
         guard let data = configuration.file.regularFileContents,
