@@ -10,7 +10,7 @@ struct ComponentModulesProvider: ComponentModulesProviding {
     }
 
     func modules(for component: Component) -> [ModulePackageDescription] {
-        component.types.compactMap { type in
+        component.description.types.compactMap { type in
             switch type {
             case .contract:
                 return contractModule(for: component)
@@ -23,8 +23,8 @@ struct ComponentModulesProvider: ComponentModulesProviding {
     }
 
     private func contractModule(for component: Component) -> ModulePackageDescription {
-        let name = moduleFullNameProvider.name(for: ModuleDescription(name: component.name, type: .contract))
-        return ModulePackageDescription(module: ModuleDescription(name: component.name,
+        let name = moduleFullNameProvider.name(for: ModuleDescription(name: component.description.name, type: .contract))
+        return ModulePackageDescription(module: ModuleDescription(name: component.description.name,
                                                                   type: .contract),
                                         package: PackageDescription(name: name,
                                                                     platforms: component.platforms,
@@ -42,8 +42,8 @@ struct ComponentModulesProvider: ComponentModulesProviding {
     }
 
     private func implementationModule(for component: Component) -> ModulePackageDescription {
-        let name = moduleFullNameProvider.name(for: ModuleDescription(name: component.name, type: .implementation))
-        return ModulePackageDescription(module: ModuleDescription(name: component.name,
+        let name = moduleFullNameProvider.name(for: ModuleDescription(name: component.description.name, type: .implementation))
+        return ModulePackageDescription(module: ModuleDescription(name: component.description.name,
                                                                   type: .implementation),
                                         package: PackageDescription(name: name,
                                                                     platforms: component.platforms,
@@ -64,9 +64,9 @@ struct ComponentModulesProvider: ComponentModulesProviding {
     }
 
     private func mockModule(for component: Component) -> ModulePackageDescription {
-        let contractName = moduleFullNameProvider.name(for: ModuleDescription(name: component.name, type: .contract))
-        let mockName = moduleFullNameProvider.name(for: ModuleDescription(name: component.name, type: .mock))
-        return ModulePackageDescription(module: ModuleDescription(name: component.name,
+        let contractName = moduleFullNameProvider.name(for: ModuleDescription(name: component.description.name, type: .contract))
+        let mockName = moduleFullNameProvider.name(for: ModuleDescription(name: component.description.name, type: .mock))
+        return ModulePackageDescription(module: ModuleDescription(name: component.description.name,
                                                                   type: .mock),
                                         package: PackageDescription(name: mockName,
                                                                     platforms: component.platforms,

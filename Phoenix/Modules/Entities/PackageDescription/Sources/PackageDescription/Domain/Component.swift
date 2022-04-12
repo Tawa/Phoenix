@@ -1,6 +1,5 @@
 public struct Component {
-    public let name: Name
-    public let types: [ModuleType]
+    public let description: ComponentDescription
     public let platforms: [Platform]
-    public let dependencies: [ModuleDescription]
+    public let dependencies: [ComponentDescription]
 }
