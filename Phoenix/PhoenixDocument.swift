@@ -14,26 +14,36 @@ extension UTType {
     }
 }
 
-struct PhoenixDocument: FileDocument {
-    var text: String
+struct FamilyName: Codable, Identifiable {
+    var id: String { singular }
 
-    init(text: String = "Hello, world!") {
-        self.text = text
+    var singular: String
+    var plural: String
+}
+
+struct FileStructure: Codable {
+    var familyNames: [FamilyName] = []
+}
+
+struct PhoenixDocument: FileDocument {
+    var fileStructure: FileStructure
+
+    init(fileStructure: FileStructure = FileStructure()) {
+        self.fileStructure = fileStructure
     }
 
     static var readableContentTypes: [UTType] { [.ash] }
 
     init(configuration: ReadConfiguration) throws {
-        guard let data = configuration.file.regularFileContents,
-              let string = String(data: data, encoding: .utf8)
+        guard let data = configuration.file.regularFileContents
         else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        text = string
+        self.fileStructure = try JSONDecoder().decode(FileStructure.self, from: data)
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = text.data(using: .utf8)!
+        let data = try JSONEncoder().encode(fileStructure)
         return .init(regularFileWithContents: data)
     }
 }
