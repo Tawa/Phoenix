@@ -1,10 +1,3 @@
-//
-//  PhoenixTests.swift
-//  PhoenixTests
-//
-//  Created by Tawa Nicolas on 11.04.22.
-//
-
 import XCTest
 @testable import Phoenix
 

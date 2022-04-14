@@ -13,8 +13,9 @@
 		3873E5AA2804C50A000BCB03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5A92804C50A000BCB03 /* Assets.xcassets */; };
 		3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5AC2804C50A000BCB03 /* Preview Assets.xcassets */; };
 		3873E5B92804C50A000BCB03 /* PhoenixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5B82804C50A000BCB03 /* PhoenixTests.swift */; };
-		3873E5C32804C50A000BCB03 /* PhoenixUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5C22804C50A000BCB03 /* PhoenixUITests.swift */; };
-		3873E5C52804C50A000BCB03 /* PhoenixUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5C42804C50A000BCB03 /* PhoenixUITestsLaunchTests.swift */; };
+		38C7D13328087CBF00E2675B /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13228087CBF00E2675B /* ComposableArchitecture */; };
+		38C7D137280884B000E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D136280884B000E2675B /* Package */; };
+		38C7D138280884B000E2675B /* Package in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D136280884B000E2675B /* Package */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,14 +26,21 @@
 			remoteGlobalIDString = 3873E59F2804C509000BCB03;
 			remoteInfo = Phoenix;
 		};
-		3873E5BF2804C50A000BCB03 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3873E5982804C509000BCB03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3873E59F2804C509000BCB03;
-			remoteInfo = Phoenix;
-		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		38C7D139280884B000E2675B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				38C7D138280884B000E2675B /* Package in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3873E5A02804C509000BCB03 /* Phoenix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Phoenix.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,10 +53,7 @@
 		3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Phoenix.entitlements; sourceTree = "<group>"; };
 		3873E5B42804C50A000BCB03 /* PhoenixTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3873E5B82804C50A000BCB03 /* PhoenixTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixTests.swift; sourceTree = "<group>"; };
-		3873E5BE2804C50A000BCB03 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3873E5C22804C50A000BCB03 /* PhoenixUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITests.swift; sourceTree = "<group>"; };
-		3873E5C42804C50A000BCB03 /* PhoenixUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		38BA7BB82805465E00BE3B9F /* PackageDescription */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageDescription; sourceTree = "<group>"; };
+		38C7D13428087FA800E2675B /* Package */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,17 +61,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38C7D13328087CBF00E2675B /* ComposableArchitecture in Frameworks */,
+				38C7D137280884B000E2675B /* Package in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		3873E5B12804C50A000BCB03 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3873E5BB2804C50A000BCB03 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -81,8 +81,8 @@
 			children = (
 				3873E5A22804C509000BCB03 /* Phoenix */,
 				3873E5B72804C50A000BCB03 /* PhoenixTests */,
-				3873E5C12804C50A000BCB03 /* PhoenixUITests */,
 				3873E5A12804C509000BCB03 /* Products */,
+				38C7D135280884B000E2675B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -91,7 +91,6 @@
 			children = (
 				3873E5A02804C509000BCB03 /* Phoenix.app */,
 				3873E5B42804C50A000BCB03 /* PhoenixTests.xctest */,
-				3873E5BE2804C50A000BCB03 /* PhoenixUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -127,15 +126,6 @@
 			path = PhoenixTests;
 			sourceTree = "<group>";
 		};
-		3873E5C12804C50A000BCB03 /* PhoenixUITests */ = {
-			isa = PBXGroup;
-			children = (
-				3873E5C22804C50A000BCB03 /* PhoenixUITests.swift */,
-				3873E5C42804C50A000BCB03 /* PhoenixUITestsLaunchTests.swift */,
-			);
-			path = PhoenixUITests;
-			sourceTree = "<group>";
-		};
 		38BA7BB32804C58E00BE3B9F /* Modules */ = {
 			isa = PBXGroup;
 			children = (
@@ -147,9 +137,16 @@
 		38BA7BB42804C59500BE3B9F /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				38BA7BB82805465E00BE3B9F /* PackageDescription */,
+				38C7D13428087FA800E2675B /* Package */,
 			);
 			path = Entities;
+			sourceTree = "<group>";
+		};
+		38C7D135280884B000E2675B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -162,12 +159,17 @@
 				3873E59C2804C509000BCB03 /* Sources */,
 				3873E59D2804C509000BCB03 /* Frameworks */,
 				3873E59E2804C509000BCB03 /* Resources */,
+				38C7D139280884B000E2675B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = Phoenix;
+			packageProductDependencies = (
+				38C7D13228087CBF00E2675B /* ComposableArchitecture */,
+				38C7D136280884B000E2675B /* Package */,
+			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
 			productType = "com.apple.product-type.application";
@@ -190,24 +192,6 @@
 			productReference = 3873E5B42804C50A000BCB03 /* PhoenixTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		3873E5BD2804C50A000BCB03 /* PhoenixUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 3873E5CE2804C50A000BCB03 /* Build configuration list for PBXNativeTarget "PhoenixUITests" */;
-			buildPhases = (
-				3873E5BA2804C50A000BCB03 /* Sources */,
-				3873E5BB2804C50A000BCB03 /* Frameworks */,
-				3873E5BC2804C50A000BCB03 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				3873E5C02804C50A000BCB03 /* PBXTargetDependency */,
-			);
-			name = PhoenixUITests;
-			productName = PhoenixUITests;
-			productReference = 3873E5BE2804C50A000BCB03 /* PhoenixUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -225,10 +209,6 @@
 						CreatedOnToolsVersion = 13.3;
 						TestTargetID = 3873E59F2804C509000BCB03;
 					};
-					3873E5BD2804C50A000BCB03 = {
-						CreatedOnToolsVersion = 13.3;
-						TestTargetID = 3873E59F2804C509000BCB03;
-					};
 				};
 			};
 			buildConfigurationList = 3873E59B2804C509000BCB03 /* Build configuration list for PBXProject "Phoenix" */;
@@ -240,13 +220,15 @@
 				Base,
 			);
 			mainGroup = 3873E5972804C509000BCB03;
+			packageReferences = (
+				38C7D13128087CBF00E2675B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			productRefGroup = 3873E5A12804C509000BCB03 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				3873E59F2804C509000BCB03 /* Phoenix */,
 				3873E5B32804C50A000BCB03 /* PhoenixTests */,
-				3873E5BD2804C50A000BCB03 /* PhoenixUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -262,13 +244,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		3873E5B22804C50A000BCB03 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3873E5BC2804C50A000BCB03 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -296,15 +271,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3873E5BA2804C50A000BCB03 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3873E5C52804C50A000BCB03 /* PhoenixUITestsLaunchTests.swift in Sources */,
-				3873E5C32804C50A000BCB03 /* PhoenixUITests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -312,11 +278,6 @@
 			isa = PBXTargetDependency;
 			target = 3873E59F2804C509000BCB03 /* Phoenix */;
 			targetProxy = 3873E5B52804C50A000BCB03 /* PBXContainerItemProxy */;
-		};
-		3873E5C02804C50A000BCB03 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3873E59F2804C509000BCB03 /* Phoenix */;
-			targetProxy = 3873E5BF2804C50A000BCB03 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -528,40 +489,6 @@
 			};
 			name = Release;
 		};
-		3873E5CF2804C50A000BCB03 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DWW2N9PN49;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.PhoenixUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = Phoenix;
-			};
-			name = Debug;
-		};
-		3873E5D02804C50A000BCB03 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DWW2N9PN49;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.PhoenixUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = Phoenix;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -592,16 +519,30 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3873E5CE2804C50A000BCB03 /* Build configuration list for PBXNativeTarget "PhoenixUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3873E5CF2804C50A000BCB03 /* Debug */,
-				3873E5D02804C50A000BCB03 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		38C7D13128087CBF00E2675B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		38C7D13228087CBF00E2675B /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 38C7D13128087CBF00E2675B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+		38C7D136280884B000E2675B /* Package */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Package;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3873E5982804C509000BCB03 /* Project object */;
 }

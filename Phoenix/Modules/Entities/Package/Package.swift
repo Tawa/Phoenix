@@ -4,23 +4,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "PackageDescription",
+    name: "Package",
     platforms: [
         .macOS(.v12)
     ],
     products: [
         .library(
-            name: "PackageDescription",
-            type: .dynamic,
-            targets: ["PackageDescription"]),
+            name: "Package",
+            targets: ["Package"]),
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "PackageDescription",
+            name: "Package",
             dependencies: []),
         .testTarget(
-            name: "PackageDescriptionTests",
-            dependencies: ["PackageDescription"]),
+            name: "PackageTests",
+            dependencies: ["Package"]),
     ]
 )

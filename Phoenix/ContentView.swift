@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Phoenix
-//
-//  Created by Tawa Nicolas on 11.04.22.
-//
-
 import SwiftUI
 
 class ViewModel: ObservableObject {

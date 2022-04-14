@@ -1,4 +1,4 @@
-public enum ModuleType {
+public enum ModuleType: Codable, Hashable {
     case contract
     case implementation
     case mock

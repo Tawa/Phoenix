@@ -1,10 +1,4 @@
-//
-//  PhoenixDocument.swift
-//  Phoenix
-//
-//  Created by Tawa Nicolas on 11.04.22.
-//
-
+import Package
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -21,7 +15,8 @@ struct FamilyName: Codable, Identifiable {
     var plural: String
 }
 
-struct FileStructure: Codable {
+struct FileStructure: Codable, Hashable {
+    var components: [Component] = []
     var familyNames: [FamilyName] = []
 }
 
