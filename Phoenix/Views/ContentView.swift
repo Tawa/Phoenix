@@ -1,42 +1,57 @@
+import Package
 import SwiftUI
-import ComposableArchitecture
 
-struct ContentView: View {
+class ViewModel: ObservableObject {
     @Binding var document: PhoenixDocument
-    let store: Store<FileStructure, AppAction>
+    @Published var showingNewComponentPopup: Bool = false
 
-    init(document: Binding<PhoenixDocument>) {
+    var components: [Component] { document.components }
+
+    public init(document: Binding<PhoenixDocument>) {
         self._document = document
-        self.store = Store(initialState: document.wrappedValue.fileStructure,
-                           reducer: appReducer,
-                           environment: AppEnvironment())
     }
 
+    func onAddButton() {
+        showingNewComponentPopup = true
+    }
+
+    func onNewComponent(_ name: Name) {
+        guard components.contains(where: { $0.name == name }) == false else { return }
+        let newComponent = Component(name: name,
+                                     types: [:],
+                                     platforms: [])
+        document.components.append(newComponent)
+
+        showingNewComponentPopup = false
+    }
+}
+
+struct ContentView: View {
+    @EnvironmentObject var viewModel: ViewModel
+
     var body: some View {
-        WithViewStore(self.store) { viewStore in
+        ZStack {
             List {
                 Text("Hello, World")
 
-                ForEach(viewStore.components) { component in
-                    VStack(alignment: .leading) {
-                        Text(component.name.given)
-                        Text(component.name.family)
-                    }
+                ForEach(viewModel.components) { component in
+                    Text(component.name.given + component.name.family)
                 }
 
-                Button {
-                    viewStore.send(.addComponent)
-                } label: {
+                Button(action: viewModel.onAddButton) {
                     Text("Add")
                 }
             }
-            .frame(maxWidth: .infinity)
+            if viewModel.showingNewComponentPopup {
+                NewComponentPopover(onSubmit: viewModel.onNewComponent(_:))
+            }
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(document: .constant(PhoenixDocument()))
+        ContentView()
+            .environmentObject(ViewModel(document: .constant(PhoenixDocument())))
     }
 }

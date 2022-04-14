@@ -1,7 +1,6 @@
 import Package
 import SwiftUI
 import UniformTypeIdentifiers
-import ComposableArchitecture
 
 extension UTType {
     static var ash: UTType {
@@ -10,10 +9,12 @@ extension UTType {
 }
 
 struct PhoenixDocument: FileDocument {
-    var fileStructure: FileStructure
+    var components: [Component]
+    var familyNames: [Family]
 
     init(fileStructure: FileStructure = FileStructure()) {
-        self.fileStructure = fileStructure
+        self.components = fileStructure.components
+        self.familyNames = fileStructure.familyNames
     }
 
     static var readableContentTypes: [UTType] { [.ash] }
@@ -23,10 +24,15 @@ struct PhoenixDocument: FileDocument {
         else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        self.fileStructure = try JSONDecoder().decode(FileStructure.self, from: data)
+        let fileStructure = try JSONDecoder().decode(FileStructure.self, from: data)
+
+        self.components = fileStructure.components
+        self.familyNames = fileStructure.familyNames
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        let fileStructure = FileStructure(components: components,
+                                          familyNames: familyNames)
         let data = try JSONEncoder().encode(fileStructure)
         return .init(regularFileWithContents: data)
     }
