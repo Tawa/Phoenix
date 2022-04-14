@@ -1,23 +1,12 @@
 import Package
 import SwiftUI
 import UniformTypeIdentifiers
+import ComposableArchitecture
 
 extension UTType {
     static var ash: UTType {
         UTType(exportedAs: "com.tawanicolas.ash")
     }
-}
-
-struct FamilyName: Codable, Identifiable {
-    var id: String { singular }
-
-    var singular: String
-    var plural: String
-}
-
-struct FileStructure: Codable, Hashable {
-    var components: [Component] = []
-    var familyNames: [FamilyName] = []
 }
 
 struct PhoenixDocument: FileDocument {

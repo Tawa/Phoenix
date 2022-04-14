@@ -14,8 +14,11 @@
 		3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5AC2804C50A000BCB03 /* Preview Assets.xcassets */; };
 		3873E5B92804C50A000BCB03 /* PhoenixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5B82804C50A000BCB03 /* PhoenixTests.swift */; };
 		38C7D13328087CBF00E2675B /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13228087CBF00E2675B /* ComposableArchitecture */; };
-		38C7D137280884B000E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D136280884B000E2675B /* Package */; };
-		38C7D138280884B000E2675B /* Package in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D136280884B000E2675B /* Package */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		38C7D13B2808864700E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13A2808864700E2675B /* Package */; };
+		38C7D13D2808885E00E2675B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D13C2808885E00E2675B /* AppState.swift */; };
+		38C7D13F2808886800E2675B /* AppAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D13E2808886800E2675B /* AppAction.swift */; };
+		38C7D1412808889000E2675B /* AppReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D1402808889000E2675B /* AppReducer.swift */; };
+		38C7D143280888A000E2675B /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D142280888A000E2675B /* AppEnvironment.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,7 +38,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				38C7D138280884B000E2675B /* Package in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -54,6 +56,10 @@
 		3873E5B42804C50A000BCB03 /* PhoenixTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3873E5B82804C50A000BCB03 /* PhoenixTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixTests.swift; sourceTree = "<group>"; };
 		38C7D13428087FA800E2675B /* Package */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package; sourceTree = "<group>"; };
+		38C7D13C2808885E00E2675B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		38C7D13E2808886800E2675B /* AppAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAction.swift; sourceTree = "<group>"; };
+		38C7D1402808889000E2675B /* AppReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReducer.swift; sourceTree = "<group>"; };
+		38C7D142280888A000E2675B /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +68,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				38C7D13328087CBF00E2675B /* ComposableArchitecture in Frameworks */,
-				38C7D137280884B000E2675B /* Package in Frameworks */,
+				38C7D13B2808864700E2675B /* Package in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +85,7 @@
 		3873E5972804C509000BCB03 = {
 			isa = PBXGroup;
 			children = (
+				38BA7BB32804C58E00BE3B9F /* Modules */,
 				3873E5A22804C509000BCB03 /* Phoenix */,
 				3873E5B72804C50A000BCB03 /* PhoenixTests */,
 				3873E5A12804C509000BCB03 /* Products */,
@@ -98,13 +105,16 @@
 		3873E5A22804C509000BCB03 /* Phoenix */ = {
 			isa = PBXGroup;
 			children = (
-				38BA7BB32804C58E00BE3B9F /* Modules */,
-				3873E5A32804C509000BCB03 /* PhoenixApp.swift */,
-				3873E5A52804C509000BCB03 /* PhoenixDocument.swift */,
-				3873E5A72804C509000BCB03 /* ContentView.swift */,
+				38C7D13E2808886800E2675B /* AppAction.swift */,
+				38C7D142280888A000E2675B /* AppEnvironment.swift */,
+				38C7D1402808889000E2675B /* AppReducer.swift */,
+				38C7D13C2808885E00E2675B /* AppState.swift */,
 				3873E5A92804C50A000BCB03 /* Assets.xcassets */,
+				38C7D144280888E800E2675B /* Views */,
 				3873E5AE2804C50A000BCB03 /* Info.plist */,
 				3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */,
+				3873E5A32804C509000BCB03 /* PhoenixApp.swift */,
+				3873E5A52804C509000BCB03 /* PhoenixDocument.swift */,
 				3873E5AB2804C50A000BCB03 /* Preview Content */,
 			);
 			path = Phoenix;
@@ -149,6 +159,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		38C7D144280888E800E2675B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3873E5A72804C509000BCB03 /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -168,7 +186,7 @@
 			name = Phoenix;
 			packageProductDependencies = (
 				38C7D13228087CBF00E2675B /* ComposableArchitecture */,
-				38C7D136280884B000E2675B /* Package */,
+				38C7D13A2808864700E2675B /* Package */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -257,9 +275,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38C7D143280888A000E2675B /* AppEnvironment.swift in Sources */,
+				38C7D1412808889000E2675B /* AppReducer.swift in Sources */,
 				3873E5A62804C509000BCB03 /* PhoenixDocument.swift in Sources */,
 				3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */,
+				38C7D13F2808886800E2675B /* AppAction.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
+				38C7D13D2808885E00E2675B /* AppState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +422,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Phoenix/Phoenix.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -428,6 +451,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Phoenix/Phoenix.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -538,7 +562,7 @@
 			package = 38C7D13128087CBF00E2675B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
 		};
-		38C7D136280884B000E2675B /* Package */ = {
+		38C7D13A2808864700E2675B /* Package */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Package;
 		};
