@@ -10,6 +10,7 @@
 		3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3810D8CA2809811F006E7EE3 /* ComponentView.swift */; };
 		3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3810D8CC280990AF006E7EE3 /* ComponentsList.swift */; };
 		3810D8CF28099B82006E7EE3 /* ComponentListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */; };
+		3810D8D128099D74006E7EE3 /* FamiliesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3810D8D028099D74006E7EE3 /* FamiliesView.swift */; };
 		3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A32804C509000BCB03 /* PhoenixApp.swift */; };
 		3873E5A62804C509000BCB03 /* PhoenixDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A52804C509000BCB03 /* PhoenixDocument.swift */; };
 		3873E5A82804C509000BCB03 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A72804C509000BCB03 /* ContentView.swift */; };
@@ -48,6 +49,7 @@
 		3810D8CA2809811F006E7EE3 /* ComponentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentView.swift; sourceTree = "<group>"; };
 		3810D8CC280990AF006E7EE3 /* ComponentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsList.swift; sourceTree = "<group>"; };
 		3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentListItem.swift; sourceTree = "<group>"; };
+		3810D8D028099D74006E7EE3 /* FamiliesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamiliesView.swift; sourceTree = "<group>"; };
 		3873E5A02804C509000BCB03 /* Phoenix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Phoenix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3873E5A32804C509000BCB03 /* PhoenixApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixApp.swift; sourceTree = "<group>"; };
 		3873E5A52804C509000BCB03 /* PhoenixDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocument.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 			children = (
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
 				3873E5A72804C509000BCB03 /* ContentView.swift */,
+				3810D8D028099D74006E7EE3 /* FamiliesView.swift */,
 				3810D8CC280990AF006E7EE3 /* ComponentsList.swift */,
 				38C7D1482808B35300E2675B /* NewComponentPopover.swift */,
 				3810D8CA2809811F006E7EE3 /* ComponentView.swift */,
@@ -290,6 +293,7 @@
 				38C7D1492808B35300E2675B /* NewComponentPopover.swift in Sources */,
 				38C7D1472808AE8A00E2675B /* FileStructure.swift in Sources */,
 				3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */,
+				3810D8D128099D74006E7EE3 /* FamiliesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

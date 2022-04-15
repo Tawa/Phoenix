@@ -1,6 +1,6 @@
 import Package
 
-struct Family: Codable {
+struct Family: Codable, Hashable {
     var name: String
     var folderName: String
 }
