@@ -12,7 +12,7 @@ class ViewModel: ObservableObject {
     }
 
     func onAddButton() {
-        showingNewComponentPopup = true
+        withAnimation { showingNewComponentPopup = true }
     }
 
     func onNewComponent(_ name: Name) {
@@ -23,6 +23,10 @@ class ViewModel: ObservableObject {
         document.components.append(newComponent)
 
         showingNewComponentPopup = false
+    }
+
+    func isNameAlreadyInUse(_ name: Name) -> Bool {
+        document.components.contains(where: { $0.name.full.lowercased() == name.full.lowercased() })
     }
 }
 
@@ -43,7 +47,9 @@ struct ContentView: View {
                 }
             }
             if viewModel.showingNewComponentPopup {
-                NewComponentPopover(onSubmit: viewModel.onNewComponent(_:))
+                NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup,
+                                    onSubmit: viewModel.onNewComponent(_:),
+                                    isNameAlreadyInUse: viewModel.isNameAlreadyInUse(_:))
             }
         }
     }
