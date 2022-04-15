@@ -15,18 +15,23 @@ class ViewModel: ObservableObject {
     }
 
     func onNewComponent(_ name: Name) {
-        guard document.components.contains(where: { $0.name == name }) == false else { return }
+        guard document.components[name.family]?.contains(where: { $0.name.given == name.given }) != true else { return }
+
+        var array = document.components[name.family] ?? []
+
         let newComponent = Component(name: name,
                                      platforms: [],
                                      types: [:])
-        document.components.append(newComponent)
-        document.components.sort(by: { $0.name.full < $1.name.full })
+        array.append(newComponent)
+        array.sort(by: { $0.name.full < $1.name.full })
+
+        document.components[name.family] = array
 
         showingNewComponentPopup = false
     }
 
     func isNameAlreadyInUse(_ name: Name) -> Bool {
-        document.components.contains(where: { $0.name.full.lowercased() == name.full.lowercased() })
+        document.components[name.family]?.contains(where: { $0.name.full.lowercased() == name.full.lowercased() }) == true
     }
 }
 

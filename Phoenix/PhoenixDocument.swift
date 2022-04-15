@@ -9,7 +9,7 @@ extension UTType {
 }
 
 struct PhoenixDocument: FileDocument {
-    var components: [Component]
+    var components: [String: [Component]]
     var familyNames: [Family]
 
     init(fileStructure: FileStructure = FileStructure()) {

@@ -6,6 +6,6 @@ struct Family: Codable {
 }
 
 struct FileStructure: Codable {
-    var components: [Component] = []
+    var components: [String: [Component]] = [:]
     var familyNames: [Family] = []
 }

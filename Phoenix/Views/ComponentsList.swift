@@ -2,27 +2,31 @@ import Package
 import SwiftUI
 
 struct ComponentsList: View {
-    @Binding var components: [Component]
+    @Binding var components: [String: [Component]]
     @Binding var selectedIndex: Int
     let onAddButton: () -> Void
 
     var body: some View {
         List {
-            ForEach(components.enumeratedArray(), id: \.element) { index, component in
-                ZStack {
-                    if selectedIndex == index {
-                        Color.gray
-                    }
-                    HStack {
-                        Text(component.name.given + component.name.family)
-                            .font(.headline.bold())
-                            .foregroundColor(selectedIndex == index ? Color.white : nil)
-                            .padding(4)
-                        Spacer()
+            ForEach(components.keys.sorted(), id: \.self) { family in
+                Section(header: Text(family)) {
+                    ForEach(components[family]?.enumeratedArray() ?? [], id: \.element) { index, component in
+                        ZStack {
+                            if selectedIndex == index {
+                                Color.gray
+                            }
+                            HStack {
+                                Text(component.name.given + component.name.family)
+                                    .font(.headline.bold())
+                                    .foregroundColor(selectedIndex == index ? Color.white : nil)
+                                    .padding(4)
+                                Spacer()
+                            }
+                        }
+                        .contentShape(RoundedRectangle(cornerRadius: 8))
+                        .onTapGesture(perform: { selectedIndex = index })
                     }
                 }
-                .contentShape(RoundedRectangle(cornerRadius: 8))
-                .onTapGesture(perform: { selectedIndex = index })
             }
 
             if components.isEmpty {
@@ -38,7 +42,7 @@ struct ComponentsList: View {
 
 struct ComponentsList_Previews: PreviewProvider {
     struct Preview: View {
-        @State var components: [Component] = []
+        @State var components: [String: [Component]] = [:]
         @State var selectedIndex: Int = 0
 
         var body: some View {
