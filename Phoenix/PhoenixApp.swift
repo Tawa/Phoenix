@@ -6,8 +6,7 @@ struct PhoenixApp: App {
     var body: some Scene {
         DocumentGroup(newDocument: PhoenixDocument()) { file in
             ContentView()
-                .environmentObject(ViewModel(document: file.$document,
-                                            familyFolderNameProvider: FamilyFolderNameProvider()))
+                .environmentObject(ViewModel(document: file.$document))
         }
     }
 }

@@ -4,9 +4,12 @@ import SwiftUI
 class ViewModel: ObservableObject {
     @Binding var document: PhoenixDocument
     @Published var showingNewComponentPopup: Bool = false
-    @Published var showingFamily: Family? = nil
+    @Published var showingFamilyPopup: Bool = false
+    @Published var selectedFamilyForPopup: Family? = nil
 
-    private let familyFolderNameProvider: FamilyFolderNameProviding
+    init(document: Binding<PhoenixDocument>) {
+        self._document = document
+    }
 
     var selectedComponent: Binding<Component?> {
         Binding {
@@ -25,22 +28,25 @@ class ViewModel: ObservableObject {
         }
     }
 
-    //    var selectedFamily: Binding<Family?> {
-    //        Binding {
-    //            guard let showingFamily = showingFamily else { return nil }
-    //            return self.document.familyNames
-    //        } set: { newValue in
-    //        }
-    //    }
-
-    public init(document: Binding<PhoenixDocument>,
-                familyFolderNameProvider: FamilyFolderNameProviding) {
-        self._document = document
-        self.familyFolderNameProvider = familyFolderNameProvider
+    var selectedFamily: Binding<Family?> {
+        Binding {
+            self.selectedFamilyForPopup
+        } set: { newValue in
+            guard
+                let newValue = newValue,
+                let index = self.document.families.firstIndex(where: { $0.family == self.selectedFamilyForPopup })
+            else { return }
+            self.document.families[index].family = newValue
+        }
     }
 
     func onAddButton() {
         withAnimation { showingNewComponentPopup = true }
+    }
+
+    func onFamilySelection(_ family: Family) {
+        selectedFamilyForPopup = family
+        withAnimation { showingFamilyPopup = true }
     }
 
     func onNewComponent(_ name: Name) {
@@ -77,10 +83,6 @@ class ViewModel: ObservableObject {
     func isNameAlreadyInUse(_ name: Name) -> Bool {
         document.families.flatMap { $0.components }.contains(where: { (component: Component) -> Bool in component.name == name })
     }
-
-    func folderNameForFamily(_ familyName: String) -> String {
-        document.families.first(where: { $0.family.name == familyName })?.family.folder ?? familyFolderNameProvider.folderName(forFamily: familyName)
-    }
 }
 
 extension Collection {
@@ -99,7 +101,7 @@ struct ContentView: View {
                                                            set: { viewModel.document.families = $0 }),
                                selectedName: Binding(get: { viewModel.document.selectedName },
                                                      set: { viewModel.document.selectedName = $0 }),
-                               folderNameForFamily: viewModel.folderNameForFamily(_:),
+                               onFamilySelection: viewModel.onFamilySelection(_:),
                                onAddButton: viewModel.onAddButton)
                 .frame(minWidth: 250)
 
@@ -113,8 +115,10 @@ struct ContentView: View {
                                     isNameAlreadyInUse: viewModel.isNameAlreadyInUse(_:))
             }
 
-//            if viewModel.showingFamilyPopup != nil {
-//            }
+            if viewModel.showingFamilyPopup {
+                FamilyPopover(family: viewModel.selectedFamily,
+                              isPresenting: $viewModel.showingFamilyPopup)
+            }
         }
     }
 }
@@ -122,7 +126,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environmentObject(ViewModel(document: .constant(PhoenixDocument()),
-                                        familyFolderNameProvider: FamilyFolderNameProvider()))
+            .environmentObject(ViewModel(document: .constant(PhoenixDocument())))
     }
 }

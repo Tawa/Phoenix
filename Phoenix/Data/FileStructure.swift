@@ -1,7 +1,7 @@
 import Package
 
 struct Family: Codable, Hashable {
-    var name: String
+    let name: String
     var suffix: String?
     var folder: String?
 }

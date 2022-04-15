@@ -4,7 +4,7 @@ import SwiftUI
 struct ComponentsList: View {
     @Binding var componentsFamilies: [ComponentsFamily]
     @Binding var selectedName: Name?
-    let folderNameForFamily: (String) -> String
+    let onFamilySelection: (Family) -> Void
     let onAddButton: () -> Void
 
     var body: some View {
@@ -17,7 +17,12 @@ struct ComponentsList: View {
             }
             List {
                 ForEach(componentsFamilies) { componentsFamily in
-                    Section(header: Text(componentsFamily.family.folder ?? componentsFamily.family.name).font(.title)) {
+                    Section(header: HStack {
+                        Text(componentsFamily.family.folder ?? componentsFamily.family.name)
+                            .font(.title)
+                        Button(action: { onFamilySelection(componentsFamily.family) },
+                               label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
+                    }) {
                         ForEach(componentsFamily.components) { component in
                             ComponentListItem(
                                 name: component.name.given + component.name.family,
@@ -48,7 +53,7 @@ struct ComponentsList_Previews: PreviewProvider {
         var body: some View {
             ComponentsList(componentsFamilies: $families,
                            selectedName: $selectedName,
-                           folderNameForFamily: { $0 },
+                           onFamilySelection: { _ in },
                            onAddButton: {})
         }
     }
