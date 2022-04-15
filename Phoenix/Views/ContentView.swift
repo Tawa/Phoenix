@@ -4,8 +4,7 @@ import SwiftUI
 class ViewModel: ObservableObject {
     @Binding var document: PhoenixDocument
     @Published var showingNewComponentPopup: Bool = false
-
-    var components: [Component] { document.components }
+    @Published var selectedIndex: Int = 0
 
     public init(document: Binding<PhoenixDocument>) {
         self._document = document
@@ -16,11 +15,12 @@ class ViewModel: ObservableObject {
     }
 
     func onNewComponent(_ name: Name) {
-        guard components.contains(where: { $0.name == name }) == false else { return }
+        guard document.components.contains(where: { $0.name == name }) == false else { return }
         let newComponent = Component(name: name,
-                                     types: [:],
-                                     platforms: [])
+                                     platforms: [],
+                                     types: [:])
         document.components.append(newComponent)
+        document.components.sort(by: { $0.name.full < $1.name.full })
 
         showingNewComponentPopup = false
     }
@@ -30,22 +30,23 @@ class ViewModel: ObservableObject {
     }
 }
 
+extension Collection {
+    func enumeratedArray() -> Array<(offset: Int, element: Self.Element)> {
+        Array(enumerated())
+    }
+}
+
 struct ContentView: View {
     @EnvironmentObject var viewModel: ViewModel
 
     var body: some View {
         ZStack {
-            List {
-                Text("Hello, World")
+            ComponentsList(components: Binding(get: { viewModel.document.components },
+                                               set: { viewModel.document.components = $0 }),
+                           selectedIndex: Binding(get: { viewModel.selectedIndex },
+                                                  set: { viewModel.selectedIndex = $0 }),
+                           onAddButton: viewModel.onAddButton)
 
-                ForEach(viewModel.components) { component in
-                    Text(component.name.given + component.name.family)
-                }
-
-                Button(action: viewModel.onAddButton) {
-                    Text("Add")
-                }
-            }
             if viewModel.showingNewComponentPopup {
                 NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup,
                                     onSubmit: viewModel.onNewComponent(_:),

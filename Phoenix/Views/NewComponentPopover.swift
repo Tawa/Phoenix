@@ -10,7 +10,7 @@ struct NewComponentPopover: View {
     @Binding var isPresenting: Bool
     @State private var name: String = ""
     @State private var familyName: String = ""
-    @State private var nameAlreadyInUsePresented: Bool = false
+    @State private var popoverText: String? = nil
     @FocusState private var focusField: FocusFields?
 
     let onSubmit: (Name) -> Void
@@ -42,10 +42,10 @@ struct NewComponentPopover: View {
             .background(.ultraThinMaterial)
             .onAppear { focusField = .given }
 
-            if nameAlreadyInUsePresented {
+            if let popoverText = popoverText {
                 ZStack {
                     VStack(alignment: .center) {
-                        Text("Component Name Already In Use")
+                        Text(popoverText)
                             .font(.largeTitle)
                         Button(action: onPopoverOkayButton) {
                             Text("Ok")
@@ -63,8 +63,12 @@ struct NewComponentPopover: View {
     private func onSubmitAction() {
         focusField = nil
         let name = Name(given: name, family: familyName)
-        if isNameAlreadyInUse(name) {
-            withAnimation { nameAlreadyInUsePresented = true }
+        if name.given.isEmpty {
+            withAnimation { popoverText = "Given name cannot be empty" }
+        } else if name.family.isEmpty {
+            withAnimation { popoverText = "Component must be part of a family" }
+        } else if isNameAlreadyInUse(name) {
+            withAnimation { popoverText = "Name already in use" }
         } else {
             onSubmit(name)
         }
@@ -72,7 +76,7 @@ struct NewComponentPopover: View {
 
     private func onPopoverOkayButton() {
         focusField = nil
-        withAnimation { nameAlreadyInUsePresented = false }
+        withAnimation { popoverText = nil }
     }
 }
 
