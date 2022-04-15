@@ -8,25 +8,33 @@ struct ComponentsList: View {
     let onAddButton: () -> Void
 
     var body: some View {
-        List {
-            ForEach(components.keys.sorted(), id: \.self) { family in
-                Section(header: Text(folderNameForFamily(family))) {
-                    ForEach(components[family] ?? []) { component in
-                        ComponentListItem(
-                            name: component.name.given + component.name.family,
-                            isSelected: selectedName == component.name,
-                            onSelect: { selectedName = component.name }
-                        )
+        VStack {
+            HStack {
+                Text("Components:")
+                    .font(.largeTitle)
+                    .padding()
+                Spacer()
+            }
+            List {
+                ForEach(components.keys.sorted(), id: \.self) { family in
+                    Section(header: Text(folderNameForFamily(family)).font(.title)) {
+                        ForEach(components[family] ?? []) { component in
+                            ComponentListItem(
+                                name: component.name.given + component.name.family,
+                                isSelected: selectedName == component.name,
+                                onSelect: { selectedName = component.name }
+                            )
+                        }
                     }
                 }
-            }
 
-            if components.isEmpty {
-                Text("0 components")
-                    .foregroundColor(.gray)
-            }
-            Button(action: onAddButton) {
-                Text("Add")
+                if components.isEmpty {
+                    Text("0 components")
+                        .foregroundColor(.gray)
+                }
+                Button(action: onAddButton) {
+                    Text("Add")
+                }
             }
         }
     }

@@ -8,4 +8,5 @@ struct Family: Codable, Hashable {
 struct FileStructure: Codable {
     var components: [String: [Component]] = [:]
     var familyNames: [Family] = []
+    var selectedName: Name?
 }

@@ -5,46 +5,78 @@ struct ComponentView: View {
     @Binding var component: Component?
 
     var body: some View {
-        HStack {
-            VStack {
-                if let component = component {
+        VStack {
+            if let component = component {
+                HStack {
                     Text(component.name.full)
                         .font(.largeTitle)
                         .multilineTextAlignment(.leading)
-                    HStack {
-                        Text("Platforms:")
-                        Menu(iOSPlatformMenuTitle) {
-
+                    Spacer()
+                }
+                HStack {
+                    Text("Platforms:")
+                    Menu(iOSPlatformMenuTitle) {
+                        ForEach(iOSVersion.allCases) { version in
+                            Button(action: { self.component?.iOSVersion = version }) {
+                                Text("\(String(describing: version))")
+                            }
                         }
-                        Menu(macOSPlatformMenuTitle) {
-
+                        if component.iOSVersion != nil {
+                            Button(action: { self.component?.iOSVersion = nil }) {
+                                Text("Remove")
+                            }
                         }
-                    }
+                    }.frame(width: 150)
+                    Menu(macOSPlatformMenuTitle) {
+                        ForEach(macOSVersion.allCases) { version in
+                            Button(action: { self.component?.macOSVersion = version }) {
+                                Text("\(String(describing: version))")
+                            }
+                        }
+                        if component.macOSVersion != nil {
+                            Button(action: { self.component?.macOSVersion = nil }) {
+                                Text("Remove")
+                            }
+                        }
+                    }.frame(width: 150)
+                    Spacer()
+                }
 
-                } else {
+            } else {
+                HStack {
                     Text("No Component Selected")
                         .font(.largeTitle)
                         .foregroundColor(.gray)
+                    Spacer()
                 }
-                Spacer()
-            }.padding()
+            }
             Spacer()
         }
+        .padding()
     }
 
     private var iOSPlatformMenuTitle: String {
-        return "Add iOS"
+        if let iOSVersion = component?.iOSVersion {
+            return ".iOS(.\(iOSVersion))"
+        } else {
+            return "Add iOS"
+        }
     }
 
     private var macOSPlatformMenuTitle: String {
-        return "Add macOS"
+        if let macOSVersion = component?.macOSVersion {
+            return ".macOS(.\(macOSVersion))"
+        } else {
+            return "Add macOS"
+        }
     }
 }
 
 struct ComponentView_Previews: PreviewProvider {
     struct Preview: View {
         @State var component: Component? = Component(name: Name(given: "Wordpress", family: "Repository"),
-                                                     platforms: [],
+                                                     iOSVersion: .v13,
+                                                     macOSVersion: .v12,
                                                      types: [:])
 
         var body: some View {

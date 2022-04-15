@@ -11,10 +11,12 @@ extension UTType {
 struct PhoenixDocument: FileDocument {
     var components: [String: [Component]]
     var familyNames: [Family]
+    var selectedName: Name?
 
     init(fileStructure: FileStructure = FileStructure()) {
         self.components = fileStructure.components
         self.familyNames = fileStructure.familyNames
+        self.selectedName = fileStructure.selectedName
     }
 
     static var readableContentTypes: [UTType] { [.ash] }
@@ -28,11 +30,13 @@ struct PhoenixDocument: FileDocument {
 
         self.components = fileStructure.components
         self.familyNames = fileStructure.familyNames
+        self.selectedName = fileStructure.selectedName
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
         let fileStructure = FileStructure(components: components,
-                                          familyNames: familyNames)
+                                          familyNames: familyNames,
+                                          selectedName: selectedName)
         let data = try JSONEncoder().encode(fileStructure)
         return .init(regularFileWithContents: data)
     }
