@@ -18,26 +18,26 @@ struct NewComponentPopover: View {
 
     var body: some View {
         ZStack {
-            VStack {
-                VStack(spacing: 0) {
-                    TextField("Given Name", text: $name)
-                        .focused($focusField, equals: .given)
-                        .font(.largeTitle)
-                        .onSubmit {
-                            focusField = .family
-                        }
+            VStack(spacing: 0) {
+                TextField("Given Name", text: $name)
+                    .focused($focusField, equals: .given)
+                    .font(.largeTitle)
+                    .onSubmit {
+                        focusField = .family
+                    }
 
-                    TextField("Family Name", text: $familyName)
-                        .focused($focusField, equals: .family)
-                        .font(.largeTitle)
-                        .onSubmit(onSubmitAction)
+                TextField("Family Name", text: $familyName)
+                    .focused($focusField, equals: .family)
+                    .font(.largeTitle)
+                    .onSubmit(onSubmitAction)
 
-                }.padding()
+                Spacer().frame(height: 30)
                 Button(action: onSubmitAction) {
                     Text("Create")
                 }
-
             }
+            .frame(width: 300)
+            .padding()
             .frame(maxWidth:  .infinity, maxHeight: .infinity)
             .background(.ultraThinMaterial)
             .onAppear { focusField = .given }
@@ -55,6 +55,7 @@ struct NewComponentPopover: View {
                 .frame(maxWidth:  .infinity, maxHeight: .infinity)
                 .background(.ultraThinMaterial)
                 .onSubmit(onPopoverOkayButton)
+                .onExitCommand(perform: onPopoverOkayButton)
             }
         }
         .onExitCommand(perform: { withAnimation { isPresenting = false } })

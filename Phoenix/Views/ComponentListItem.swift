@@ -12,7 +12,7 @@ struct ComponentListItem: View {
             }
             HStack {
                 Text(name)
-                    .font(.headline.bold())
+                    .font(.title2)
                     .foregroundColor(isSelected ? Color.white : nil)
                     .padding(8)
                 Spacer()

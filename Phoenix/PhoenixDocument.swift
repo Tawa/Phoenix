@@ -8,15 +8,13 @@ extension UTType {
     }
 }
 
-struct PhoenixDocument: FileDocument {
-    var components: [String: [Component]]
-    var familyNames: [Family]
+struct PhoenixDocument: FileDocument, Codable {
+    var families: [ComponentsFamily]
     var selectedName: Name?
 
-    init(fileStructure: FileStructure = FileStructure()) {
-        self.components = fileStructure.components
-        self.familyNames = fileStructure.familyNames
-        self.selectedName = fileStructure.selectedName
+    init(families: [ComponentsFamily] = [], selectedName: Name? = nil) {
+        self.families = families
+        self.selectedName = selectedName
     }
 
     static var readableContentTypes: [UTType] { [.ash] }
@@ -26,18 +24,11 @@ struct PhoenixDocument: FileDocument {
         else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        let fileStructure = try JSONDecoder().decode(FileStructure.self, from: data)
-
-        self.components = fileStructure.components
-        self.familyNames = fileStructure.familyNames
-        self.selectedName = fileStructure.selectedName
+        self = try JSONDecoder().decode(PhoenixDocument.self, from: data)
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let fileStructure = FileStructure(components: components,
-                                          familyNames: familyNames,
-                                          selectedName: selectedName)
-        let data = try JSONEncoder().encode(fileStructure)
+        let data = try JSONEncoder().encode(self)
         return .init(regularFileWithContents: data)
     }
 }

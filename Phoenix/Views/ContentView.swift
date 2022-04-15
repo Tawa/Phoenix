@@ -4,22 +4,39 @@ import SwiftUI
 class ViewModel: ObservableObject {
     @Binding var document: PhoenixDocument
     @Published var showingNewComponentPopup: Bool = false
+    @Published var showingFamily: Family? = nil
+
+    private let familyFolderNameProvider: FamilyFolderNameProviding
 
     var selectedComponent: Binding<Component?> {
         Binding {
-            guard let selectedName = self.document.selectedName else { return nil }
-            return self.document.components[selectedName.family]?.first(where: { $0.name.given == selectedName.given })
+            guard
+                let selectedName = self.document.selectedName,
+                let componentFamilyIndex = self.document.families.firstIndex(where: { $0.family.name == selectedName.family })
+            else { return nil }
+            return self.document.families[componentFamilyIndex].components.first(where: { $0.name.given == selectedName.given })
         } set: { newValue in
             guard let component = newValue,
                   let selectedName = self.document.selectedName,
-                  let index = self.document.components[selectedName.family]?.firstIndex(where: { $0.name.given == selectedName.given })
+                  let componentFamilyIndex = self.document.families.firstIndex(where: { $0.family.name == selectedName.family }),
+                  let componentIndex = self.document.families[componentFamilyIndex].components.firstIndex(where: { $0.name.given == selectedName.given })
             else { return }
-            self.document.components[selectedName.family]?[index] = component
+            self.document.families[componentFamilyIndex].components[componentIndex] = component
         }
     }
 
-    public init(document: Binding<PhoenixDocument>) {
+    //    var selectedFamily: Binding<Family?> {
+    //        Binding {
+    //            guard let showingFamily = showingFamily else { return nil }
+    //            return self.document.familyNames
+    //        } set: { newValue in
+    //        }
+    //    }
+
+    public init(document: Binding<PhoenixDocument>,
+                familyFolderNameProvider: FamilyFolderNameProviding) {
         self._document = document
+        self.familyFolderNameProvider = familyFolderNameProvider
     }
 
     func onAddButton() {
@@ -27,9 +44,14 @@ class ViewModel: ObservableObject {
     }
 
     func onNewComponent(_ name: Name) {
-        guard document.components[name.family]?.contains(where: { $0.name.given == name.given }) != true else { return }
+        var componentsFamily: ComponentsFamily = document
+            .families
+            .first(where: {
+                $0.family.name == name.family
+            }) ?? ComponentsFamily(family: Family(name: name.family, suffix: nil, folder: nil), components: [])
+        guard componentsFamily.components.contains(where: { $0.name == name }) == false else { return }
 
-        var array = document.components[name.family] ?? []
+        var array = componentsFamily.components
 
         let newComponent = Component(name: name,
                                      iOSVersion: nil,
@@ -38,19 +60,26 @@ class ViewModel: ObservableObject {
         array.append(newComponent)
         array.sort(by: { $0.name.full < $1.name.full })
 
-        document.components[name.family] = array
+        componentsFamily.components = array
+
+        if let familyIndex = document.families.firstIndex(where: { $0.family.name == name.family }) {
+            document.families[familyIndex].components = array
+        } else {
+            var familiesArray = document.families
+            familiesArray.append(componentsFamily)
+            familiesArray.sort(by: { $0.family.name < $1.family.name })
+            document.families = familiesArray
+        }
 
         showingNewComponentPopup = false
     }
 
     func isNameAlreadyInUse(_ name: Name) -> Bool {
-        document.components[name.family]?.contains(where: { $0.name.full.lowercased() == name.full.lowercased() }) == true
+        document.families.flatMap { $0.components }.contains(where: { (component: Component) -> Bool in component.name == name })
     }
 
     func folderNameForFamily(_ familyName: String) -> String {
-        guard let family = document.familyNames.first(where: { $0.name == familyName })
-        else { return familyName }
-        return family.folderName
+        document.families.first(where: { $0.family.name == familyName })?.family.folder ?? familyFolderNameProvider.folderName(forFamily: familyName)
     }
 }
 
@@ -65,9 +94,9 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            HSplitView{
-                ComponentsList(components: Binding(get: { viewModel.document.components },
-                                                   set: { viewModel.document.components = $0 }),
+            HSplitView {
+                ComponentsList(componentsFamilies: Binding(get: { viewModel.document.families },
+                                                           set: { viewModel.document.families = $0 }),
                                selectedName: Binding(get: { viewModel.document.selectedName },
                                                      set: { viewModel.document.selectedName = $0 }),
                                folderNameForFamily: viewModel.folderNameForFamily(_:),
@@ -76,10 +105,6 @@ struct ContentView: View {
 
                 ComponentView(component: viewModel.selectedComponent)
                     .frame(minWidth: 500)
-
-                FamiliesView(families: Binding(get: { viewModel.document.familyNames },
-                                               set: { viewModel.document.familyNames = $0 }))
-                .frame(minWidth: 250)
             }
 
             if viewModel.showingNewComponentPopup {
@@ -87,6 +112,9 @@ struct ContentView: View {
                                     onSubmit: viewModel.onNewComponent(_:),
                                     isNameAlreadyInUse: viewModel.isNameAlreadyInUse(_:))
             }
+
+//            if viewModel.showingFamilyPopup != nil {
+//            }
         }
     }
 }
@@ -94,6 +122,7 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environmentObject(ViewModel(document: .constant(PhoenixDocument())))
+            .environmentObject(ViewModel(document: .constant(PhoenixDocument()),
+                                        familyFolderNameProvider: FamilyFolderNameProvider()))
     }
 }

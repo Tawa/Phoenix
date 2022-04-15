@@ -2,7 +2,7 @@ import Package
 import SwiftUI
 
 struct ComponentsList: View {
-    @Binding var components: [String: [Component]]
+    @Binding var componentsFamilies: [ComponentsFamily]
     @Binding var selectedName: Name?
     let folderNameForFamily: (String) -> String
     let onAddButton: () -> Void
@@ -16,9 +16,9 @@ struct ComponentsList: View {
                 Spacer()
             }
             List {
-                ForEach(components.keys.sorted(), id: \.self) { family in
-                    Section(header: Text(folderNameForFamily(family)).font(.title)) {
-                        ForEach(components[family] ?? []) { component in
+                ForEach(componentsFamilies) { componentsFamily in
+                    Section(header: Text(componentsFamily.family.folder ?? componentsFamily.family.name).font(.title)) {
+                        ForEach(componentsFamily.components) { component in
                             ComponentListItem(
                                 name: component.name.given + component.name.family,
                                 isSelected: selectedName == component.name,
@@ -28,7 +28,7 @@ struct ComponentsList: View {
                     }
                 }
 
-                if components.isEmpty {
+                if componentsFamilies.isEmpty {
                     Text("0 components")
                         .foregroundColor(.gray)
                 }
@@ -42,11 +42,11 @@ struct ComponentsList: View {
 
 struct ComponentsList_Previews: PreviewProvider {
     struct Preview: View {
-        @State var components: [String: [Component]] = [:]
+        @State var families: [ComponentsFamily] = []
         @State var selectedName: Name?
 
         var body: some View {
-            ComponentsList(components: $components,
+            ComponentsList(componentsFamilies: $families,
                            selectedName: $selectedName,
                            folderNameForFamily: { $0 },
                            onAddButton: {})
