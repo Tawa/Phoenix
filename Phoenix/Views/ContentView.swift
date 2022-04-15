@@ -4,7 +4,7 @@ import SwiftUI
 class ViewModel: ObservableObject {
     @Binding var document: PhoenixDocument
     @Published var showingNewComponentPopup: Bool = false
-    @Published var selectedIndex: Int = 0
+    @Published var selectedName: Name? = nil
 
     public init(document: Binding<PhoenixDocument>) {
         self._document = document
@@ -33,6 +33,12 @@ class ViewModel: ObservableObject {
     func isNameAlreadyInUse(_ name: Name) -> Bool {
         document.components[name.family]?.contains(where: { $0.name.full.lowercased() == name.full.lowercased() }) == true
     }
+
+    func folderNameForFamily(_ familyName: String) -> String {
+        guard let family = document.familyNames.first(where: { $0.name == familyName })
+        else { return familyName }
+        return family.folderName
+    }
 }
 
 extension Collection {
@@ -48,8 +54,9 @@ struct ContentView: View {
         ZStack {
             ComponentsList(components: Binding(get: { viewModel.document.components },
                                                set: { viewModel.document.components = $0 }),
-                           selectedIndex: Binding(get: { viewModel.selectedIndex },
-                                                  set: { viewModel.selectedIndex = $0 }),
+                           selectedName: Binding(get: { viewModel.selectedName },
+                                                 set: { viewModel.selectedName = $0 }),
+                           folderNameForFamily: viewModel.folderNameForFamily(_:),
                            onAddButton: viewModel.onAddButton)
 
             if viewModel.showingNewComponentPopup {

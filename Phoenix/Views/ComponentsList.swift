@@ -3,28 +3,20 @@ import SwiftUI
 
 struct ComponentsList: View {
     @Binding var components: [String: [Component]]
-    @Binding var selectedIndex: Int
+    @Binding var selectedName: Name?
+    let folderNameForFamily: (String) -> String
     let onAddButton: () -> Void
 
     var body: some View {
         List {
             ForEach(components.keys.sorted(), id: \.self) { family in
-                Section(header: Text(family)) {
-                    ForEach(components[family]?.enumeratedArray() ?? [], id: \.element) { index, component in
-                        ZStack {
-                            if selectedIndex == index {
-                                Color.gray
-                            }
-                            HStack {
-                                Text(component.name.given + component.name.family)
-                                    .font(.headline.bold())
-                                    .foregroundColor(selectedIndex == index ? Color.white : nil)
-                                    .padding(4)
-                                Spacer()
-                            }
-                        }
-                        .contentShape(RoundedRectangle(cornerRadius: 8))
-                        .onTapGesture(perform: { selectedIndex = index })
+                Section(header: Text(folderNameForFamily(family))) {
+                    ForEach(components[family] ?? []) { component in
+                        ComponentListItem(
+                            name: component.name.given + component.name.family,
+                            isSelected: selectedName == component.name,
+                            onSelect: { selectedName = component.name }
+                        )
                     }
                 }
             }
@@ -43,11 +35,12 @@ struct ComponentsList: View {
 struct ComponentsList_Previews: PreviewProvider {
     struct Preview: View {
         @State var components: [String: [Component]] = [:]
-        @State var selectedIndex: Int = 0
+        @State var selectedName: Name?
 
         var body: some View {
             ComponentsList(components: $components,
-                           selectedIndex: $selectedIndex,
+                           selectedName: $selectedName,
+                           folderNameForFamily: { $0 },
                            onAddButton: {})
         }
     }
