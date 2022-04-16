@@ -2,7 +2,7 @@ import Package
 
 struct Family: Codable, Hashable {
     let name: String
-    var suffix: String?
+    var ignoreSuffix: Bool?
     var folder: String?
 }
 

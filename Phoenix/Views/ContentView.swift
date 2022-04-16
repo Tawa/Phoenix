@@ -54,7 +54,7 @@ class ViewModel: ObservableObject {
             .families
             .first(where: {
                 $0.family.name == name.family
-            }) ?? ComponentsFamily(family: Family(name: name.family, suffix: nil, folder: nil), components: [])
+            }) ?? ComponentsFamily(family: Family(name: name.family, ignoreSuffix: nil, folder: nil), components: [])
         guard componentsFamily.components.contains(where: { $0.name == name }) == false else { return }
 
         var array = componentsFamily.components
@@ -117,7 +117,8 @@ struct ContentView: View {
 
             if viewModel.showingFamilyPopup {
                 FamilyPopover(family: viewModel.selectedFamily,
-                              isPresenting: $viewModel.showingFamilyPopup)
+                              isPresenting: $viewModel.showingFamilyPopup,
+                              folderNameProvider: FamilyFolderNameProvider())
             }
         }
     }

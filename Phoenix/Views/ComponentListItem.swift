@@ -6,21 +6,16 @@ struct ComponentListItem: View {
     let onSelect: () -> Void
 
     var body: some View {
-        ZStack {
-            if isSelected {
-                Color.gray
-            }
-            HStack {
-                Text(name)
-                    .font(.title2)
-                    .foregroundColor(isSelected ? Color.white : nil)
-                    .padding(8)
-                Spacer()
-            }
+        ZStack(alignment: .leading) {
+            isSelected ? Color.gray : Color.clear
+            Text(name)
+                .font(.title2)
+                .foregroundColor(isSelected ? Color.white : nil)
+                .padding(8)
         }
         .frame(height: 40)
+        .contentShape(Rectangle())
         .cornerRadius(8)
-        .contentShape(RoundedRectangle(cornerRadius: 8))
         .onTapGesture(perform: onSelect)
     }
 }

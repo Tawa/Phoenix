@@ -32,8 +32,13 @@ struct NewComponentPopover: View {
                     .onSubmit(onSubmitAction)
 
                 Spacer().frame(height: 30)
-                Button(action: onSubmitAction) {
-                    Text("Create")
+                HStack {
+                    Button(action: onDismiss) {
+                        Text("Cancel")
+                    }
+                    Button(action: onSubmitAction) {
+                        Text("Create")
+                    }
                 }
             }
             .frame(width: 300)
@@ -58,7 +63,7 @@ struct NewComponentPopover: View {
                 .onExitCommand(perform: onPopoverOkayButton)
             }
         }
-        .onExitCommand(perform: { withAnimation { isPresenting = false } })
+        .onExitCommand(perform: onDismiss)
     }
 
     private func onSubmitAction() {
@@ -73,6 +78,10 @@ struct NewComponentPopover: View {
         } else {
             onSubmit(name)
         }
+    }
+
+    private func onDismiss() {
+        withAnimation { isPresenting = false }
     }
 
     private func onPopoverOkayButton() {

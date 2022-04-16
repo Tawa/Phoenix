@@ -18,7 +18,7 @@ struct ComponentsList: View {
             List {
                 ForEach(componentsFamilies) { componentsFamily in
                     Section(header: HStack {
-                        Text(componentsFamily.family.folder ?? componentsFamily.family.name)
+                        Text(componentsFamily.family.name)
                             .font(.title)
                         Button(action: { onFamilySelection(componentsFamily.family) },
                                label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
