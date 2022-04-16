@@ -83,7 +83,10 @@ struct ComponentView: View {
                         Section {
                             ForEach(component.dependencies.sorted(by: { $0.name.full < $1.name.full })) { dependency in
                                 DependencyView(dependency: Binding(get: { dependency },
-                                                                   set: { self.component?.dependencies.insert($0) }),
+                                                                   set: {
+                                    self.component?.dependencies.remove(dependency)
+                                    self.component?.dependencies.insert($0)
+                                }),
                                                onDelete: { self.component?.dependencies.remove(dependency) })
                             }
                         } header: {
