@@ -67,15 +67,7 @@ class ViewModel: ObservableObject {
         let newComponent = Component(name: name,
                                      iOSVersion: nil,
                                      macOSVersion: nil,
-                                     modules: [
-                                        .contract: ModuleDescription(dependencies: [], hasTests: false, testsDependencies: []),
-                                        .implementation: ModuleDescription(dependencies: [.module(name, type: .contract)],
-                                                                           hasTests: true,
-                                                                           testsDependencies: [.module(name, type: .implementation)]),
-                                        .mock: ModuleDescription(dependencies: [.module(name, type: .contract)],
-                                                                 hasTests: false,
-                                                                 testsDependencies: [])
-                                     ])
+                                     modules: [.contract, .implementation, .mock])
         array.append(newComponent)
         array.sort(by: { $0.name.full < $1.name.full })
 

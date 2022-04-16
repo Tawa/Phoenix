@@ -43,21 +43,39 @@ struct ComponentView: View {
 
                     Spacer().frame(height: 30)
 
-                    ModuleSectionView(title: "Contract",
-                                      moduleDescription: Binding(
-                                        get: { self.component?.modules[.contract] },
-                                        set: { self.component?.modules[.contract] = $0 })
-                    )
-                    ModuleSectionView(title: "Implementation",
-                                      moduleDescription: Binding(
-                                        get: { self.component?.modules[.implementation] },
-                                        set: { self.component?.modules[.implementation] = $0 })
-                    )
-                    ModuleSectionView(title: "Mock",
-                                      moduleDescription: Binding(
-                                        get: { self.component?.modules[.mock] },
-                                        set: { self.component?.modules[.mock] = $0 })
-                    )
+                    HStack {
+                        Text("Module Types:")
+                        Toggle(isOn: Binding(
+                            get: { self.component?.modules.contains(.contract) == true },
+                            set: { isOn in
+                                if isOn {
+                                    self.component?.modules.insert(.contract)
+                                } else {
+                                    self.component?.modules.remove(.contract)
+                                }
+                            }),
+                               label: { Text("Contract") })
+                        Toggle(isOn: Binding(
+                            get: { self.component?.modules.contains(.implementation) == true },
+                            set: { isOn in
+                                if isOn {
+                                    self.component?.modules.insert(.implementation)
+                                } else {
+                                    self.component?.modules.remove(.implementation)
+                                }
+                            }),
+                               label: { Text("Implementation") })
+                        Toggle(isOn: Binding(
+                            get: { self.component?.modules.contains(.mock) == true },
+                            set: { isOn in
+                                if isOn {
+                                    self.component?.modules.insert(.mock)
+                                } else {
+                                    self.component?.modules.remove(.mock)
+                                }
+                            }),
+                               label: { Text("Mock") })
+                    }
 
                 } else {
                     HStack {
@@ -94,15 +112,7 @@ struct ComponentView_Previews: PreviewProvider {
             name: Name(given: "Wordpress", family: "Repository"),
             iOSVersion: .v13,
             macOSVersion: .v12,
-            modules: [
-                .contract: ModuleDescription(dependencies: [], hasTests: false, testsDependencies: []),
-                .implementation: ModuleDescription(dependencies: [.module(Name(given: "Wordpress", family: "Repository"), type: .contract)],
-                                                   hasTests: true,
-                                                   testsDependencies: [.module(Name(given: "Wordpress", family: "Repository"), type: .implementation)]),
-                .mock: ModuleDescription(dependencies: [.module(Name(given: "Wordpress", family: "Repository"), type: .contract)],
-                                         hasTests: false,
-                                         testsDependencies: [])
-            ])
+            modules: .init(arrayLiteral: .contract, .implementation, .mock))
 
         var body: some View {
             ComponentView(component: $component)
