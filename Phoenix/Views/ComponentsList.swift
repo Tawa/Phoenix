@@ -10,12 +10,20 @@ struct ComponentsList: View {
 
     var body: some View {
         VStack {
-            HStack {
+            VStack(alignment: .leading) {
                 Text("Components:")
                     .font(.largeTitle)
                     .padding()
-                Spacer()
-            }
+                Button(action: onAddButton) {
+                    Label {
+                        Text("Add New Component")
+                    } icon: {
+                        Image(systemName: "plus")
+                    }
+
+                }
+                .padding(2)
+            }.frame(maxWidth: .infinity)
             List {
                 ForEach(componentsFamilies) { componentsFamily in
                     Section(header: HStack {
@@ -23,6 +31,7 @@ struct ComponentsList: View {
                             .font(.title)
                         Button(action: { onFamilySelection(componentsFamily.family) },
                                label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
+                        .buttonStyle(PlainButtonStyle())
                     }) {
                         ForEach(componentsFamily.components) { component in
                             ComponentListItem(
@@ -38,10 +47,9 @@ struct ComponentsList: View {
                     Text("0 components")
                         .foregroundColor(.gray)
                 }
-                Button(action: onAddButton) {
-                    Text("Add")
-                }
             }
+            .padding()
+            .listStyle(BorderedListStyle())
         }
     }
 
