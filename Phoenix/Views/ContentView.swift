@@ -4,8 +4,6 @@ import SwiftUI
 class ViewModel: ObservableObject {
     @Binding var document: PhoenixDocument
     @Published var showingNewComponentPopup: Bool = false
-    @Published var showingFamilyPopup: Bool = false
-    @Published var selectedFamilyForPopup: Family? = nil
 
     init(document: Binding<PhoenixDocument>) {
         self._document = document
@@ -30,12 +28,18 @@ class ViewModel: ObservableObject {
 
     var selectedFamily: Binding<Family?> {
         Binding {
-            self.selectedFamilyForPopup
+            guard
+                let index = self.document.families.firstIndex(where: { $0.family.name == self.document.selectedFamilyName })
+            else { return nil }
+            return self.document.families[index].family
         } set: { newValue in
             guard
                 let newValue = newValue,
-                let index = self.document.families.firstIndex(where: { $0.family == self.selectedFamilyForPopup })
-            else { return }
+                let index = self.document.families.firstIndex(where: { $0.family.name == self.document.selectedFamilyName })
+            else {
+                self.document.selectedFamilyName = nil
+                return
+            }
             self.document.families[index].family = newValue
         }
     }
@@ -45,8 +49,9 @@ class ViewModel: ObservableObject {
     }
 
     func onFamilySelection(_ family: Family) {
-        selectedFamilyForPopup = family
-        withAnimation { showingFamilyPopup = true }
+        withAnimation {
+            document.selectedFamilyName = family.name
+        }
     }
 
     func onNewComponent(_ name: Name) {
@@ -102,7 +107,8 @@ struct ContentView: View {
                                selectedName: Binding(get: { viewModel.document.selectedName },
                                                      set: { viewModel.document.selectedName = $0 }),
                                onFamilySelection: viewModel.onFamilySelection(_:),
-                               onAddButton: viewModel.onAddButton)
+                               onAddButton: viewModel.onAddButton,
+                               familyFolderNameProvider: FamilyFolderNameProvider())
                 .frame(minWidth: 250)
 
                 ComponentView(component: viewModel.selectedComponent)
@@ -115,9 +121,8 @@ struct ContentView: View {
                                     isNameAlreadyInUse: viewModel.isNameAlreadyInUse(_:))
             }
 
-            if viewModel.showingFamilyPopup {
+            if viewModel.selectedFamily.wrappedValue != nil {
                 FamilyPopover(family: viewModel.selectedFamily,
-                              isPresenting: $viewModel.showingFamilyPopup,
                               folderNameProvider: FamilyFolderNameProvider())
             }
         }

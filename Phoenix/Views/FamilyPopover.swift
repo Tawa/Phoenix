@@ -7,33 +7,43 @@ struct FamilyPopover: View {
         case suffix
         case folder
     }
-    
+
     @Binding var family: Family?
-    @Binding var isPresenting: Bool
     let folderNameProvider: FamilyFolderNameProviding
-    
+
+    private var defaultFolderName: String { folderNameProvider.folderName(forFamily: family?.name ?? "") }
+    private var componentNameExample: String { "Component\(family?.ignoreSuffix == true ? "" : family?.name ?? "")" }
+
     var body: some View {
         ZStack {
             VStack {
                 VStack(alignment: .leading) {
                     Text("Family: \(family?.name ?? "")")
                         .font(.largeTitle)
-                    
-                    Toggle("Append Component Name with Family Name",
-                           isOn: Binding(get: { family?.ignoreSuffix != true },
-                                         set: { family?.ignoreSuffix = !$0 }))
-                    
+
+                    Toggle(isOn: Binding(get: { family?.ignoreSuffix != true },
+                                         set: { family?.ignoreSuffix = !$0 })) {
+                        Text("Append Component Name with Family Name. ")
+                            .font(.title.bold())
+                        + Text("\nExample: \(componentNameExample)")
+                            .font(.subheadline.italic())
+                    }
+
                     HStack {
                         Text("Folder Name:")
-                        TextField("Default: (\(folderNameProvider.folderName(forFamily: family?.name ?? "")))",
+                            .font(.largeTitle)
+                        TextField("Default: (\(defaultFolderName))",
                                   text: Binding(get: { family?.folder ?? "" },
                                                 set: { family?.folder = $0 }))
+                        .font(.largeTitle)
+                        Button(action: { family?.folder = nil }) {
+                            Text("Use Default")
+                        }
                     }
-                    .font(.largeTitle)
-                    
+
                     Spacer().frame(height: 30)
                 }
-                Button(action: { withAnimation { isPresenting = false } }) {
+                Button(action: onDismiss) {
                     Text("Done")
                 }
             }
@@ -42,7 +52,13 @@ struct FamilyPopover: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial)
-        .onExitCommand(perform: { withAnimation { isPresenting = false } })
+        .onExitCommand(perform: onDismiss)
+    }
+
+    private func onDismiss() {
+        withAnimation {
+            family = nil
+        }
     }
 }
 
@@ -52,14 +68,12 @@ struct FamilyPopover_Previews: PreviewProvider {
             family: .constant(Family(name: "Repository",
                                      ignoreSuffix: nil,
                                      folder: nil)),
-            isPresenting: .constant(true),
             folderNameProvider: FamilyFolderNameProvider())
-        
+
         FamilyPopover(
             family: .constant(Family(name: "Shared",
                                      ignoreSuffix: true,
                                      folder: "Support")),
-            isPresenting: .constant(true),
             folderNameProvider: FamilyFolderNameProvider())
     }
 }

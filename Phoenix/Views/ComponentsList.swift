@@ -6,6 +6,7 @@ struct ComponentsList: View {
     @Binding var selectedName: Name?
     let onFamilySelection: (Family) -> Void
     let onAddButton: () -> Void
+    let familyFolderNameProvider: FamilyFolderNameProviding
 
     var body: some View {
         VStack {
@@ -18,14 +19,14 @@ struct ComponentsList: View {
             List {
                 ForEach(componentsFamilies) { componentsFamily in
                     Section(header: HStack {
-                        Text(componentsFamily.family.name)
+                        Text(familyName(for: componentsFamily.family))
                             .font(.title)
                         Button(action: { onFamilySelection(componentsFamily.family) },
                                label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
                     }) {
                         ForEach(componentsFamily.components) { component in
                             ComponentListItem(
-                                name: component.name.given + component.name.family,
+                                name: componentName(component, for: componentsFamily.family),
                                 isSelected: selectedName == component.name,
                                 onSelect: { selectedName = component.name }
                             )
@@ -43,6 +44,18 @@ struct ComponentsList: View {
             }
         }
     }
+
+    private func componentName(_ component: Component, for family: Family) -> String {
+        family.ignoreSuffix == true ? component.name.given : component.name.given + component.name.family
+    }
+
+    private func familyName(for family: Family) -> String {
+        if let folder = family.folder, !folder.isEmpty {
+            return folder
+        } else {
+            return familyFolderNameProvider.folderName(forFamily: family.name)
+        }
+    }
 }
 
 struct ComponentsList_Previews: PreviewProvider {
@@ -54,7 +67,8 @@ struct ComponentsList_Previews: PreviewProvider {
             ComponentsList(componentsFamilies: $families,
                            selectedName: $selectedName,
                            onFamilySelection: { _ in },
-                           onAddButton: {})
+                           onAddButton: {},
+                           familyFolderNameProvider: FamilyFolderNameProvider())
         }
     }
 

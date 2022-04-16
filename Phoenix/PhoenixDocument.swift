@@ -11,10 +11,14 @@ extension UTType {
 struct PhoenixDocument: FileDocument, Codable {
     var families: [ComponentsFamily]
     var selectedName: Name?
+    var selectedFamilyName: String?
 
-    init(families: [ComponentsFamily] = [], selectedName: Name? = nil) {
+    init(families: [ComponentsFamily] = [],
+         selectedName: Name? = nil,
+         selectedFamilyName: String? = nil) {
         self.families = families
         self.selectedName = selectedName
+        self.selectedFamilyName = selectedFamilyName
     }
 
     static var readableContentTypes: [UTType] { [.ash] }
@@ -28,7 +32,9 @@ struct PhoenixDocument: FileDocument, Codable {
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = try JSONEncoder().encode(self)
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = [.sortedKeys, .prettyPrinted]
+        let data = try jsonEncoder.encode(self)
         return .init(regularFileWithContents: data)
     }
 }
