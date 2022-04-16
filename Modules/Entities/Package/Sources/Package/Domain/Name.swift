@@ -1,4 +1,6 @@
-public struct Name: Codable, Hashable {
+public struct Name: Codable, Hashable, Identifiable {
+    public var id: String { full }
+
     public let given: String
     public let family: String
 

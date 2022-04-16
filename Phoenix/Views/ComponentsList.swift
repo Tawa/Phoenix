@@ -49,7 +49,7 @@ struct ComponentsList: View {
                 }
             }
             .padding()
-            .listStyle(BorderedListStyle())
+            .listStyle(SidebarListStyle())
         }
     }
 

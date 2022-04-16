@@ -67,7 +67,8 @@ class ViewModel: ObservableObject {
         let newComponent = Component(name: name,
                                      iOSVersion: nil,
                                      macOSVersion: nil,
-                                     modules: [.contract, .implementation, .mock])
+                                     modules: [.contract, .implementation, .mock],
+                                     dependencies: [])
         array.append(newComponent)
         array.sort(by: { $0.name.full < $1.name.full })
 
@@ -82,17 +83,16 @@ class ViewModel: ObservableObject {
             document.families = familiesArray
         }
 
+        select(name: newComponent.name)
         showingNewComponentPopup = false
+    }
+
+    func select(name: Name) {
+        self.document.selectedName = name
     }
 
     func isNameAlreadyInUse(_ name: Name) -> Bool {
         document.families.flatMap { $0.components }.contains(where: { (component: Component) -> Bool in component.name == name })
-    }
-}
-
-extension Collection {
-    func enumeratedArray() -> Array<(offset: Int, element: Self.Element)> {
-        Array(enumerated())
     }
 }
 
@@ -111,7 +111,8 @@ struct ContentView: View {
                                familyFolderNameProvider: FamilyFolderNameProvider())
                 .frame(minWidth: 250)
 
-                ComponentView(component: viewModel.selectedComponent)
+                ComponentView(component: viewModel.selectedComponent,
+                              allComponentNames: .constant(viewModel.document.families.flatMap { $0.components.map(\.name) }))
                     .frame(minWidth: 500)
             }
 
