@@ -4,12 +4,12 @@ public struct Component: Codable, Hashable, Identifiable {
     public let name: Name
     public var iOSVersion: iOSVersion?
     public var macOSVersion: macOSVersion?
-    public var types: [ModuleType: [Dependency]]
+    public var modules: [ModuleType: ModuleDescription]
 
-    public init(name: Name, iOSVersion: iOSVersion?, macOSVersion: macOSVersion?, types: [ModuleType : [Dependency]]) {
+    public init(name: Name, iOSVersion: iOSVersion?, macOSVersion: macOSVersion?, modules: [ModuleType: ModuleDescription]) {
         self.name = name
         self.iOSVersion = iOSVersion
         self.macOSVersion = macOSVersion
-        self.types = types
+        self.modules = modules
     }
 }
