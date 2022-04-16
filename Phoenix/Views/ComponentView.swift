@@ -82,7 +82,9 @@ struct ComponentView: View {
 
                         Section {
                             ForEach(component.dependencies.sorted(by: { $0.name.full < $1.name.full })) { dependency in
-                                Text("Name: \(dependency.name.full)")
+                                DependencyView(dependency: Binding(get: { dependency },
+                                                                   set: { self.component?.dependencies.insert($0) }),
+                                               onDelete: { self.component?.dependencies.remove(dependency) })
                             }
                         } header: {
                             HStack {
@@ -114,7 +116,13 @@ struct ComponentView: View {
                         }) { name in
                             Text("Name: \(name.full)")
                                 .onTapGesture {
-                                    self.component?.dependencies.insert(ComponentDependency(name: name))
+                                    self.component?.dependencies.insert(
+                                        ComponentDependency(name: name,
+                                                            contract: nil,
+                                                            implementation: nil,
+                                                            tests: nil,
+                                                            mock: nil)
+                                    )
                                     showingPopup = false
                                 }
                         }
