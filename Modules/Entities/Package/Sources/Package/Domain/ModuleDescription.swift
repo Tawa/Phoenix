@@ -13,5 +13,5 @@ public struct ModuleDescription: Codable, Hashable {
 public enum Dependency: Codable, Hashable, Identifiable {
     public var id: Int { hashValue }
 
-    case module(Name, type: ModuleType)
+    case module(path: String, name: String)
 }

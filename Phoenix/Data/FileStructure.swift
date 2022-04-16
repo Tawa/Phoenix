@@ -11,8 +11,3 @@ struct ComponentsFamily: Codable, Hashable, Identifiable {
     var family: Family
     var components: [Component]
 }
-
-struct FileStructure: Codable {
-    var families: [ComponentsFamily] = []
-    var selectedName: Name?
-}

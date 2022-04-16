@@ -1,4 +1,4 @@
-@testable import PackageDescription
+@testable import Package
 import XCTest
 
 class FamilyFolderNameProviderTestCase: XCTestCase {
