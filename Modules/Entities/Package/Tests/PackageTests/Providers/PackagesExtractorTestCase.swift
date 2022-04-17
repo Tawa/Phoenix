@@ -6,124 +6,81 @@ class PackagesExtractorTestCase: XCTestCase {
     func testPackages() {
         // Given
         let component = Component(
-            name: Name(given: "Wordpress", family: "Repository"),
+            name: Name(given: "Networking", family: "Shared"),
             iOSVersion: .v13,
             macOSVersion: nil,
             modules: [.contract, .implementation, .mock],
-            dependencies: [
-                ComponentDependency(name: Name(given: "Wordpress", family: "DataStore"),
-                                    contract: nil,
-                                    implementation: .contract,
-                                    tests: .mock,
-                                    mock: nil),
-                ComponentDependency(name: Name(given: "Wordpress", family: "Entity"),
-                                    contract: .implementation,
-                                    implementation: .implementation,
-                                    tests: .mock,
-                                    mock: nil)
-            ])
-        let sut = PackagesExtractor()
-
-        // When
-        let packages = sut.packages(for: component)
-
-        // Then
-        XCTAssertEqual(packages, [
-            Package(name: "WordpressRepositoryContract",
-                    iOSVersion: .v13,
-                    macOSVersion: nil,
-                    products: [
-                        Product.library(
-                            Library(name: "WordpressRepositoryContract",
-                                    type: .dynamic,
-                                    targets: ["WordpressRepositoryContract"])
-                        )
-                    ],
-                    dependencies: [
-                        .module(path: "../../Entities/WordpressEntity",
-                                name: "WordpressEntity")
-                    ],
-                    targets: [
-                        Target(name: "WordpressRepositoryContract",
-                               dependencies: [
-                                .module(
-                                    path: "",
-                                    name: "WordpressEntity"),
-                                .module(path: "../../Entities/WordpressEntity",
-                                        name: "WordpressEntity")],
-                               isTest: false)
-                    ]),
-            Package(name: "WordpressRepository",
-                    iOSVersion: .v13,
-                    macOSVersion: nil,
-                    products: [
-                        Product.library(
-                            Library(name: "WordpressRepository",
-                                    type: nil,
-                                    targets: ["WordpressRepository"])
-                        )
-                    ],
-                    dependencies: [
-                        .module(path: "../../Contracts/DataStores/WordpressDataStore",
-                                name: "WordpressDataStore"),
-                        .module(path: "../../Contracts/Repositories/WordpressRepositoryContract",
-                                name: "WordpressRepositoryContract"),
-                        .module(path: "../../Entities/WordpressEntity",
-                                name: "WordpressEntity")
-                    ],
-                    targets: [
-                        Target(name: "WordpressRepository",
-                               dependencies: [
-                                .module(path: "../../Contracts/DataStores/WordpressDataStore",
-                                        name: "WordpressDataStore"),
-                                .module(path: "../../Contracts/Repositories/WordpressRepositoryContract",
-                                        name: "WordpressRepositoryContract"),
-                                .module(path: "../../Entities/WordpressEntity",
-                                        name: "WordpressEntity")
-                               ],
-                               isTest: false),
-                        Target(name: "WordpressRepositoryTests",
-                               dependencies: [
-                                .module(path: "",
-                                        name: "WordpressRepository"),
-                                .module(path: "../../Contracts/DataStores/WordpressDataStore",
-                                        name: "WordpressDataStore"),
-                                .module(path: "../../Contracts/Repositories/WordpressRepositoryContract",
-                                        name: "WordpressRepositoryContract"),
-                                .module(path: "../../Entities/WordpressEntity",
-                                        name: "WordpressEntity")
-                               ],
-                               isTest: false)
-                    ]),
-            Package(name: "WordpressRepositoryMock",
-                    iOSVersion: .v13,
-                    macOSVersion: nil,
-                    products: [
-                        Product.library(
-                            Library(name: "WordpressRepositoryMock",
-                                    type: .dynamic,
-                                    targets: ["WordpressRepositoryMock"])
-                        )
-                    ],
-                    dependencies: [
-                        .module(path: "../../../Contracts/Repositories/WordpressRepository",
-                                name: "Wordpress"),
-                        .module(path: "../../../Entities/WordpressEntity",
-                                name: "WordpressEntity")
-                    ],
-                    targets: [
-                        Target(name: "WordpressRepositoryMock",
-                               dependencies: [
-                                .module(path: "",
-                                        name: "WordpressRepositoryMock"),
-                                .module(path: "../../../Contracts/Repositories/WordpressRepository",
-                                        name: "Wordpress"),
-                                .module(path: "../../../Entities/WordpressEntity",
-                                        name: "WordpressEntity")
-                               ],
-                               isTest: false)
-                    ])
-        ])
+            dependencies: [])
+        let family = Family(name: "Shared", ignoreSuffix: true, folder: "Shared")
+//        let sut = PackagesExtractor()
+//
+//        // When
+//        let packages = sut.packages(for: component, of: family)
+//
+//        // Then
+//        XCTAssertEqual(packages, [
+//            Package(name: "NetworkingContract",
+//                    iOSVersion: .v13,
+//                    macOSVersion: nil,
+//                    products: [
+//                        Product.library(
+//                            Library(name: "NetworkingContract",
+//                                    type: .dynamic,
+//                                    targets: ["NetworkingContract"])
+//                        )
+//                    ],
+//                    dependencies: [ ],
+//                    targets: [
+//                        Target(name: "NetworkingContract",
+//                               dependencies: [],
+//                               isTest: false)
+//                    ]),
+//            Package(name: "Networking",
+//                    iOSVersion: .v13,
+//                    macOSVersion: nil,
+//                    products: [
+//                        Product.library(
+//                            Library(name: "Networking",
+//                                    type: nil,
+//                                    targets: ["Networking"])
+//                        )
+//                    ],
+//                    dependencies: [
+//                        .module(path: "../../Contracts/Shared/NetworkingContract",
+//                                name: "NetworkingContract"),
+//                    ],
+//                    targets: [
+//                        Target(name: "Networking",
+//                               dependencies: [
+//                                .module(path: "", name: "NetworkingContract")
+//                               ],
+//                               isTest: false),
+//                        Target(name: "NetworkingTests",
+//                               dependencies: [.module(path: "", name: "Networking")],
+//                               isTest: true)
+//                    ]),
+//            Package(name: "NetworkingMock",
+//                    iOSVersion: .v13,
+//                    macOSVersion: nil,
+//                    products: [
+//                        Product.library(
+//                            Library(name: "NetworkingMock",
+//                                    type: nil,
+//                                    targets: ["NetworkingMock"])
+//                        )
+//                    ],
+//                    dependencies: [
+//                        .module(path: "../../Contracts/Shared/NetworkingContract",
+//                                name: "NetworkingContract"),
+//                    ],
+//                    targets: [
+//                        Target(name: "NetworkingMock",
+//                               dependencies: [
+//                                .module(path: "", name: "NetworkingContract")
+//                               ],
+//                               isTest: false)
+//                    ])
+//        ])
     }
 
 }

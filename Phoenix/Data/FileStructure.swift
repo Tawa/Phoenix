@@ -1,11 +1,5 @@
 import Package
 
-struct Family: Codable, Hashable {
-    let name: String
-    var ignoreSuffix: Bool?
-    var folder: String?
-}
-
 struct ComponentsFamily: Codable, Hashable, Identifiable {
     var id: String { family.name }
     var family: Family
