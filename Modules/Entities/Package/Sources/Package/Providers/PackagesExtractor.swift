@@ -2,31 +2,15 @@ public protocol PackagesExtracting {
     func packages(for component: Component, of family: Family) -> [Package]
 }
 
-public protocol PackageExtracting {
-    func package(for component: Component, of family: Family) -> Package
-}
-
 public struct PackagesExtractor: PackagesExtracting {
-    let packageNameProvider: PackageNameProviding
-    let packageFolderNameProvider: PackageFolderNameProviding
+    let packageExtractors: [ModuleType: PackageExtracting]
 
-    public init(packageNameProvider: PackageNameProviding,
-                packageFolderNameProvider: PackageFolderNameProviding) {
-        self.packageNameProvider = packageNameProvider
-        self.packageFolderNameProvider = packageFolderNameProvider
+    public init(packageExtractors: [ModuleType: PackageExtracting]) {
+        self.packageExtractors = packageExtractors
     }
 
     public func packages(for component: Component, of family: Family) -> [Package] {
-        component.modules.map { moduleType in
-            switch moduleType {
-            case .contract:
-                return contract(for: component, of: family)
-            case .implementation:
-                return implementation(for: component, of: family)
-            case .mock:
-                return mock(for: component, of: family)
-            }
-        }
+        component.modules.compactMap { packageExtractors[$0]?.package(for: component, of: family) }
     }
 
     func contract(for component: Component, of family: Family) -> Package {

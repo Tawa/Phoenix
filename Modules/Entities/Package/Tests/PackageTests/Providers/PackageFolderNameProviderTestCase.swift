@@ -3,14 +3,6 @@ import XCTest
 
 class PackageFolderNameProviderTestCase: XCTestCase {
 
-    struct FamilyFolderNameProviderMock: FamilyFolderNameProviding {
-        var value: String
-
-        func folderName(forFamily familyName: String) -> String {
-            value
-        }
-    }
-
     func testFamilyWithFolderName() {
         // Given
         let familyFolderNameProviderMock = FamilyFolderNameProviderMock(value: "Test")
