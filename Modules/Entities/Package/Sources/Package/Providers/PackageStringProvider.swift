@@ -18,11 +18,18 @@ import PackageDescription
 let package = Package(
     name: "\(package.name)",\n
 """
-        
-        value +=
-"""
-    platforms: [ .iOS(.v13) ],\n
-"""
+
+        if package.iOSVersion != nil || package.macOSVersion != nil {
+            value += "    platforms: [\n"
+            if let iOSVersion = package.iOSVersion {
+                value += "        \(iOSPlatformString(iOSVersion)),\n"
+            }
+            if let macOSVersion = package.macOSVersion {
+                value += "        \(macOSPlatformString(macOSVersion)),\n"
+            }
+
+            value += "    ],\n"
+        }
         value += "    products: [\n"
         for product in package.products.sorted() {
             value += productString(product)
@@ -51,25 +58,16 @@ let package = Package(
     }
     
     private func libraryString(_ library: Library) -> String {
-        var value: String = """
-        .library(
-            name: "\(library.name)",\n
-"""
+        var value: String = "        .library(\n            name: \"\(library.name)\",\n"
         if let type = library.type {
             switch type {
             case .static:
-                value += """
-            type: .static,\n
-        """
+                value += "            type: .static,\n"
             case .dynamic:
-                value += """
-                    type: .dynamic,\n
-        """
+                value += "            type: .dynamic,\n"
             }
         }
-        value += """
-            targets: ["\(library.name)"]),
-"""
+        value += "            targets: [\"\(library.name)\"]),"
         return value
     }
     
@@ -100,5 +98,23 @@ let package = Package(
         }
         value += "            ]),\n"
         return value
+    }
+
+    private func iOSPlatformString(_ iOSPlatform: iOSVersion) -> String {
+        switch iOSPlatform {
+        case .v13:
+            return ".iOS(.v13)"
+        case .v14:
+            return ".iOS(.v14)"
+        case .v15:
+            return ".iOS(.v15)"
+        }
+    }
+
+    private func macOSPlatformString(_ macOSVersion: macOSVersion) -> String {
+        switch macOSVersion {
+        case .v12:
+            return ".macOS(.v12)"
+        }
     }
 }
