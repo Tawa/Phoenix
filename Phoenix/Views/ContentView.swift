@@ -115,9 +115,8 @@ class ViewModel: ObservableObject {
         }
 
         let packagesGenerator = PackageGenerator()
-        let baseURL = fileURL.deletingLastPathComponent()
         for packageWithPath in packagesWithPath {
-            let url = baseURL.appendingPathComponent(packageWithPath.path)
+            let url = fileURL.deletingLastPathComponent().appendingPathComponent(packageWithPath.path, isDirectory: true)
             try? packagesGenerator.generate(package: packageWithPath.package, at: url)
         }
     }
