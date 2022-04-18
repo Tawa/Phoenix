@@ -16,43 +16,30 @@ public struct PackageStringProvider: PackageStringProviding {
 import PackageDescription
 
 let package = Package(
-    name: "\(package.name)",
+    name: "\(package.name)",\n
 """
         
         value +=
 """
-    platforms: [ .iOS(.v13) ],
+    platforms: [ .iOS(.v13) ],\n
 """
-        
-        value += """
-    products: [
-"""
+        value += "    products: [\n"
         for product in package.products.sorted() {
             value += productString(product)
         }
+        value += "\n    ],\n"
         
-        value +=
-"""
-    ],
-    dependencies: [
-"""
+        value += "    dependencies: [\n"
         for dependency in package.dependencies.sorted() {
             value += packageDependencyString(dependency)
         }
         
-        value +=
-"""
-    ],
-    targets: [
-"""
+        value += "    ],\n    targets: [\n"
         for target in package.targets.sorted() {
             value += targetString(target)
         }
-        value +=
-"""
-    ]
-)
-"""
+        value += "    ]\n)\n"
+
         return value
     }
     
@@ -66,17 +53,17 @@ let package = Package(
     private func libraryString(_ library: Library) -> String {
         var value: String = """
         .library(
-            name: "\(library.name)",
+            name: "\(library.name)",\n
 """
         if let type = library.type {
             switch type {
             case .static:
                 value += """
-            type: .static,
+            type: .static,\n
         """
             case .dynamic:
                 value += """
-                    type: .dynamic,
+                    type: .dynamic,\n
         """
             }
         }
@@ -89,46 +76,29 @@ let package = Package(
     private func packageDependencyString(_ dependency: Dependency) -> String {
         switch dependency {
         case .module(let path, _):
-            return """
-        .package(path: "\(path)"),
-"""
+            return "        .package(path: \"\(path)\"),\n"
         }
     }
     
     private func targetDependencyString(_ dependency: Dependency) -> String {
         switch dependency {
         case .module(_, let name):
-            return """
-                "\(name)",
-"""
+            return "                \"\(name)\",\n"
         }
     }
     
     private func targetString(_ target: Target) -> String {
         var value: String = ""
         if target.isTest {
-            value +=
-"""
-        .testTarget(
-"""
+            value += "        .testTarget(\n"
         } else {
-            value +=
-"""
-        .target(
-"""
+            value += "        .target(\n"
         }
-        value +=
-"""
-            name: "\(target.name)",
-            dependencies: [
-"""
+        value += "            name: \"\(target.name)\",\n            dependencies: [\n"
         for dependency in target.dependencies.sorted() {
             value += targetDependencyString(dependency)
         }
-        value +=
-"""
-            ]),
-"""
+        value += "            ]),\n"
         return value
     }
 }
