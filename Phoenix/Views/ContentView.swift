@@ -4,9 +4,13 @@ import SwiftUI
 class ViewModel: ObservableObject {
     @Binding var document: PhoenixDocument
     @Published var showingNewComponentPopup: Bool = false
+    @Published var fileErrorString: String? = nil
+    let fileURL: URL?
 
-    init(document: Binding<PhoenixDocument>) {
+    init(document: Binding<PhoenixDocument>,
+         fileURL: URL?) {
         self._document = document
+        self.fileURL = fileURL
     }
 
     var selectedComponent: Binding<Component?> {
@@ -94,6 +98,29 @@ class ViewModel: ObservableObject {
     func isNameAlreadyInUse(_ name: Name) -> Bool {
         document.families.flatMap { $0.components }.contains(where: { (component: Component) -> Bool in component.name == name })
     }
+
+    func onGenerate() {
+        guard let fileURL = fileURL else {
+            fileErrorString = "File must be saved before packages can be generated."
+            return
+        }
+
+        let packagesExtractor = PackagesExtractor()
+        let allFamilies: [Family] = document.families.map { $0.family }
+        let packagesWithPath: [PackageWithPath] = document.families.flatMap { componentFamily -> [PackageWithPath] in
+            let family = componentFamily.family
+            return componentFamily.components.flatMap { (component: Component) -> [PackageWithPath] in
+                packagesExtractor.packages(for: component, of: family, allFamilies: allFamilies, fileURL: fileURL)
+            }
+        }
+
+        let packagesGenerator = PackageGenerator()
+        let baseURL = fileURL.deletingLastPathComponent()
+        for packageWithPath in packagesWithPath {
+            let url = baseURL.appendingPathComponent(packageWithPath.path)
+            try? packagesGenerator.generate(package: packageWithPath.package, at: url)
+        }
+    }
 }
 
 struct ContentView: View {
@@ -113,7 +140,7 @@ struct ContentView: View {
 
                 ComponentView(component: viewModel.selectedComponent,
                               allComponentNames: .constant(viewModel.document.families.flatMap { $0.components.map(\.name) }))
-                    .frame(minWidth: 500)
+                .frame(minWidth: 500)
             }
 
             if viewModel.showingNewComponentPopup {
@@ -126,6 +153,9 @@ struct ContentView: View {
                 FamilyPopover(family: viewModel.selectedFamily,
                               folderNameProvider: FamilyFolderNameProvider())
             }
+        }.toolbar {
+            Button(action: viewModel.onGenerate, label: { Text("Generate") })
+                .keyboardShortcut(.init("R"), modifiers: .command)
         }
     }
 }
@@ -133,6 +163,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environmentObject(ViewModel(document: .constant(PhoenixDocument())))
+            .environmentObject(ViewModel(document: .constant(PhoenixDocument()), fileURL: nil))
     }
 }

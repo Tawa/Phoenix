@@ -1,8 +1,15 @@
+public struct PackagePath {
+    public let parent: String
+    public let path: String
+
+    public var full: String { parent + path }
+}
+
 protocol PackagePathProviding {
     func path(for name: Name,
               of family: Family,
               type: ModuleType,
-              relativeToType otherType: ModuleType) -> String
+              relativeToType otherType: ModuleType) -> PackagePath
 }
 
 struct PackagePathProvider: PackagePathProviding {
@@ -17,16 +24,17 @@ struct PackagePathProvider: PackagePathProviding {
     func path(for name: Name,
               of family: Family,
               type: ModuleType,
-              relativeToType otherType: ModuleType) -> String {
+              relativeToType otherType: ModuleType) -> PackagePath {
         var path: String = ""
 
+        let parent: String
         switch otherType {
         case .contract:
-            path += "../../../"
+            parent = "../../../"
         case .implementation:
-            path += "../../"
+            parent = "../../"
         case .mock:
-            path += "../../../"
+            parent = "../../../"
         }
 
         switch type {
@@ -41,6 +49,6 @@ struct PackagePathProvider: PackagePathProviding {
         path += packageFolderNameProvider.folderName(for: name, of: family) + "/"
         path += packageNameProvider.packageName(forType: type, name: name, of: family)
 
-        return path
+        return PackagePath(parent: parent, path: path)
     }
 }
