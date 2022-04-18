@@ -1,4 +1,4 @@
-public struct Library: Codable, Hashable {
+public struct Library: Codable, Hashable, Comparable {
     public let name: String
     public let type: LibraryType?
     public let targets: [String]
@@ -7,5 +7,9 @@ public struct Library: Codable, Hashable {
         self.name = name
         self.type = type
         self.targets = targets
+    }
+
+    public static func <(lhs: Library, rhs: Library) -> Bool {
+        lhs.name < rhs.name
     }
 }
