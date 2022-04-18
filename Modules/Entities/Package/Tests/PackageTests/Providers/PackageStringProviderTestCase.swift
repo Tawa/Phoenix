@@ -35,6 +35,40 @@ class PackageStringProviderTestCase: XCTestCase {
         let packageString = sut.string(for: package)
 
         // Then
-        XCTAssertEqual(packageString, "")
+        XCTAssertEqual(packageString, """
+// swift-tools-version:5.5
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
+import PackageDescription
+
+let package = Package(
+    name: "HomeService",
+    products: [
+        .library(
+            name: "HomeService",
+            targets: ["HomeService"]),
+    ],
+    dependencies: [
+        .package(path: "../../Contracts/Repositories/HomeRepositoryContract"),
+        .package(path: "../../Contracts/Services/HomeServiceContract"),
+        .package(path: "../../Support/DI"),
+    ],
+    targets: [
+        .target(
+            name: "HomeService",
+            dependencies: [
+                "HomeRepositoryContract",
+                "HomeServiceContract",
+                "DI",
+            ]),
+        .testTarget(
+            name: "HomeServiceTests",
+            dependencies: [
+                "HomeService",
+            ]),
+    ]
+)
+
+""")
     }
 }
