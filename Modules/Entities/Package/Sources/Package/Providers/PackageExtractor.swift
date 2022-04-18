@@ -58,10 +58,14 @@ struct ImplementationPackageExtractor: PackageExtracting {
 
         var dependencies: [Dependency] = []
         if component.modules.contains(.contract) {
+            let contractPath = packagePathProvider.path(for: component.name,
+                                                        of: family,
+                                                        type: .contract,
+                                                        relativeToType: .implementation)
             let contractName = packageNameProvider.packageName(forType: .contract,
                                                                name: component.name,
                                                                of: family)
-            dependencies.append(.module(path: "", name: contractName))
+            dependencies.append(.module(path: contractPath, name: contractName))
         }
 
         dependencies.sort()
@@ -74,17 +78,16 @@ struct ImplementationPackageExtractor: PackageExtracting {
                 .library(Library(name: packageName,
                                  type: .static,
                                  targets: [packageName]))],
-            dependencies: [],
+            dependencies: dependencies,
             targets: [
                 Target(name: packageName,
                        dependencies: dependencies,
                        isTest: false),
                 Target(name: packageName + "Tests",
-                       dependencies: (
-                        dependencies + [Dependency.module(path: "",
-                                                          name: packageName)]
-                       ).sorted(),
-                       isTest: true)
+                       dependencies: [
+                        Dependency.module(path: "",
+                                          name: packageName)
+                       ], isTest: true)
             ]
         )
     }

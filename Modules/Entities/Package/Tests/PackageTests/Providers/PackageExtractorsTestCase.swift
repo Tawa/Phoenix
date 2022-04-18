@@ -46,6 +46,8 @@ class PackageExtractorsTestCase: XCTestCase {
         let sut = ImplementationPackageExtractor(packageNameProvider: packageNameProviderMock,
                                                  packageFolderNameProvider: packageFolderNameProviderMock,
                                                  packagePathProvider: packagePathProviderMock)
+        let contractDependency = Dependency.module(path: "PackagePath",
+                                                   name: "PackageName")
 
         // When
         let package = sut.package(for: component, of: family)
@@ -56,14 +58,17 @@ class PackageExtractorsTestCase: XCTestCase {
                                         macOSVersion: nil,
                                         products: [
                                             .library(Library(name: "PackageName",
-                                                             type: .dynamic,
+                                                             type: .static,
                                                              targets: ["PackageName"]))
                                         ],
-                                        dependencies: [],
+                                        dependencies: [contractDependency],
                                         targets: [
-                                            Target(name: "PackageName", dependencies: [.module(path: "PackagePath",
-                                                                                               name: "PackageName")], isTest: false),
-                                            Target(name: "PackageNameTests", dependencies: [.module(path: "", name: "PackageName")], isTest: true),
+                                            Target(name: "PackageName",
+                                                   dependencies: [contractDependency],
+                                                   isTest: false),
+                                            Target(name: "PackageNameTests",
+                                                   dependencies: [.module(path: "", name: "PackageName")],
+                                                   isTest: true),
                                         ]))
     }
     
@@ -80,19 +85,24 @@ class PackageExtractorsTestCase: XCTestCase {
 
         // When
         let package = sut.package(for: component, of: family)
-        
+
         // Then
         XCTAssertEqual(package, Package(name: "PackageName",
                                         iOSVersion: .v13,
                                         macOSVersion: nil,
                                         products: [
                                             .library(Library(name: "PackageName",
-                                                             type: .dynamic,
+                                                             type: .static,
                                                              targets: ["PackageName"]))
                                         ],
                                         dependencies: [],
                                         targets: [
-                                            Target(name: "PackageName", dependencies: [], isTest: false)
+                                            Target(name: "PackageName",
+                                                   dependencies: [],
+                                                   isTest: false),
+                                            Target(name: "PackageNameTests",
+                                                   dependencies: [.module(path: "", name: "PackageName")],
+                                                   isTest: true),
                                         ]))
     }
 }
