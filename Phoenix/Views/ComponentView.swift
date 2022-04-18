@@ -87,7 +87,9 @@ struct ComponentView: View {
                                     self.component?.dependencies.remove(dependency)
                                     self.component?.dependencies.insert($0)
                                 }),
+                                               types: component.modules,
                                                onDelete: { self.component?.dependencies.remove(dependency) })
+                                .padding([.vertical])
                             }
                         } header: {
                             HStack {
