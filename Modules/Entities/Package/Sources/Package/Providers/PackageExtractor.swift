@@ -126,7 +126,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                     .library(Library(name: packageName,
                                      type: .static,
                                      targets: [packageName]))],
-                dependencies: dependencies,
+                dependencies: Array(Set((dependencies + implementationDependencies + testsDependencies))).sorted(),
                 targets: [
                     Target(name: packageName,
                            dependencies: (implementationDependencies + dependencies).sorted(),
