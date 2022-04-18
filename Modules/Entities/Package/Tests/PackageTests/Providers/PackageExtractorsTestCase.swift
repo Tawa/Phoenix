@@ -19,7 +19,7 @@ class PackageExtractorsTestCase: XCTestCase {
                                            packageFolderNameProvider: packageFolderNameProviderMock,
                                            packagePathProvider: packagePathProviderMock)
         // When
-        let package = sut.package(for: component, of: family)
+        let package = sut.package(for: component, of: family, allFamilies: [])
         
         // Then
         XCTAssertEqual(package, Package(name: "PackageName",
@@ -50,7 +50,7 @@ class PackageExtractorsTestCase: XCTestCase {
                                                    name: "PackageName")
 
         // When
-        let package = sut.package(for: component, of: family)
+        let package = sut.package(for: component, of: family, allFamilies: [])
         
         // Then
         XCTAssertEqual(package, Package(name: "PackageName",
@@ -84,7 +84,7 @@ class PackageExtractorsTestCase: XCTestCase {
                                                  packagePathProvider: packagePathProviderMock)
 
         // When
-        let package = sut.package(for: component, of: family)
+        let package = sut.package(for: component, of: family, allFamilies: [])
 
         // Then
         XCTAssertEqual(package, Package(name: "PackageName",
@@ -120,7 +120,7 @@ class PackageExtractorsTestCase: XCTestCase {
                                                    name: "PackageName")
 
         // When
-        let package = sut.package(for: component, of: family)
+        let package = sut.package(for: component, of: family, allFamilies: [])
 
         // Then
         XCTAssertEqual(package, Package(name: "PackageName",
@@ -153,7 +153,7 @@ class PackageExtractorsTestCase: XCTestCase {
                                                    name: "PackageName")
 
         // When
-        let package = sut.package(for: component, of: family)
+        let package = sut.package(for: component, of: family, allFamilies: [])
 
         // Then
         XCTAssertEqual(package, Package(name: "PackageName",

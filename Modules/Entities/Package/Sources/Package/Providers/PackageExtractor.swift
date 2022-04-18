@@ -1,5 +1,5 @@
 public protocol PackageExtracting {
-    func package(for component: Component, of family: Family) -> Package
+    func package(for component: Component, of family: Family, allFamilies: [Family]) -> Package
 }
 
 struct ContractPackageExtractor: PackageExtracting {
@@ -15,10 +15,25 @@ struct ContractPackageExtractor: PackageExtracting {
         self.packagePathProvider = packagePathProvider
     }
 
-    func package(for component: Component, of family: Family) -> Package {
+    func package(for component: Component, of family: Family, allFamilies: [Family]) -> Package {
         let packageName = packageNameProvider.packageName(forType: .contract,
                                                           name: component.name,
                                                           of: family)
+
+        var dependencies: [Dependency] = component.dependencies.compactMap { componentDependency -> (Dependency)? in
+            guard let dependencyType = componentDependency.contract,
+                  let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
+            else { return nil }
+            let path = packagePathProvider.path(for: componentDependency.name,
+                                                of: dependencyFamily,
+                                                type: dependencyType,
+                                                relativeToType: .contract)
+            let componentName = packageNameProvider.packageName(forType: dependencyType,
+                                                                name: componentDependency.name,
+                                                                of: dependencyFamily)
+            return Dependency.module(path: path, name: componentName)
+        }
+        dependencies.sort()
 
         return Package(
             name: packageName,
@@ -28,10 +43,10 @@ struct ContractPackageExtractor: PackageExtracting {
                 .library(Library(name: packageName,
                                  type: .dynamic,
                                  targets: [packageName]))],
-            dependencies: [],
+            dependencies: dependencies,
             targets: [
                 Target(name: packageName,
-                       dependencies: [],
+                       dependencies: dependencies,
                        isTest: false)
             ]
         )
@@ -51,7 +66,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
         self.packagePathProvider = packagePathProvider
     }
 
-    func package(for component: Component, of family: Family) -> Package {
+    func package(for component: Component, of family: Family, allFamilies: [Family]) -> Package {
         let packageName = packageNameProvider.packageName(forType: .implementation,
                                                           name: component.name,
                                                           of: family)
@@ -67,8 +82,32 @@ struct ImplementationPackageExtractor: PackageExtracting {
                                                                of: family)
             dependencies.append(.module(path: contractPath, name: contractName))
         }
-
-        dependencies.sort()
+        let implementationDependencies = component.dependencies.compactMap { componentDependency -> (Dependency)? in
+            guard let dependencyType = componentDependency.implementation,
+                  let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
+            else { return nil }
+            let path = packagePathProvider.path(for: componentDependency.name,
+                                                of: dependencyFamily,
+                                                type: dependencyType,
+                                                relativeToType: .implementation)
+            let componentName = packageNameProvider.packageName(forType: dependencyType,
+                                                                name: componentDependency.name,
+                                                                of: dependencyFamily)
+            return Dependency.module(path: path, name: componentName)
+        }
+        let testsDependencies = component.dependencies.compactMap { componentDependency -> (Dependency)? in
+            guard let dependencyType = componentDependency.tests,
+                  let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
+            else { return nil }
+            let path = packagePathProvider.path(for: componentDependency.name,
+                                                of: dependencyFamily,
+                                                type: dependencyType,
+                                                relativeToType: .implementation)
+            let componentName = packageNameProvider.packageName(forType: dependencyType,
+                                                                name: componentDependency.name,
+                                                                of: dependencyFamily)
+            return Dependency.module(path: path, name: componentName)
+        }
 
         return Package(
             name: packageName,
@@ -81,13 +120,13 @@ struct ImplementationPackageExtractor: PackageExtracting {
             dependencies: dependencies,
             targets: [
                 Target(name: packageName,
-                       dependencies: dependencies,
+                       dependencies: (implementationDependencies + dependencies).sorted(),
                        isTest: false),
                 Target(name: packageName + "Tests",
-                       dependencies: [
+                       dependencies: (testsDependencies + [
                         Dependency.module(path: "",
                                           name: packageName)
-                       ], isTest: true)
+                       ]).sorted(), isTest: true)
             ]
         )
     }
@@ -106,7 +145,7 @@ struct MockPackageExtractor: PackageExtracting {
         self.packagePathProvider = packagePathProvider
     }
 
-    func package(for component: Component, of family: Family) -> Package {
+    func package(for component: Component, of family: Family, allFamilies: [Family]) -> Package {
         let packageName = packageNameProvider.packageName(forType: .mock,
                                                           name: component.name,
                                                           of: family)
@@ -131,7 +170,20 @@ struct MockPackageExtractor: PackageExtracting {
                                                                      of: family)
             dependencies.append(.module(path: implementationPath, name: implementationName))
         }
-
+        let otherDependencies: [Dependency] = component.dependencies.compactMap { componentDependency -> (Dependency)? in
+            guard let dependencyType = componentDependency.mock,
+                  let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
+            else { return nil }
+            let path = packagePathProvider.path(for: componentDependency.name,
+                                                of: dependencyFamily,
+                                                type: dependencyType,
+                                                relativeToType: .mock)
+            let componentName = packageNameProvider.packageName(forType: dependencyType,
+                                                                name: componentDependency.name,
+                                                                of: dependencyFamily)
+            return Dependency.module(path: path, name: componentName)
+        }
+        dependencies.append(contentsOf: otherDependencies)
         dependencies.sort()
 
         return Package(
