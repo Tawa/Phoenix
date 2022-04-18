@@ -105,4 +105,70 @@ class PackageExtractorsTestCase: XCTestCase {
                                                    isTest: true),
                                         ]))
     }
+
+    func testMockWithContract() {
+        // Given
+        let component = Component(name: Name(given: "Wordpress", family: "DataStore"),
+                                  iOSVersion: .v13,
+                                  macOSVersion: nil,
+                                  modules: [.contract, .implementation, .mock],
+                                  dependencies: [])
+        let sut = MockPackageExtractor(packageNameProvider: packageNameProviderMock,
+                                       packageFolderNameProvider: packageFolderNameProviderMock,
+                                       packagePathProvider: packagePathProviderMock)
+        let contractDependency = Dependency.module(path: "PackagePath",
+                                                   name: "PackageName")
+
+        // When
+        let package = sut.package(for: component, of: family)
+
+        // Then
+        XCTAssertEqual(package, Package(name: "PackageName",
+                                        iOSVersion: .v13,
+                                        macOSVersion: nil,
+                                        products: [
+                                            .library(Library(name: "PackageName",
+                                                             type: nil,
+                                                             targets: ["PackageName"]))
+                                        ],
+                                        dependencies: [contractDependency],
+                                        targets: [
+                                            Target(name: "PackageName",
+                                                   dependencies: [contractDependency],
+                                                   isTest: false)
+                                        ]))
+    }
+
+    func testMockWithoutContract() {
+        // Given
+        let component = Component(name: Name(given: "Wordpress", family: "DataStore"),
+                                  iOSVersion: .v13,
+                                  macOSVersion: nil,
+                                  modules: [.implementation, .mock],
+                                  dependencies: [])
+        let sut = MockPackageExtractor(packageNameProvider: packageNameProviderMock,
+                                       packageFolderNameProvider: packageFolderNameProviderMock,
+                                       packagePathProvider: packagePathProviderMock)
+        let implementationDependency = Dependency.module(path: "PackagePath",
+                                                   name: "PackageName")
+
+        // When
+        let package = sut.package(for: component, of: family)
+
+        // Then
+        XCTAssertEqual(package, Package(name: "PackageName",
+                                        iOSVersion: .v13,
+                                        macOSVersion: nil,
+                                        products: [
+                                            .library(Library(name: "PackageName",
+                                                             type: nil,
+                                                             targets: ["PackageName"]))
+                                        ],
+                                        dependencies: [implementationDependency],
+                                        targets: [
+                                            Target(name: "PackageName",
+                                                   dependencies: [implementationDependency],
+                                                   isTest: false)
+                                        ]))
+    }
 }
