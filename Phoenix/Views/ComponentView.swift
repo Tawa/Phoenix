@@ -3,7 +3,7 @@ import SwiftUI
 
 struct ComponentView: View {
     @Binding var component: Component?
-    @Binding var allComponentNames: [Name]
+    let allComponentNames: [Name]
     @State private var showingPopup: Bool = false
     let onRemove: () -> Void
 
@@ -170,7 +170,7 @@ struct ComponentView_Previews: PreviewProvider {
             dependencies: [])
 
         var body: some View {
-            ComponentView(component: $component, allComponentNames: .constant([]), onRemove: {})
+            ComponentView(component: $component, allComponentNames: [], onRemove: {})
         }
     }
 
@@ -178,7 +178,7 @@ struct ComponentView_Previews: PreviewProvider {
         Group {
             Preview()
             ComponentView(component: .constant(nil),
-                          allComponentNames: .constant([]), onRemove: {})
+                          allComponentNames: [], onRemove: {})
         }
     }
 }

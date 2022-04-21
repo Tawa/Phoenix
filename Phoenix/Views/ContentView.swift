@@ -2,7 +2,7 @@ import Package
 import SwiftUI
 
 class ViewModel: ObservableObject {
-    @Binding var document: PhoenixDocument
+    @Binding private var document: PhoenixDocument
     @Published var showingNewComponentPopup: Bool = false
     @Published var fileErrorString: String? = nil
     let fileURL: URL?
@@ -47,6 +47,14 @@ class ViewModel: ObservableObject {
             self.document.families[index].family = newValue
         }
     }
+
+    var componentsFamilies: Binding<[ComponentsFamily]> { Binding(get: { self.document.families },
+                                                                  set: { self.document.families = $0 }) }
+
+    var selectedName: Binding<Name?> { Binding(get: { self.document.selectedName },
+                                              set: { self.document.selectedName = $0 }) }
+
+    var allComponentNames: [Name] { document.families.flatMap { $0.components.map(\.name) } }
 
     func onAddButton() {
         withAnimation { showingNewComponentPopup = true }
@@ -136,17 +144,15 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             HSplitView {
-                ComponentsList(componentsFamilies: Binding(get: { viewModel.document.families },
-                                                           set: { viewModel.document.families = $0 }),
-                               selectedName: Binding(get: { viewModel.document.selectedName },
-                                                     set: { viewModel.document.selectedName = $0 }),
+                ComponentsList(componentsFamilies: viewModel.componentsFamilies,
+                               selectedName: viewModel.selectedName,
                                onFamilySelection: viewModel.onFamilySelection(_:),
                                onAddButton: viewModel.onAddButton,
                                familyFolderNameProvider: FamilyFolderNameProvider())
                 .frame(minWidth: 250)
 
                 ComponentView(component: viewModel.selectedComponent,
-                              allComponentNames: .constant(viewModel.document.families.flatMap { $0.components.map(\.name) }),
+                              allComponentNames: viewModel.allComponentNames,
                               onRemove: viewModel.onRemoveSelectedComponent)
                 .frame(minWidth: 500)
             }
