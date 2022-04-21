@@ -13,7 +13,6 @@ struct ComponentListItem: View {
                 .foregroundColor(isSelected ? Color.white : nil)
                 .padding(8)
         }
-        .frame(height: 40)
         .contentShape(Rectangle())
         .cornerRadius(8)
         .onTapGesture(perform: onSelect)

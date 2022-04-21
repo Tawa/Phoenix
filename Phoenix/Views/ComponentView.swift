@@ -5,6 +5,7 @@ struct ComponentView: View {
     @Binding var component: Component?
     @Binding var allComponentNames: [Name]
     @State private var showingPopup: Bool = false
+    let onRemove: () -> Void
 
     var body: some View {
         ZStack {
@@ -15,6 +16,10 @@ struct ComponentView: View {
                             Text(component.name.full)
                                 .font(.largeTitle)
                                 .multilineTextAlignment(.leading)
+                            Spacer()
+                            Button(role: .destructive, action: onRemove) {
+                                Image(systemName: "trash")
+                            }.help("Remove")
                         }
                         Divider()
                         HStack {
@@ -165,7 +170,7 @@ struct ComponentView_Previews: PreviewProvider {
             dependencies: [])
 
         var body: some View {
-            ComponentView(component: $component, allComponentNames: .constant([]))
+            ComponentView(component: $component, allComponentNames: .constant([]), onRemove: {})
         }
     }
 
@@ -173,7 +178,7 @@ struct ComponentView_Previews: PreviewProvider {
         Group {
             Preview()
             ComponentView(component: .constant(nil),
-                          allComponentNames: .constant([]))
+                          allComponentNames: .constant([]), onRemove: {})
         }
     }
 }

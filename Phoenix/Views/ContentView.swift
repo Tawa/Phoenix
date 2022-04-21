@@ -58,6 +58,14 @@ class ViewModel: ObservableObject {
         }
     }
 
+    func onRemoveSelectedComponent() {
+        guard let componentId = selectedComponent.wrappedValue?.id else { return }
+        for familyIndex in 0..<document.families.count {
+            document.families[familyIndex].components.removeAll(where: { $0.id == componentId })
+        }
+        document.families.removeAll(where: { $0.components.isEmpty })
+    }
+
     func onNewComponent(_ name: Name) {
         var componentsFamily: ComponentsFamily = document
             .families
@@ -138,7 +146,8 @@ struct ContentView: View {
                 .frame(minWidth: 250)
 
                 ComponentView(component: viewModel.selectedComponent,
-                              allComponentNames: .constant(viewModel.document.families.flatMap { $0.components.map(\.name) }))
+                              allComponentNames: .constant(viewModel.document.families.flatMap { $0.components.map(\.name) }),
+                              onRemove: viewModel.onRemoveSelectedComponent)
                 .frame(minWidth: 500)
             }
 
