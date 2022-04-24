@@ -31,13 +31,8 @@ class PhoenixDocumentStore: ObservableObject {
         return document.families.wrappedValue.first(where: { $0.family.name == selectedFamilyName })?.family
     }
 
-    var componentsFamilies: [ComponentsFamily] {
-        document.wrappedValue.families
-    }
-
-    var allNames: [Name] {
-        componentsFamilies.flatMap { $0.components }.map(\.name)
-    }
+    var componentsFamilies: [ComponentsFamily] { document.families.wrappedValue }
+    var allNames: [Name] { componentsFamilies.flatMap { $0.components }.map(\.name) }
 
     func title(for name: Name) -> String {
         let family = family(for: name)
@@ -122,11 +117,11 @@ class PhoenixDocumentStore: ObservableObject {
     func removeSelectedComponent() {
         guard
             let selectedName = selectedName,
-            let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.components.contains(where: { $0.name == selectedName }) }),
-            let componentIndex = document.families.wrappedValue[familyIndex].components.firstIndex(where: { $0.name == selectedName })
+            let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.components.contains(where: { $0.name == selectedName }) })
         else { return }
-        document.families[familyIndex].components.wrappedValue.remove(at: componentIndex)
+        document.families[familyIndex].components.wrappedValue.removeAll(where: { $0.name == selectedName })
         document.families.wrappedValue.removeAll(where: { $0.components.isEmpty })
+        document.selectedName.wrappedValue = nil //document.wrappedValue.families.first?.components.first?.name
     }
 
     func removeDependencyForSelectedComponent(componentDependency: ComponentDependency) {

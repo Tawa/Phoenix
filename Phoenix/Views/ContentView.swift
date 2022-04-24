@@ -52,7 +52,7 @@ class ViewModel: ObservableObject {
                                                                   set: { self.document.families = $0 }) }
 
     var selectedName: Binding<Name?> { Binding(get: { self.document.selectedName },
-                                              set: { self.document.selectedName = $0 }) }
+                                               set: { self.document.selectedName = $0 }) }
 
     func onAddButton() {
         withAnimation { showingNewComponentPopup = true }
@@ -144,15 +144,22 @@ struct ContentView: View {
         ZStack {
             HSplitView {
                 ComponentsList(onAddButton: viewModel.onAddButton)
-                .frame(minWidth: 250)
+                    .frame(minWidth: 250)
 
-                ZStack {
+                Group {
                     if let selectedComponent = store.selectedComponent {
                         ComponentView(component: selectedComponent)
                     } else {
-                        Text("No Component Selected")
-                            .font(.largeTitle)
-                            .foregroundColor(.gray)
+                        HStack(alignment: .top) {
+                            VStack(alignment: .leading) {
+                                Text("No Component Selected")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                Spacer()
+                            }
+                            Spacer()
+                        }
                     }
                 }
                 .frame(minWidth: 500)

@@ -9,43 +9,47 @@ struct ComponentsList: View {
 
     var body: some View {
         VStack {
-            VStack(alignment: .leading) {
-                Text("Components:")
-                    .font(.largeTitle)
-                    .padding()
-                Button(action: onAddButton) {
-                    Label {
-                        Text("Add New Component")
-                    } icon: {
-                        Image(systemName: "plus")
-                    }
-
-                }
-                .padding(2)
-            }.frame(maxWidth: .infinity)
-            List {
-                ForEach(store.componentsFamilies) { componentsFamily in
-                    Section(header: HStack {
-                        Text(familyName(for: componentsFamily.family))
-                            .font(.title)
-                        Button(action: { store.selectFamily(withName: componentsFamily.family.name) },
-                               label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
-                    }) {
-                        ForEach(componentsFamily.components) { component in
-                            ComponentListItem(
-                                name: componentName(component, for: componentsFamily.family),
-                                isSelected: store.selectedName == component.name,
-                                onSelect: { store.selectComponent(withName: component.name) }
-                            )
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Components:")
+                        .font(.largeTitle)
+                    Button(action: onAddButton) {
+                        Label {
+                            Text("Add New Component")
+                        } icon: {
+                            Image(systemName: "plus")
                         }
+
                     }
                 }
-
+                .padding()
+                Spacer()
+            }
+            List {
                 if store.componentsFamilies.isEmpty {
                     Text("0 components")
                         .foregroundColor(.gray)
+                } else {
+                    ForEach(store.componentsFamilies, id: \.family) { componentsFamily in
+                        Section(header: HStack {
+                            Text(familyName(for: componentsFamily.family))
+                                .font(.title)
+                            Button(action: { store.selectFamily(withName: componentsFamily.family.name) },
+                                   label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
+                        }) {
+                            ForEach(componentsFamily.components) { component in
+                                ComponentListItem(
+                                    name: componentName(component, for: componentsFamily.family),
+                                    isSelected: store.selectedName == component.name,
+                                    onSelect: { store.selectComponent(withName: component.name) }
+                                )
+                            }
+                        }
+                    }
                 }
             }
+            .layoutPriority(0)
+            .frame(minHeight: 200)
             .padding()
             .listStyle(SidebarListStyle())
         }
