@@ -126,7 +126,7 @@ class ViewModel: ObservableObject {
         let packagesWithPath: [PackageWithPath] = document.families.flatMap { componentFamily -> [PackageWithPath] in
             let family = componentFamily.family
             return componentFamily.components.flatMap { (component: Component) -> [PackageWithPath] in
-                packagesExtractor.packages(for: component, of: family, allFamilies: allFamilies, fileURL: fileURL)
+                packagesExtractor.packages(for: component, of: family, allFamilies: allFamilies)
             }
         }
 

@@ -6,7 +6,7 @@ public struct PackageWithPath {
 }
 
 public protocol PackagesExtracting {
-    func packages(for component: Component, of family: Family, allFamilies: [Family], fileURL: URL) -> [PackageWithPath]
+    func packages(for component: Component, of family: Family, allFamilies: [Family]) -> [PackageWithPath]
 }
 
 public struct PackagesExtractor: PackagesExtracting {
@@ -36,7 +36,7 @@ public struct PackagesExtractor: PackagesExtracting {
         self.packageExtractors = packageExtractors
     }
 
-    public func packages(for component: Component, of family: Family, allFamilies: [Family], fileURL: URL) -> [PackageWithPath] {
-        component.modules.compactMap { packageExtractors[$0]?.package(for: component, of: family, allFamilies: allFamilies, fileURL: fileURL) }
+    public func packages(for component: Component, of family: Family, allFamilies: [Family]) -> [PackageWithPath] {
+        component.modules.compactMap { packageExtractors[$0]?.package(for: component, of: family, allFamilies: allFamilies) }
     }
 }

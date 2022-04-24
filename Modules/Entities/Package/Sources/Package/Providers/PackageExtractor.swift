@@ -1,7 +1,7 @@
 import Foundation
 
 protocol PackageExtracting {
-    func package(for component: Component, of family: Family, allFamilies: [Family], fileURL: URL) -> PackageWithPath
+    func package(for component: Component, of family: Family, allFamilies: [Family]) -> PackageWithPath
 }
 
 struct ContractPackageExtractor: PackageExtracting {
@@ -17,7 +17,7 @@ struct ContractPackageExtractor: PackageExtracting {
         self.packagePathProvider = packagePathProvider
     }
 
-    func package(for component: Component, of family: Family, allFamilies: [Family], fileURL: URL) -> PackageWithPath {
+    func package(for component: Component, of family: Family, allFamilies: [Family]) -> PackageWithPath {
         let packageName = packageNameProvider.packageName(forType: .contract,
                                                           name: component.name,
                                                           of: family)
@@ -74,7 +74,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
         self.packagePathProvider = packagePathProvider
     }
     
-    func package(for component: Component, of family: Family, allFamilies: [Family], fileURL: URL) -> PackageWithPath {
+    func package(for component: Component, of family: Family, allFamilies: [Family]) -> PackageWithPath {
         let packageName = packageNameProvider.packageName(forType: .implementation,
                                                           name: component.name,
                                                           of: family)
@@ -158,7 +158,7 @@ struct MockPackageExtractor: PackageExtracting {
         self.packagePathProvider = packagePathProvider
     }
     
-    func package(for component: Component, of family: Family, allFamilies: [Family], fileURL: URL) -> PackageWithPath {
+    func package(for component: Component, of family: Family, allFamilies: [Family]) -> PackageWithPath {
         let packageName = packageNameProvider.packageName(forType: .mock,
                                                           name: component.name,
                                                           of: family)

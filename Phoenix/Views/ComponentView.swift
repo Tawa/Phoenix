@@ -119,26 +119,9 @@ struct ComponentView: View {
                 .padding()
 
             }.sheet(isPresented: $showingPopup) {
-                ZStack {
-                    List {
-                        ForEach(allComponentNames.filter { name in
-                            self.component?.name != name && self.component?.dependencies.contains(where: { dependency in dependency.name == name }) == false
-                        }) { name in
-                            Text("Name: \(name.full)")
-                                .onTapGesture {
-                                    self.component?.dependencies.insert(
-                                        ComponentDependency(name: name,
-                                                            contract: nil,
-                                                            implementation: nil,
-                                                            tests: nil,
-                                                            mock: nil)
-                                    )
-                                    showingPopup = false
-                                }
-                        }
-                        Button(action: { showingPopup = false }, label: { Text("Cancel") })
-                    }
-                }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                ComponentDependenciesPopover(showingPopup: $showingPopup,
+                                             component: $component,
+                                             allComponentNames: allComponentNames)
             }
         }
     }
