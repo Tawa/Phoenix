@@ -72,7 +72,33 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func addNewComponent(withName name: Name) {
+        var componentsFamily: ComponentsFamily = document
+            .families
+            .first(where: { componentsFamily in
+                name.family == componentsFamily.wrappedValue.family.name
+            })?.wrappedValue ?? ComponentsFamily(family: Family(name: name.family, ignoreSuffix: false, folder: nil), components: [])
+        guard componentsFamily.components.contains(where: { $0.name == name }) == false else { return }
 
+        var array = componentsFamily.components
+
+        let newComponent = Component(name: name,
+                                     iOSVersion: nil,
+                                     macOSVersion: nil,
+                                     modules: [.contract, .implementation, .mock],
+                                     dependencies: [])
+        array.append(newComponent)
+        array.sort(by: { $0.name.full < $1.name.full })
+
+        componentsFamily.components = array
+
+        if let familyIndex = document.families.firstIndex(where: { $0.wrappedValue.family.name == name.family }) {
+            document.families[familyIndex].components.wrappedValue = array
+        } else {
+            var familiesArray = document.families.wrappedValue
+            familiesArray.append(componentsFamily)
+            familiesArray.sort(by: { $0.family.name < $1.family.name })
+            document.families.wrappedValue = familiesArray
+        }
     }
 
     func selectFamily(withName name: String) {

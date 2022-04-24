@@ -71,39 +71,6 @@ class ViewModel: ObservableObject {
         document.families.removeAll(where: { $0.components.isEmpty })
     }
 
-    func onNewComponent(_ name: Name) {
-        var componentsFamily: ComponentsFamily = document
-            .families
-            .first(where: {
-                $0.family.name == name.family
-            }) ?? ComponentsFamily(family: Family(name: name.family, ignoreSuffix: false, folder: nil), components: [])
-        guard componentsFamily.components.contains(where: { $0.name == name }) == false else { return }
-
-        var array = componentsFamily.components
-
-        let newComponent = Component(name: name,
-                                     iOSVersion: nil,
-                                     macOSVersion: nil,
-                                     modules: [.contract, .implementation, .mock],
-                                     dependencies: [])
-        array.append(newComponent)
-        array.sort(by: { $0.name.full < $1.name.full })
-
-        componentsFamily.components = array
-
-        if let familyIndex = document.families.firstIndex(where: { $0.family.name == name.family }) {
-            document.families[familyIndex].components = array
-        } else {
-            var familiesArray = document.families
-            familiesArray.append(componentsFamily)
-            familiesArray.sort(by: { $0.family.name < $1.family.name })
-            document.families = familiesArray
-        }
-
-        select(name: newComponent.name)
-        showingNewComponentPopup = false
-    }
-
     func select(name: Name) {
         self.document.selectedName = name
     }
@@ -166,8 +133,7 @@ struct ContentView: View {
             }
 
             if viewModel.showingDependencyPopover {
-                ComponentDependenciesPopover(showingPopup: $viewModel.showingDependencyPopover,
-                                             showingNewComponentPopup: $viewModel.showingNewComponentPopup)
+                ComponentDependenciesPopover(showingPopup: $viewModel.showingDependencyPopover)
             }
 
             if viewModel.showingNewComponentPopup {

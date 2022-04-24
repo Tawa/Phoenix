@@ -75,12 +75,24 @@ let package = Package(
         switch dependency {
         case .module(let path, _):
             return "        .package(path: \"\(path)\"),\n"
+        case .external(let url, _, let description):
+            return "        .package(url: \"\(url)\", \(externalDependencyDescriptionString(description)),\n"
+        }
+    }
+
+    private func externalDependencyDescriptionString(_ description: ExternalDependencyDescription) -> String {
+        switch description {
+        case .from(let value):
+            return "from: \"\(value)\""
+        case .branch(let name):
+            return ".branch(\"\(name)\")"
         }
     }
     
     private func targetDependencyString(_ dependency: Dependency) -> String {
         switch dependency {
-        case .module(_, let name):
+        case .module(_, let name),
+                .external(_, let name, _):
             return "                \"\(name)\",\n"
         }
     }

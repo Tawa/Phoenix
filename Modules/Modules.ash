@@ -33,14 +33,14 @@
       "components" : [
         {
           "dependencies" : [
-
+            {
+              "name" : {
+                "family" : "Entity",
+                "given" : "Package"
+              }
+            }
           ],
           "modules" : [
-            {
-              "mock" : {
-
-              }
-            },
             {
               "contract" : {
 
@@ -48,6 +48,11 @@
             },
             {
               "implementation" : {
+
+              }
+            },
+            {
+              "mock" : {
 
               }
             }
