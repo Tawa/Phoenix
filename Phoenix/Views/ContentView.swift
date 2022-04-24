@@ -55,13 +55,11 @@ class ViewModel: ObservableObject {
                                                set: { self.document.selectedName = $0 }) }
 
     func onAddButton() {
-        withAnimation { showingNewComponentPopup = true }
+        showingNewComponentPopup = true
     }
 
     func onFamilySelection(_ family: Family) {
-        withAnimation {
-            document.selectedFamilyName = family.name
-        }
+        document.selectedFamilyName = family.name
     }
 
     func onRemoveSelectedComponent() {

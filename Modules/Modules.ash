@@ -29,5 +29,9 @@
         "name" : "Entity"
       }
     }
-  ]
+  ],
+  "selectedName" : {
+    "family" : "Entity",
+    "given" : "Package"
+  }
 }

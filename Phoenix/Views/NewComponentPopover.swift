@@ -70,23 +70,23 @@ struct NewComponentPopover: View {
         focusField = nil
         let name = Name(given: name, family: familyName)
         if name.given.isEmpty {
-            withAnimation { popoverText = "Given name cannot be empty" }
+            popoverText = "Given name cannot be empty"
         } else if name.family.isEmpty {
-            withAnimation { popoverText = "Component must be part of a family" }
+            popoverText = "Component must be part of a family"
         } else if isNameAlreadyInUse(name) {
-            withAnimation { popoverText = "Name already in use" }
+            popoverText = "Name already in use"
         } else {
             onSubmit(name)
         }
     }
 
     private func onDismiss() {
-        withAnimation { isPresenting = false }
+        isPresenting = false
     }
 
     private func onPopoverOkayButton() {
         focusField = nil
-        withAnimation { popoverText = nil }
+        popoverText = nil
     }
 }
 
