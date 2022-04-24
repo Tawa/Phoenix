@@ -2,8 +2,9 @@ import Package
 import SwiftUI
 
 struct ComponentView: View {
+    @EnvironmentObject var store: PhoenixDocumentStore
+
     @Binding var component: Component?
-    let allComponentNames: [Name]
     @State private var showingPopup: Bool = false
     let onRemove: () -> Void
 
@@ -13,7 +14,7 @@ struct ComponentView: View {
                 VStack(alignment: .leading) {
                     if let component = component {
                         HStack {
-                            Text(component.name.full)
+                            Text(store.title(for: component.name))
                                 .font(.largeTitle)
                                 .multilineTextAlignment(.leading)
                             Spacer()
@@ -119,9 +120,7 @@ struct ComponentView: View {
                 .padding()
 
             }.sheet(isPresented: $showingPopup) {
-                ComponentDependenciesPopover(showingPopup: $showingPopup,
-                                             component: $component,
-                                             allComponentNames: allComponentNames)
+                ComponentDependenciesPopover(showingPopup: $showingPopup)
             }
         }
     }
@@ -153,7 +152,8 @@ struct ComponentView_Previews: PreviewProvider {
             dependencies: [])
 
         var body: some View {
-            ComponentView(component: $component, allComponentNames: [], onRemove: {})
+            ComponentView(component: $component,
+                          onRemove: {})
         }
     }
 
@@ -161,7 +161,7 @@ struct ComponentView_Previews: PreviewProvider {
         Group {
             Preview()
             ComponentView(component: .constant(nil),
-                          allComponentNames: [], onRemove: {})
+                          onRemove: {})
         }
     }
 }

@@ -54,8 +54,6 @@ class ViewModel: ObservableObject {
     var selectedName: Binding<Name?> { Binding(get: { self.document.selectedName },
                                               set: { self.document.selectedName = $0 }) }
 
-    var allComponentNames: [Name] { document.families.flatMap { $0.components.map(\.name) } }
-
     func onAddButton() {
         withAnimation { showingNewComponentPopup = true }
     }
@@ -79,7 +77,7 @@ class ViewModel: ObservableObject {
             .families
             .first(where: {
                 $0.family.name == name.family
-            }) ?? ComponentsFamily(family: Family(name: name.family, ignoreSuffix: nil, folder: nil), components: [])
+            }) ?? ComponentsFamily(family: Family(name: name.family, ignoreSuffix: false, folder: nil), components: [])
         guard componentsFamily.components.contains(where: { $0.name == name }) == false else { return }
 
         var array = componentsFamily.components
@@ -152,7 +150,6 @@ struct ContentView: View {
                 .frame(minWidth: 250)
 
                 ComponentView(component: viewModel.selectedComponent,
-                              allComponentNames: viewModel.allComponentNames,
                               onRemove: viewModel.onRemoveSelectedComponent)
                 .frame(minWidth: 500)
             }

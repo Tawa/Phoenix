@@ -1,5 +1,5 @@
 public struct Component: Codable, Hashable, Identifiable {
-    public var id: String { name.given + name.family }
+    public var id: Name { name }
 
     public let name: Name
     public var iOSVersion: iOSVersion?

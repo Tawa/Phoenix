@@ -2,27 +2,22 @@ import Package
 import SwiftUI
 
 struct ComponentDependenciesPopover: View {
+    @EnvironmentObject private var store: PhoenixDocumentStore
     @Binding var showingPopup: Bool
-    @Binding var component: Component?
-    let allComponentNames: [Name]
 
     var body: some View {
         ZStack {
             List {
-                ForEach(allComponentNames.filter { name in
-                    self.component?.name != name && self.component?.dependencies.contains(where: { dependency in dependency.name == name }) == false
+                ForEach(store.allNames.filter { name in
+                    store.selectedName != name && store.selectedComponentDependencies.contains(where: { dependency in dependency.name == name }) == false
                 }) { name in
-                    Text("Name: \(name.full)")
-                        .onTapGesture {
-                            self.component?.dependencies.insert(
-                                ComponentDependency(name: name,
-                                                    contract: nil,
-                                                    implementation: nil,
-                                                    tests: nil,
-                                                    mock: nil)
-                            )
-                            showingPopup = false
-                        }
+                    Button {
+                        store.send(action: .addDependencyToSelectedComponent(dependencyName: name))
+                        showingPopup = false
+                    } label: {
+                        Text("\(name.family): \(store.title(for: name))")
+                    }
+
                 }
                 Button(action: { showingPopup = false }, label: { Text("Cancel") })
             }

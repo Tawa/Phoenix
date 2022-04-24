@@ -4,7 +4,12 @@
       "components" : [
         {
           "dependencies" : [
-
+            {
+              "name" : {
+                "family" : "Support",
+                "given" : "PackageGenerator"
+              }
+            }
           ],
           "modules" : [
             {

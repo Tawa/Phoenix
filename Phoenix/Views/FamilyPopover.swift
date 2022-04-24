@@ -66,7 +66,7 @@ struct FamilyPopover_Previews: PreviewProvider {
     static var previews: some View {
         FamilyPopover(
             family: .constant(Family(name: "Repository",
-                                     ignoreSuffix: nil,
+                                     ignoreSuffix: false,
                                      folder: nil)),
             folderNameProvider: FamilyFolderNameProvider())
 

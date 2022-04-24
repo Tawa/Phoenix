@@ -8,6 +8,7 @@ struct PhoenixApp: App {
             ContentView()
                 .environmentObject(ViewModel(document: file.$document,
                                              fileURL: file.fileURL))
+                .environmentObject(PhoenixDocumentStore(document: file.$document))
         }
     }
 }

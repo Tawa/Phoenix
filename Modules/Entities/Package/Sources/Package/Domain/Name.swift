@@ -1,4 +1,4 @@
-public struct Name: Codable, Hashable, Identifiable {
+public struct Name: Codable, Hashable, Identifiable, Comparable {
     public var id: String { full }
 
     public let given: String
@@ -9,5 +9,9 @@ public struct Name: Codable, Hashable, Identifiable {
     public init(given: String, family: String) {
         self.given = given
         self.family = family
+    }
+
+    public static func <(lhs: Name, rhs: Name) -> Bool {
+        lhs.full < rhs.full
     }
 }
