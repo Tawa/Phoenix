@@ -2,6 +2,8 @@ import Package
 import SwiftUI
 
 struct NewComponentPopover: View {
+    @EnvironmentObject private var store: PhoenixDocumentStore
+
     enum FocusFields: Hashable {
         case given
         case family
@@ -12,9 +14,6 @@ struct NewComponentPopover: View {
     @State private var familyName: String = ""
     @State private var popoverText: String? = nil
     @FocusState private var focusField: FocusFields?
-
-    let onSubmit: (Name) -> Void
-    let isNameAlreadyInUse: (Name) -> Bool
 
     var body: some View {
         ZStack {
@@ -73,10 +72,11 @@ struct NewComponentPopover: View {
             popoverText = "Given name cannot be empty"
         } else if name.family.isEmpty {
             popoverText = "Component must be part of a family"
-        } else if isNameAlreadyInUse(name) {
+        } else if store.nameExists(name: name) {
             popoverText = "Name already in use"
         } else {
-            onSubmit(name)
+            store.addNewComponent(withName: name)
+            store.selectComponent(withName: name)
         }
     }
 
@@ -92,9 +92,6 @@ struct NewComponentPopover: View {
 
 struct NewComponentPopover_Previews: PreviewProvider {
     static var previews: some View {
-        NewComponentPopover(
-            isPresenting: .constant(true),
-            onSubmit: { _ in },
-            isNameAlreadyInUse: { _ in false })
+        NewComponentPopover(isPresenting: .constant(true))
     }
 }

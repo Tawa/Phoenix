@@ -5,7 +5,7 @@ struct ComponentView: View {
     @EnvironmentObject private var store: PhoenixDocumentStore
 
     let component: Component
-    @State private var showingPopup: Bool = false
+    @Binding var showingDependencyPopover: Bool
 
     var body: some View {
         ZStack {
@@ -98,7 +98,7 @@ struct ComponentView: View {
                             Text("Dependencies")
                                 .font(.largeTitle)
                             Button(action: {
-                                showingPopup = true
+                                showingDependencyPopover = true
                             }, label: { Image(systemName: "plus") })
                         }
                     }
@@ -106,9 +106,6 @@ struct ComponentView: View {
                     Divider()
                 }
                 .padding()
-
-            }.sheet(isPresented: $showingPopup) {
-                ComponentDependenciesPopover(showingPopup: $showingPopup)
             }
         }
     }

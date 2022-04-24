@@ -5,6 +5,7 @@ class ViewModel: ObservableObject {
     @Binding private var document: PhoenixDocument
     @Published var showingNewComponentPopup: Bool = false
     @Published var fileErrorString: String? = nil
+    @Published var showingDependencyPopover: Bool = false
     let fileURL: URL?
 
     init(document: Binding<PhoenixDocument>,
@@ -107,10 +108,6 @@ class ViewModel: ObservableObject {
         self.document.selectedName = name
     }
 
-    func isNameAlreadyInUse(_ name: Name) -> Bool {
-        document.families.flatMap { $0.components }.contains(where: { (component: Component) -> Bool in component.name == name })
-    }
-
     func onGenerate() {
         guard let fileURL = fileURL else {
             fileErrorString = "File must be saved before packages can be generated."
@@ -144,9 +141,10 @@ struct ContentView: View {
                 ComponentsList(onAddButton: viewModel.onAddButton)
                     .frame(minWidth: 250)
 
-                Group {
+                ZStack {
                     if let selectedComponent = store.selectedComponent {
-                        ComponentView(component: selectedComponent)
+                        ComponentView(component: selectedComponent,
+                                      showingDependencyPopover: $viewModel.showingDependencyPopover)
                     } else {
                         HStack(alignment: .top) {
                             VStack(alignment: .leading) {
@@ -163,15 +161,19 @@ struct ContentView: View {
                 .frame(minWidth: 500)
             }
 
-            if viewModel.showingNewComponentPopup {
-                NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup,
-                                    onSubmit: viewModel.onNewComponent(_:),
-                                    isNameAlreadyInUse: viewModel.isNameAlreadyInUse(_:))
-            }
-
             if let family = store.selectedFamily {
                 FamilyPopover(family: family)
             }
+
+            if viewModel.showingDependencyPopover {
+                ComponentDependenciesPopover(showingPopup: $viewModel.showingDependencyPopover,
+                                             showingNewComponentPopup: $viewModel.showingNewComponentPopup)
+            }
+
+            if viewModel.showingNewComponentPopup {
+                NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup)
+            }
+
         }.toolbar {
             Button(action: viewModel.onGenerate, label: { Text("Generate") })
                 .keyboardShortcut(.init("R"), modifiers: .command)

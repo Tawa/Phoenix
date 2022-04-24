@@ -39,6 +39,10 @@ class PhoenixDocumentStore: ObservableObject {
         return family?.ignoreSuffix == true ? name.given : name.given + name.family
     }
 
+    func nameExists(name: Name) -> Bool {
+        allNames.contains(name)
+    }
+
     // MARK: - Private
     private func family(for name: Name) -> Family? {
         document.families.first(where: { name.family == $0.wrappedValue.family.name })?.family.wrappedValue
@@ -61,8 +65,14 @@ class PhoenixDocumentStore: ObservableObject {
         completion(&document.families[familyIndex].family.wrappedValue)
     }
 
+    // MARK: - Document modifiers
+
     func selectComponent(withName name: Name) {
         document.selectedName.wrappedValue = name
+    }
+
+    func addNewComponent(withName name: Name) {
+
     }
 
     func selectFamily(withName name: String) {

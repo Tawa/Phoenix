@@ -8,12 +8,12 @@
           ],
           "modules" : [
             {
-              "mock" : {
+              "implementation" : {
 
               }
             },
             {
-              "implementation" : {
+              "mock" : {
 
               }
             }
@@ -28,10 +28,44 @@
         "ignoreSuffix" : true,
         "name" : "Entity"
       }
+    },
+    {
+      "components" : [
+        {
+          "dependencies" : [
+
+          ],
+          "modules" : [
+            {
+              "mock" : {
+
+              }
+            },
+            {
+              "contract" : {
+
+              }
+            },
+            {
+              "implementation" : {
+
+              }
+            }
+          ],
+          "name" : {
+            "family" : "ViewModel",
+            "given" : "Home"
+          }
+        }
+      ],
+      "family" : {
+        "ignoreSuffix" : false,
+        "name" : "ViewModel"
+      }
     }
   ],
   "selectedName" : {
-    "family" : "Entity",
-    "given" : "Package"
+    "family" : "ViewModel",
+    "given" : "Home"
   }
 }
