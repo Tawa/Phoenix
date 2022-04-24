@@ -143,8 +143,7 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             HSplitView {
-                ComponentsList(onAddButton: viewModel.onAddButton,
-                               familyFolderNameProvider: FamilyFolderNameProvider())
+                ComponentsList(onAddButton: viewModel.onAddButton)
                 .frame(minWidth: 250)
 
                 ZStack {
@@ -165,9 +164,8 @@ struct ContentView: View {
                                     isNameAlreadyInUse: viewModel.isNameAlreadyInUse(_:))
             }
 
-            if viewModel.selectedFamily.wrappedValue != nil {
-                FamilyPopover(family: viewModel.selectedFamily,
-                              folderNameProvider: FamilyFolderNameProvider())
+            if let family = store.selectedFamily {
+                FamilyPopover(family: family)
             }
         }.toolbar {
             Button(action: viewModel.onGenerate, label: { Text("Generate") })

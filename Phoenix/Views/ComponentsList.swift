@@ -3,9 +3,9 @@ import SwiftUI
 
 struct ComponentsList: View {
     @EnvironmentObject private var store: PhoenixDocumentStore
+    private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
 
     let onAddButton: () -> Void
-    let familyFolderNameProvider: FamilyFolderNameProviding
 
     var body: some View {
         VStack {
@@ -70,8 +70,7 @@ struct ComponentsList_Previews: PreviewProvider {
         @State var selectedName: Name?
 
         var body: some View {
-            ComponentsList(onAddButton: {},
-                           familyFolderNameProvider: FamilyFolderNameProvider())
+            ComponentsList(onAddButton: {})
         }
     }
 

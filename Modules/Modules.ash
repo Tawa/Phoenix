@@ -37,7 +37,7 @@
           ],
           "modules" : [
             {
-              "contract" : {
+              "mock" : {
 
               }
             },
@@ -47,7 +47,7 @@
               }
             },
             {
-              "mock" : {
+              "contract" : {
 
               }
             }
@@ -59,7 +59,7 @@
         }
       ],
       "family" : {
-        "ignoreSuffix" : true,
+        "ignoreSuffix" : false,
         "name" : "Family"
       }
     },
@@ -87,12 +87,12 @@
               }
             },
             {
-              "implementation" : {
+              "mock" : {
 
               }
             },
             {
-              "mock" : {
+              "implementation" : {
 
               }
             }
@@ -104,13 +104,14 @@
         }
       ],
       "family" : {
-        "ignoreSuffix" : false,
+        "folder" : "Shared",
+        "ignoreSuffix" : true,
         "name" : "Shared"
       }
     }
   ],
   "selectedName" : {
-    "family" : "Shared",
-    "given" : "Networking"
+    "family" : "Family",
+    "given" : "Example"
   }
 }

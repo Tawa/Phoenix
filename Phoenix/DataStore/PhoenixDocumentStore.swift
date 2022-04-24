@@ -26,6 +26,11 @@ class PhoenixDocumentStore: ObservableObject {
     var selectedName: Name? { selectedComponent?.name }
     var selectedComponentDependencies: [ComponentDependency] { selectedComponent?.dependencies.sorted(by: { $0.name < $1.name }) ?? [] }
 
+    var selectedFamily: Family? {
+        guard let selectedFamilyName = document.selectedFamilyName.wrappedValue else { return nil }
+        return document.families.wrappedValue.first(where: { $0.family.name == selectedFamilyName })?.family
+    }
+
     var componentsFamilies: [ComponentsFamily] {
         document.wrappedValue.families
     }
@@ -53,12 +58,32 @@ class PhoenixDocumentStore: ObservableObject {
         completion(&document.families[familyIndex].components[componentIndex].wrappedValue)
     }
 
+    private func getSelectedFamily(_ completion: (inout Family) -> Void) {
+        guard
+            let selectedFamilyName = document.selectedFamilyName.wrappedValue,
+            let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.family.name == selectedFamilyName })
+        else { return }
+        completion(&document.families[familyIndex].family.wrappedValue)
+    }
+
     func selectComponent(withName name: Name) {
         document.selectedName.wrappedValue = name
     }
 
     func selectFamily(withName name: String) {
         document.selectedFamilyName.wrappedValue = name
+    }
+
+    func deselectFamily() {
+        document.selectedFamilyName.wrappedValue = nil
+    }
+
+    func updateSelectedFamily(ignoresSuffix: Bool) {
+        getSelectedFamily { $0.ignoreSuffix = ignoresSuffix }
+    }
+
+    func updateSelectedFamily(folder: String?) {
+        getSelectedFamily { $0.folder = folder }
     }
     
     func addDependencyToSelectedComponent(dependencyName: Name) {

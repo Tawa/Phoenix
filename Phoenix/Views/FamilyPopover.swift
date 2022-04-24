@@ -8,21 +8,23 @@ struct FamilyPopover: View {
         case folder
     }
 
-    @Binding var family: Family?
-    let folderNameProvider: FamilyFolderNameProviding
+    @EnvironmentObject private var store: PhoenixDocumentStore
 
-    private var defaultFolderName: String { folderNameProvider.folderName(forFamily: family?.name ?? "") }
-    private var componentNameExample: String { "Component\(family?.ignoreSuffix == true ? "" : family?.name ?? "")" }
+    let family: Family
+    private let folderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
+
+    private var defaultFolderName: String { folderNameProvider.folderName(forFamily: family.name) }
+    private var componentNameExample: String { "Component\(family.ignoreSuffix ? "" : family.name)" }
 
     var body: some View {
         ZStack {
             VStack {
                 VStack(alignment: .leading) {
-                    Text("Family: \(family?.name ?? "")")
+                    Text("Family: \(family.name)")
                         .font(.largeTitle)
 
-                    Toggle(isOn: Binding(get: { family?.ignoreSuffix != true },
-                                         set: { family?.ignoreSuffix = !$0 })) {
+                    Toggle(isOn: Binding(get: { !family.ignoreSuffix },
+                                         set: { store.updateSelectedFamily(ignoresSuffix: !$0) })) {
                         Text("Append Component Name with Family Name. ")
                             .font(.title.bold())
                         + Text("\nExample: \(componentNameExample)")
@@ -33,10 +35,10 @@ struct FamilyPopover: View {
                         Text("Folder Name:")
                             .font(.largeTitle)
                         TextField("Default: (\(defaultFolderName))",
-                                  text: Binding(get: { family?.folder ?? "" },
-                                                set: { family?.folder = $0 }))
+                                  text: Binding(get: { family.folder ?? "" },
+                                                set: { store.updateSelectedFamily(folder: $0) }))
                         .font(.largeTitle)
-                        Button(action: { family?.folder = nil }) {
+                        Button(action: { store.updateSelectedFamily(folder: nil) }) {
                             Text("Use Default")
                         }
                     }
@@ -56,24 +58,18 @@ struct FamilyPopover: View {
     }
 
     private func onDismiss() {
-        withAnimation {
-            family = nil
-        }
+        store.deselectFamily()
     }
 }
 
 struct FamilyPopover_Previews: PreviewProvider {
     static var previews: some View {
-        FamilyPopover(
-            family: .constant(Family(name: "Repository",
+        FamilyPopover(family: Family(name: "Repository",
                                      ignoreSuffix: false,
-                                     folder: nil)),
-            folderNameProvider: FamilyFolderNameProvider())
+                                     folder: nil))
 
-        FamilyPopover(
-            family: .constant(Family(name: "Shared",
+        FamilyPopover(family: Family(name: "Shared",
                                      ignoreSuffix: true,
-                                     folder: "Support")),
-            folderNameProvider: FamilyFolderNameProvider())
+                                     folder: "Support"))
     }
 }
