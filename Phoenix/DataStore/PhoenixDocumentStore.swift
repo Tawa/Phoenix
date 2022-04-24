@@ -24,7 +24,7 @@ class PhoenixDocumentStore: ObservableObject {
     }
     
     var selectedName: Name? { selectedComponent?.name }
-    var selectedComponentDependencies: [ComponentDependency] { selectedComponent?.dependencies.sorted(by: { $0.name < $1.name }) ?? [] }
+    var selectedComponentDependencies: [ComponentDependencyType] { selectedComponent?.dependencies.sorted() ?? [] }
 
     var selectedFamily: Family? {
         guard let selectedFamilyName = document.selectedFamilyName.wrappedValue else { return nil }
@@ -41,6 +41,13 @@ class PhoenixDocumentStore: ObservableObject {
 
     func nameExists(name: Name) -> Bool {
         allNames.contains(name)
+    }
+
+    func selectedComponentDependenciesContains(dependencyName: Name) -> Bool {
+        selectedComponentDependencies.contains { componentDependencyType in
+            guard case let .local(componentDependency) = componentDependencyType else { return false }
+            return componentDependency.name == dependencyName
+        }
     }
 
     // MARK: - Private
@@ -118,11 +125,11 @@ class PhoenixDocumentStore: ObservableObject {
     }
     
     func addDependencyToSelectedComponent(dependencyName: Name) {
-        getSelectedComponent { $0.dependencies.insert(ComponentDependency(name: dependencyName,
+        getSelectedComponent { $0.dependencies.insert(.local(ComponentDependency(name: dependencyName,
                                                                           contract: nil,
                                                                           implementation: nil,
                                                                           tests: nil,
-                                                                          mock: nil))
+                                                                          mock: nil)))
         }
     }
 
@@ -161,12 +168,12 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func removeDependencyForSelectedComponent(componentDependency: ComponentDependency) {
-        getSelectedComponent { $0.dependencies.remove(componentDependency) }
+        getSelectedComponent { $0.dependencies.remove(.local(componentDependency)) }
     }
 
     func updateModuleTypeForDependency(dependency: ComponentDependency, type: DependencyType, value: ModuleType?) {
         getSelectedComponent { component in
-            guard var temp = component.dependencies.remove(dependency)
+            guard case var .local(temp) = component.dependencies.remove(.local(dependency))
             else { return }
             switch type {
             case .contract:
@@ -178,7 +185,7 @@ class PhoenixDocumentStore: ObservableObject {
             case .mock:
                 temp.mock = value
             }
-            component.dependencies.insert(temp)
+            component.dependencies.insert(.local(temp))
         }
     }
 }

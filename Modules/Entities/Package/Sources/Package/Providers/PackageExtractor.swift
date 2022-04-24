@@ -22,18 +22,21 @@ struct ContractPackageExtractor: PackageExtracting {
                                                           name: component.name,
                                                           of: family)
         
-        var dependencies: [Dependency] = component.dependencies.compactMap { componentDependency -> (Dependency)? in
-            guard let dependencyType = componentDependency.contract,
-                  let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
-            else { return nil }
-            let path = packagePathProvider.path(for: componentDependency.name,
-                                                of: dependencyFamily,
-                                                type: dependencyType,
-                                                relativeToType: .contract)
-            let componentName = packageNameProvider.packageName(forType: dependencyType,
-                                                                name: componentDependency.name,
-                                                                of: dependencyFamily)
-            return Dependency.module(path: path.full, name: componentName)
+        var dependencies: [Dependency] = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
+            switch componentDependencyType {
+            case let .local(componentDependency):
+                guard let dependencyType = componentDependency.contract,
+                      let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
+                else { return nil }
+                let path = packagePathProvider.path(for: componentDependency.name,
+                                                    of: dependencyFamily,
+                                                    type: dependencyType,
+                                                    relativeToType: .contract)
+                let componentName = packageNameProvider.packageName(forType: dependencyType,
+                                                                    name: componentDependency.name,
+                                                                    of: dependencyFamily)
+                return Dependency.module(path: path.full, name: componentName)
+            }
         }
         dependencies.sort()
 
@@ -90,31 +93,37 @@ struct ImplementationPackageExtractor: PackageExtracting {
                                                                of: family)
             dependencies.append(.module(path: contractPath.full, name: contractName))
         }
-        let implementationDependencies = component.dependencies.compactMap { componentDependency -> (Dependency)? in
-            guard let dependencyType = componentDependency.implementation,
-                  let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
-            else { return nil }
-            let path = packagePathProvider.path(for: componentDependency.name,
-                                                of: dependencyFamily,
-                                                type: dependencyType,
-                                                relativeToType: .implementation)
-            let componentName = packageNameProvider.packageName(forType: dependencyType,
-                                                                name: componentDependency.name,
-                                                                of: dependencyFamily)
-            return Dependency.module(path: path.full, name: componentName)
+        let implementationDependencies = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
+            switch componentDependencyType {
+            case let .local(componentDependency):
+                guard let dependencyType = componentDependency.implementation,
+                      let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
+                else { return nil }
+                let path = packagePathProvider.path(for: componentDependency.name,
+                                                    of: dependencyFamily,
+                                                    type: dependencyType,
+                                                    relativeToType: .implementation)
+                let componentName = packageNameProvider.packageName(forType: dependencyType,
+                                                                    name: componentDependency.name,
+                                                                    of: dependencyFamily)
+                return Dependency.module(path: path.full, name: componentName)
+            }
         }
-        let testsDependencies = component.dependencies.compactMap { componentDependency -> (Dependency)? in
-            guard let dependencyType = componentDependency.tests,
-                  let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
-            else { return nil }
-            let path = packagePathProvider.path(for: componentDependency.name,
-                                                of: dependencyFamily,
-                                                type: dependencyType,
-                                                relativeToType: .implementation)
-            let componentName = packageNameProvider.packageName(forType: dependencyType,
-                                                                name: componentDependency.name,
-                                                                of: dependencyFamily)
-            return Dependency.module(path: path.full, name: componentName)
+        let testsDependencies = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
+            switch componentDependencyType {
+            case let .local(componentDependency):
+                guard let dependencyType = componentDependency.tests,
+                      let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
+                else { return nil }
+                let path = packagePathProvider.path(for: componentDependency.name,
+                                                    of: dependencyFamily,
+                                                    type: dependencyType,
+                                                    relativeToType: .implementation)
+                let componentName = packageNameProvider.packageName(forType: dependencyType,
+                                                                    name: componentDependency.name,
+                                                                    of: dependencyFamily)
+                return Dependency.module(path: path.full, name: componentName)
+            }
         }
         
         return PackageWithPath(
@@ -183,18 +192,21 @@ struct MockPackageExtractor: PackageExtracting {
                                                                      of: family)
             dependencies.append(.module(path: implementationPath.full, name: implementationName))
         }
-        let otherDependencies: [Dependency] = component.dependencies.compactMap { componentDependency -> (Dependency)? in
-            guard let dependencyType = componentDependency.mock,
-                  let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
-            else { return nil }
-            let path = packagePathProvider.path(for: componentDependency.name,
-                                                of: dependencyFamily,
-                                                type: dependencyType,
-                                                relativeToType: .mock)
-            let componentName = packageNameProvider.packageName(forType: dependencyType,
-                                                                name: componentDependency.name,
-                                                                of: dependencyFamily)
-            return Dependency.module(path: path.full, name: componentName)
+        let otherDependencies: [Dependency] = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
+            switch componentDependencyType {
+            case let .local(componentDependency):
+                guard let dependencyType = componentDependency.mock,
+                      let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
+                else { return nil }
+                let path = packagePathProvider.path(for: componentDependency.name,
+                                                    of: dependencyFamily,
+                                                    type: dependencyType,
+                                                    relativeToType: .mock)
+                let componentName = packageNameProvider.packageName(forType: dependencyType,
+                                                                    name: componentDependency.name,
+                                                                    of: dependencyFamily)
+                return Dependency.module(path: path.full, name: componentName)
+            }
         }
         dependencies.append(contentsOf: otherDependencies)
         dependencies.sort()

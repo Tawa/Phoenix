@@ -37,7 +37,7 @@ struct ComponentDependenciesPopover: View {
                                 Text("Components:")
                                     .font(.largeTitle)
                                 ForEach(store.allNames.filter { name in
-                                    store.selectedName != name && store.selectedComponentDependencies.contains(where: { dependency in dependency.name == name }) == false
+                                    store.selectedName != name && !store.selectedComponentDependenciesContains(dependencyName: name)
                                 }) { name in
                                     Button {
                                         store.addDependencyToSelectedComponent(dependencyName: name)

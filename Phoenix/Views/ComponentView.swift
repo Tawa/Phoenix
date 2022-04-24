@@ -85,11 +85,14 @@ struct ComponentView: View {
                     Divider()
 
                     Section {
-                        ForEach(component.dependencies.sorted(by: { $0.name.full < $1.name.full })) { dependency in
+                        ForEach(component.dependencies.sorted()) { dependencyType in
                             VStack(spacing: 0) {
                                 Divider()
-                                DependencyView(dependency: dependency,
-                                               types: component.modules)
+                                switch dependencyType {
+                                case let .local(dependency):
+                                    DependencyView(dependency: dependency,
+                                                   types: component.modules)
+                                }
                             }
                         }
                         .padding([.vertical])
