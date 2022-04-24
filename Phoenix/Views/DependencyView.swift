@@ -3,22 +3,24 @@ import SwiftUI
 
 struct DependencyModuleTypeSelectorView: View {
     let title: String
-    @Binding var moduleType: ModuleType?
+    let value: ModuleType?
+
+    let onValueChange: (ModuleType?) -> Void
 
     var body: some View {
-        HStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             Text(title)
             Menu {
                 ForEach(ModuleType.allCases) { type in
-                    Button(String(describing: type), action: { moduleType = type })
+                    Button(String(describing: type), action: { onValueChange(type) })
                 }
-                if moduleType != nil {
+                if value != nil {
                     Divider()
-                    Button(action: { moduleType = nil }, label: { Text("Remove") })
+                    Button(action: { onValueChange(nil) }, label: { Text("Remove") })
                 }
             } label: {
-                if let contract = moduleType {
-                    Text(String(describing: contract))
+                if let value = value {
+                    Text(String(describing: value))
                 } else {
                     Text("Add")
                 }
@@ -28,34 +30,48 @@ struct DependencyModuleTypeSelectorView: View {
 }
 
 struct DependencyView: View {
-    @Binding var dependency: ComponentDependency
+    @EnvironmentObject private var store: PhoenixDocumentStore
+
+    let dependency: ComponentDependency
     let types: Set<ModuleType>
-    let onDelete: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text(dependency.name.full)
+                Text(store.title(for: dependency.name))
                     .font(.title)
-                Button(action: onDelete, label: { Text("Remove") })
+                Button(action: {
+                    store.removeDependencyForSelectedComponent(componentDependency: dependency)
+                }, label: { Text("Remove") })
             }
-            HStack {
+            HStack(alignment: .top) {
                 if types.contains(.contract) {
                     DependencyModuleTypeSelectorView(title: "Contract: ",
-                                                     moduleType: Binding(get: { dependency.contract }, set: { dependency.contract = $0 }))
-                    Divider()
+                                                     value: dependency.contract,
+                                                     onValueChange: { newValue in
+                        store.updateModuleTypeForDependency(dependency: dependency, type: .contract, value: newValue)
+                    })
                 }
                 if types.contains(.implementation) {
-                    DependencyModuleTypeSelectorView(title: "Implementation: ",
-                                                     moduleType: Binding(get: { dependency.implementation }, set: { dependency.implementation = $0 }))
-                    Divider()
-                    DependencyModuleTypeSelectorView(title: "Tests: ",
-                                                     moduleType: Binding(get: { dependency.tests }, set: { dependency.tests = $0 }))
-                    Divider()
+                    VStack {
+                        DependencyModuleTypeSelectorView(title: "Implementation: ",
+                                                         value: dependency.implementation,
+                                                         onValueChange: { newValue in
+                            store.updateModuleTypeForDependency(dependency: dependency, type: .implementation, value: newValue)
+                        })
+                        DependencyModuleTypeSelectorView(title: "Tests: ",
+                                                         value: dependency.tests,
+                                                         onValueChange: { newValue in
+                            store.updateModuleTypeForDependency(dependency: dependency, type: .tests, value: newValue)
+                        })
+                    }
                 }
                 if types.contains(.mock) {
                     DependencyModuleTypeSelectorView(title: "Mock: ",
-                                                     moduleType: Binding(get: { dependency.mock }, set: { dependency.mock = $0 }))
+                                                     value: dependency.mock,
+                                                     onValueChange: { newValue in
+                        store.updateModuleTypeForDependency(dependency: dependency, type: .mock, value: newValue)
+                    })
                 }
             }
         }
@@ -65,12 +81,11 @@ struct DependencyView: View {
 struct DependencyView_Previews: PreviewProvider {
     static var previews: some View {
         DependencyView(
-            dependency: .constant(ComponentDependency(name: Name(given: "Wordpress", family: "DataStore"),
-                                                      contract: nil,
-                                                      implementation: .contract,
-                                                      tests: .mock,
-                                                      mock: nil)),
-            types: [.contract, .implementation, .mock],
-            onDelete: {})
+            dependency: ComponentDependency(name: Name(given: "Wordpress", family: "DataStore"),
+                                            contract: nil,
+                                            implementation: .contract,
+                                            tests: .mock,
+                                            mock: nil),
+            types: [.contract, .implementation, .mock])
     }
 }

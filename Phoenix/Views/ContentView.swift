@@ -137,20 +137,25 @@ class ViewModel: ObservableObject {
 }
 
 struct ContentView: View {
-    @EnvironmentObject var viewModel: ViewModel
+    @EnvironmentObject private var viewModel: ViewModel
+    @EnvironmentObject private var store: PhoenixDocumentStore
 
     var body: some View {
         ZStack {
             HSplitView {
-                ComponentsList(componentsFamilies: viewModel.componentsFamilies,
-                               selectedName: viewModel.selectedName,
-                               onFamilySelection: viewModel.onFamilySelection(_:),
-                               onAddButton: viewModel.onAddButton,
+                ComponentsList(onAddButton: viewModel.onAddButton,
                                familyFolderNameProvider: FamilyFolderNameProvider())
                 .frame(minWidth: 250)
 
-                ComponentView(component: viewModel.selectedComponent,
-                              onRemove: viewModel.onRemoveSelectedComponent)
+                ZStack {
+                    if let selectedComponent = store.selectedComponent {
+                        ComponentView(component: selectedComponent)
+                    } else {
+                        Text("No Component Selected")
+                            .font(.largeTitle)
+                            .foregroundColor(.gray)
+                    }
+                }
                 .frame(minWidth: 500)
             }
 

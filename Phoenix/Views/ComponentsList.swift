@@ -2,9 +2,8 @@ import Package
 import SwiftUI
 
 struct ComponentsList: View {
-    @Binding var componentsFamilies: [ComponentsFamily]
-    @Binding var selectedName: Name?
-    let onFamilySelection: (Family) -> Void
+    @EnvironmentObject private var store: PhoenixDocumentStore
+
     let onAddButton: () -> Void
     let familyFolderNameProvider: FamilyFolderNameProviding
 
@@ -25,25 +24,24 @@ struct ComponentsList: View {
                 .padding(2)
             }.frame(maxWidth: .infinity)
             List {
-                ForEach(componentsFamilies) { componentsFamily in
+                ForEach(store.componentsFamilies) { componentsFamily in
                     Section(header: HStack {
                         Text(familyName(for: componentsFamily.family))
                             .font(.title)
-                        Button(action: { onFamilySelection(componentsFamily.family) },
+                        Button(action: { store.selectFamily(withName: componentsFamily.family.name) },
                                label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
-                        .buttonStyle(PlainButtonStyle())
                     }) {
                         ForEach(componentsFamily.components) { component in
                             ComponentListItem(
                                 name: componentName(component, for: componentsFamily.family),
-                                isSelected: selectedName == component.name,
-                                onSelect: { selectedName = component.name }
+                                isSelected: store.selectedName == component.name,
+                                onSelect: { store.selectComponent(withName: component.name) }
                             )
                         }
                     }
                 }
 
-                if componentsFamilies.isEmpty {
+                if store.componentsFamilies.isEmpty {
                     Text("0 components")
                         .foregroundColor(.gray)
                 }
@@ -72,10 +70,7 @@ struct ComponentsList_Previews: PreviewProvider {
         @State var selectedName: Name?
 
         var body: some View {
-            ComponentsList(componentsFamilies: $families,
-                           selectedName: $selectedName,
-                           onFamilySelection: { _ in },
-                           onAddButton: {},
+            ComponentsList(onAddButton: {},
                            familyFolderNameProvider: FamilyFolderNameProvider())
         }
     }

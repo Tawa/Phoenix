@@ -4,14 +4,14 @@
       "components" : [
         {
           "dependencies" : [
-            {
-              "name" : {
-                "family" : "Support",
-                "given" : "PackageGenerator"
-              }
-            }
+
           ],
           "modules" : [
+            {
+              "mock" : {
+
+              }
+            },
             {
               "implementation" : {
 
@@ -33,17 +33,47 @@
       "components" : [
         {
           "dependencies" : [
+
+          ],
+          "modules" : [
             {
               "contract" : {
-                "implementation" : {
 
-                }
-              },
+              }
+            },
+            {
               "implementation" : {
-                "implementation" : {
 
-                }
-              },
+              }
+            },
+            {
+              "mock" : {
+
+              }
+            }
+          ],
+          "name" : {
+            "family" : "Family",
+            "given" : "Example"
+          }
+        }
+      ],
+      "family" : {
+        "ignoreSuffix" : true,
+        "name" : "Family"
+      }
+    },
+    {
+      "components" : [
+        {
+          "dependencies" : [
+            {
+              "name" : {
+                "family" : "Family",
+                "given" : "Example"
+              }
+            },
+            {
               "name" : {
                 "family" : "Entity",
                 "given" : "Package"
@@ -52,31 +82,35 @@
           ],
           "modules" : [
             {
+              "contract" : {
+
+              }
+            },
+            {
               "implementation" : {
 
               }
             },
             {
-              "contract" : {
+              "mock" : {
 
               }
             }
           ],
           "name" : {
-            "family" : "Support",
-            "given" : "PackageGenerator"
+            "family" : "Shared",
+            "given" : "Networking"
           }
         }
       ],
       "family" : {
-        "folder" : "Support",
-        "ignoreSuffix" : true,
-        "name" : "Support"
+        "ignoreSuffix" : false,
+        "name" : "Shared"
       }
     }
   ],
   "selectedName" : {
-    "family" : "Entity",
-    "given" : "Package"
+    "family" : "Shared",
+    "given" : "Networking"
   }
 }

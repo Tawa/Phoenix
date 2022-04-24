@@ -1,8 +1,11 @@
 import Package
 import SwiftUI
 
-enum PhoenixDocumentAction {
-    case addDependencyToSelectedComponent(dependencyName: Name)
+enum DependencyType {
+    case contract
+    case implementation
+    case tests
+    case mock
 }
 
 class PhoenixDocumentStore: ObservableObject {
@@ -12,7 +15,7 @@ class PhoenixDocumentStore: ObservableObject {
         self.document = document
     }
     
-    private var selectedComponent: Component? {
+    var selectedComponent: Component? {
         guard
             let selectedName = document.selectedName.wrappedValue,
             let component = document.families.wrappedValue.flatMap(\.components).first(where: { $0.name == selectedName })
@@ -22,42 +25,104 @@ class PhoenixDocumentStore: ObservableObject {
     
     var selectedName: Name? { selectedComponent?.name }
     var selectedComponentDependencies: [ComponentDependency] { selectedComponent?.dependencies.sorted(by: { $0.name < $1.name }) ?? [] }
-    
-    var allNames: [Name] {
-        document.wrappedValue.families.flatMap { $0.components }.map(\.name)
+
+    var componentsFamilies: [ComponentsFamily] {
+        document.wrappedValue.families
     }
-    
+
+    var allNames: [Name] {
+        componentsFamilies.flatMap { $0.components }.map(\.name)
+    }
+
     func title(for name: Name) -> String {
         let family = family(for: name)
         return family?.ignoreSuffix == true ? name.given : name.given + name.family
     }
-    
-    // MAKR: - Actions
-    func send(action: PhoenixDocumentAction) {
-        switch action {
-        case .addDependencyToSelectedComponent(let dependencyName):
-            addDependencyToSelectedComponent(dependencyName: dependencyName)
-        }
-    }
-    
-    
+
     // MARK: - Private
     private func family(for name: Name) -> Family? {
         document.families.first(where: { name.family == $0.wrappedValue.family.name })?.family.wrappedValue
     }
-    
-    private func addDependencyToSelectedComponent(dependencyName: Name) {
+
+    private func getSelectedComponent(_ completion: (inout Component) -> Void) {
         guard
             let selectedName = selectedName,
             let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.components.contains(where: { $0.name == selectedName }) }),
             let componentIndex = document.families.wrappedValue[familyIndex].components.firstIndex(where: { $0.name == selectedName })
         else { return }
-        document.families[familyIndex].components[componentIndex].dependencies.wrappedValue.insert(
-            ComponentDependency(name: dependencyName,
-                                contract: nil,
-                                implementation: nil,
-                                tests: nil,
-                                mock: nil))
-        
+        completion(&document.families[familyIndex].components[componentIndex].wrappedValue)
+    }
+
+    func selectComponent(withName name: Name) {
+        document.selectedName.wrappedValue = name
+    }
+
+    func selectFamily(withName name: String) {
+        document.selectedFamilyName.wrappedValue = name
+    }
+    
+    func addDependencyToSelectedComponent(dependencyName: Name) {
+        getSelectedComponent { $0.dependencies.insert(ComponentDependency(name: dependencyName,
+                                                                          contract: nil,
+                                                                          implementation: nil,
+                                                                          tests: nil,
+                                                                          mock: nil))
+        }
+    }
+
+    func setIOSVersionForSelectedComponent(iOSVersion: IOSVersion) {
+        getSelectedComponent { $0.iOSVersion = iOSVersion }
+    }
+
+    func removeIOSVersionForSelectedComponent() {
+        getSelectedComponent { $0.iOSVersion = nil }
+    }
+
+    func setMacOSVersionForSelectedComponent(macOSVersion: MacOSVersion) {
+        getSelectedComponent { $0.macOSVersion = macOSVersion }
+    }
+
+    func removeMacOSVersionForSelectedComponent() {
+        getSelectedComponent { $0.macOSVersion = nil }
+    }
+
+    func addModuleTypeForSelectedComponent(moduleType: ModuleType) {
+        getSelectedComponent { $0.modules.insert(moduleType) }
+    }
+
+    func removeModuleTypeForSelectedComponent(moduleType: ModuleType) {
+        getSelectedComponent { $0.modules.remove(moduleType) }
+    }
+
+    func removeSelectedComponent() {
+        guard
+            let selectedName = selectedName,
+            let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.components.contains(where: { $0.name == selectedName }) }),
+            let componentIndex = document.families.wrappedValue[familyIndex].components.firstIndex(where: { $0.name == selectedName })
+        else { return }
+        document.families[familyIndex].components.wrappedValue.remove(at: componentIndex)
+        document.families.wrappedValue.removeAll(where: { $0.components.isEmpty })
+    }
+
+    func removeDependencyForSelectedComponent(componentDependency: ComponentDependency) {
+        getSelectedComponent { $0.dependencies.remove(componentDependency) }
+    }
+
+    func updateModuleTypeForDependency(dependency: ComponentDependency, type: DependencyType, value: ModuleType?) {
+        getSelectedComponent { component in
+            guard var temp = component.dependencies.remove(dependency)
+            else { return }
+            switch type {
+            case .contract:
+                temp.contract = value
+            case .implementation:
+                temp.implementation = value
+            case .tests:
+                temp.tests = value
+            case .mock:
+                temp.mock = value
+            }
+            component.dependencies.insert(temp)
+        }
     }
 }

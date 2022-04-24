@@ -12,7 +12,7 @@ struct ComponentDependenciesPopover: View {
                     store.selectedName != name && store.selectedComponentDependencies.contains(where: { dependency in dependency.name == name }) == false
                 }) { name in
                     Button {
-                        store.send(action: .addDependencyToSelectedComponent(dependencyName: name))
+                        store.addDependencyToSelectedComponent(dependencyName: name)
                         showingPopup = false
                     } label: {
                         Text("\(name.family): \(store.title(for: name))")

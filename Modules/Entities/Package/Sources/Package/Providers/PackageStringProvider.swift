@@ -100,7 +100,7 @@ let package = Package(
         return value
     }
 
-    private func iOSPlatformString(_ iOSPlatform: iOSVersion) -> String {
+    private func iOSPlatformString(_ iOSPlatform: IOSVersion) -> String {
         switch iOSPlatform {
         case .v13:
             return ".iOS(.v13)"
@@ -111,7 +111,7 @@ let package = Package(
         }
     }
 
-    private func macOSPlatformString(_ macOSVersion: macOSVersion) -> String {
+    private func macOSPlatformString(_ macOSVersion: MacOSVersion) -> String {
         switch macOSVersion {
         case .v12:
             return ".macOS(.v12)"

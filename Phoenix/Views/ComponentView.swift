@@ -2,120 +2,108 @@ import Package
 import SwiftUI
 
 struct ComponentView: View {
-    @EnvironmentObject var store: PhoenixDocumentStore
+    @EnvironmentObject private var store: PhoenixDocumentStore
 
-    @Binding var component: Component?
+    let component: Component
     @State private var showingPopup: Bool = false
-    let onRemove: () -> Void
 
     var body: some View {
         ZStack {
             List {
                 VStack(alignment: .leading) {
-                    if let component = component {
-                        HStack {
-                            Text(store.title(for: component.name))
-                                .font(.largeTitle)
-                                .multilineTextAlignment(.leading)
-                            Spacer()
-                            Button(role: .destructive, action: onRemove) {
-                                Image(systemName: "trash")
-                            }.help("Remove")
-                        }
-                        Divider()
-                        HStack {
-                            Text("Platforms:")
-                            Menu(iOSPlatformMenuTitle) {
-                                ForEach(iOSVersion.allCases) { version in
-                                    Button(action: { self.component?.iOSVersion = version }) {
-                                        Text("\(String(describing: version))")
-                                    }
+                    HStack {
+                        Text(store.title(for: component.name))
+                            .font(.largeTitle)
+                            .multilineTextAlignment(.leading)
+                        Spacer()
+                        Button(role: .destructive, action: { store.removeSelectedComponent() }) {
+                            Image(systemName: "trash")
+                        }.help("Remove")
+                    }
+                    Divider()
+                    HStack {
+                        Text("Platforms:")
+                        Menu(iOSPlatformMenuTitle) {
+                            ForEach(IOSVersion.allCases) { version in
+                                Button(action: { store.setIOSVersionForSelectedComponent(iOSVersion: version) }) {
+                                    Text("\(String(describing: version))")
                                 }
-                                if component.iOSVersion != nil {
-                                    Button(action: { self.component?.iOSVersion = nil }) {
-                                        Text("Remove")
-                                    }
-                                }
-                            }.frame(width: 150)
-                            Menu(macOSPlatformMenuTitle) {
-                                ForEach(macOSVersion.allCases) { version in
-                                    Button(action: { self.component?.macOSVersion = version }) {
-                                        Text("\(String(describing: version))")
-                                    }
-                                }
-                                if component.macOSVersion != nil {
-                                    Button(action: { self.component?.macOSVersion = nil }) {
-                                        Text("Remove")
-                                    }
-                                }
-                            }.frame(width: 150)
-                        }
-                        Divider()
-                        HStack {
-                            Text("Module Types:")
-                            Toggle(isOn: Binding(
-                                get: { self.component?.modules.contains(.contract) == true },
-                                set: { isOn in
-                                    if isOn {
-                                        self.component?.modules.insert(.contract)
-                                    } else {
-                                        self.component?.modules.remove(.contract)
-                                    }
-                                }),
-                                   label: { Text("Contract") })
-                            Toggle(isOn: Binding(
-                                get: { self.component?.modules.contains(.implementation) == true },
-                                set: { isOn in
-                                    if isOn {
-                                        self.component?.modules.insert(.implementation)
-                                    } else {
-                                        self.component?.modules.remove(.implementation)
-                                    }
-                                }),
-                                   label: { Text("Implementation") })
-                            Toggle(isOn: Binding(
-                                get: { self.component?.modules.contains(.mock) == true },
-                                set: { isOn in
-                                    if isOn {
-                                        self.component?.modules.insert(.mock)
-                                    } else {
-                                        self.component?.modules.remove(.mock)
-                                    }
-                                }),
-                                   label: { Text("Mock") })
-                        }
-                        Divider()
-
-                        Section {
-                            ForEach(component.dependencies.sorted(by: { $0.name.full < $1.name.full })) { dependency in
-                                DependencyView(dependency: Binding(get: { dependency },
-                                                                   set: {
-                                    self.component?.dependencies.remove(dependency)
-                                    self.component?.dependencies.insert($0)
-                                }),
-                                               types: component.modules,
-                                               onDelete: { self.component?.dependencies.remove(dependency) })
-                                .padding([.vertical])
                             }
-                        } header: {
-                            HStack {
-                                Text("Dependencies")
-                                    .font(.largeTitle)
-                                Button(action: {
-                                    showingPopup = true
-                                }, label: { Image(systemName: "plus") })
+                            if component.iOSVersion != nil {
+                                Button(action: { store.removeIOSVersionForSelectedComponent() }) {
+                                    Text("Remove")
+                                }
+                            }
+                        }.frame(width: 150)
+                        Menu(macOSPlatformMenuTitle) {
+                            ForEach(MacOSVersion.allCases) { version in
+                                Button(action: { store.setMacOSVersionForSelectedComponent(macOSVersion: version) }) {
+                                    Text("\(String(describing: version))")
+                                }
+                            }
+                            if component.macOSVersion != nil {
+                                Button(action: { store.removeMacOSVersionForSelectedComponent() }) {
+                                    Text("Remove")
+                                }
+                            }
+                        }.frame(width: 150)
+                    }
+                    Divider()
+                    HStack {
+                        Text("Module Types:")
+                        Toggle(isOn: Binding(
+                            get: { component.modules.contains(.contract) },
+                            set: { isOn in
+                                if isOn {
+                                    store.addModuleTypeForSelectedComponent(moduleType: .contract)
+                                } else {
+                                    store.removeModuleTypeForSelectedComponent(moduleType: .contract)
+                                }
+                            }),
+                               label: { Text("Contract") })
+                        Toggle(isOn: Binding(
+                            get: { component.modules.contains(.implementation) },
+                            set: { isOn in
+                                if isOn {
+                                    store.addModuleTypeForSelectedComponent(moduleType: .implementation)
+                                } else {
+                                    store.removeModuleTypeForSelectedComponent(moduleType: .implementation)
+                                }
+                            }),
+                               label: { Text("Implementation") })
+                        Toggle(isOn: Binding(
+                            get: { component.modules.contains(.mock) },
+                            set: { isOn in
+                                if isOn {
+                                    store.addModuleTypeForSelectedComponent(moduleType: .mock)
+                                } else {
+                                    store.removeModuleTypeForSelectedComponent(moduleType: .mock)
+                                }
+                            }),
+                               label: { Text("Mock") })
+                    }
+                    Divider()
+
+                    Section {
+                        ForEach(component.dependencies.sorted(by: { $0.name.full < $1.name.full })) { dependency in
+                            VStack(spacing: 0) {
+                                Divider()
+                                DependencyView(dependency: dependency,
+                                               types: component.modules)
                             }
                         }
-
-                        Divider()
-
-                    } else {
+                        .padding([.vertical])
+                    } header: {
                         HStack {
-                            Text("No Component Selected")
+                            Text("Dependencies")
                                 .font(.largeTitle)
-                                .foregroundColor(.gray)
+                            Button(action: {
+                                showingPopup = true
+                            }, label: { Image(systemName: "plus") })
                         }
                     }
+
+                    Divider()
                 }
                 .padding()
 
@@ -126,7 +114,7 @@ struct ComponentView: View {
     }
 
     private var iOSPlatformMenuTitle: String {
-        if let iOSVersion = component?.iOSVersion {
+        if let iOSVersion = component.iOSVersion {
             return ".iOS(.\(iOSVersion))"
         } else {
             return "Add iOS"
@@ -134,7 +122,7 @@ struct ComponentView: View {
     }
 
     private var macOSPlatformMenuTitle: String {
-        if let macOSVersion = component?.macOSVersion {
+        if let macOSVersion = component.macOSVersion {
             return ".macOS(.\(macOSVersion))"
         } else {
             return "Add macOS"
@@ -142,26 +130,26 @@ struct ComponentView: View {
     }
 }
 
-struct ComponentView_Previews: PreviewProvider {
-    struct Preview: View {
-        @State var component: Component? = Component(
-            name: Name(given: "Wordpress", family: "Repository"),
-            iOSVersion: .v13,
-            macOSVersion: .v12,
-            modules: .init(arrayLiteral: .contract, .implementation, .mock),
-            dependencies: [])
-
-        var body: some View {
-            ComponentView(component: $component,
-                          onRemove: {})
-        }
-    }
-
-    static var previews: some View {
-        Group {
-            Preview()
-            ComponentView(component: .constant(nil),
-                          onRemove: {})
-        }
-    }
-}
+//struct ComponentView_Previews: PreviewProvider {
+//    struct Preview: View {
+//        @State var component: Component? = Component(
+//            name: Name(given: "Wordpress", family: "Repository"),
+//            iOSVersion: .v13,
+//            macOSVersion: .v12,
+//            modules: .init(arrayLiteral: .contract, .implementation, .mock),
+//            dependencies: [])
+//
+//        var body: some View {
+//            ComponentView(component: $component,
+//                          onRemove: {})
+//        }
+//    }
+//
+//    static var previews: some View {
+//        Group {
+//            Preview()
+//            ComponentView(component: .constant(nil),
+//                          onRemove: {})
+//        }
+//    }
+//}

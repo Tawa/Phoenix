@@ -1,4 +1,4 @@
-public enum iOSVersion: Codable, Hashable, CaseIterable, Identifiable {
+public enum IOSVersion: Codable, Hashable, CaseIterable, Identifiable {
     public var id: Int { hashValue }
 
     case v13
