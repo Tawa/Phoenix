@@ -104,6 +104,12 @@ struct ComponentDependenciesPopover: View {
                                 .padding()
                                 Spacer()
                             }
+
+                            Button(action: { store.addRemoteDependencyToSelectedComponent(dependency: RemoteDependency(url: externalURL,
+                                                                                                                       name: externalName,
+                                                                                                                       value: externalDescription)) }) {
+                                Text("Add Remote Dependency")
+                            }
                         }
                     }
                     .padding()

@@ -76,7 +76,7 @@ let package = Package(
         case .module(let path, _):
             return "        .package(path: \"\(path)\"),\n"
         case .external(let url, _, let description):
-            return "        .package(url: \"\(url)\", \(externalDependencyDescriptionString(description)),\n"
+            return "        .package(url: \"\(url)\", \(externalDependencyDescriptionString(description))),\n"
         }
     }
 
@@ -85,7 +85,7 @@ let package = Package(
         case .from(let value):
             return "from: \"\(value)\""
         case .branch(let name):
-            return ".branch(\"\(name)\")"
+            return "branch: \"\(name)\""
         }
     }
     

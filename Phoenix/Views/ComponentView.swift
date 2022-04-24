@@ -92,6 +92,9 @@ struct ComponentView: View {
                                 case let .local(dependency):
                                     DependencyView(dependency: dependency,
                                                    types: component.modules)
+                                case let .remote(dependency):
+                                    RemoteDependencyView(dependency: dependency,
+                                                         types: component.modules)
                                 }
                             }
                         }

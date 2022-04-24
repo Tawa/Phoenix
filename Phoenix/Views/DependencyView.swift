@@ -74,7 +74,7 @@ struct DependencyView: View {
                     })
                 }
             }
-        }
+        }.padding()
     }
 }
 

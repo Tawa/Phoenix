@@ -36,6 +36,10 @@ struct ContractPackageExtractor: PackageExtracting {
                                                                     name: componentDependency.name,
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
+            case let .remote(remoteDependency):
+                return Dependency.external(url: remoteDependency.url,
+                                           name: remoteDependency.name,
+                                           description: remoteDependency.value)
             }
         }
         dependencies.sort()
@@ -107,6 +111,10 @@ struct ImplementationPackageExtractor: PackageExtracting {
                                                                     name: componentDependency.name,
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
+            case let .remote(remoteDependency):
+                return Dependency.external(url: remoteDependency.url,
+                                           name: remoteDependency.name,
+                                           description: remoteDependency.value)
             }
         }
         let testsDependencies = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
@@ -123,6 +131,10 @@ struct ImplementationPackageExtractor: PackageExtracting {
                                                                     name: componentDependency.name,
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
+            case let .remote(remoteDependency):
+                return Dependency.external(url: remoteDependency.url,
+                                           name: remoteDependency.name,
+                                           description: remoteDependency.value)
             }
         }
         
@@ -206,6 +218,10 @@ struct MockPackageExtractor: PackageExtracting {
                                                                     name: componentDependency.name,
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
+            case let .remote(remoteDependency):
+                return Dependency.external(url: remoteDependency.url,
+                                           name: remoteDependency.name,
+                                           description: remoteDependency.value)
             }
         }
         dependencies.append(contentsOf: otherDependencies)

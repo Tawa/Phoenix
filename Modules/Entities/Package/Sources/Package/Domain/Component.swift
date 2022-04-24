@@ -44,20 +44,49 @@ public struct ComponentDependency: Codable, Hashable, Identifiable {
     }
 }
 
+public struct RemoteDependency: Codable, Hashable, Identifiable {
+    public var id: String { url }
+
+    public let url: String
+    public let name: String
+    public let value: ExternalDependencyDescription
+    public var contract: Bool = false
+    public var implementation: Bool = false
+    public var tests: Bool = false
+    public var mock: Bool = false
+
+    public init(url: String,
+                name: String,
+                value: ExternalDependencyDescription) {
+        self.url = url
+        self.name = name
+        self.value = value
+    }
+}
+
 public enum ComponentDependencyType: Codable, Hashable, Identifiable, Comparable {
     public var id: String {
         switch self {
         case let .local(value):
             return value.id
+        case let .remote(value):
+            return value.id
         }
     }
 
     case local(ComponentDependency)
+    case remote(RemoteDependency)
 
     public static func <(lhs: ComponentDependencyType, rhs: ComponentDependencyType) -> Bool {
         switch (lhs, rhs) {
         case (.local(let lhsValue), .local(let rhsValue)):
             return lhsValue.id < rhsValue.id
+        case (.remote(let lhsValue), .remote(let rhsValue)):
+            return lhsValue.id < rhsValue.id
+        case (.remote(_), .local(_)):
+            return false
+        case (.local(_), .remote(_)):
+            return true
         }
     }
 }
