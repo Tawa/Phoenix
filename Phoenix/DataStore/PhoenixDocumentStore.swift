@@ -92,6 +92,7 @@ class PhoenixDocumentStore: ObservableObject {
                                      iOSVersion: nil,
                                      macOSVersion: nil,
                                      modules: [.contract, .implementation, .mock],
+                                     moduleTypes: [.contract: .dynamic, .implementation: .static],
                                      dependencies: [])
         array.append(newComponent)
         array.sort(by: { $0.name.full < $1.name.full })
@@ -159,6 +160,10 @@ class PhoenixDocumentStore: ObservableObject {
 
     func removeModuleTypeForSelectedComponent(moduleType: ModuleType) {
         getSelectedComponent { $0.modules.remove(moduleType) }
+    }
+
+    func set(libraryType: LibraryType?, forModuleType moduleType: ModuleType) {
+        getSelectedComponent { $0.moduleTypes[moduleType] = libraryType }
     }
 
     func removeSelectedComponent() {

@@ -51,7 +51,7 @@ struct ContractPackageExtractor: PackageExtracting {
                 macOSVersion: component.macOSVersion,
                 products: [
                     .library(Library(name: packageName,
-                                     type: .dynamic,
+                                     type: component.moduleTypes[.contract],
                                      targets: [packageName]))],
                 dependencies: dependencies,
                 targets: [
@@ -145,7 +145,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                 macOSVersion: component.macOSVersion,
                 products: [
                     .library(Library(name: packageName,
-                                     type: .static,
+                                     type: component.moduleTypes[.implementation],
                                      targets: [packageName]))],
                 dependencies: Array(Set((dependencies + implementationDependencies + testsDependencies))).sorted(),
                 targets: [
@@ -234,7 +234,7 @@ struct MockPackageExtractor: PackageExtracting {
                 macOSVersion: component.macOSVersion,
                 products: [
                     .library(Library(name: packageName,
-                                     type: nil,
+                                     type: component.moduleTypes[.mock],
                                      targets: [packageName]))],
                 dependencies: dependencies,
                 targets: [

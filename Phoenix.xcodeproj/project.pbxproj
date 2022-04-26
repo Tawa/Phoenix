@@ -18,6 +18,8 @@
 		3873E5AA2804C50A000BCB03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5A92804C50A000BCB03 /* Assets.xcassets */; };
 		3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5AC2804C50A000BCB03 /* Preview Assets.xcassets */; };
 		3873E5B92804C50A000BCB03 /* PhoenixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5B82804C50A000BCB03 /* PhoenixTests.swift */; };
+		388DA8A6281862630066086A /* CustomToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A5281862630066086A /* CustomToggle.swift */; };
+		388DA8A8281863750066086A /* CustomMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A7281863750066086A /* CustomMenu.swift */; };
 		38C7D13B2808864700E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13A2808864700E2675B /* Package */; };
 		38C7D1492808B35300E2675B /* NewComponentPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D1482808B35300E2675B /* NewComponentPopover.swift */; };
 		38E0B2FA2815702E00B5992D /* ComponentDependenciesPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */; };
@@ -65,6 +67,8 @@
 		3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Phoenix.entitlements; sourceTree = "<group>"; };
 		3873E5B42804C50A000BCB03 /* PhoenixTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3873E5B82804C50A000BCB03 /* PhoenixTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixTests.swift; sourceTree = "<group>"; };
+		388DA8A5281862630066086A /* CustomToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggle.swift; sourceTree = "<group>"; };
+		388DA8A7281863750066086A /* CustomMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMenu.swift; sourceTree = "<group>"; };
 		38C7D13428087FA800E2675B /* Package */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package; sourceTree = "<group>"; };
 		38C7D1482808B35300E2675B /* NewComponentPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewComponentPopover.swift; sourceTree = "<group>"; };
 		38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentDependenciesPopover.swift; sourceTree = "<group>"; };
@@ -144,6 +148,15 @@
 			path = PhoenixTests;
 			sourceTree = "<group>";
 		};
+		388DA8A4281862420066086A /* Reusable */ = {
+			isa = PBXGroup;
+			children = (
+				388DA8A5281862630066086A /* CustomToggle.swift */,
+				388DA8A7281863750066086A /* CustomMenu.swift */,
+			);
+			path = Reusable;
+			sourceTree = "<group>";
+		};
 		38BA7BB32804C58E00BE3B9F /* Modules */ = {
 			isa = PBXGroup;
 			children = (
@@ -170,6 +183,7 @@
 		38C7D144280888E800E2675B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				388DA8A4281862420066086A /* Reusable */,
 				38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */,
 				38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */,
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
@@ -308,11 +322,13 @@
 				38E0B2FD2815766E00B5992D /* PhoenixDocumentStore.swift in Sources */,
 				38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilyPopover.swift in Sources */,
+				388DA8A8281863750066086A /* CustomMenu.swift in Sources */,
 				3810D8CF28099B82006E7EE3 /* ComponentListItem.swift in Sources */,
 				3873E5A62804C509000BCB03 /* PhoenixDocument.swift in Sources */,
 				3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */,
 				3810D8DF280B4ADD006E7EE3 /* DependencyView.swift in Sources */,
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
+				388DA8A6281862630066086A /* CustomToggle.swift in Sources */,
 				38F73EB7280DC0DB00D6A85D /* PackageGenerator.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesPopover.swift in Sources */,
