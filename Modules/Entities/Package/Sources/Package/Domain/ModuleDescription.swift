@@ -1,3 +1,18 @@
+public enum ExternalDependencyName: Codable, Hashable, Identifiable {
+    public var id: Int { hashValue }
+    public var name: String {
+        switch self {
+        case .name(let string):
+            return string
+        case .product(let name, _):
+            return name
+        }
+    }
+
+    case name(String)
+    case product(name: String, package: String)
+}
+
 public enum ExternalDependencyDescription: Codable, Hashable, Identifiable {
     public var id: Int { hashValue }
 
@@ -7,9 +22,21 @@ public enum ExternalDependencyDescription: Codable, Hashable, Identifiable {
 
 public enum Dependency: Codable, Hashable, Identifiable, Comparable {
     public var id: Int { hashValue }
+    public var name: String {
+        switch self {
+        case .module(_, let name):
+            return name
+        case .external(_, let name, _):
+            return name.name
+        }
+    }
 
-    case module(path: String, name: String)
-    case external(url: String, name: String, description: ExternalDependencyDescription)
+    case module(path: String,
+                name: String)
+
+    case external(url: String,
+                  name: ExternalDependencyName,
+                  description: ExternalDependencyDescription)
 
     public static func <(lhs: Dependency, rhs: Dependency) -> Bool {
         switch (lhs, rhs) {

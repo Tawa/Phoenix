@@ -91,9 +91,15 @@ let package = Package(
     
     private func targetDependencyString(_ dependency: Dependency) -> String {
         switch dependency {
-        case .module(_, let name),
-                .external(_, let name, _):
+        case .module(_, let name):
             return "                \"\(name)\",\n"
+        case .external(_, let name, _):
+            switch name {
+            case let .name(value):
+                return "                \"\(value)\",\n"
+            case let.product(name, package):
+                return "                .product(name: \"\(name)\", package: \"\(package)\"),\n"
+            }
         }
     }
     

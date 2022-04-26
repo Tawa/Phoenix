@@ -10,7 +10,7 @@ struct RemoteDependencyView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text(dependency.name)
+                Text(dependency.name.name)
                     .font(.largeTitle)
                 Button(action: {
                     store.removeRemoteDependencyForSelectedComponent(dependency: dependency)
@@ -54,7 +54,7 @@ struct RemoteDependencyView: View {
 struct RemoteDependencyView_Previews: PreviewProvider {
     static var previews: some View {
         RemoteDependencyView(dependency: RemoteDependency(url: "git@github.com:team/repo.git",
-                                                          name: "RepoName",
+                                                          name: .name("Repo Name"),
                                                           value: .branch(name: "main")),
                              types: Set(ModuleType.allCases))
     }
