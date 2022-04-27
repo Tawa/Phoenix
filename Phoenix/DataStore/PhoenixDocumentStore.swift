@@ -213,4 +213,29 @@ class PhoenixDocumentStore: ObservableObject {
             component.dependencies.insert(.remote(temp))
         }
     }
+
+    func addResourceFolder(withFolderName folderName: String) -> String {
+        let newResource = ComponentResources(folderName: folderName, type: .process, targets: [])
+        getSelectedComponent { component in
+            var resources = component.resources
+            resources.append(newResource)
+            component.resources = resources
+        }
+        print("New Folder")
+        return newResource.id
+    }
+
+    func updateResourceFolderName(to folderName: String, forId uuid: String) {
+        getSelectedComponent { component in
+            guard
+                let index = component.resources.firstIndex(where: { $0.id == uuid })
+            else { return }
+            if folderName.isEmpty {
+                component.resources.removeAll(where: { $0.id == uuid })
+            } else {
+                component.resources[index].folderName = folderName
+                component.resources.sort()
+            }
+        }
+    }
 }

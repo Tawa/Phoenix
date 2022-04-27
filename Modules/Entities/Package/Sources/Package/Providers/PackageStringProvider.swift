@@ -113,7 +113,7 @@ let package = Package(
             value += "        .target(\n"
         }
         value += "            name: \"\(target.name)\""
-//        if !target.dependencies.isEmpty || !target.resources
+        value += !target.dependencies.isEmpty ? ",\n" : "\n"
 
         if !target.dependencies.isEmpty {
             value += ",\n            dependencies: [\n"
@@ -121,9 +121,8 @@ let package = Package(
                 value += targetDependencyString(dependency)
             }
             value += "            ]\n"
-        } else {
-            value += "\n"
         }
+
         value += "        ),\n"
         return value
     }

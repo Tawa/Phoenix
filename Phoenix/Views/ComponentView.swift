@@ -7,6 +7,8 @@ struct ComponentView: View {
     let component: Component
     @Binding var showingDependencyPopover: Bool
 
+    @FocusState private var focusedField: String?
+
     var body: some View {
         ZStack {
             List {
@@ -112,7 +114,26 @@ struct ComponentView: View {
                             }, label: { Image(systemName: "plus") })
                         }
                     }
+                    Divider()
 
+                    Section {
+                        ForEach(component.resources.sorted()) { resource in
+                            TextField("Folder Name", text: Binding(get: { resource.folderName },
+                                                                   set: { store.updateResourceFolderName(to: $0, forId: resource.id) }))
+                            .focused($focusedField, equals: resource.id)
+                        }
+                        .padding([.vertical])
+
+                        TextField("New Resources Folder Name",
+                                  text: Binding(get: { "" },
+                                                set: {
+                            let uuid = store.addResourceFolder(withFolderName: $0)
+                            focusedField = uuid
+                        }))
+                    } header: {
+                        Text("Resources")
+                            .font(.largeTitle)
+                    }
                     Divider()
                 }
                 .padding()
