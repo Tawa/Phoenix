@@ -57,7 +57,8 @@ struct ContractPackageExtractor: PackageExtracting {
                 targets: [
                     Target(name: packageName,
                            dependencies: dependencies,
-                           isTest: false)
+                           isTest: false,
+                           resources: [])
                 ]
             ),
             path: packagePathProvider.path(for: component.name,
@@ -151,12 +152,15 @@ struct ImplementationPackageExtractor: PackageExtracting {
                 targets: [
                     Target(name: packageName,
                            dependencies: (implementationDependencies + dependencies).sorted(),
-                           isTest: false),
+                           isTest: false,
+                           resources: []),
                     Target(name: packageName + "Tests",
                            dependencies: (testsDependencies + [
                             Dependency.module(path: "",
                                               name: packageName)
-                           ]).sorted(), isTest: true)
+                           ]).sorted(),
+                           isTest: true,
+                           resources: [])
                 ]
             ),
             path: packagePathProvider.path(for: component.name,
@@ -240,7 +244,8 @@ struct MockPackageExtractor: PackageExtracting {
                 targets: [
                     Target(name: packageName,
                            dependencies: dependencies,
-                           isTest: false)
+                           isTest: false,
+                           resources: [])
                 ]
             ),
             path: packagePathProvider.path(for: component.name,

@@ -1,13 +1,6 @@
 import Package
 import SwiftUI
 
-enum DependencyType {
-    case contract
-    case implementation
-    case tests
-    case mock
-}
-
 class PhoenixDocumentStore: ObservableObject {
     private var document: Binding<PhoenixDocument>
     
@@ -50,11 +43,11 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    // MARK: - Private
-    private func family(for name: Name) -> Family? {
+    func family(for name: Name) -> Family? {
         document.families.first(where: { name.family == $0.wrappedValue.family.name })?.family.wrappedValue
     }
 
+    // MARK: - Private
     private func getSelectedComponent(_ completion: (inout Component) -> Void) {
         guard
             let selectedName = selectedName,
@@ -93,7 +86,8 @@ class PhoenixDocumentStore: ObservableObject {
                                      macOSVersion: nil,
                                      modules: [.contract, .implementation, .mock],
                                      moduleTypes: [.contract: .dynamic, .implementation: .static],
-                                     dependencies: [])
+                                     dependencies: [],
+                                     resources: [])
         array.append(newComponent)
         array.sort(by: { $0.name.full < $1.name.full })
 
@@ -184,7 +178,7 @@ class PhoenixDocumentStore: ObservableObject {
         getSelectedComponent { $0.dependencies.remove(.remote(dependency)) }
     }
 
-    func updateModuleTypeForDependency(dependency: ComponentDependency, type: DependencyType, value: ModuleType?) {
+    func updateModuleTypeForDependency(dependency: ComponentDependency, type: TargetType, value: ModuleType?) {
         getSelectedComponent { component in
             guard case var .local(temp) = component.dependencies.remove(.local(dependency))
             else { return }
@@ -202,7 +196,7 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func updateModuleTypeForRemoteDependency(dependency: RemoteDependency, type: DependencyType, value: Bool) {
+    func updateModuleTypeForRemoteDependency(dependency: RemoteDependency, type: TargetType, value: Bool) {
         getSelectedComponent { component in
             guard case var .remote(temp) = component.dependencies.remove(.remote(dependency))
             else { return }

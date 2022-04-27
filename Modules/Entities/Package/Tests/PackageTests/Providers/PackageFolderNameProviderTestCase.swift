@@ -7,7 +7,7 @@ class PackageFolderNameProviderTestCase: XCTestCase {
         // Given
         let familyFolderNameProviderMock = FamilyFolderNameProviderMock(value: "Test")
         let name = Name(given: "Given", family: "Family")
-        let family = Family(name: "Family", ignoreSuffix: nil, folder: "FamilyFolder")
+        let family = Family(name: "Family", ignoreSuffix: false, folder: "FamilyFolder")
         let sut = PackageFolderNameProvider(defaultFolderNameProvider: familyFolderNameProviderMock)
 
 
@@ -22,7 +22,7 @@ class PackageFolderNameProviderTestCase: XCTestCase {
         // Given
         let familyFolderNameProviderMock = FamilyFolderNameProviderMock(value: "Test")
         let name = Name(given: "Given", family: "Family")
-        let family = Family(name: "Family", ignoreSuffix: nil, folder: nil)
+        let family = Family(name: "Family", ignoreSuffix: false, folder: nil)
         let sut = PackageFolderNameProvider(defaultFolderNameProvider: familyFolderNameProviderMock)
 
 

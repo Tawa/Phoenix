@@ -20,11 +20,13 @@
 		3873E5B92804C50A000BCB03 /* PhoenixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5B82804C50A000BCB03 /* PhoenixTests.swift */; };
 		388DA8A6281862630066086A /* CustomToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A5281862630066086A /* CustomToggle.swift */; };
 		388DA8A8281863750066086A /* CustomMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A7281863750066086A /* CustomMenu.swift */; };
+		389D6C502819AF3E004D8205 /* TargetResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389D6C4F2819AF3E004D8205 /* TargetResources.swift */; };
 		38C7D13B2808864700E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13A2808864700E2675B /* Package */; };
 		38C7D1492808B35300E2675B /* NewComponentPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D1482808B35300E2675B /* NewComponentPopover.swift */; };
 		38E0B2FA2815702E00B5992D /* ComponentDependenciesPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */; };
 		38E0B2FD2815766E00B5992D /* PhoenixDocumentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2FC2815766E00B5992D /* PhoenixDocumentStore.swift */; };
 		38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */; };
+		38E33350281875D300407B96 /* ComponentPreviewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3334F281875D300407B96 /* ComponentPreviewsView.swift */; };
 		38F73EB7280DC0DB00D6A85D /* PackageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */; };
 /* End PBXBuildFile section */
 
@@ -69,11 +71,13 @@
 		3873E5B82804C50A000BCB03 /* PhoenixTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixTests.swift; sourceTree = "<group>"; };
 		388DA8A5281862630066086A /* CustomToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggle.swift; sourceTree = "<group>"; };
 		388DA8A7281863750066086A /* CustomMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMenu.swift; sourceTree = "<group>"; };
+		389D6C4F2819AF3E004D8205 /* TargetResources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TargetResources.swift; path = Modules/Entities/Package/Sources/Package/Domain/Package/TargetResources.swift; sourceTree = "<group>"; };
 		38C7D13428087FA800E2675B /* Package */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package; sourceTree = "<group>"; };
 		38C7D1482808B35300E2675B /* NewComponentPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewComponentPopover.swift; sourceTree = "<group>"; };
 		38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentDependenciesPopover.swift; sourceTree = "<group>"; };
 		38E0B2FC2815766E00B5992D /* PhoenixDocumentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentStore.swift; sourceTree = "<group>"; };
 		38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencyView.swift; sourceTree = "<group>"; };
+		38E3334F281875D300407B96 /* ComponentPreviewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentPreviewsView.swift; sourceTree = "<group>"; };
 		38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageGenerator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,6 +103,7 @@
 		3873E5972804C509000BCB03 = {
 			isa = PBXGroup;
 			children = (
+				389D6C4F2819AF3E004D8205 /* TargetResources.swift */,
 				38BA7BB32804C58E00BE3B9F /* Modules */,
 				3873E5A22804C509000BCB03 /* Phoenix */,
 				3873E5B72804C50A000BCB03 /* PhoenixTests */,
@@ -189,6 +194,7 @@
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
 				3810D8CC280990AF006E7EE3 /* ComponentsList.swift */,
 				3810D8CA2809811F006E7EE3 /* ComponentView.swift */,
+				38E3334F281875D300407B96 /* ComponentPreviewsView.swift */,
 				3873E5A72804C509000BCB03 /* ContentView.swift */,
 				3810D8DE280B4ADD006E7EE3 /* DependencyView.swift */,
 				3810D8D22809C555006E7EE3 /* FamilyPopover.swift */,
@@ -328,8 +334,10 @@
 				3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */,
 				3810D8DF280B4ADD006E7EE3 /* DependencyView.swift in Sources */,
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
+				38E33350281875D300407B96 /* ComponentPreviewsView.swift in Sources */,
 				388DA8A6281862630066086A /* CustomToggle.swift in Sources */,
 				38F73EB7280DC0DB00D6A85D /* PackageGenerator.swift in Sources */,
+				389D6C502819AF3E004D8205 /* TargetResources.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesPopover.swift in Sources */,
 				38C7D1492808B35300E2675B /* NewComponentPopover.swift in Sources */,

@@ -106,7 +106,7 @@ struct ComponentDependenciesPopover: View {
                                     .font(.largeTitle)
                                     .padding()
                                 if case .product(_, let package) = externalName {
-                                    TextField("Product", text: Binding(get: { package }, set: { update(externalProduct: $0) }))
+                                    TextField("Package", text: Binding(get: { package }, set: { update(externalProduct: $0) }))
                                         .font(.largeTitle)
                                         .padding()
                                 }

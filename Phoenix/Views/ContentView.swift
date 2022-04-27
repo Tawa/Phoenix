@@ -125,7 +125,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                .frame(minWidth: 500)
+                .frame(minWidth: 700)
             }
 
             if let family = store.selectedFamily {

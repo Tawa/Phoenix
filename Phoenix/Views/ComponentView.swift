@@ -144,27 +144,3 @@ struct ComponentView: View {
         }
     }
 }
-
-//struct ComponentView_Previews: PreviewProvider {
-//    struct Preview: View {
-//        @State var component: Component? = Component(
-//            name: Name(given: "Wordpress", family: "Repository"),
-//            iOSVersion: .v13,
-//            macOSVersion: .v12,
-//            modules: .init(arrayLiteral: .contract, .implementation, .mock),
-//            dependencies: [])
-//
-//        var body: some View {
-//            ComponentView(component: $component,
-//                          onRemove: {})
-//        }
-//    }
-//
-//    static var previews: some View {
-//        Group {
-//            Preview()
-//            ComponentView(component: .constant(nil),
-//                          onRemove: {})
-//        }
-//    }
-//}

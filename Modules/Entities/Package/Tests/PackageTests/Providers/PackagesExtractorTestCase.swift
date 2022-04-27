@@ -10,7 +10,9 @@ class PackagesExtractorTestCase: XCTestCase {
             iOSVersion: .v13,
             macOSVersion: nil,
             modules: [.contract, .implementation, .mock],
-            dependencies: [])
+            moduleTypes: [.contract: .static, .implementation: .dynamic],
+            dependencies: [],
+            resources: [])
         let family = Family(name: "Shared", ignoreSuffix: true, folder: "Shared")
 //        let sut = PackagesExtractor()
 //

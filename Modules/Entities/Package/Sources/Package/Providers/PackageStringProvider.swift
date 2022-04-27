@@ -35,10 +35,12 @@ let package = Package(
             value += productString(product)
         }
         value += "\n    ],\n"
-        
-        value += "    dependencies: [\n"
-        for dependency in package.dependencies.sorted() {
-            value += packageDependencyString(dependency)
+
+        if !package.dependencies.isEmpty {
+            value += "    dependencies: [\n"
+            for dependency in package.dependencies.sorted() {
+                value += packageDependencyString(dependency)
+            }
         }
         
         value += "    ],\n    targets: [\n"
@@ -110,11 +112,19 @@ let package = Package(
         } else {
             value += "        .target(\n"
         }
-        value += "            name: \"\(target.name)\",\n            dependencies: [\n"
-        for dependency in target.dependencies.sorted() {
-            value += targetDependencyString(dependency)
+        value += "            name: \"\(target.name)\""
+//        if !target.dependencies.isEmpty || !target.resources
+
+        if !target.dependencies.isEmpty {
+            value += ",\n            dependencies: [\n"
+            for dependency in target.dependencies.sorted() {
+                value += targetDependencyString(dependency)
+            }
+            value += "            ]\n"
+        } else {
+            value += "\n"
         }
-        value += "            ]),\n"
+        value += "        ),\n"
         return value
     }
 

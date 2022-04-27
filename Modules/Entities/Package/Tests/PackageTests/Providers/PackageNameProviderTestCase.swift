@@ -9,7 +9,7 @@ class PackageNameProviderTestCase: XCTestCase {
         // Given
         let name = Name(given: "Wordpress", family: "DataStore")
         let family = Family(name: "DataStore",
-                            ignoreSuffix: nil,
+                            ignoreSuffix: false,
                             folder: "DataStores")
 
         // When
@@ -37,7 +37,7 @@ class PackageNameProviderTestCase: XCTestCase {
         // Given
         let name = Name(given: "Wordpress", family: "DataStore")
         let family = Family(name: "DataStore",
-                            ignoreSuffix: nil,
+                            ignoreSuffix: false,
                             folder: "DataStores")
 
         // When
@@ -65,7 +65,7 @@ class PackageNameProviderTestCase: XCTestCase {
         // Given
         let name = Name(given: "Wordpress", family: "DataStore")
         let family = Family(name: "DataStore",
-                            ignoreSuffix: nil,
+                            ignoreSuffix: false,
                             folder: "DataStores")
 
         // When

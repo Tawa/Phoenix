@@ -60,12 +60,14 @@ let package = Package(
                 "HomeRepositoryContract",
                 "HomeServiceContract",
                 "DI",
-            ]),
+            ]
+        ),
         .testTarget(
             name: "HomeServiceTests",
             dependencies: [
                 "HomeService",
-            ]),
+            ]
+        ),
     ]
 )
 

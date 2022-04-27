@@ -8,7 +8,7 @@ class PackagePathProviderTestCase: XCTestCase {
     lazy var sut = PackagePathProvider(packageFolderNameProvider: packageFolderNameProviderMock,
                                        packageNameProvider: packageNameProviderMock)
     lazy var componentName = Name(given: "Given", family: "Family")
-    lazy var family = Family(name: "Family", ignoreSuffix: nil, folder: nil)
+    lazy var family = Family(name: "Family", ignoreSuffix: false, folder: nil)
 
     func testContractRelativeToContract() {
         // When
@@ -18,7 +18,7 @@ class PackagePathProviderTestCase: XCTestCase {
                             relativeToType: .contract)
 
         // Then
-        XCTAssertEqual(path, "../../../Contracts/PackageFolderName/PackageName")
+        XCTAssertEqual(path.full, "../../../Contracts/PackageFolderName/PackageName")
     }
 
     func testContractRelativeToImplementation() {
@@ -29,7 +29,7 @@ class PackagePathProviderTestCase: XCTestCase {
                             relativeToType: .implementation)
 
         // Then
-        XCTAssertEqual(path, "../../Contracts/PackageFolderName/PackageName")
+        XCTAssertEqual(path.full, "../../Contracts/PackageFolderName/PackageName")
     }
 
     func testContractRelativeToMock() {
@@ -40,7 +40,7 @@ class PackagePathProviderTestCase: XCTestCase {
                             relativeToType: .mock)
 
         // Then
-        XCTAssertEqual(path, "../../../Contracts/PackageFolderName/PackageName")
+        XCTAssertEqual(path.full, "../../../Contracts/PackageFolderName/PackageName")
     }
 
     func testImplementationRelativeToContract() {
@@ -51,7 +51,7 @@ class PackagePathProviderTestCase: XCTestCase {
                             relativeToType: .contract)
 
         // Then
-        XCTAssertEqual(path, "../../../PackageFolderName/PackageName")
+        XCTAssertEqual(path.full, "../../../PackageFolderName/PackageName")
     }
 
     func testImplementationRelativeToImplementation() {
@@ -62,7 +62,7 @@ class PackagePathProviderTestCase: XCTestCase {
                             relativeToType: .implementation)
 
         // Then
-        XCTAssertEqual(path, "../../PackageFolderName/PackageName")
+        XCTAssertEqual(path.full, "../../PackageFolderName/PackageName")
     }
 
     func testImplementationRelativeToMock() {
@@ -73,7 +73,7 @@ class PackagePathProviderTestCase: XCTestCase {
                             relativeToType: .mock)
 
         // Then
-        XCTAssertEqual(path, "../../../PackageFolderName/PackageName")
+        XCTAssertEqual(path.full, "../../../PackageFolderName/PackageName")
     }
 
     func testMockRelativeToContract() {
@@ -84,7 +84,7 @@ class PackagePathProviderTestCase: XCTestCase {
                             relativeToType: .contract)
 
         // Then
-        XCTAssertEqual(path, "../../../Mocks/PackageFolderName/PackageName")
+        XCTAssertEqual(path.full, "../../../Mocks/PackageFolderName/PackageName")
     }
 
     func testMockRelativeToImplementation() {
@@ -95,7 +95,7 @@ class PackagePathProviderTestCase: XCTestCase {
                             relativeToType: .implementation)
 
         // Then
-        XCTAssertEqual(path, "../../Mocks/PackageFolderName/PackageName")
+        XCTAssertEqual(path.full, "../../Mocks/PackageFolderName/PackageName")
     }
 
     func testMockRelativeToMock() {
@@ -106,7 +106,7 @@ class PackagePathProviderTestCase: XCTestCase {
                             relativeToType: .mock)
 
         // Then
-        XCTAssertEqual(path, "../../../Mocks/PackageFolderName/PackageName")
+        XCTAssertEqual(path.full, "../../../Mocks/PackageFolderName/PackageName")
     }
 
 }
