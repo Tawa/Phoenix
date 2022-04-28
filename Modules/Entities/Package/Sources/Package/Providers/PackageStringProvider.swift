@@ -41,9 +41,11 @@ let package = Package(
             for dependency in package.dependencies.sorted() {
                 value += packageDependencyString(dependency)
             }
+            value += "    ],\n    targets: [\n"
+        } else {
+            value += "    targets: [\n"
         }
-        
-        value += "    ],\n    targets: [\n"
+
         for target in package.targets.sorted() {
             value += targetString(target)
         }
@@ -116,7 +118,7 @@ let package = Package(
         value += !target.dependencies.isEmpty ? ",\n" : "\n"
 
         if !target.dependencies.isEmpty {
-            value += ",\n            dependencies: [\n"
+            value += "            dependencies: [\n"
             for dependency in target.dependencies.sorted() {
                 value += targetDependencyString(dependency)
             }

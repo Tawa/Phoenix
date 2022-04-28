@@ -29,8 +29,7 @@ public enum ComponentResourcesType: Codable, Hashable {
 }
 
 public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
-    public let id: String = UUID().uuidString
-
+    public let id: String
     public var folderName: String
     public var type: TargetResources.ResourcesType
     public var targets: [TargetType]
@@ -41,9 +40,11 @@ public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
         case targets
     }
 
-    public init(folderName: String,
+    public init(id: String = UUID().uuidString,
+                folderName: String,
                 type: TargetResources.ResourcesType,
                 targets: [TargetType]) {
+        self.id = id
         self.folderName = folderName
         self.type = type
         self.targets = targets
@@ -52,6 +53,7 @@ public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
+        self.id = UUID().uuidString
         self.folderName = try container.decode(String.self, forKey: .folderName)
         self.type = try container.decode(TargetResources.ResourcesType.self, forKey: .type)
         self.targets = try container.decode([TargetType].self, forKey: .targets)

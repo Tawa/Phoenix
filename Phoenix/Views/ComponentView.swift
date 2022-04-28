@@ -117,19 +117,18 @@ struct ComponentView: View {
                     Divider()
 
                     Section {
-                        ForEach(component.resources.sorted()) { resource in
-                            TextField("Folder Name", text: Binding(get: { resource.folderName },
-                                                                   set: { store.updateResourceFolderName(to: $0, forId: resource.id) }))
-                            .focused($focusedField, equals: resource.id)
-                        }
-                        .padding([.vertical])
-
-                        TextField("New Resources Folder Name",
-                                  text: Binding(get: { "" },
-                                                set: {
-                            let uuid = store.addResourceFolder(withFolderName: $0)
-                            focusedField = uuid
-                        }))
+                        DynamicTextFieldList(
+                            values: Binding(get: {
+                                store.selectedComponent?.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType>.ValueContainer in
+                                    return .init(id: resource.id,
+                                                 value: resource.folderName,
+                                                 menuOption: resource.type,
+                                                 targetTypes: resource.targets)
+                                } ?? []
+                            }, set: { store.updateResource($0.map {
+                                ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) })
+                            }),
+                            onNewValue: store.addResource)
                     } header: {
                         Text("Resources")
                             .font(.largeTitle)

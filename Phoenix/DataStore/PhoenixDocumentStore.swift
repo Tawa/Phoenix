@@ -15,7 +15,7 @@ class PhoenixDocumentStore: ObservableObject {
         else { return nil }
         return component
     }
-    
+
     var selectedName: Name? { selectedComponent?.name }
     var selectedComponentDependencies: [ComponentDependencyType] { selectedComponent?.dependencies.sorted() ?? [] }
 
@@ -214,28 +214,13 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func addResourceFolder(withFolderName folderName: String) -> String {
-        let newResource = ComponentResources(folderName: folderName, type: .process, targets: [])
-        getSelectedComponent { component in
-            var resources = component.resources
-            resources.append(newResource)
-            component.resources = resources
-        }
-        print("New Folder")
-        return newResource.id
+    func updateResource(_ resources: [ComponentResources]) {
+        getSelectedComponent { $0.resources = resources }
     }
 
-    func updateResourceFolderName(to folderName: String, forId uuid: String) {
-        getSelectedComponent { component in
-            guard
-                let index = component.resources.firstIndex(where: { $0.id == uuid })
-            else { return }
-            if folderName.isEmpty {
-                component.resources.removeAll(where: { $0.id == uuid })
-            } else {
-                component.resources[index].folderName = folderName
-                component.resources.sort()
-            }
-        }
+    func addResource(_ folderName: String) {
+        getSelectedComponent { $0.resources.append(.init(folderName: folderName,
+                                                         type: .process,
+                                                         targets: [])) }
     }
 }
