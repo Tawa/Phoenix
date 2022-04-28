@@ -23,10 +23,12 @@ class PackageStringProviderTestCase: XCTestCase {
                                         .module(path: "../../Contracts/Repositories/HomeRepositoryContract", name: "HomeRepositoryContract"),
                                         .module(path: "../../Support/DI", name: "DI")
                                        ],
-                                       isTest: false),
+                                       isTest: false,
+                                      resources: []),
                                 Target(name: "HomeServiceTests",
                                        dependencies: [ .module(path: "", name: "HomeService") ],
-                                       isTest: true)
+                                       isTest: true,
+                                      resources: [])
                               ])
 
         let sut = PackageStringProvider()

@@ -7,6 +7,8 @@ struct ComponentView: View {
     let component: Component
     @Binding var showingDependencyPopover: Bool
 
+    @FocusState private var focusedField: String?
+
     var body: some View {
         ZStack {
             List {
@@ -112,7 +114,25 @@ struct ComponentView: View {
                             }, label: { Image(systemName: "plus") })
                         }
                     }
+                    Divider()
 
+                    Section {
+                        DynamicTextFieldList(
+                            values: Binding(get: {
+                                store.selectedComponent?.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType>.ValueContainer in
+                                    return .init(id: resource.id,
+                                                 value: resource.folderName,
+                                                 menuOption: resource.type,
+                                                 targetTypes: resource.targets)
+                                } ?? []
+                            }, set: { store.updateResource($0.map {
+                                ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) })
+                            }),
+                            onNewValue: store.addResource)
+                    } header: {
+                        Text("Resources")
+                            .font(.largeTitle)
+                    }
                     Divider()
                 }
                 .padding()

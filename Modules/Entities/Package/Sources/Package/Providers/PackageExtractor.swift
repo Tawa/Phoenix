@@ -58,7 +58,9 @@ struct ContractPackageExtractor: PackageExtracting {
                     Target(name: packageName,
                            dependencies: dependencies,
                            isTest: false,
-                           resources: [])
+                           resources: component.resources.filter { $0.targets.contains(.contract) }
+                        .map { TargetResources(folderName: $0.folderName,
+                                               resourcesType: $0.type) })
                 ]
             ),
             path: packagePathProvider.path(for: component.name,
@@ -153,14 +155,18 @@ struct ImplementationPackageExtractor: PackageExtracting {
                     Target(name: packageName,
                            dependencies: (implementationDependencies + dependencies).sorted(),
                            isTest: false,
-                           resources: []),
+                           resources: component.resources.filter { $0.targets.contains(.implementation) }
+                        .map { TargetResources(folderName: $0.folderName,
+                                               resourcesType: $0.type) }),
                     Target(name: packageName + "Tests",
                            dependencies: (testsDependencies + [
                             Dependency.module(path: "",
                                               name: packageName)
                            ]).sorted(),
                            isTest: true,
-                           resources: [])
+                           resources: component.resources.filter { $0.targets.contains(.tests) }
+                        .map { TargetResources(folderName: $0.folderName,
+                                               resourcesType: $0.type) })
                 ]
             ),
             path: packagePathProvider.path(for: component.name,
@@ -245,7 +251,9 @@ struct MockPackageExtractor: PackageExtracting {
                     Target(name: packageName,
                            dependencies: dependencies,
                            isTest: false,
-                           resources: [])
+                           resources: component.resources.filter { $0.targets.contains(.mock) }
+                        .map { TargetResources(folderName: $0.folderName,
+                                               resourcesType: $0.type) })
                 ]
             ),
             path: packagePathProvider.path(for: component.name,

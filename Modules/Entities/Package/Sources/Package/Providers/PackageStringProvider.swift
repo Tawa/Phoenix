@@ -41,9 +41,11 @@ let package = Package(
             for dependency in package.dependencies.sorted() {
                 value += packageDependencyString(dependency)
             }
+            value += "    ],\n    targets: [\n"
+        } else {
+            value += "    targets: [\n"
         }
-        
-        value += "    ],\n    targets: [\n"
+
         for target in package.targets.sorted() {
             value += targetString(target)
         }
@@ -113,18 +115,24 @@ let package = Package(
             value += "        .target(\n"
         }
         value += "            name: \"\(target.name)\""
-//        if !target.dependencies.isEmpty || !target.resources
 
         if !target.dependencies.isEmpty {
             value += ",\n            dependencies: [\n"
             for dependency in target.dependencies.sorted() {
                 value += targetDependencyString(dependency)
             }
-            value += "            ]\n"
-        } else {
-            value += "\n"
+            value += "            ]"
         }
-        value += "        ),\n"
+
+        if !target.resources.isEmpty {
+            value += ",\n            resources: [\n"
+            for resource in target.resources {
+                value += "                .\(resource.resourcesType.rawValue)(\"\(resource.folderName)\"),\n"
+            }
+            value += "            ]"
+        }
+
+        value += "\n        ),\n"
         return value
     }
 
