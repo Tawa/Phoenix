@@ -6,12 +6,10 @@ public struct TargetResources: Codable, Hashable {
         case copy
     }
 
-    public let id: String
     public let folderName: String
     public let resourcesType: ResourcesType
 
-    public init(id: String, folderName: String, resourcesType: TargetResources.ResourcesType) {
-        self.id = id
+    public init(folderName: String, resourcesType: TargetResources.ResourcesType) {
         self.folderName = folderName
         self.resourcesType = resourcesType
     }

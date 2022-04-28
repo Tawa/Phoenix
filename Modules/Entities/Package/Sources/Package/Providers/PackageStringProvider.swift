@@ -115,17 +115,24 @@ let package = Package(
             value += "        .target(\n"
         }
         value += "            name: \"\(target.name)\""
-        value += !target.dependencies.isEmpty ? ",\n" : "\n"
 
         if !target.dependencies.isEmpty {
-            value += "            dependencies: [\n"
+            value += ",\n            dependencies: [\n"
             for dependency in target.dependencies.sorted() {
                 value += targetDependencyString(dependency)
             }
-            value += "            ]\n"
+            value += "            ]"
         }
 
-        value += "        ),\n"
+        if !target.resources.isEmpty {
+            value += ",\n            resources: [\n"
+            for resource in target.resources {
+                value += "                .\(resource.resourcesType.rawValue)(\"\(resource.folderName)\"),\n"
+            }
+            value += "            ]"
+        }
+
+        value += "\n        ),\n"
         return value
     }
 

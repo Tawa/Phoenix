@@ -22,9 +22,30 @@ struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable
                                onSelection: { value.wrappedValue.menuOption = $0 },
                                hasRemove: false,
                                onRemove: {})
+                    .frame(width: 150)
                     TextField("Folder Name", text: value.value)
                         .font(.largeTitle)
                         .id(value.id)
+                        .frame(width: 150)
+                    CustomToggle(title: "Contract",
+                                 isOnValue: value.targetTypes.wrappedValue.contains(.contract),
+                                 whenTurnedOn: { value.targetTypes.wrappedValue.append(.contract) },
+                                 whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == .contract }) })
+                    VStack(alignment: .leading) {
+                        CustomToggle(title: "Implementation",
+                                     isOnValue: value.targetTypes.wrappedValue.contains(.implementation),
+                                     whenTurnedOn: { value.targetTypes.wrappedValue.append(.implementation) },
+                                     whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == .implementation }) })
+                        CustomToggle(title: "Tests",
+                                     isOnValue: value.targetTypes.wrappedValue.contains(.tests),
+                                     whenTurnedOn: { value.targetTypes.wrappedValue.append(.tests) },
+                                     whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == .tests }) })
+                    }
+                    CustomToggle(title: "Mock",
+                                 isOnValue: value.targetTypes.wrappedValue.contains(.mock),
+                                 whenTurnedOn: { value.targetTypes.wrappedValue.append(.mock) },
+                                 whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == .mock }) })
+                    Spacer()
                 }
             }
             HStack {
