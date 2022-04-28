@@ -34,7 +34,7 @@ class PackageExtractorsTestCase: XCTestCase {
                                                 ],
                                                 dependencies: [],
                                                 targets: [
-                                                    Target(name: "PackageName", dependencies: [], isTest: false)
+                                                    Target(name: "PackageName", dependencies: [], isTest: false, resources: [])
                                                 ]))
     }
     
@@ -107,10 +107,12 @@ class PackageExtractorsTestCase: XCTestCase {
                                                 targets: [
                                                     Target(name: "PackageName",
                                                            dependencies: [],
-                                                           isTest: false),
+                                                           isTest: false,
+                                                           resources: []),
                                                     Target(name: "PackageNameTests",
                                                            dependencies: [.module(path: "", name: "PackageName")],
-                                                           isTest: true),
+                                                           isTest: true,
+                                                           resources: []),
                                                 ]))
     }
 
@@ -145,7 +147,8 @@ class PackageExtractorsTestCase: XCTestCase {
                                                 targets: [
                                                     Target(name: "PackageName",
                                                            dependencies: [contractDependency],
-                                                           isTest: false)
+                                                           isTest: false,
+                                                           resources: [])
                                                 ]))
     }
 
@@ -180,7 +183,8 @@ class PackageExtractorsTestCase: XCTestCase {
                                                 targets: [
                                                     Target(name: "PackageName",
                                                            dependencies: [implementationDependency],
-                                                           isTest: false)
+                                                           isTest: false,
+                                                           resources: [])
                                                 ]))
     }
 }
