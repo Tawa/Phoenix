@@ -11,7 +11,6 @@ public struct PackageStringProvider: PackageStringProviding {
     public func string(for package: Package) -> String {
         var value: String = """
 // swift-tools-version:5.6
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 

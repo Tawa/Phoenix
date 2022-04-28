@@ -37,6 +37,7 @@ struct ContractPackageExtractor: PackageExtracting {
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
             case let .remote(remoteDependency):
+                guard remoteDependency.contract else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
                                            description: remoteDependency.value)
@@ -115,6 +116,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
             case let .remote(remoteDependency):
+                guard remoteDependency.implementation else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
                                            description: remoteDependency.value)
@@ -135,6 +137,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
             case let .remote(remoteDependency):
+                guard remoteDependency.tests else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
                                            description: remoteDependency.value)
@@ -229,6 +232,7 @@ struct MockPackageExtractor: PackageExtracting {
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
             case let .remote(remoteDependency):
+                guard remoteDependency.mock else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
                                            description: remoteDependency.value)
