@@ -129,7 +129,7 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func updateSelectedFamily(folder: String?) {
-        getSelectedFamily { $0.folder = folder }
+        getSelectedFamily { $0.folder = folder?.isEmpty == true ? nil : folder }
     }
     
     func addDependencyToSelectedComponent(dependencyName: Name) {
@@ -270,5 +270,9 @@ class PhoenixDocumentStore: ObservableObject {
         getSelectedComponent { $0.resources.append(.init(folderName: folderName,
                                                          type: .process,
                                                          targets: [])) }
+    }
+
+    func removeResource(withId id: String) {
+        getSelectedComponent { $0.resources.removeAll(where: { $0.id == id }) }
     }
 }

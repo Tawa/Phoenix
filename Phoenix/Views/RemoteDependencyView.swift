@@ -6,6 +6,19 @@ struct RemoteDependencyView: View {
 
     let dependency: RemoteDependency
     let types: [ModuleType]
+    @State private var versionText: String
+
+    internal init(dependency: RemoteDependency, types: [ModuleType]) {
+        self.dependency = dependency
+        self.types = types
+        switch dependency.version {
+        case let .from(version):
+            versionText = version
+        case let .branch(name):
+            versionText = name
+        }
+    }
+
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -23,7 +36,10 @@ struct RemoteDependencyView: View {
             HStack {
                 Menu {
                     Button("from") {
-//                        store.updateModuleTypeForRemoteDependency(dependency: <#T##RemoteDependency#>, type: <#T##TargetType#>, value: <#T##Bool#>)
+                        store.updateVersionForRemoteDependency(dependency: dependency, version: .from(version: ""))
+                    }
+                    Button("branch") {
+                        store.updateVersionForRemoteDependency(dependency: dependency, version: .branch(name: ""))
                     }
                 } label: {
                     switch dependency.version {
@@ -33,7 +49,20 @@ struct RemoteDependencyView: View {
                         Text("branch")
                     }
                 }
-
+                .frame(width: 150)
+                switch dependency.version {
+                case let .from(version):
+                    TextField("1.0.0", text: .init(get: { version }, set: { versionText = $0 }))
+                        .onSubmit { store.updateVersionForRemoteDependency(dependency: dependency, version: .from(version: versionText)) }
+                        .font(.largeTitle)
+                        .foregroundColor(dependency.version != .from(version: versionText) ? .red : nil)
+                case let .branch(name):
+                    TextField("main", text: .init(get: { name }, set: { versionText = $0 }))
+                        .onSubmit { store.updateVersionForRemoteDependency(dependency: dependency, version: .branch(name: versionText)) }
+                        .font(.largeTitle.weight(.regular))
+                        .foregroundColor(dependency.version != .branch(name: versionText) ? .red : nil)
+                }
+                Spacer()
             }
 
             HStack(alignment: .top) {

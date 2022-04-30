@@ -7,7 +7,7 @@ struct ComponentDependenciesPopover: View {
     
     @State private var externalURL: String = ""
     @State private var externalName: ExternalDependencyName = .name("")
-    @State private var externalDescription: ExternalDependencyVersion = .from(value: "")
+    @State private var externalDescription: ExternalDependencyVersion = .from(version: "")
     
     private var externalDescriptionTextPlaceholder: String {
         switch externalDescription {
@@ -71,7 +71,7 @@ struct ComponentDependenciesPopover: View {
                                 HStack {
                                     Menu {
                                         Button(action: {
-                                            externalDescription = .from(value: "")
+                                            externalDescription = .from(version: "")
                                         }, label: { Text("from") })
                                         Button(action: {
                                             externalDescription = .branch(name: "")
@@ -83,7 +83,7 @@ struct ComponentDependenciesPopover: View {
                                 TextField(externalDescriptionTextPlaceholder, text: Binding(get: { externalDescriptionTextValue }, set: { value in
                                     switch externalDescription {
                                     case .from:
-                                        externalDescription = .from(value: value)
+                                        externalDescription = .from(version: value)
                                     case .branch:
                                         externalDescription = .branch(name: value)
                                     }

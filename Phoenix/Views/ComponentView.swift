@@ -128,6 +128,7 @@ struct ComponentView: View {
                             }, set: { store.updateResource($0.map {
                                 ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) })
                             }),
+                            onRemoveValue: store.removeResource(withId:),
                             onNewValue: store.addResource)
                     } header: {
                         Text("Resources")

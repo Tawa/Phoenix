@@ -16,7 +16,7 @@ public enum ExternalDependencyName: Codable, Hashable, Identifiable {
 public enum ExternalDependencyVersion: Codable, Hashable, Identifiable {
     public var id: Int { hashValue }
 
-    case from(value: String)
+    case from(version: String)
     case branch(name: String)
 }
 

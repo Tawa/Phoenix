@@ -9,8 +9,10 @@ struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable
         var targetTypes: [TargetType]
     }
 
+    @State private var textValues: [String: String] = [:]
     @State private var newFieldValue: String = ""
     @Binding var values: [ValueContainer]
+    let onRemoveValue: (String) -> Void
     let onNewValue: (String) -> Void
 
     var body: some View {
@@ -23,9 +25,11 @@ struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable
                                hasRemove: false,
                                onRemove: {})
                     .frame(width: 150)
-                    TextField("Folder Name", text: value.value)
+                    TextField("Folder Name", text: Binding(get: { value.value.wrappedValue }, set: { textValues[value.id] = $0 }))
                         .font(.largeTitle)
                         .frame(width: 150)
+                        .foregroundColor(value.wrappedValue.value == textValues[value.id] ? nil : .red)
+                        .onSubmit { value.wrappedValue.value = textValues[value.id] ?? "" }
                     CustomToggle(title: "Contract",
                                  isOnValue: value.targetTypes.wrappedValue.contains(.contract),
                                  whenTurnedOn: { value.targetTypes.wrappedValue.append(.contract) },
@@ -45,6 +49,11 @@ struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable
                                  whenTurnedOn: { value.targetTypes.wrappedValue.append(.mock) },
                                  whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == .mock }) })
                     Spacer()
+                    Button(action: {
+                        onRemoveValue(value.id)
+                    }) {
+                        Text("Remove")
+                    }
                 }
             }
             HStack {
@@ -58,6 +67,13 @@ struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable
                     Text("Add")
                 }
             }
+        }
+        .task {
+            let result = _values.wrappedValue.reduce(into: [String: String](), { partialResult, container in
+                partialResult[container.id] = container.value
+            })
+
+            textValues = result
         }
     }
 }
@@ -75,6 +91,7 @@ struct DynamicTextFieldList_Previews: PreviewProvider {
                                                           value: "Folder",
                                                           menuOption: Options.process,
                                                          targetTypes: [])]),
+                                 onRemoveValue: { _ in },
                                  onNewValue: { _ in })
         }
     }
