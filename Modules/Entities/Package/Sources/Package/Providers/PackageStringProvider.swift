@@ -83,7 +83,7 @@ let package = Package(
         }
     }
 
-    private func externalDependencyDescriptionString(_ description: ExternalDependencyDescription) -> String {
+    private func externalDependencyDescriptionString(_ description: ExternalDependencyVersion) -> String {
         switch description {
         case .from(let value):
             return "from: \"\(value)\""

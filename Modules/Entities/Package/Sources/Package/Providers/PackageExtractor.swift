@@ -40,7 +40,7 @@ struct ContractPackageExtractor: PackageExtracting {
                 guard remoteDependency.contract else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
-                                           description: remoteDependency.value)
+                                           description: remoteDependency.version)
             }
         }
         dependencies.sort()
@@ -119,7 +119,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                 guard remoteDependency.implementation else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
-                                           description: remoteDependency.value)
+                                           description: remoteDependency.version)
             }
         }
         let testsDependencies = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
@@ -140,7 +140,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                 guard remoteDependency.tests else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
-                                           description: remoteDependency.value)
+                                           description: remoteDependency.version)
             }
         }
         
@@ -235,7 +235,7 @@ struct MockPackageExtractor: PackageExtracting {
                 guard remoteDependency.mock else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
-                                           description: remoteDependency.value)
+                                           description: remoteDependency.version)
             }
         }
         dependencies.append(contentsOf: otherDependencies)

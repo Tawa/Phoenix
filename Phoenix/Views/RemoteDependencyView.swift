@@ -19,6 +19,23 @@ struct RemoteDependencyView: View {
             }
             Text(dependency.url)
                 .font(.title)
+
+            HStack {
+                Menu {
+                    Button("from") {
+//                        store.updateModuleTypeForRemoteDependency(dependency: <#T##RemoteDependency#>, type: <#T##TargetType#>, value: <#T##Bool#>)
+                    }
+                } label: {
+                    switch dependency.version {
+                    case .from:
+                        Text("from")
+                    case .branch:
+                        Text("branch")
+                    }
+                }
+
+            }
+
             HStack(alignment: .top) {
                 if types.contains(.contract) {
                     Toggle(isOn: Binding(get: { dependency.contract },

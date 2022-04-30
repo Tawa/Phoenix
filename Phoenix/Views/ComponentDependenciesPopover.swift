@@ -7,7 +7,7 @@ struct ComponentDependenciesPopover: View {
     
     @State private var externalURL: String = ""
     @State private var externalName: ExternalDependencyName = .name("")
-    @State private var externalDescription: ExternalDependencyDescription = .from(value: "")
+    @State private var externalDescription: ExternalDependencyVersion = .from(value: "")
     
     private var externalDescriptionTextPlaceholder: String {
         switch externalDescription {

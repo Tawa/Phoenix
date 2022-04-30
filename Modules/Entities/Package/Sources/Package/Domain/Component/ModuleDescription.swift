@@ -13,7 +13,7 @@ public enum ExternalDependencyName: Codable, Hashable, Identifiable {
     case product(name: String, package: String)
 }
 
-public enum ExternalDependencyDescription: Codable, Hashable, Identifiable {
+public enum ExternalDependencyVersion: Codable, Hashable, Identifiable {
     public var id: Int { hashValue }
 
     case from(value: String)
@@ -36,7 +36,7 @@ public enum Dependency: Codable, Hashable, Identifiable, Comparable {
 
     case external(url: String,
                   name: ExternalDependencyName,
-                  description: ExternalDependencyDescription)
+                  description: ExternalDependencyVersion)
 
     public static func <(lhs: Dependency, rhs: Dependency) -> Bool {
         switch (lhs, rhs) {

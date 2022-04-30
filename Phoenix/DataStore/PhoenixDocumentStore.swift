@@ -65,6 +65,20 @@ class PhoenixDocumentStore: ObservableObject {
         completion(&document.families[familyIndex].family.wrappedValue)
     }
 
+    private func get(remoteDependency: RemoteDependency, _ completion: (inout RemoteDependency) -> Void) {
+        getSelectedComponent { component in
+            var dependencies = component.dependencies
+            guard
+                let index = dependencies.firstIndex(where: { $0 == .remote(remoteDependency) }),
+                case var .remote(temp) = dependencies.remove(at: index)
+            else { return }
+            completion(&temp)
+            dependencies.append(.remote(temp))
+            dependencies.sort()
+            component.dependencies = dependencies
+        }
+    }
+
     // MARK: - Document modifiers
 
     func selectComponent(withName name: Name) {
@@ -228,25 +242,23 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func updateModuleTypeForRemoteDependency(dependency: RemoteDependency, type: TargetType, value: Bool) {
-        getSelectedComponent { component in
-            var dependencies = component.dependencies
-            guard
-                let index = dependencies.firstIndex(where: { $0 == .remote(dependency) }),
-                case var .remote(temp) = dependencies.remove(at: index)
-            else { return }
+        get(remoteDependency: dependency) { dependency in
             switch type {
             case .contract:
-                temp.contract = value
+                dependency.contract = value
             case .implementation:
-                temp.implementation = value
+                dependency.implementation = value
             case .tests:
-                temp.tests = value
+                dependency.tests = value
             case .mock:
-                temp.mock = value
+                dependency.mock = value
             }
-            dependencies.append(.remote(temp))
-            dependencies.sort()
-            component.dependencies = dependencies
+        }
+    }
+
+    func updateVersionForRemoteDependency(dependency: RemoteDependency, version: ExternalDependencyVersion) {
+        get(remoteDependency: dependency) { dependency in
+            dependency.version = version
         }
     }
 
