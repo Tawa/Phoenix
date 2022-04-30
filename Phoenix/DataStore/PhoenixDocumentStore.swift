@@ -84,8 +84,7 @@ class PhoenixDocumentStore: ObservableObject {
         let newComponent = Component(name: name,
                                      iOSVersion: nil,
                                      macOSVersion: nil,
-                                     modules: [.contract, .implementation, .mock],
-                                     moduleTypes: [.contract: .dynamic, .implementation: .static],
+                                     modules: [.contract: .dynamic, .implementation: .static, .mock: .undefined],
                                      dependencies: [],
                                      resources: [])
         array.append(newComponent)
@@ -120,16 +119,25 @@ class PhoenixDocumentStore: ObservableObject {
     }
     
     func addDependencyToSelectedComponent(dependencyName: Name) {
-        getSelectedComponent { $0.dependencies.insert(.local(ComponentDependency(name: dependencyName,
+        getSelectedComponent {
+            var dependencies = $0.dependencies
+            dependencies.append(.local(ComponentDependency(name: dependencyName,
                                                                           contract: nil,
                                                                           implementation: nil,
                                                                           tests: nil,
                                                                           mock: nil)))
+            dependencies.sort()
+            $0.dependencies = dependencies
         }
     }
 
     func addRemoteDependencyToSelectedComponent(dependency: RemoteDependency) {
-        getSelectedComponent { $0.dependencies.insert(.remote(dependency)) }
+        getSelectedComponent {
+            var dependencies = $0.dependencies
+            dependencies.append(.remote(dependency))
+            dependencies.sort()
+            $0.dependencies = dependencies
+        }
     }
 
     func setIOSVersionForSelectedComponent(iOSVersion: IOSVersion) {
@@ -149,15 +157,23 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func addModuleTypeForSelectedComponent(moduleType: ModuleType) {
-        getSelectedComponent { $0.modules.insert(moduleType) }
+        getSelectedComponent {
+            var modules = $0.modules
+            modules[moduleType] = .undefined
+            $0.modules = modules
+        }
     }
 
     func removeModuleTypeForSelectedComponent(moduleType: ModuleType) {
-        getSelectedComponent { $0.modules.remove(moduleType) }
+        getSelectedComponent {
+            var modules = $0.modules
+            modules.removeValue(forKey: moduleType)
+            $0.modules = modules
+        }
     }
 
     func set(libraryType: LibraryType?, forModuleType moduleType: ModuleType) {
-        getSelectedComponent { $0.moduleTypes[moduleType] = libraryType }
+        getSelectedComponent { $0.modules[moduleType] = libraryType }
     }
 
     func removeSelectedComponent() {
@@ -171,16 +187,29 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func removeDependencyForSelectedComponent(componentDependency: ComponentDependency) {
-        getSelectedComponent { $0.dependencies.remove(.local(componentDependency)) }
+        getSelectedComponent {
+            var dependencies = $0.dependencies
+            dependencies.removeAll(where: { $0 == .local(componentDependency) })
+            dependencies.sort()
+            $0.dependencies = dependencies
+        }
     }
 
     func removeRemoteDependencyForSelectedComponent(dependency: RemoteDependency) {
-        getSelectedComponent { $0.dependencies.remove(.remote(dependency)) }
+        getSelectedComponent {
+            var dependencies = $0.dependencies
+            dependencies.removeAll(where: { $0 == .remote(dependency) })
+            dependencies.sort()
+            $0.dependencies = dependencies
+        }
     }
 
     func updateModuleTypeForDependency(dependency: ComponentDependency, type: TargetType, value: ModuleType?) {
         getSelectedComponent { component in
-            guard case var .local(temp) = component.dependencies.remove(.local(dependency))
+            var dependencies = component.dependencies
+            guard
+                let index = dependencies.firstIndex(where: { $0 == .local(dependency) }),
+                case var .local(temp) = dependencies.remove(at: index)
             else { return }
             switch type {
             case .contract:
@@ -192,13 +221,18 @@ class PhoenixDocumentStore: ObservableObject {
             case .mock:
                 temp.mock = value
             }
-            component.dependencies.insert(.local(temp))
+            dependencies.append(.local(temp))
+            dependencies.sort()
+            component.dependencies = dependencies
         }
     }
 
     func updateModuleTypeForRemoteDependency(dependency: RemoteDependency, type: TargetType, value: Bool) {
         getSelectedComponent { component in
-            guard case var .remote(temp) = component.dependencies.remove(.remote(dependency))
+            var dependencies = component.dependencies
+            guard
+                let index = dependencies.firstIndex(where: { $0 == .remote(dependency) }),
+                case var .remote(temp) = dependencies.remove(at: index)
             else { return }
             switch type {
             case .contract:
@@ -210,7 +244,9 @@ class PhoenixDocumentStore: ObservableObject {
             case .mock:
                 temp.mock = value
             }
-            component.dependencies.insert(.remote(temp))
+            dependencies.append(.remote(temp))
+            dependencies.sort()
+            component.dependencies = dependencies
         }
     }
 

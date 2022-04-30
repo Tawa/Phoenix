@@ -52,7 +52,7 @@ struct ContractPackageExtractor: PackageExtracting {
                 macOSVersion: component.macOSVersion,
                 products: [
                     .library(Library(name: packageName,
-                                     type: component.moduleTypes[.contract],
+                                     type: component.modules[.contract] ?? .undefined,
                                      targets: [packageName]))],
                 dependencies: dependencies,
                 targets: [
@@ -91,7 +91,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                                                           of: family)
         
         var dependencies: [Dependency] = []
-        if component.modules.contains(.contract) {
+        if component.modules[.contract] != nil {
             let contractPath = packagePathProvider.path(for: component.name,
                                                         of: family,
                                                         type: .contract,
@@ -151,7 +151,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                 macOSVersion: component.macOSVersion,
                 products: [
                     .library(Library(name: packageName,
-                                     type: component.moduleTypes[.implementation],
+                                     type: component.modules[.implementation] ?? .undefined,
                                      targets: [packageName]))],
                 dependencies: Array(Set((dependencies + implementationDependencies + testsDependencies))).sorted(),
                 targets: [
@@ -198,7 +198,7 @@ struct MockPackageExtractor: PackageExtracting {
                                                           of: family)
         
         var dependencies: [Dependency] = []
-        if component.modules.contains(.contract) {
+        if component.modules[.contract] != nil {
             let contractPath = packagePathProvider.path(for: component.name,
                                                         of: family,
                                                         type: .contract,
@@ -207,7 +207,7 @@ struct MockPackageExtractor: PackageExtracting {
                                                                name: component.name,
                                                                of: family)
             dependencies.append(.module(path: contractPath.full, name: contractName))
-        } else if component.modules.contains(.implementation) {
+        } else if component.modules[.implementation] != nil {
             let implementationPath = packagePathProvider.path(for: component.name,
                                                               of: family,
                                                               type: .implementation,
@@ -248,7 +248,7 @@ struct MockPackageExtractor: PackageExtracting {
                 macOSVersion: component.macOSVersion,
                 products: [
                     .library(Library(name: packageName,
-                                     type: component.moduleTypes[.mock],
+                                     type: component.modules[.mock] ?? .undefined,
                                      targets: [packageName]))],
                 dependencies: dependencies,
                 targets: [

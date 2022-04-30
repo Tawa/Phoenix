@@ -9,7 +9,7 @@ class PackageStringProviderTestCase: XCTestCase {
                               iOSVersion: nil,
                               macOSVersion: nil,
                               products: [
-                                .library(Library(name: "HomeService", type: nil, targets: ["HomeService"]))
+                                .library(Library(name: "HomeService", type: .undefined, targets: ["HomeService"]))
                               ],
                               dependencies: [
                                 .module(path: "../../Contracts/Services/HomeServiceContract", name: "HomeServiceContract"),
@@ -39,7 +39,6 @@ class PackageStringProviderTestCase: XCTestCase {
         // Then
         XCTAssertEqual(packageString, """
 // swift-tools-version:5.6
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 

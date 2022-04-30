@@ -13,8 +13,7 @@ class PackageExtractorsTestCase: XCTestCase {
         let component = Component(name: Name(given: "Wordpress", family: "DataStore"),
                                   iOSVersion: .v13,
                                   macOSVersion: nil,
-                                  modules: [.contract],
-                                  moduleTypes: [.contract: .dynamic],
+                                  modules: [.contract: .dynamic],
                                   dependencies: [],
                                   resources: [])
         let sut = ContractPackageExtractor(packageNameProvider: packageNameProviderMock,
@@ -43,8 +42,7 @@ class PackageExtractorsTestCase: XCTestCase {
         let component = Component(name: Name(given: "Wordpress", family: "DataStore"),
                                   iOSVersion: .v13,
                                   macOSVersion: nil,
-                                  modules: [.contract, .implementation],
-                                  moduleTypes: [.implementation: .static],
+                                  modules: [.contract: .undefined, .implementation: .static],
                                   dependencies: [],
                                   resources: [])
         let sut = ImplementationPackageExtractor(packageNameProvider: packageNameProviderMock,
@@ -83,8 +81,7 @@ class PackageExtractorsTestCase: XCTestCase {
         let component = Component(name: Name(given: "Wordpress", family: "DataStore"),
                                   iOSVersion: .v13,
                                   macOSVersion: nil,
-                                  modules: [.implementation],
-                                  moduleTypes: [.implementation: .static],
+                                  modules: [.implementation: .static],
                                   dependencies: [],
                                   resources: [])
         let sut = ImplementationPackageExtractor(packageNameProvider: packageNameProviderMock,
@@ -121,8 +118,7 @@ class PackageExtractorsTestCase: XCTestCase {
         let component = Component(name: Name(given: "Wordpress", family: "DataStore"),
                                   iOSVersion: .v13,
                                   macOSVersion: nil,
-                                  modules: [.contract, .implementation, .mock],
-                                  moduleTypes: [:],
+                                  modules: [.contract: .undefined, .implementation: .undefined, .mock: .undefined],
                                   dependencies: [],
                                   resources: [])
         let sut = MockPackageExtractor(packageNameProvider: packageNameProviderMock,
@@ -140,7 +136,7 @@ class PackageExtractorsTestCase: XCTestCase {
                                                 macOSVersion: nil,
                                                 products: [
                                                     .library(Library(name: "PackageName",
-                                                                     type: nil,
+                                                                     type: .undefined,
                                                                      targets: ["PackageName"]))
                                                 ],
                                                 dependencies: [contractDependency],
@@ -157,8 +153,7 @@ class PackageExtractorsTestCase: XCTestCase {
         let component = Component(name: Name(given: "Wordpress", family: "DataStore"),
                                   iOSVersion: .v13,
                                   macOSVersion: nil,
-                                  modules: [.implementation, .mock],
-                                  moduleTypes: [:],
+                                  modules: [.implementation: .undefined, .mock: .undefined],
                                   dependencies: [],
                                   resources: [])
         let sut = MockPackageExtractor(packageNameProvider: packageNameProviderMock,
@@ -176,7 +171,7 @@ class PackageExtractorsTestCase: XCTestCase {
                                                 macOSVersion: nil,
                                                 products: [
                                                     .library(Library(name: "PackageName",
-                                                                     type: nil,
+                                                                     type: .undefined,
                                                                      targets: ["PackageName"]))
                                                 ],
                                                 dependencies: [implementationDependency],

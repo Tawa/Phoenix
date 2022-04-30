@@ -9,8 +9,7 @@ class PackagesExtractorTestCase: XCTestCase {
             name: Name(given: "Networking", family: "Shared"),
             iOSVersion: .v13,
             macOSVersion: nil,
-            modules: [.contract, .implementation, .mock],
-            moduleTypes: [.contract: .static, .implementation: .dynamic],
+            modules: [.contract: .static, .implementation: .dynamic, .mock: .undefined],
             dependencies: [],
             resources: [])
         let family = Family(name: "Shared", ignoreSuffix: true, folder: "Shared")

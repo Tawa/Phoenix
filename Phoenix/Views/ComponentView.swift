@@ -43,15 +43,15 @@ struct ComponentView: View {
                         Text("Module Types:")
                         VStack(alignment: .leading) {
                             CustomToggle(title: "Contract",
-                                         isOnValue: component.modules.contains(.contract),
+                                         isOnValue: component.modules[.contract] != nil,
                                          whenTurnedOn: { store.addModuleTypeForSelectedComponent(moduleType: .contract) },
                                          whenTurnedOff: { store.removeModuleTypeForSelectedComponent(moduleType: .contract) })
 
-                            if component.modules.contains(.contract) {
+                            if component.modules[.contract] != nil {
                                 CustomMenu(title: moduleTypeTitle(for: .contract),
                                            data: LibraryType.allCases,
                                            onSelection: { store.set(libraryType: $0, forModuleType: .contract) },
-                                           hasRemove: component.moduleTypes[.contract] != nil,
+                                           hasRemove: false,
                                            onRemove: { store.set(libraryType: nil, forModuleType: .contract) })
                             }
                         }
@@ -59,14 +59,14 @@ struct ComponentView: View {
                         Divider()
                         VStack(alignment: .leading) {
                             CustomToggle(title: "Implementation",
-                                         isOnValue: component.modules.contains(.implementation),
+                                         isOnValue: component.modules[.implementation] != nil,
                                          whenTurnedOn: { store.addModuleTypeForSelectedComponent(moduleType: .implementation) },
                                          whenTurnedOff: { store.removeModuleTypeForSelectedComponent(moduleType: .implementation) })
-                            if component.modules.contains(.implementation) {
+                            if component.modules[.implementation] != nil {
                                 CustomMenu(title: moduleTypeTitle(for: .implementation),
                                            data: LibraryType.allCases,
                                            onSelection: { store.set(libraryType: $0, forModuleType: .implementation) },
-                                           hasRemove: component.moduleTypes[.implementation] != nil,
+                                           hasRemove: false,
                                            onRemove: { store.set(libraryType: nil, forModuleType: .implementation) })
                             }
                         }
@@ -74,14 +74,14 @@ struct ComponentView: View {
                         Divider()
                         VStack(alignment: .leading) {
                             CustomToggle(title: "Mock",
-                                         isOnValue: component.modules.contains(.mock),
+                                         isOnValue: component.modules[.mock] != nil,
                                          whenTurnedOn: { store.addModuleTypeForSelectedComponent(moduleType: .mock) },
                                          whenTurnedOff: { store.removeModuleTypeForSelectedComponent(moduleType: .mock) })
-                            if component.modules.contains(.mock) {
+                            if component.modules[.mock] != nil {
                                 CustomMenu(title: moduleTypeTitle(for: .mock),
                                            data: LibraryType.allCases,
                                            onSelection: { store.set(libraryType: $0, forModuleType: .mock) },
-                                           hasRemove: component.moduleTypes[.mock] != nil,
+                                           hasRemove: false,
                                            onRemove: { store.set(libraryType: nil, forModuleType: .mock) })
                             }
                         }
@@ -97,10 +97,10 @@ struct ComponentView: View {
                                 switch dependencyType {
                                 case let .local(dependency):
                                     DependencyView(dependency: dependency,
-                                                   types: component.modules)
+                                                   types: Array(component.modules.keys))
                                 case let .remote(dependency):
                                     RemoteDependencyView(dependency: dependency,
-                                                         types: component.modules)
+                                                         types: Array(component.modules.keys))
                                 }
                             }
                         }
@@ -157,7 +157,7 @@ struct ComponentView: View {
     }
 
     private func moduleTypeTitle(for moduleType: ModuleType) -> String {
-        if let libraryType = component.moduleTypes[moduleType] {
+        if let libraryType = component.modules[moduleType] {
             return "\(libraryType)"
         } else {
             return "Add Type"

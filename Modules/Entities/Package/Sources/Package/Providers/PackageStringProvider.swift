@@ -62,13 +62,13 @@ let package = Package(
     
     private func libraryString(_ library: Library) -> String {
         var value: String = "        .library(\n            name: \"\(library.name)\",\n"
-        if let type = library.type {
-            switch type {
-            case .static:
-                value += "            type: .static,\n"
-            case .dynamic:
-                value += "            type: .dynamic,\n"
-            }
+        switch library.type {
+        case .static:
+            value += "            type: .static,\n"
+        case .dynamic:
+            value += "            type: .dynamic,\n"
+        case .undefined:
+            break
         }
         value += "            targets: [\"\(library.name)\"]),"
         return value
@@ -136,14 +136,7 @@ let package = Package(
     }
 
     private func iOSPlatformString(_ iOSPlatform: IOSVersion) -> String {
-        switch iOSPlatform {
-        case .v13:
-            return ".iOS(.v13)"
-        case .v14:
-            return ".iOS(.v14)"
-        case .v15:
-            return ".iOS(.v15)"
-        }
+        ".iOS(.\(iOSPlatform))"
     }
 
     private func macOSPlatformString(_ macOSVersion: MacOSVersion) -> String {

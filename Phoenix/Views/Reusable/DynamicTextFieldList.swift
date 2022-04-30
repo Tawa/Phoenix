@@ -25,7 +25,6 @@ struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable
                     .frame(width: 150)
                     TextField("Folder Name", text: value.value)
                         .font(.largeTitle)
-                        .id(value.id)
                         .frame(width: 150)
                     CustomToggle(title: "Contract",
                                  isOnValue: value.targetTypes.wrappedValue.contains(.contract),

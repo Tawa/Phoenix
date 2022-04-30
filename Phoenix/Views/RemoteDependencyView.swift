@@ -5,7 +5,7 @@ struct RemoteDependencyView: View {
     @EnvironmentObject private var store: PhoenixDocumentStore
 
     let dependency: RemoteDependency
-    let types: Set<ModuleType>
+    let types: [ModuleType]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -56,6 +56,6 @@ struct RemoteDependencyView_Previews: PreviewProvider {
         RemoteDependencyView(dependency: RemoteDependency(url: "git@github.com:team/repo.git",
                                                           name: .name("Repo Name"),
                                                           value: .branch(name: "main")),
-                             types: Set(ModuleType.allCases))
+                             types: ModuleType.allCases)
     }
 }

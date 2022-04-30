@@ -23,7 +23,7 @@ public struct ComponentDependency: Codable, Hashable, Identifiable {
     }
 }
 
-public enum ComponentResourcesType: Codable, Hashable {
+public enum ComponentResourcesType: String, Codable, Hashable {
     case process
     case copy
 }

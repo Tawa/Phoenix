@@ -33,7 +33,7 @@ struct DependencyView: View {
     @EnvironmentObject private var store: PhoenixDocumentStore
 
     let dependency: ComponentDependency
-    let types: Set<ModuleType>
+    let types: [ModuleType]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {

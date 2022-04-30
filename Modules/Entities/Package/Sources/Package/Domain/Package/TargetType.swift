@@ -1,4 +1,4 @@
-public enum TargetType: Codable {
+public enum TargetType: String, Codable {
     case contract
     case implementation
     case tests
