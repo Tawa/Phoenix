@@ -5,6 +5,8 @@ struct ComponentsList: View {
     @EnvironmentObject private var store: PhoenixDocumentStore
     private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
 
+    @State private var filter: String = ""
+
     let onAddButton: () -> Void
 
     var body: some View {
@@ -19,8 +21,8 @@ struct ComponentsList: View {
                         } icon: {
                             Image(systemName: "plus")
                         }
-
                     }
+                    TextField("Filter", text: $filter)
                 }
                 .padding()
                 Spacer()
@@ -37,7 +39,7 @@ struct ComponentsList: View {
                             Button(action: { store.selectFamily(withName: componentsFamily.family.name) },
                                    label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
                         }) {
-                            ForEach(componentsFamily.components) { component in
+                            ForEach(componentsFamily.components.filter { filter.isEmpty ? true : $0.name.full.lowercased().contains(filter.lowercased()) }) { component in
                                 ComponentListItem(
                                     name: componentName(component, for: componentsFamily.family),
                                     isSelected: store.selectedName == component.name,

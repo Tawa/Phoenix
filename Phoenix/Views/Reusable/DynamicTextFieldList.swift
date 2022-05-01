@@ -68,13 +68,18 @@ struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable
                 }
             }
         }
-        .task {
-            let result = _values.wrappedValue.reduce(into: [String: String](), { partialResult, container in
-                partialResult[container.id] = container.value
-            })
-
-            textValues = result
+        .onChange(of: values, perform: refreshTextValues(with:))
+        .onAppear {
+            refreshTextValues(with: $values.wrappedValue)
         }
+    }
+
+    private func refreshTextValues(with values: [ValueContainer]) {
+        let result = values.reduce(into: [String: String](), { partialResult, container in
+            partialResult[container.id] = container.value
+        })
+
+        textValues = result
     }
 }
 

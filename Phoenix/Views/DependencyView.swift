@@ -41,6 +41,9 @@ struct DependencyView: View {
                 Text(store.title(for: dependency.name))
                     .font(.title)
                 Button(action: {
+                    store.selectComponent(withName: dependency.name)
+                }, label: { Text("Jump to") })
+                Button(action: {
                     store.removeDependencyForSelectedComponent(componentDependency: dependency)
                 }, label: { Text("Remove") })
             }
