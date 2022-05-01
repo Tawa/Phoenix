@@ -11,22 +11,27 @@ struct ComponentsList: View {
 
     var body: some View {
         VStack {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text("Components:")
-                        .font(.largeTitle)
-                    Button(action: onAddButton) {
-                        Label {
-                            Text("Add New Component")
-                        } icon: {
-                            Image(systemName: "plus")
-                        }
+            VStack(alignment: .leading) {
+                Button(action: onAddButton) {
+                    Label {
+                        Text("Add New Component")
+                    } icon: {
+                        Image(systemName: "plus")
                     }
-                    TextField("Filter", text: $filter)
                 }
-                .padding()
-                Spacer()
+                ZStack(alignment: .trailing) {
+                    TextField("Filter", text: $filter)
+                        .cornerRadius(16)
+                        .onExitCommand(perform: { filter = "" })
+                    if !filter.isEmpty {
+                        Button(action: { filter = "" }, label: {
+                            Image(systemName: "clear.fill")
+                                .padding(.all)
+                        }).buttonStyle(PlainButtonStyle())
+                    }
+                }
             }
+            .padding()
             List {
                 if store.componentsFamilies.isEmpty {
                     Text("0 components")
