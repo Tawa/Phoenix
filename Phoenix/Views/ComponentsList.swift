@@ -10,40 +10,31 @@ struct ComponentsList: View {
     let onAddButton: () -> Void
 
     var body: some View {
-        VStack {
-            VStack(alignment: .leading) {
-                Button(action: onAddButton) {
-                    Label {
-                        Text("Add New Component")
-                    } icon: {
-                        Image(systemName: "plus")
-                    }
+        VStack(alignment: .leading) {
+            Button(action: onAddButton) {
+                Label {
+                    Text("Add New Component")
+                } icon: {
+                    Image(systemName: "plus")
                 }
-                ZStack(alignment: .trailing) {
-                    TextField("Filter", text: $filter)
-                        .cornerRadius(16)
-                        .onExitCommand(perform: { filter = "" })
-                    if !filter.isEmpty {
-                        Button(action: { filter = "" }, label: {
-                            Image(systemName: "clear.fill")
-                                .padding(.all)
-                        }).buttonStyle(PlainButtonStyle())
-                    }
+            }.padding([.top, .horizontal])
+            HStack {
+                TextField("Filter", text: $filter)
+                    .onExitCommand(perform: { filter = "" })
+                if !filter.isEmpty {
+                    Button(action: { filter = "" }, label: {
+                        Image(systemName: "clear.fill")
+                    })
+                    .aspectRatio(1, contentMode: .fit)
                 }
-            }
-            .padding()
+            }.padding()
             List {
                 if store.componentsFamilies.isEmpty {
                     Text("0 components")
                         .foregroundColor(.gray)
                 } else {
                     ForEach(store.componentsFamilies, id: \.family) { componentsFamily in
-                        Section(header: HStack {
-                            Text(familyName(for: componentsFamily.family))
-                                .font(.title)
-                            Button(action: { store.selectFamily(withName: componentsFamily.family.name) },
-                                   label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
-                        }) {
+                        Section {
                             ForEach(componentsFamily.components.filter { filter.isEmpty ? true : $0.name.full.lowercased().contains(filter.lowercased()) }) { component in
                                 ComponentListItem(
                                     name: componentName(component, for: componentsFamily.family),
@@ -51,13 +42,21 @@ struct ComponentsList: View {
                                     onSelect: { store.selectComponent(withName: component.name) }
                                 )
                             }
+                        } header: {
+                            HStack {
+                                Text(familyName(for: componentsFamily.family))
+                                    .font(.title.bold())
+                                Button(action: { store.selectFamily(withName: componentsFamily.family.name) },
+                                       label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
+                                Spacer()
+                            }
+                            .padding(.vertical)
                         }
+                        Divider()
                     }
                 }
             }
-            .layoutPriority(0)
-            .frame(minHeight: 200)
-            .padding()
+            .frame(minHeight: 200, maxHeight: .infinity)
             .listStyle(SidebarListStyle())
         }
     }
