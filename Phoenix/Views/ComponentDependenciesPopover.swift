@@ -8,7 +8,10 @@ struct ComponentDependenciesPopover: View {
     @State private var externalURL: String = ""
     @State private var externalName: ExternalDependencyName = .name("")
     @State private var externalDescription: ExternalDependencyVersion = .from(version: "")
-    
+
+    @State private var filter: String = ""
+    @FocusState private var textFieldFocus
+
     private var externalDescriptionTextPlaceholder: String {
         switch externalDescription {
         case .from:
@@ -31,23 +34,48 @@ struct ComponentDependenciesPopover: View {
         ZStack {
             VStack {
                 HStack {
-                    ScrollView {
+                    VStack {
                         HStack {
-                            VStack(alignment: .leading) {
-                                Text("Components:")
-                                    .font(.largeTitle)
-                                ForEach(store.allNames.filter { name in
-                                    store.selectedName != name && !store.selectedComponentDependenciesContains(dependencyName: name)
-                                }) { name in
-                                    Button {
-                                        store.addDependencyToSelectedComponent(dependencyName: name)
+                            TextField("Filter", text: $filter)
+                                .focused($textFieldFocus)
+                                .onAppear(perform: {
+                                    textFieldFocus = true
+                                })
+                                .onExitCommand(perform: {
+                                    if filter.isEmpty {
                                         showingPopup = false
-                                    } label: {
-                                        Text("\(name.family): \(store.title(for: name))")
+                                    } else {
+                                        filter = ""
+                                    }
+                                })
+                            if !filter.isEmpty {
+                                Button(action: { filter = "" }, label: {
+                                    Image(systemName: "clear.fill")
+                                })
+                                .aspectRatio(1, contentMode: .fit)
+                            }
+                        }.padding()
+                        ScrollView {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text("Components:")
+                                        .font(.largeTitle)
+                                    ForEach(store.allNames.filter { name in
+                                        if !filter.isEmpty && !name.full.lowercased().contains(filter.lowercased()) {
+                                            return false
+                                        }
+                                        return store.selectedName != name && !store.selectedComponentDependenciesContains(dependencyName: name)
+                                    }) { name in
+                                        Button {
+                                            store.addDependencyToSelectedComponent(dependencyName: name)
+                                            showingPopup = false
+                                        } label: {
+                                            Text("\(name.family): \(store.title(for: name))")
+                                        }
                                     }
                                 }
+                                Spacer()
                             }
-                            Spacer()
                         }
                     }.frame(width: 400)
                     Divider()

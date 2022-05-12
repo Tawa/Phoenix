@@ -7,17 +7,8 @@ struct ComponentsList: View {
 
     @State private var filter: String = ""
 
-    let onAddButton: () -> Void
-
     var body: some View {
         VStack(alignment: .leading) {
-            Button(action: onAddButton) {
-                Label {
-                    Text("Add New Component")
-                } icon: {
-                    Image(systemName: "plus")
-                }
-            }.padding([.top, .horizontal])
             HStack {
                 TextField("Filter", text: $filter)
                     .onExitCommand(perform: { filter = "" })
@@ -80,7 +71,7 @@ struct ComponentsList_Previews: PreviewProvider {
         @State var selectedName: Name?
 
         var body: some View {
-            ComponentsList(onAddButton: {})
+            ComponentsList()
         }
     }
 

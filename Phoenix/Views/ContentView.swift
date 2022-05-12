@@ -75,6 +75,29 @@ class ViewModel: ObservableObject {
         self.document.selectedName = name
     }
 
+    func onAddAll() {
+        var componentsFamilies = componentsFamilies.wrappedValue
+        for familyIndex in 0..<10 {
+            let familyName = "Family\(familyIndex)"
+            var family = ComponentsFamily(family: Family(name: familyName,
+                                                         ignoreSuffix: false,
+                                                         folder: nil),
+                                          components: [])
+            for componentIndex in 0..<20 {
+                family.components.append(Component(name: Name(given: "Component\(componentIndex)", family: familyName),
+                                                   iOSVersion: nil,
+                                                   macOSVersion: nil,
+                                                   modules: [.contract: .dynamic,
+                                                             .implementation: .static,
+                                                             .mock: .undefined],
+                                                   dependencies: [],
+                                                   resources: []))
+            }
+            componentsFamilies.append(family)
+        }
+        self.componentsFamilies.wrappedValue = componentsFamilies
+    }
+
     func onGenerate() {
         guard let fileURL = fileURL else {
             fileErrorString = "File must be saved before packages can be generated."
@@ -105,7 +128,7 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             HSplitView {
-                ComponentsList(onAddButton: viewModel.onAddButton)
+                ComponentsList()
                     .frame(minWidth: 250)
 
                 ZStack {
@@ -141,7 +164,10 @@ struct ContentView: View {
             }
 
         }.toolbar {
-            Button(action: viewModel.onGenerate, label: { Text("Generate") })
+//            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
+            Button(action: viewModel.onAddButton, label: { Text("Add New Component") })
+                .keyboardShortcut("A", modifiers: [.command, .shift])
+            Button(action: viewModel.onGenerate, label: { Text("Generate Packages") })
                 .keyboardShortcut(.init("R"), modifiers: .command)
         }
     }
