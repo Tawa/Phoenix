@@ -6,29 +6,15 @@ class ViewModel: ObservableObject {
     @Published var showingNewComponentPopup: Bool = false
     @Published var fileErrorString: String? = nil
     @Published var showingDependencyPopover: Bool = false
+    let store: PhoenixDocumentStore
     let fileURL: URL?
 
     init(document: Binding<PhoenixDocument>,
+         store: PhoenixDocumentStore,
          fileURL: URL?) {
         self._document = document
+        self.store = store
         self.fileURL = fileURL
-    }
-
-    var selectedComponent: Binding<Component?> {
-        Binding {
-            guard
-                let selectedName = self.document.selectedName,
-                let componentFamilyIndex = self.document.families.firstIndex(where: { $0.family.name == selectedName.family })
-            else { return nil }
-            return self.document.families[componentFamilyIndex].components.first(where: { $0.name.given == selectedName.given })
-        } set: { newValue in
-            guard let component = newValue,
-                  let selectedName = self.document.selectedName,
-                  let componentFamilyIndex = self.document.families.firstIndex(where: { $0.family.name == selectedName.family }),
-                  let componentIndex = self.document.families[componentFamilyIndex].components.firstIndex(where: { $0.name.given == selectedName.given })
-            else { return }
-            self.document.families[componentFamilyIndex].components[componentIndex] = component
-        }
     }
 
     var selectedFamily: Binding<Family?> {
@@ -61,14 +47,6 @@ class ViewModel: ObservableObject {
 
     func onFamilySelection(_ family: Family) {
         document.selectedFamilyName = family.name
-    }
-
-    func onRemoveSelectedComponent() {
-        guard let componentId = selectedComponent.wrappedValue?.id else { return }
-        for familyIndex in 0..<document.families.count {
-            document.families[familyIndex].components.removeAll(where: { $0.id == componentId })
-        }
-        document.families.removeAll(where: { $0.components.isEmpty })
     }
 
     func select(name: Name) {
@@ -135,6 +113,16 @@ struct ContentView: View {
                     ComponentView(component: selectedComponent,
                                   showingDependencyPopover: $viewModel.showingDependencyPopover)
                     .frame(minWidth: 750)
+                } else {
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading) {
+                            Text("No Component Selected")
+                                .font(.title)
+                                .padding()
+                            Spacer()
+                        }
+                        Spacer()
+                    }.frame(minWidth: 750)
                 }
             }
 
@@ -157,12 +145,5 @@ struct ContentView: View {
             Button(action: viewModel.onGenerate, label: { Text("Generate Packages") })
                 .keyboardShortcut(.init("R"), modifiers: .command)
         }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .environmentObject(ViewModel(document: .constant(PhoenixDocument()), fileURL: nil))
     }
 }
