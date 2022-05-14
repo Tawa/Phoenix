@@ -127,28 +127,14 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            HSplitView {
+            NavigationView {
                 ComponentsList()
                     .frame(minWidth: 250)
 
-                ZStack {
-                    if let selectedComponent = store.selectedComponent {
-                        ComponentView(component: selectedComponent,
-                                      showingDependencyPopover: $viewModel.showingDependencyPopover)
-                    } else {
-                        HStack(alignment: .top) {
-                            VStack(alignment: .leading) {
-                                Text("No Component Selected")
-                                    .font(.largeTitle)
-                                    .foregroundColor(.gray)
-                                    .padding()
-                                Spacer()
-                            }
-                            Spacer()
-                        }
-                    }
+                if let selectedComponent = store.selectedComponent {
+                    ComponentView(component: selectedComponent,
+                                  showingDependencyPopover: $viewModel.showingDependencyPopover)
                 }
-                .frame(minWidth: 700)
             }
 
             if let family = store.selectedFamily {
