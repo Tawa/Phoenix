@@ -12,38 +12,44 @@ struct ComponentsList: View {
             HStack {
                 TextField("Filter", text: $filter)
                     .onExitCommand(perform: { filter = "" })
+                    .font(.title)
                 if !filter.isEmpty {
                     Button(action: { filter = "" }, label: {
                         Image(systemName: "clear.fill")
                     })
                     .aspectRatio(1, contentMode: .fit)
                 }
-            }.padding()
+            }.padding(16)
             List {
                 if store.componentsFamilies.isEmpty {
                     Text("0 components")
                         .foregroundColor(.gray)
                 } else {
                     ForEach(store.componentsFamilies, id: \.family) { componentsFamily in
-                        Section {
-                            ForEach(componentsFamily.components.filter { filter.isEmpty ? true : $0.name.full.lowercased().contains(filter.lowercased()) }) { component in
-                                ComponentListItem(
-                                    name: componentName(component, for: componentsFamily.family),
-                                    isSelected: store.selectedName == component.name,
-                                    onSelect: { store.selectComponent(withName: component.name) }
-                                )
+                        let filteredComponents = componentsFamily.components.filter { filter.isEmpty ? true : $0.name.full.lowercased().contains(filter.lowercased()) }
+                        if !filteredComponents.isEmpty {
+                            Section {
+                                ForEach(filteredComponents) { component in
+                                    ComponentListItem(
+                                        name: componentName(component, for: componentsFamily.family),
+                                        isSelected: store.selectedName == component.name,
+                                        onSelect: { store.selectComponent(withName: component.name) }
+                                    )
+                                }
+                            } header: {
+                                HStack {
+                                    Text(familyName(for: componentsFamily.family))
+                                        .font(.title.bold())
+                                    Button(action: { store.selectFamily(withName: componentsFamily.family.name) },
+                                           label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
+                                    Spacer()
+                                }
+                                .padding(.vertical)
                             }
-                        } header: {
-                            HStack {
-                                Text(familyName(for: componentsFamily.family))
-                                    .font(.title.bold())
-                                Button(action: { store.selectFamily(withName: componentsFamily.family.name) },
-                                       label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
-                                Spacer()
-                            }
-                            .padding(.vertical)
+                            Divider()
+                        } else {
+                            EmptyView()
                         }
-                        Divider()
                     }
                 }
             }

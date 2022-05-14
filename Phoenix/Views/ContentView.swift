@@ -127,13 +127,14 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            NavigationView {
+            HSplitView {
                 ComponentsList()
                     .frame(minWidth: 250)
 
                 if let selectedComponent = store.selectedComponent {
                     ComponentView(component: selectedComponent,
                                   showingDependencyPopover: $viewModel.showingDependencyPopover)
+                    .frame(minWidth: 750)
                 }
             }
 
