@@ -1,93 +1,81 @@
-import Package
 import SwiftUI
 
-struct RemoteDependencyView: View {
-    @EnvironmentObject private var store: PhoenixDocumentStore
+struct IdentifiableWithSubtype<ValueType>: Identifiable where ValueType: Identifiable {
+    var id: ValueType.ID { value.id }
+    let title: String
+    let subtitle: String?
+    let value: ValueType
+    let subValue: ValueType?
+}
 
-    let dependency: RemoteDependency
-    let types: [ModuleType]
-    @State private var versionText: String
+struct IdentifiableWithTitle<Data>: Identifiable where Data: Identifiable {
+    var id: Data.ID { value.id }
+    let title: String
+    let value: Data
+}
 
-    internal init(dependency: RemoteDependency, types: [ModuleType]) {
-        self.dependency = dependency
-        self.types = types
-        switch dependency.version {
-        case let .from(version):
-            versionText = version
-        case let .branch(name):
-            versionText = name
-        }
-    }
+struct RemoteDependencyView<DependencyType, VersionType>: View
+where DependencyType: Identifiable,
+      DependencyType: Equatable,
+        VersionType: Identifiable {
+    let name: String
+    let urlString: String
 
+    let allVersionsTypes: [IdentifiableWithTitle<VersionType>]
+    let onSubmitVersionType: (VersionType) -> Void
+    let versionPlaceholder: String
+    let versionTitle: String
+    let versionText: String
+    let onSubmitVersionText: (String) -> Void
+
+    let allDependencyTypes: [IdentifiableWithSubtype<DependencyType>]
+    let dependencyTypes: [DependencyType]
+    let enabledTypes: [DependencyType]
+    let onUpdateDependencyType: (DependencyType, Bool) -> Void
+
+    let onRemove: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading) {
             HStack {
-                Text(dependency.name.name)
+                Text(name)
                     .font(.largeTitle)
-                Button(action: {
-                    store.removeRemoteDependencyForSelectedComponent(dependency: dependency)
-                }, label: { Text("Remove") })
+                Button(action: onRemove) { Text("Remove") }
                 Spacer()
             }
-            Text(dependency.url)
+            Text(urlString)
                 .font(.title)
 
             HStack {
                 Menu {
-                    Button("from") {
-                        store.updateVersionForRemoteDependency(dependency: dependency, version: .from(version: ""))
-                    }
-                    Button("branch") {
-                        store.updateVersionForRemoteDependency(dependency: dependency, version: .branch(name: ""))
+                    ForEach(allVersionsTypes) { versionType in
+                        Button(versionType.title) { onSubmitVersionType(versionType.value) }
                     }
                 } label: {
-                    switch dependency.version {
-                    case .from:
-                        Text("from")
-                    case .branch:
-                        Text("branch")
-                    }
+                    Text(versionTitle)
                 }
                 .frame(width: 150)
-                switch dependency.version {
-                case let .from(version):
-                    TextField("1.0.0", text: .init(get: { version }, set: { versionText = $0 }))
-                        .onSubmit { store.updateVersionForRemoteDependency(dependency: dependency, version: .from(version: versionText)) }
-                        .font(.largeTitle)
-                        .foregroundColor(dependency.version != .from(version: versionText) ? .red : nil)
-                case let .branch(name):
-                    TextField("main", text: .init(get: { name }, set: { versionText = $0 }))
-                        .onSubmit { store.updateVersionForRemoteDependency(dependency: dependency, version: .branch(name: versionText)) }
-                        .font(.largeTitle.weight(.regular))
-                        .foregroundColor(dependency.version != .branch(name: versionText) ? .red : nil)
-                }
+                LazySubmitTextField(placeholder: versionPlaceholder,
+                                    initialValue: versionText,
+                                    onSubmit: onSubmitVersionText)
                 Spacer()
             }
 
             HStack(alignment: .top) {
-                if types.contains(.contract) {
-                    Toggle(isOn: Binding(get: { dependency.contract },
-                                         set: { store.updateModuleTypeForRemoteDependency(dependency: dependency, type: .contract, value: $0) })) {
-                        Text("Contract")
-                    }
-                }
-                if types.contains(.implementation) {
-                    VStack {
-                        Toggle(isOn: Binding(get: { dependency.implementation },
-                                             set: { store.updateModuleTypeForRemoteDependency(dependency: dependency, type: .implementation, value: $0) })) {
-                            Text("Implementation")
+                ForEach(allDependencyTypes.filter { allType in
+                    dependencyTypes.contains(where: { allType.value.id == $0.id })
+                }) { dependencyType in
+                    VStack(alignment: .leading) {
+                        Toggle(isOn: .init(get: { enabledTypes.contains(where: { dependencyType.value == $0 }) },
+                                           set: { onUpdateDependencyType(dependencyType.value, $0) })) {
+                            Text(dependencyType.title)
                         }
-                        Toggle(isOn: Binding(get: { dependency.tests },
-                                             set: { store.updateModuleTypeForRemoteDependency(dependency: dependency, type: .tests, value: $0) })) {
-                            Text("Tests")
+                        if let subtitle = dependencyType.subtitle, let subvalue = dependencyType.subValue {
+                            Toggle(isOn: .init(get: { enabledTypes.contains(where: { subvalue == $0 }) },
+                                               set: { onUpdateDependencyType(subvalue, $0) })) {
+                                Text(subtitle)
+                            }
                         }
-                    }
-                }
-                if types.contains(.mock) {
-                    Toggle(isOn: Binding(get: { dependency.mock },
-                                         set: { store.updateModuleTypeForRemoteDependency(dependency: dependency, type: .mock, value: $0) })) {
-                        Text("Mocks")
                     }
                 }
             }
@@ -98,10 +86,42 @@ struct RemoteDependencyView: View {
 }
 
 struct RemoteDependencyView_Previews: PreviewProvider {
+    enum DependencyTypeMock: Hashable, Identifiable {
+        var id: Int { hashValue }
+
+        case contract
+        case implementation
+        case tests
+        case mocks
+    }
+
+    enum VersionTypeMock: Hashable, Identifiable {
+        var id: Int { hashValue }
+
+        case branch
+        case version
+    }
+
     static var previews: some View {
-        RemoteDependencyView(dependency: RemoteDependency(url: "git@github.com:team/repo.git",
-                                                          name: .name("Repo Name"),
-                                                          value: .branch(name: "main")),
-                             types: ModuleType.allCases)
+        RemoteDependencyView(name: "Name",
+                             urlString: "github.com",
+                             allVersionsTypes: [
+                                .init(title: "branch", value: VersionTypeMock.branch),
+                                .init(title: "from", value: VersionTypeMock.version)
+                             ],
+                             onSubmitVersionType: { _ in },
+                             versionPlaceholder: "1.0.0",
+                             versionTitle: "from",
+                             versionText: "1.5.0",
+                             onSubmitVersionText: { _ in },
+                             allDependencyTypes: [
+                                .init(title: "Contract", subtitle: nil, value: DependencyTypeMock.contract, subValue: nil),
+                                .init(title: "Implementation", subtitle: "Tests", value: DependencyTypeMock.implementation, subValue: .tests),
+                                .init(title: "Mock", subtitle: nil, value: DependencyTypeMock.mocks, subValue: nil),
+                             ],
+                             dependencyTypes: [.contract, .implementation],
+                             enabledTypes: [.implementation, .tests],
+                             onUpdateDependencyType: { _ , _ in},
+                             onRemove: { })
     }
 }

@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct NewComponentPopover: View {
-    @EnvironmentObject private var store: PhoenixDocumentStore
-
     enum FocusFields: Hashable {
         case given
         case family

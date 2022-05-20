@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CustomMenu<Data>: View where Data : Identifiable {
+struct CustomMenu<Data>: View where Data: Identifiable {
     let title: String
     let data: [Data]
     let onSelection: (Data) -> Void

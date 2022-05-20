@@ -9,6 +9,15 @@ public struct RemoteDependency: Codable, Hashable, Identifiable {
     public var tests: Bool = false
     public var mock: Bool = false
 
+    public var versionText: String {
+        switch version {
+        case .from(let version):
+            return version
+        case .branch(let name):
+            return name
+        }
+    }
+
     public init(url: String,
                 name: ExternalDependencyName,
                 value: ExternalDependencyVersion) {

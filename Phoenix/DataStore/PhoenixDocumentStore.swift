@@ -243,14 +243,19 @@ class PhoenixDocumentStore: ObservableObject {
 
     func updateModuleTypeForRemoteDependency(dependency: RemoteDependency, type: TargetType, value: Bool) {
         get(remoteDependency: dependency) { dependency in
+            print(type, value)
             switch type {
             case .contract:
+                print(dependency.contract)
                 dependency.contract = value
             case .implementation:
+                print(dependency.implementation)
                 dependency.implementation = value
             case .tests:
+                print(dependency.tests)
                 dependency.tests = value
             case .mock:
+                print(dependency.mock)
                 dependency.mock = value
             }
         }
@@ -259,6 +264,17 @@ class PhoenixDocumentStore: ObservableObject {
     func updateVersionForRemoteDependency(dependency: RemoteDependency, version: ExternalDependencyVersion) {
         get(remoteDependency: dependency) { dependency in
             dependency.version = version
+        }
+    }
+
+    func updateVersionStringValueForRemoteDependency(dependency: RemoteDependency, stringValue: String) {
+        get(remoteDependency: dependency) { dependency in
+            switch dependency.version {
+            case .from:
+                dependency.version = .from(version: stringValue)
+            case .branch:
+                dependency.version = .branch(name: stringValue)
+            }
         }
     }
 

@@ -79,8 +79,29 @@ struct ComponentView: View {
                                 DependencyView(dependency: dependency,
                                                types: Array(component.modules.keys))
                             case let .remote(dependency):
-                                RemoteDependencyView(dependency: dependency,
-                                                     types: Array(component.modules.keys))
+                                RemoteDependencyView(
+                                    name: dependency.name.name,
+                                    urlString: dependency.url,
+                                    allVersionsTypes: [
+                                        .init(title: "branch", value: ExternalDependencyVersion.branch(name: "main")),
+                                        .init(title: "from", value: ExternalDependencyVersion.from(version: "1.0.0"))
+                                    ],
+                                    onSubmitVersionType: { updateVersion(for: dependency, version: $0) },
+                                    versionPlaceholder: versionPlaceholder(for: dependency),
+                                    versionTitle: dependency.version.title,
+                                    versionText: dependency.version.stringValue,
+                                    onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(dependency: dependency,
+                                                                                                             stringValue: $0) },
+                                    allDependencyTypes: [
+                                        .init(title: "Contract", subtitle: nil, value: TargetType.contract, subValue: nil),
+                                        .init(title: "Implementation", subtitle: "Tests", value: TargetType.implementation, subValue: .tests),
+                                        .init(title: "Mock", subtitle: nil, value: TargetType.mock, subValue: nil),
+                                    ],
+                                    dependencyTypes: dependencyTypes(for: dependency),
+                                    enabledTypes: enabledDependencyTypes(for: dependency),
+                                    onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(dependency: dependency, type: $0, value: $1) },
+                                    onRemove: { store.removeRemoteDependencyForSelectedComponent(dependency: dependency) }
+                                )
                             }
                         }
                     }
@@ -141,6 +162,51 @@ struct ComponentView: View {
             return "\(libraryType)"
         } else {
             return "Add Type"
+        }
+    }
+
+    private func dependencyTypes(for dependency: RemoteDependency) -> [TargetType] {
+        component.modules.keys.sorted().reduce(into: [TargetType](), { partialResult, moduleType in
+            switch moduleType {
+            case .contract:
+                partialResult.append(TargetType.contract)
+            case .implementation:
+                partialResult.append(TargetType.implementation)
+                partialResult.append(TargetType.tests)
+            case .mock:
+                partialResult.append(TargetType.mock)
+            }
+        })
+    }
+
+    private func enabledDependencyTypes(for dependency: RemoteDependency) -> [TargetType] {
+        var types = [TargetType]()
+        if dependency.contract {
+            types.append(.contract)
+        }
+        if dependency.implementation {
+            types.append(.implementation)
+        }
+        if dependency.tests {
+            types.append(.tests)
+        }
+        if dependency.mock {
+            types.append(.mock)
+        }
+
+        return types
+    }
+
+    private func updateVersion(for dependency: RemoteDependency, version: ExternalDependencyVersion) {
+        store.updateVersionForRemoteDependency(dependency: dependency, version: version)
+    }
+
+    private func versionPlaceholder(for dependency: RemoteDependency) -> String {
+        switch dependency.version {
+        case .from:
+            return "1.0.0"
+        case .branch:
+            return "main"
         }
     }
 }

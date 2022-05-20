@@ -18,6 +18,24 @@ public enum ExternalDependencyVersion: Codable, Hashable, Identifiable {
 
     case from(version: String)
     case branch(name: String)
+
+    public var title: String {
+        switch self {
+        case .from:
+            return "from"
+        case .branch:
+            return "branch"
+        }
+    }
+
+    public var stringValue: String {
+        switch self {
+        case let .from(version):
+            return version
+        case let .branch(name):
+            return name
+        }
+    }
 }
 
 public enum Dependency: Codable, Hashable, Identifiable, Comparable {
