@@ -4,11 +4,22 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject private var viewModel: ViewModel
     @EnvironmentObject private var store: PhoenixDocumentStore
+    private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
 
     var body: some View {
         ZStack {
             HSplitView {
-                ComponentsList()
+                ComponentsList(sections: store
+                    .componentsFamilies
+                    .map { componentsFamily in
+                        .init(name: familyFolderNameProvider.folderName(forFamily: componentsFamily.family.name),
+                              rows: componentsFamily.components.map { component in
+                                .init(name: componentName(component, for: componentsFamily.family),
+                                      isSelected: store.selectedName == component.name,
+                                      onSelect: { store.selectComponent(withName: component.name) })
+                        },
+                              onSelect: { store.selectFamily(withName: componentsFamily.family.name) })
+                    })
                     .frame(minWidth: 250)
 
                 if let selectedComponent = store.selectedComponent {
@@ -56,5 +67,9 @@ struct ContentView: View {
             Button(action: viewModel.onGenerate, label: { Text("Generate Packages") })
                 .keyboardShortcut(.init("R"), modifiers: .command)
         }
+    }
+
+    private func componentName(_ component: Component, for family: Family) -> String {
+        family.ignoreSuffix == true ? component.name.given : component.name.given + component.name.family
     }
 }

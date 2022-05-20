@@ -1,36 +1,66 @@
-import Package
 import SwiftUI
 
-struct ComponentsList: View {
-    @EnvironmentObject private var store: PhoenixDocumentStore
-    private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
+struct ComponentsListRow: Hashable, Identifiable {
+    var id: Int { hashValue }
+    let name: String
+    let isSelected: Bool
+    let onSelect: () -> Void
 
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(isSelected)
+    }
+
+    static func ==(lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+struct ComponentsListSection: Hashable, Identifiable {
+    var id: Int { hashValue }
+
+    let name: String
+    let rows: [ComponentsListRow]
+    let onSelect: () -> Void
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(rows)
+    }
+
+    static func ==(lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+struct ComponentsList: View {
     @State private var filter: String = ""
+    let sections: [ComponentsListSection]
 
     var body: some View {
         VStack(alignment: .leading) {
             FilterView(filter: $filter)
             List {
-                if store.componentsFamilies.isEmpty {
+                if sections.isEmpty {
                     Text("0 components")
                         .foregroundColor(.gray)
                 } else {
-                    ForEach(store.componentsFamilies, id: \.family) { componentsFamily in
-                        let filteredComponents = componentsFamily.components.filter { filter.isEmpty ? true : $0.name.full.lowercased().contains(filter.lowercased()) }
-                        if !filteredComponents.isEmpty {
+                    ForEach(sections) { section in
+                        let filteredRow = section.rows.filter { filter.isEmpty ? true : $0.name.lowercased().contains(filter.lowercased()) }
+                        if !filteredRow.isEmpty {
                             Section {
-                                ForEach(filteredComponents) { component in
+                                ForEach(filteredRow) { row in
                                     ComponentListItem(
-                                        name: componentName(component, for: componentsFamily.family),
-                                        isSelected: store.selectedName == component.name,
-                                        onSelect: { store.selectComponent(withName: component.name) }
+                                        name: row.name,
+                                        isSelected: row.isSelected,
+                                        onSelect: row.onSelect
                                     )
                                 }
                             } header: {
                                 HStack {
-                                    Text(familyName(for: componentsFamily.family))
+                                    Text(section.name)
                                         .font(.title.bold())
-                                    Button(action: { store.selectFamily(withName: componentsFamily.family.name) },
+                                    Button(action: section.onSelect,
                                            label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
                                     Spacer()
                                 }
@@ -47,27 +77,26 @@ struct ComponentsList: View {
             .listStyle(SidebarListStyle())
         }
     }
-
-    private func componentName(_ component: Component, for family: Family) -> String {
-        family.ignoreSuffix == true ? component.name.given : component.name.given + component.name.family
-    }
-
-    private func familyName(for family: Family) -> String {
-        if let folder = family.folder, !folder.isEmpty {
-            return folder
-        } else {
-            return familyFolderNameProvider.folderName(forFamily: family.name)
-        }
-    }
 }
 
 struct ComponentsList_Previews: PreviewProvider {
     struct Preview: View {
-        @State var families: [ComponentsFamily] = []
-        @State var selectedName: Name?
-
         var body: some View {
-            ComponentsList()
+            ComponentsList(sections: [
+                .init(name: "DataStore", rows: [
+                    .init(name: "WordpressDataStore", isSelected: false, onSelect: {})
+                ],
+                      onSelect: {}),
+                .init(name: "Repository", rows: [
+                    .init(name: "WordpressRepository", isSelected: true, onSelect: {})
+                ],
+                      onSelect: {}),
+                .init(name: "Shared", rows: [
+                    .init(name: "Networking", isSelected: false, onSelect: {})
+                ],
+                      onSelect: {})
+
+            ])
         }
     }
 
