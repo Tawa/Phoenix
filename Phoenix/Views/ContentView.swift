@@ -5,23 +5,23 @@ struct ContentView: View {
     @EnvironmentObject private var viewModel: ViewModel
     @EnvironmentObject private var store: PhoenixDocumentStore
     private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
-
+    
     var body: some View {
         ZStack {
             HSplitView {
                 ComponentsList(sections: store
                     .componentsFamilies
                     .map { componentsFamily in
-                        .init(name: familyFolderNameProvider.folderName(forFamily: componentsFamily.family.name),
-                              rows: componentsFamily.components.map { component in
-                                .init(name: componentName(component, for: componentsFamily.family),
-                                      isSelected: store.selectedName == component.name,
-                                      onSelect: { store.selectComponent(withName: component.name) })
-                        },
-                              onSelect: { store.selectFamily(withName: componentsFamily.family.name) })
+                            .init(name: sectionTitle(forFamily: componentsFamily.family),
+                                  rows: componentsFamily.components.map { component in
+                                    .init(name: componentName(component, for: componentsFamily.family),
+                                          isSelected: store.selectedName == component.name,
+                                          onSelect: { store.selectComponent(withName: component.name) })
+                            },
+                                  onSelect: { store.selectFamily(withName: componentsFamily.family.name) })
                     })
-                    .frame(minWidth: 250)
-
+                .frame(minWidth: 250)
+                
                 if let selectedComponent = store.selectedComponent {
                     ComponentView(component: selectedComponent,
                                   showingDependencyPopover: $viewModel.showingDependencyPopover)
@@ -38,7 +38,7 @@ struct ContentView: View {
                     }.frame(minWidth: 750)
                 }
             }
-
+            
         }.sheet(isPresented: $viewModel.showingDependencyPopover) {
             ComponentDependenciesPopover(showingPopup: $viewModel.showingDependencyPopover)
                 .frame(minWidth: 900, minHeight: 400)
@@ -57,19 +57,33 @@ struct ContentView: View {
                 }
                 return nil
             }
-
-        }.sheet(item: .constant(store.selectedFamily.map { FamilyPopoverViewModel(family: $0) })) { viewModel in
-            FamilyPopover(viewModel: viewModel)
+            
+        }.sheet(item: .constant(store.selectedFamily)) { family in
+            FamilyPopover(name: family.name,
+                          ignoreSuffix: family.ignoreSuffix,
+                          onUpdateSelectedFamily: { store.updateSelectedFamily(ignoresSuffix: !$0) },
+                          folderName: family.folder ?? "",
+                          onUpdateFolderName: { store.updateSelectedFamily(folder: $0) },
+                          defaultFolderName: familyFolderNameProvider.folderName(forFamily: family.name),
+                          componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
+                          onDismiss: store.deselectFamily)
         }.toolbar {
-//            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
+            //            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
             Button(action: viewModel.onAddButton, label: { Text("Add New Component") })
                 .keyboardShortcut("A", modifiers: [.command, .shift])
             Button(action: viewModel.onGenerate, label: { Text("Generate Packages") })
                 .keyboardShortcut(.init("R"), modifiers: .command)
         }
     }
-
+    
     private func componentName(_ component: Component, for family: Family) -> String {
         family.ignoreSuffix == true ? component.name.given : component.name.given + component.name.family
+    }
+    
+    private func sectionTitle(forFamily family: Family) -> String {
+        if let folder = family.folder {
+            return folder
+        }
+        return familyFolderNameProvider.folderName(forFamily: family.name)
     }
 }

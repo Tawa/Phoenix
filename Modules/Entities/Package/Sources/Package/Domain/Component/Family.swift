@@ -1,4 +1,6 @@
-public struct Family: Codable, Hashable {
+public struct Family: Codable, Hashable, Identifiable {
+    public var id: Int { hashValue }
+
     public let name: String
     public var ignoreSuffix: Bool
     public var folder: String?

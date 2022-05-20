@@ -3,7 +3,11 @@ public protocol PackageFolderNameProviding {
 }
 
 public struct PackageFolderNameProvider: PackageFolderNameProviding {
-    let defaultFolderNameProvider: FamilyFolderNameProviding
+    public let defaultFolderNameProvider: FamilyFolderNameProviding
+
+    public init(defaultFolderNameProvider: FamilyFolderNameProviding) {
+        self.defaultFolderNameProvider = defaultFolderNameProvider
+    }
 
     public func folderName(for name: Name, of family: Family) -> String {
         family.folder ?? defaultFolderNameProvider.folderName(forFamily: family.name)

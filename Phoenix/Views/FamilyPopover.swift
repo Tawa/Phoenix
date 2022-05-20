@@ -1,10 +1,4 @@
 import SwiftUI
-import Package
-
-struct FamilyPopoverViewModel: Identifiable {
-    let id: String = UUID().uuidString
-    let family: Family
-}
 
 struct FamilyPopover: View {
     enum FocusFields: Hashable {
@@ -13,23 +7,24 @@ struct FamilyPopover: View {
         case folder
     }
     
-    @EnvironmentObject private var store: PhoenixDocumentStore
-    
-    let viewModel: FamilyPopoverViewModel
-    private let folderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
-    
-    private var defaultFolderName: String { folderNameProvider.folderName(forFamily: viewModel.family.name) }
-    private var componentNameExample: String { "Component\(viewModel.family.ignoreSuffix ? "" : viewModel.family.name)" }
-    
+    let name: String
+    let ignoreSuffix: Bool
+    let onUpdateSelectedFamily: (Bool) -> Void
+    let folderName: String
+    let onUpdateFolderName: (String?) -> Void
+    let defaultFolderName: String
+    let componentNameExample: String
+    let onDismiss: () -> Void
+
     var body: some View {
         ZStack {
             VStack {
                 VStack(alignment: .leading) {
-                    Text("Family: \(viewModel.family.name)")
+                    Text("Family: \(name)")
                         .font(.largeTitle)
                     
-                    Toggle(isOn: Binding(get: { !viewModel.family.ignoreSuffix },
-                                         set: { store.updateSelectedFamily(ignoresSuffix: !$0) })) {
+                    Toggle(isOn: Binding(get: { !ignoreSuffix },
+                                         set: { onUpdateSelectedFamily($0) })) {
                         Text("Append Component Name with Family Name. ")
                             .font(.title.bold())
                         + Text("\nExample: \(componentNameExample)")
@@ -40,10 +35,10 @@ struct FamilyPopover: View {
                         Text("Folder Name:")
                             .font(.largeTitle)
                         TextField("Default: (\(defaultFolderName))",
-                                  text: Binding(get: { viewModel.family.folder ?? "" },
-                                                set: { store.updateSelectedFamily(folder: $0) }))
+                                  text: Binding(get: { folderName },
+                                                set: { onUpdateFolderName($0) }))
                         .font(.largeTitle)
-                        Button(action: { store.updateSelectedFamily(folder: nil) }) {
+                        Button(action: { onUpdateFolderName(nil) }) {
                             Text("Use Default")
                         }
                     }
@@ -61,23 +56,19 @@ struct FamilyPopover: View {
         .background(.ultraThinMaterial)
         .onExitCommand(perform: onDismiss)
     }
-    
-    private func onDismiss() {
-        store.deselectFamily()
-    }
 }
 
-struct FamilyPopover_Previews: PreviewProvider {
-    static var previews: some View {
-        FamilyPopover(
-            viewModel: FamilyPopoverViewModel(
-                family: Family(name: "Repository",
-                               ignoreSuffix: false,
-                               folder: nil)))
-        FamilyPopover(
-            viewModel: FamilyPopoverViewModel(
-                family: Family(name: "Shared",
-                               ignoreSuffix: true,
-                               folder: "Support")))
-    }
-}
+//struct FamilyPopover_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FamilyPopover(
+//            viewModel: FamilyPopoverViewModel(
+//                family: Family(name: "Repository",
+//                               ignoreSuffix: false,
+//                               folder: nil)))
+//        FamilyPopover(
+//            viewModel: FamilyPopoverViewModel(
+//                family: Family(name: "Shared",
+//                               ignoreSuffix: true,
+//                               folder: "Support")))
+//    }
+//}

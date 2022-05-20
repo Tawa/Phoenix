@@ -33,17 +33,21 @@ struct ComponentModuleTypeView<Data>: View where Data: Identifiable {
     }
 }
 
-#if DEBUG
-import Package
-
 struct ComponentModuleTypeView_Previews: PreviewProvider {
+    enum MockType: Identifiable, CaseIterable, Hashable {
+        var id: Int { hashValue }
+        case contract
+        case implementation
+        case mock
+    }
+
     static var previews: some View {
         Group {
             ComponentModuleTypeView(title: "Contract",
                                     isOn: false,
                                     onOn: {},
                                     onOff: {},
-                                    selectionData: LibraryType.allCases,
+                                    selectionData: MockType.allCases,
                                     selectionTitle: "undefined",
                                     onSelection: { _ in },
                                     onRemove: {})
@@ -51,7 +55,7 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     isOn: true,
                                     onOn: {},
                                     onOff: {},
-                                    selectionData: LibraryType.allCases,
+                                    selectionData: MockType.allCases,
                                     selectionTitle: "undefined",
                                     onSelection: { _ in },
                                     onRemove: {})
@@ -59,12 +63,10 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     isOn: true,
                                     onOn: {},
                                     onOff: {},
-                                    selectionData: LibraryType.allCases,
+                                    selectionData: MockType.allCases,
                                     selectionTitle: "dynamic",
                                     onSelection: { _ in },
                                     onRemove: {})
         }.frame(height: 50)
     }
 }
-
-#endif

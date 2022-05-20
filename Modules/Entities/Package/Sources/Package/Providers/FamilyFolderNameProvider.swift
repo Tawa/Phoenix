@@ -4,7 +4,7 @@ public protocol FamilyFolderNameProviding {
 
 public struct FamilyFolderNameProvider: FamilyFolderNameProviding {
     public init() {
-        
+
     }
 
     public func folderName(forFamily familyName: String) -> String {
@@ -21,3 +21,4 @@ public struct FamilyFolderNameProvider: FamilyFolderNameProviding {
         return familyName + "s"
     }
 }
+
