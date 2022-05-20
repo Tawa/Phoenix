@@ -44,6 +44,7 @@ struct ComponentView: View {
                                             isOn: component.modules[.contract] != nil,
                                             onOn: { store.addModuleTypeForSelectedComponent(moduleType: .contract) },
                                             onOff: { store.removeModuleTypeForSelectedComponent(moduleType: .contract) },
+                                            selectionData: LibraryType.allCases,
                                             selectionTitle: moduleTypeTitle(for: .contract),
                                             onSelection: { store.set(libraryType: $0, forModuleType: .contract) },
                                             onRemove: { store.set(libraryType: nil, forModuleType: .contract) })
@@ -52,6 +53,7 @@ struct ComponentView: View {
                                             isOn: component.modules[.implementation] != nil,
                                             onOn: { store.addModuleTypeForSelectedComponent(moduleType: .implementation) },
                                             onOff: { store.removeModuleTypeForSelectedComponent(moduleType: .implementation) },
+                                            selectionData: LibraryType.allCases,
                                             selectionTitle: moduleTypeTitle(for: .implementation),
                                             onSelection: { store.set(libraryType: $0, forModuleType: .implementation) },
                                             onRemove: { store.set(libraryType: nil, forModuleType: .implementation) })
@@ -60,6 +62,7 @@ struct ComponentView: View {
                                             isOn: component.modules[.mock] != nil,
                                             onOn: { store.addModuleTypeForSelectedComponent(moduleType: .mock) },
                                             onOff: { store.removeModuleTypeForSelectedComponent(moduleType: .mock) },
+                                            selectionData: LibraryType.allCases,
                                             selectionTitle: moduleTypeTitle(for: .mock),
                                             onSelection: { store.set(libraryType: $0, forModuleType: .mock) },
                                             onRemove: { store.set(libraryType: nil, forModuleType: .mock) })

@@ -32,7 +32,21 @@ struct ContentView: View {
             ComponentDependenciesPopover(showingPopup: $viewModel.showingDependencyPopover)
                 .frame(minWidth: 900, minHeight: 400)
         }.sheet(isPresented: $viewModel.showingNewComponentPopup) {
-            NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup)
+            NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup) { name, familyName in
+                let name = Name(given: name, family: familyName)
+                if name.given.isEmpty {
+                    return "Given name cannot be empty"
+                } else if name.family.isEmpty {
+                    return "Component must be part of a family"
+                } else if store.nameExists(name: name) {
+                    return "Name already in use"
+                } else {
+                    store.addNewComponent(withName: name)
+                    store.selectComponent(withName: name)
+                }
+                return nil
+            }
+
         }.sheet(item: .constant(store.selectedFamily.map { FamilyPopoverViewModel(family: $0) })) { viewModel in
             FamilyPopover(viewModel: viewModel)
         }.toolbar {

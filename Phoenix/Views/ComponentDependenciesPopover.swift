@@ -34,27 +34,8 @@ struct ComponentDependenciesPopover: View {
         VStack {
             HSplitView {
                 VStack(alignment: .leading) {
-                    HStack {
-                        TextField("Filter", text: $filter)
-                            .focused($textFieldFocus)
-                            .onAppear(perform: {
-                                textFieldFocus = true
-                            })
-                            .font(.title)
-                            .onExitCommand(perform: {
-                                if filter.isEmpty {
-                                    showingPopup = false
-                                } else {
-                                    filter = ""
-                                }
-                            })
-                        if !filter.isEmpty {
-                            Button(action: { filter = "" }, label: {
-                                Image(systemName: "clear.fill")
-                            })
-                            .aspectRatio(1, contentMode: .fit)
-                        }
-                    }.padding(16)
+                    FilterView(filter: $filter,
+                               onExit: { showingPopup = false })
                     List {
                         Text("Components:")
                             .font(.largeTitle)

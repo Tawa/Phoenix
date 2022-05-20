@@ -1,13 +1,13 @@
-import Package
 import SwiftUI
 
-struct ComponentModuleTypeView: View {
+struct ComponentModuleTypeView<Data>: View where Data: Identifiable {
     let title: String
     let isOn: Bool
     let onOn: () -> Void
     let onOff: () -> Void
+    let selectionData: [Data]
     let selectionTitle: String
-    let onSelection: (LibraryType) -> Void
+    let onSelection: (Data) -> Void
     let onRemove: () -> Void
 
     var body: some View {
@@ -20,7 +20,7 @@ struct ComponentModuleTypeView: View {
 
                 if isOn {
                     CustomMenu(title: selectionTitle,
-                               data: LibraryType.allCases,
+                               data: selectionData,
                                onSelection: onSelection,
                                hasRemove: false,
                                onRemove: onRemove)
@@ -33,6 +33,9 @@ struct ComponentModuleTypeView: View {
     }
 }
 
+#if DEBUG
+import Package
+
 struct ComponentModuleTypeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -40,6 +43,7 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     isOn: false,
                                     onOn: {},
                                     onOff: {},
+                                    selectionData: LibraryType.allCases,
                                     selectionTitle: "undefined",
                                     onSelection: { _ in },
                                     onRemove: {})
@@ -47,6 +51,7 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     isOn: true,
                                     onOn: {},
                                     onOff: {},
+                                    selectionData: LibraryType.allCases,
                                     selectionTitle: "undefined",
                                     onSelection: { _ in },
                                     onRemove: {})
@@ -54,9 +59,12 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     isOn: true,
                                     onOn: {},
                                     onOff: {},
+                                    selectionData: LibraryType.allCases,
                                     selectionTitle: "dynamic",
                                     onSelection: { _ in },
                                     onRemove: {})
         }.frame(height: 50)
     }
 }
+
+#endif

@@ -9,17 +9,7 @@ struct ComponentsList: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                TextField("Filter", text: $filter)
-                    .onExitCommand(perform: { filter = "" })
-                    .font(.title)
-                if !filter.isEmpty {
-                    Button(action: { filter = "" }, label: {
-                        Image(systemName: "clear.fill")
-                    })
-                    .aspectRatio(1, contentMode: .fit)
-                }
-            }.padding(16)
+            FilterView(filter: $filter)
             List {
                 if store.componentsFamilies.isEmpty {
                     Text("0 components")

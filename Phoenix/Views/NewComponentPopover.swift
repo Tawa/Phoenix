@@ -1,4 +1,3 @@
-import Package
 import SwiftUI
 
 struct NewComponentPopover: View {
@@ -10,6 +9,7 @@ struct NewComponentPopover: View {
     }
 
     @Binding var isPresenting: Bool
+    let onSubmit: (String, String) -> String?
     @State private var name: String = ""
     @State private var familyName: String = ""
     @State private var popoverViewModel: PopoverViewModel? = nil
@@ -56,17 +56,7 @@ struct NewComponentPopover: View {
 
     private func onSubmitAction() {
         focusField = nil
-        let name = Name(given: name, family: familyName)
-        if name.given.isEmpty {
-            popoverViewModel = .init(text: "Given name cannot be empty")
-        } else if name.family.isEmpty {
-            popoverViewModel = .init(text: "Component must be part of a family")
-        } else if store.nameExists(name: name) {
-            popoverViewModel = .init(text: "Name already in use")
-        } else {
-            store.addNewComponent(withName: name)
-            store.selectComponent(withName: name)
-        }
+        onSubmit(name, familyName).map { popoverViewModel = .init(text: $0) }
     }
 
     private func onDismiss() {
@@ -81,6 +71,7 @@ struct NewComponentPopover: View {
 
 struct NewComponentPopover_Previews: PreviewProvider {
     static var previews: some View {
-        NewComponentPopover(isPresenting: .constant(true))
+        NewComponentPopover(isPresenting: .constant(true),
+                            onSubmit: { _, _ in nil })
     }
 }
