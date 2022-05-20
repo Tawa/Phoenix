@@ -12,7 +12,7 @@ struct NewComponentPopover: View {
     @Binding var isPresenting: Bool
     @State private var name: String = ""
     @State private var familyName: String = ""
-    @State private var popoverText: String? = nil
+    @State private var popoverViewModel: PopoverViewModel? = nil
     @FocusState private var focusField: FocusFields?
 
     var body: some View {
@@ -45,35 +45,24 @@ struct NewComponentPopover: View {
             .frame(maxWidth:  .infinity, maxHeight: .infinity)
             .background(.ultraThinMaterial)
             .onAppear { focusField = .given }
-
-            if let popoverText = popoverText {
-                ZStack {
-                    VStack(alignment: .center) {
-                        Text(popoverText)
-                            .font(.largeTitle)
-                        Button(action: onPopoverOkayButton) {
-                            Text("Ok")
-                        }
-                    }
-                }
-                .frame(maxWidth:  .infinity, maxHeight: .infinity)
-                .background(.ultraThinMaterial)
-                .onSubmit(onPopoverOkayButton)
-                .onExitCommand(perform: onPopoverOkayButton)
-            }
         }
         .onExitCommand(perform: onDismiss)
+        .sheet(item: $popoverViewModel) { viewModel in
+            PopoverView(viewModel: viewModel) {
+                popoverViewModel = nil
+            }
+        }
     }
 
     private func onSubmitAction() {
         focusField = nil
         let name = Name(given: name, family: familyName)
         if name.given.isEmpty {
-            popoverText = "Given name cannot be empty"
+            popoverViewModel = .init(text: "Given name cannot be empty")
         } else if name.family.isEmpty {
-            popoverText = "Component must be part of a family"
+            popoverViewModel = .init(text: "Component must be part of a family")
         } else if store.nameExists(name: name) {
-            popoverText = "Name already in use"
+            popoverViewModel = .init(text: "Name already in use")
         } else {
             store.addNewComponent(withName: name)
             store.selectComponent(withName: name)
@@ -86,7 +75,7 @@ struct NewComponentPopover: View {
 
     private func onPopoverOkayButton() {
         focusField = nil
-        popoverText = nil
+        popoverViewModel = nil
     }
 }
 

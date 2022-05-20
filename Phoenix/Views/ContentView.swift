@@ -28,18 +28,13 @@ struct ContentView: View {
                 }
             }
 
-            if let family = store.selectedFamily {
-                FamilyPopover(family: family)
-            }
-
-            if viewModel.showingDependencyPopover {
-                ComponentDependenciesPopover(showingPopup: $viewModel.showingDependencyPopover)
-            }
-
-            if viewModel.showingNewComponentPopup {
-                NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup)
-            }
-
+        }.sheet(isPresented: $viewModel.showingDependencyPopover) {
+            ComponentDependenciesPopover(showingPopup: $viewModel.showingDependencyPopover)
+                .frame(minWidth: 900, minHeight: 400)
+        }.sheet(isPresented: $viewModel.showingNewComponentPopup) {
+            NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup)
+        }.sheet(item: .constant(store.selectedFamily.map { FamilyPopoverViewModel(family: $0) })) { viewModel in
+            FamilyPopover(viewModel: viewModel)
         }.toolbar {
 //            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
             Button(action: viewModel.onAddButton, label: { Text("Add New Component") })
