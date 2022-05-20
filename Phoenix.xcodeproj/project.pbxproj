@@ -26,6 +26,8 @@
 		38E0B2FA2815702E00B5992D /* ComponentDependenciesPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */; };
 		38E0B2FD2815766E00B5992D /* PhoenixDocumentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2FC2815766E00B5992D /* PhoenixDocumentStore.swift */; };
 		38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */; };
+		38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2512A2837E163002FFA31 /* ViewModel.swift */; };
+		38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */; };
 		38E33350281875D300407B96 /* ComponentPreviewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E3334F281875D300407B96 /* ComponentPreviewsView.swift */; };
 		38F73EB7280DC0DB00D6A85D /* PackageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */; };
 /* End PBXBuildFile section */
@@ -77,6 +79,8 @@
 		38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentDependenciesPopover.swift; sourceTree = "<group>"; };
 		38E0B2FC2815766E00B5992D /* PhoenixDocumentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentStore.swift; sourceTree = "<group>"; };
 		38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencyView.swift; sourceTree = "<group>"; };
+		38E2512A2837E163002FFA31 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentModuleTypeView.swift; sourceTree = "<group>"; };
 		38E3334F281875D300407B96 /* ComponentPreviewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentPreviewsView.swift; sourceTree = "<group>"; };
 		38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageGenerator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -125,6 +129,7 @@
 			children = (
 				38E0B2FB2815765E00B5992D /* DataStore */,
 				3873E5A92804C50A000BCB03 /* Assets.xcassets */,
+				38E2512A2837E163002FFA31 /* ViewModel.swift */,
 				38C7D144280888E800E2675B /* Views */,
 				3873E5AE2804C50A000BCB03 /* Info.plist */,
 				38C7D1452808AE8500E2675B /* Generator */,
@@ -193,6 +198,7 @@
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
 				3810D8CC280990AF006E7EE3 /* ComponentsList.swift */,
 				3810D8CA2809811F006E7EE3 /* ComponentView.swift */,
+				38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */,
 				381855752819CACD00BF6696 /* DynamicTextFieldList.swift */,
 				38E3334F281875D300407B96 /* ComponentPreviewsView.swift */,
 				3873E5A72804C509000BCB03 /* ContentView.swift */,
@@ -328,6 +334,7 @@
 				38E0B2FD2815766E00B5992D /* PhoenixDocumentStore.swift in Sources */,
 				38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilyPopover.swift in Sources */,
+				38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */,
 				388DA8A8281863750066086A /* CustomMenu.swift in Sources */,
 				3810D8CF28099B82006E7EE3 /* ComponentListItem.swift in Sources */,
 				3873E5A62804C509000BCB03 /* PhoenixDocument.swift in Sources */,
@@ -335,6 +342,7 @@
 				3810D8DF280B4ADD006E7EE3 /* DependencyView.swift in Sources */,
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
 				38E33350281875D300407B96 /* ComponentPreviewsView.swift in Sources */,
+				38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */,
 				388DA8A6281862630066086A /* CustomToggle.swift in Sources */,
 				381855762819CACD00BF6696 /* DynamicTextFieldList.swift in Sources */,
 				38F73EB7280DC0DB00D6A85D /* PackageGenerator.swift in Sources */,

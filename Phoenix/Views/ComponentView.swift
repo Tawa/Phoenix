@@ -41,53 +41,31 @@ struct ComponentView: View {
                     Divider()
                     HStack {
                         Text("Module Types:")
-                        VStack(alignment: .leading) {
-                            CustomToggle(title: "Contract",
-                                         isOnValue: component.modules[.contract] != nil,
-                                         whenTurnedOn: { store.addModuleTypeForSelectedComponent(moduleType: .contract) },
-                                         whenTurnedOff: { store.removeModuleTypeForSelectedComponent(moduleType: .contract) })
-
-                            if component.modules[.contract] != nil {
-                                CustomMenu(title: moduleTypeTitle(for: .contract),
-                                           data: LibraryType.allCases,
-                                           onSelection: { store.set(libraryType: $0, forModuleType: .contract) },
-                                           hasRemove: false,
-                                           onRemove: { store.set(libraryType: nil, forModuleType: .contract) })
-                            }
-                        }
-                        .frame(width: 150)
+                        ComponentModuleTypeView(title: "Contract",
+                                                isOn: component.modules[.contract] != nil,
+                                                onOn: { store.addModuleTypeForSelectedComponent(moduleType: .contract) },
+                                                onOff: { store.removeModuleTypeForSelectedComponent(moduleType: .contract) },
+                                                selectionTitle: moduleTypeTitle(for: .contract),
+                                                onSelection: { store.set(libraryType: $0, forModuleType: .contract) },
+                                                onRemove: { store.set(libraryType: nil, forModuleType: .contract) })
                         Divider()
-                        VStack(alignment: .leading) {
-                            CustomToggle(title: "Implementation",
-                                         isOnValue: component.modules[.implementation] != nil,
-                                         whenTurnedOn: { store.addModuleTypeForSelectedComponent(moduleType: .implementation) },
-                                         whenTurnedOff: { store.removeModuleTypeForSelectedComponent(moduleType: .implementation) })
-                            if component.modules[.implementation] != nil {
-                                CustomMenu(title: moduleTypeTitle(for: .implementation),
-                                           data: LibraryType.allCases,
-                                           onSelection: { store.set(libraryType: $0, forModuleType: .implementation) },
-                                           hasRemove: false,
-                                           onRemove: { store.set(libraryType: nil, forModuleType: .implementation) })
-                            }
-                        }
-                        .frame(width: 150)
+                        ComponentModuleTypeView(title: "Implementation",
+                                                isOn: component.modules[.implementation] != nil,
+                                                onOn: { store.addModuleTypeForSelectedComponent(moduleType: .implementation) },
+                                                onOff: { store.removeModuleTypeForSelectedComponent(moduleType: .implementation) },
+                                                selectionTitle: moduleTypeTitle(for: .implementation),
+                                                onSelection: { store.set(libraryType: $0, forModuleType: .implementation) },
+                                                onRemove: { store.set(libraryType: nil, forModuleType: .implementation) })
                         Divider()
-                        VStack(alignment: .leading) {
-                            CustomToggle(title: "Mock",
-                                         isOnValue: component.modules[.mock] != nil,
-                                         whenTurnedOn: { store.addModuleTypeForSelectedComponent(moduleType: .mock) },
-                                         whenTurnedOff: { store.removeModuleTypeForSelectedComponent(moduleType: .mock) })
-                            if component.modules[.mock] != nil {
-                                CustomMenu(title: moduleTypeTitle(for: .mock),
-                                           data: LibraryType.allCases,
-                                           onSelection: { store.set(libraryType: $0, forModuleType: .mock) },
-                                           hasRemove: false,
-                                           onRemove: { store.set(libraryType: nil, forModuleType: .mock) })
-                            }
-                        }
-                        .frame(width: 150)
+                        ComponentModuleTypeView(title: "Mock",
+                                                isOn: component.modules[.mock] != nil,
+                                                onOn: { store.addModuleTypeForSelectedComponent(moduleType: .mock) },
+                                                onOff: { store.removeModuleTypeForSelectedComponent(moduleType: .mock) },
+                                                selectionTitle: moduleTypeTitle(for: .mock),
+                                                onSelection: { store.set(libraryType: $0, forModuleType: .mock) },
+                                                onRemove: { store.set(libraryType: nil, forModuleType: .mock) })
                         Spacer()
-                    }
+                    }.frame(height: 50)
                     Divider()
 
                     Section {
