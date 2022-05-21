@@ -80,13 +80,7 @@ struct ComponentView: View {
                                     title: store.title(for: dependency.name),
                                     onSelection: { store.selectComponent(withName: dependency.name) },
                                     onRemove: { store.removeDependencyForSelectedComponent(componentDependency: dependency) },
-                                    allTypes: [
-                                        .init(title: "Contract", subtitle: nil, value: .contract, subValue: nil, selectedValue: dependency.contract, selectedSubValue: nil),
-                                        .init(title: "Implementation", subtitle: "Tests",
-                                              value: .implementation, subValue: .tests,
-                                              selectedValue: dependency.implementation, selectedSubValue: dependency.tests),
-                                        .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil, selectedValue: dependency.mock, selectedSubValue: nil),
-                                    ],
+                                    allTypes: componentTypes(for: dependency),
                                     allSelectionValues: Array(ModuleType.allCases),
                                     onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(dependency: dependency, type: $0, value: $1) })
                             case let .remote(dependency):
@@ -219,6 +213,27 @@ struct ComponentView: View {
             return "1.0.0"
         case .branch:
             return "main"
+        }
+    }
+
+    private func componentTypes(for dependency: ComponentDependency) -> [IdentifiableWithSubtypeAndSelection<TargetType, ModuleType>] {
+        [
+            .init(title: "Contract", subtitle: nil, value: .contract, subValue: nil, selectedValue: dependency.contract, selectedSubValue: nil),
+            .init(title: "Implementation", subtitle: "Tests",
+                  value: .implementation, subValue: .tests,
+                  selectedValue: dependency.implementation, selectedSubValue: dependency.tests),
+            .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil, selectedValue: dependency.mock, selectedSubValue: nil),
+        ].filter { value in
+            component.modules.keys.contains { moduleType in
+                switch (moduleType, value.value) {
+                case (.contract, .contract),
+                    (.implementation, .implementation),
+                    (.mock, .mock):
+                    return true
+                default:
+                    return false
+                }
+            }
         }
     }
 }
