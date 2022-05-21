@@ -4,6 +4,8 @@ import SwiftUI
 struct ComponentView: View {
     @EnvironmentObject private var store: PhoenixDocumentStore
 
+    let title: String
+    let onRemove: () -> Void
     let component: Component
     @Binding var showingDependencyPopover: Bool
 
@@ -13,11 +15,11 @@ struct ComponentView: View {
         List {
             VStack(alignment: .leading) {
                 HStack {
-                    Text(store.title(for: component.name))
+                    Text(title)
                         .font(.largeTitle)
                         .multilineTextAlignment(.leading)
                     Spacer()
-                    Button(role: .destructive, action: { store.removeSelectedComponent() }) {
+                    Button(role: .destructive, action: onRemove) {
                         Image(systemName: "trash")
                     }.help("Remove")
                 }
@@ -40,32 +42,17 @@ struct ComponentView: View {
                 Divider()
                 HStack {
                     Text("Module Types:")
-                    ComponentModuleTypeView(title: "Contract",
-                                            isOn: component.modules[.contract] != nil,
-                                            onOn: { store.addModuleTypeForSelectedComponent(moduleType: .contract) },
-                                            onOff: { store.removeModuleTypeForSelectedComponent(moduleType: .contract) },
-                                            selectionData: LibraryType.allCases,
-                                            selectionTitle: moduleTypeTitle(for: .contract),
-                                            onSelection: { store.set(libraryType: $0, forModuleType: .contract) },
-                                            onRemove: { store.set(libraryType: nil, forModuleType: .contract) })
-                    Divider()
-                    ComponentModuleTypeView(title: "Implementation",
-                                            isOn: component.modules[.implementation] != nil,
-                                            onOn: { store.addModuleTypeForSelectedComponent(moduleType: .implementation) },
-                                            onOff: { store.removeModuleTypeForSelectedComponent(moduleType: .implementation) },
-                                            selectionData: LibraryType.allCases,
-                                            selectionTitle: moduleTypeTitle(for: .implementation),
-                                            onSelection: { store.set(libraryType: $0, forModuleType: .implementation) },
-                                            onRemove: { store.set(libraryType: nil, forModuleType: .implementation) })
-                    Divider()
-                    ComponentModuleTypeView(title: "Mock",
-                                            isOn: component.modules[.mock] != nil,
-                                            onOn: { store.addModuleTypeForSelectedComponent(moduleType: .mock) },
-                                            onOff: { store.removeModuleTypeForSelectedComponent(moduleType: .mock) },
-                                            selectionData: LibraryType.allCases,
-                                            selectionTitle: moduleTypeTitle(for: .mock),
-                                            onSelection: { store.set(libraryType: $0, forModuleType: .mock) },
-                                            onRemove: { store.set(libraryType: nil, forModuleType: .mock) })
+                    ForEach(ModuleType.allCases) { moduleType in
+                        ComponentModuleTypeView(title: "\(moduleType)",
+                                                isOn: component.modules[moduleType] != nil,
+                                                onOn: { store.addModuleTypeForSelectedComponent(moduleType: moduleType) },
+                                                onOff: { store.removeModuleTypeForSelectedComponent(moduleType: moduleType) },
+                                                selectionData: LibraryType.allCases,
+                                                selectionTitle: moduleTypeTitle(for: moduleType),
+                                                onSelection: { store.set(libraryType: $0, forModuleType: moduleType) },
+                                                onRemove: { store.set(libraryType: nil, forModuleType: moduleType) })
+                        Divider()
+                    }
                     Spacer()
                 }.frame(height: 50)
                 Divider()

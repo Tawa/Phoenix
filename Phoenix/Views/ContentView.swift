@@ -23,8 +23,11 @@ struct ContentView: View {
                 .frame(minWidth: 250)
                 
                 if let selectedComponent = store.selectedComponent {
-                    ComponentView(component: selectedComponent,
-                                  showingDependencyPopover: $viewModel.showingDependencyPopover)
+                    ComponentView(
+                        title: store.title(for: selectedComponent.name),
+                        onRemove: { store.removeSelectedComponent() },
+                        component: selectedComponent,
+                        showingDependencyPopover: $viewModel.showingDependencyPopover)
                     .frame(minWidth: 750)
                 } else {
                     HStack(alignment: .top) {
