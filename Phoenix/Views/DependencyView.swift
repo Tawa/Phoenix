@@ -1,17 +1,17 @@
-import Package
 import SwiftUI
 
-struct DependencyModuleTypeSelectorView: View {
+struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Identifiable {
     let title: String
-    let value: ModuleType?
 
-    let onValueChange: (ModuleType?) -> Void
+    let value: DataType?
+    let allValues: [DataType]
+    let onValueChange: (DataType?) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(title)
             Menu {
-                ForEach(ModuleType.allCases) { type in
+                ForEach(allValues) { type in
                     Button(String(describing: type), action: { onValueChange(type) })
                 }
                 if value != nil {
@@ -29,52 +29,42 @@ struct DependencyModuleTypeSelectorView: View {
     }
 }
 
-struct DependencyView: View {
-    @EnvironmentObject private var store: PhoenixDocumentStore
+struct DependencyView<TargetType, SelectionType>: View
+where TargetType: Identifiable, SelectionType: Identifiable {
+    let title: String
+    let onSelection: () -> Void
+    let onRemove: () -> Void
 
-    let dependency: ComponentDependency
-    let types: [ModuleType]
+    let allTypes: [IdentifiableWithSubtypeAndSelection<TargetType, SelectionType>]
+    let allSelectionValues: [SelectionType]
+    let onUpdateTargetTypeValue: (TargetType, SelectionType?) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text(store.title(for: dependency.name))
+                Text(title)
                     .font(.title)
-                Button(action: {
-                    store.selectComponent(withName: dependency.name)
-                }, label: { Text("Jump to") })
-                Button(action: {
-                    store.removeDependencyForSelectedComponent(componentDependency: dependency)
-                }, label: { Text("Remove") })
+                Button(action: onSelection) { Text("Jump to") }
+                Button(action: onRemove) { Text("Remove") }
             }
             HStack(alignment: .top) {
-                if types.contains(.contract) {
-                    DependencyModuleTypeSelectorView(title: "Contract: ",
-                                                     value: dependency.contract,
-                                                     onValueChange: { newValue in
-                        store.updateModuleTypeForDependency(dependency: dependency, type: .contract, value: newValue)
-                    })
-                }
-                if types.contains(.implementation) {
+                ForEach(allTypes) { dependencyType in
                     VStack {
-                        DependencyModuleTypeSelectorView(title: "Implementation: ",
-                                                         value: dependency.implementation,
-                                                         onValueChange: { newValue in
-                            store.updateModuleTypeForDependency(dependency: dependency, type: .implementation, value: newValue)
-                        })
-                        DependencyModuleTypeSelectorView(title: "Tests: ",
-                                                         value: dependency.tests,
-                                                         onValueChange: { newValue in
-                            store.updateModuleTypeForDependency(dependency: dependency, type: .tests, value: newValue)
-                        })
+                        DependencyModuleTypeSelectorView<SelectionType>(
+                            title: dependencyType.title,
+                            value: dependencyType.selectedValue,
+                            allValues: allSelectionValues,
+                            onValueChange: { onUpdateTargetTypeValue(dependencyType.value, $0) })
+
+                        if let subtitle = dependencyType.subtitle,
+                           let subvalue = dependencyType.subValue {
+                            DependencyModuleTypeSelectorView<SelectionType>(
+                                title: subtitle,
+                                value: dependencyType.selectedSubValue,
+                                allValues: allSelectionValues,
+                                onValueChange: { onUpdateTargetTypeValue(subvalue, $0) })
+                        }
                     }
-                }
-                if types.contains(.mock) {
-                    DependencyModuleTypeSelectorView(title: "Mock: ",
-                                                     value: dependency.mock,
-                                                     onValueChange: { newValue in
-                        store.updateModuleTypeForDependency(dependency: dependency, type: .mock, value: newValue)
-                    })
                 }
             }
         }.padding()
@@ -82,13 +72,46 @@ struct DependencyView: View {
 }
 
 struct DependencyView_Previews: PreviewProvider {
+    enum MockType: Identifiable, CaseIterable, Hashable {
+        var id: Int { hashValue }
+        case contract
+        case implementation
+        case tests
+        case mock
+    }
+    enum MockSelectionType: Identifiable, CaseIterable, Hashable {
+        var id: Int { hashValue }
+        case contract
+        case implementation
+        case mock
+    }
+
+
     static var previews: some View {
-        DependencyView(
-            dependency: ComponentDependency(name: Name(given: "Wordpress", family: "DataStore"),
-                                            contract: nil,
-                                            implementation: .contract,
-                                            tests: .mock,
-                                            mock: nil),
-            types: [.contract, .implementation, .mock])
+        DependencyView(title: "DependencyTitle",
+                       onSelection: { },
+                       onRemove: { },
+                       allTypes: [
+                        .init(title: "Contract",
+                              subtitle: nil,
+                              value: MockType.contract,
+                              subValue: nil,
+                              selectedValue: nil,
+                              selectedSubValue: nil),
+                        .init(title: "Implementation",
+                              subtitle: "Tests",
+                              value: .implementation,
+                              subValue: .tests,
+                              selectedValue: MockSelectionType.contract,
+                              selectedSubValue: .mock),
+                        .init(title: "Mock",
+                              subtitle: nil,
+                              value: MockType.mock,
+                              subValue: nil,
+                              selectedValue: nil,
+                              selectedSubValue: nil),
+                       ],
+                       allSelectionValues: Array(MockSelectionType.allCases),
+                       onUpdateTargetTypeValue: { _, _ in })
     }
 }

@@ -1,19 +1,5 @@
 import SwiftUI
 
-struct IdentifiableWithSubtype<ValueType>: Identifiable where ValueType: Identifiable {
-    var id: ValueType.ID { value.id }
-    let title: String
-    let subtitle: String?
-    let value: ValueType
-    let subValue: ValueType?
-}
-
-struct IdentifiableWithTitle<Data>: Identifiable where Data: Identifiable {
-    var id: Data.ID { value.id }
-    let title: String
-    let value: Data
-}
-
 struct RemoteDependencyView<DependencyType, VersionType>: View
 where DependencyType: Identifiable,
       DependencyType: Equatable,
@@ -29,7 +15,6 @@ where DependencyType: Identifiable,
     let onSubmitVersionText: (String) -> Void
 
     let allDependencyTypes: [IdentifiableWithSubtype<DependencyType>]
-    let dependencyTypes: [DependencyType]
     let enabledTypes: [DependencyType]
     let onUpdateDependencyType: (DependencyType, Bool) -> Void
 
@@ -62,9 +47,7 @@ where DependencyType: Identifiable,
             }
 
             HStack(alignment: .top) {
-                ForEach(allDependencyTypes.filter { allType in
-                    dependencyTypes.contains(where: { allType.value.id == $0.id })
-                }) { dependencyType in
+                ForEach(allDependencyTypes) { dependencyType in
                     VStack(alignment: .leading) {
                         Toggle(isOn: .init(get: { enabledTypes.contains(where: { dependencyType.value == $0 }) },
                                            set: { onUpdateDependencyType(dependencyType.value, $0) })) {
@@ -116,10 +99,8 @@ struct RemoteDependencyView_Previews: PreviewProvider {
                              onSubmitVersionText: { _ in },
                              allDependencyTypes: [
                                 .init(title: "Contract", subtitle: nil, value: DependencyTypeMock.contract, subValue: nil),
-                                .init(title: "Implementation", subtitle: "Tests", value: DependencyTypeMock.implementation, subValue: .tests),
-                                .init(title: "Mock", subtitle: nil, value: DependencyTypeMock.mocks, subValue: nil),
+                                .init(title: "Implementation", subtitle: "Tests", value: DependencyTypeMock.implementation, subValue: .tests)
                              ],
-                             dependencyTypes: [.contract, .implementation],
                              enabledTypes: [.implementation, .tests],
                              onUpdateDependencyType: { _ , _ in},
                              onRemove: { })

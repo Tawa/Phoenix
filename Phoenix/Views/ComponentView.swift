@@ -76,8 +76,19 @@ struct ComponentView: View {
                             Divider()
                             switch dependencyType {
                             case let .local(dependency):
-                                DependencyView(dependency: dependency,
-                                               types: Array(component.modules.keys))
+                                DependencyView<TargetType, ModuleType>(
+                                    title: store.title(for: dependency.name),
+                                    onSelection: { store.selectComponent(withName: dependency.name) },
+                                    onRemove: { store.removeDependencyForSelectedComponent(componentDependency: dependency) },
+                                    allTypes: [
+                                        .init(title: "Contract", subtitle: nil, value: .contract, subValue: nil, selectedValue: dependency.contract, selectedSubValue: nil),
+                                        .init(title: "Implementation", subtitle: "Tests",
+                                              value: .implementation, subValue: .tests,
+                                              selectedValue: dependency.implementation, selectedSubValue: dependency.tests),
+                                        .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil, selectedValue: dependency.mock, selectedSubValue: nil),
+                                    ],
+                                    allSelectionValues: Array(ModuleType.allCases),
+                                    onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(dependency: dependency, type: $0, value: $1) })
                             case let .remote(dependency):
                                 RemoteDependencyView(
                                     name: dependency.name.name,
@@ -96,8 +107,9 @@ struct ComponentView: View {
                                         .init(title: "Contract", subtitle: nil, value: TargetType.contract, subValue: nil),
                                         .init(title: "Implementation", subtitle: "Tests", value: TargetType.implementation, subValue: .tests),
                                         .init(title: "Mock", subtitle: nil, value: TargetType.mock, subValue: nil),
-                                    ],
-                                    dependencyTypes: dependencyTypes(for: dependency),
+                                    ].filter { allType in
+                                        dependencyTypes(for: dependency).contains(where: { allType.value.id == $0.id })
+                                    },
                                     enabledTypes: enabledDependencyTypes(for: dependency),
                                     onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(dependency: dependency, type: $0, value: $1) },
                                     onRemove: { store.removeRemoteDependencyForSelectedComponent(dependency: dependency) }

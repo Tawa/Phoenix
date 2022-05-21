@@ -243,19 +243,14 @@ class PhoenixDocumentStore: ObservableObject {
 
     func updateModuleTypeForRemoteDependency(dependency: RemoteDependency, type: TargetType, value: Bool) {
         get(remoteDependency: dependency) { dependency in
-            print(type, value)
             switch type {
             case .contract:
-                print(dependency.contract)
                 dependency.contract = value
             case .implementation:
-                print(dependency.implementation)
                 dependency.implementation = value
             case .tests:
-                print(dependency.tests)
                 dependency.tests = value
             case .mock:
-                print(dependency.mock)
                 dependency.mock = value
             }
         }
