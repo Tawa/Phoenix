@@ -40,8 +40,44 @@ struct ContentView: View {
             }
             
         }.sheet(isPresented: $viewModel.showingDependencyPopover) {
-            ComponentDependenciesPopover(showingPopup: $viewModel.showingDependencyPopover)
-                .frame(minWidth: 900, minHeight: 400)
+            let filteredNames = Dictionary(grouping: store.allNames.filter { name in
+                store.selectedName != name && !store.selectedComponentDependenciesContains(dependencyName: name)
+            }, by: { $0.family })
+            let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
+                partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
+                                                                      rows: keyValue.value.map { name in
+                    ComponentDependenciesListRow(name: store.title(for: name),
+                                                 onSelect: { store.addDependencyToSelectedComponent(dependencyName: name) })
+                }))
+            }.sorted { lhs, rhs in
+                lhs.name < rhs.name
+            }
+            ComponentDependenciesPopover(
+                sections: sections,
+                onExternalSubmit: { remoteDependency in
+                    let urlString = remoteDependency.urlString
+
+                    let name: ExternalDependencyName
+                    switch remoteDependency.productType {
+                    case .name:
+                        name = .name(remoteDependency.productName)
+                    case .product:
+                        name = .product(name: remoteDependency.productName, package: remoteDependency.productPackage)
+                    }
+
+                    let version: ExternalDependencyVersion
+                    switch remoteDependency.versionType {
+                    case .from:
+                        version = .from(version: remoteDependency.versionValue)
+                    case .branch:
+                        version = .branch(name: remoteDependency.versionValue)
+                    }
+                    store.addRemoteDependencyToSelectedComponent(dependency: RemoteDependency(url: urlString,
+                                                                                              name: name,
+                                                                                              value: version))
+                },
+                onDismiss: { viewModel.showingDependencyPopover = false })
+            .frame(minWidth: 900, minHeight: 400)
         }.sheet(isPresented: $viewModel.showingNewComponentPopup) {
             NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup) { name, familyName in
                 let name = Name(given: name, family: familyName)
