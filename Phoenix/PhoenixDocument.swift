@@ -10,15 +10,9 @@ extension UTType {
 
 struct PhoenixDocument: FileDocument, Codable {
     var families: [ComponentsFamily]
-    var selectedName: Name?
-    var selectedFamilyName: String?
 
-    init(families: [ComponentsFamily] = [],
-         selectedName: Name? = nil,
-         selectedFamilyName: String? = nil) {
+    init(families: [ComponentsFamily] = []) {
         self.families = families
-        self.selectedName = selectedName
-        self.selectedFamilyName = selectedFamilyName
     }
 
     static var readableContentTypes: [UTType] { [.ash] }

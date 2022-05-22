@@ -9,94 +9,11 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             HSplitView {
-                ComponentsList(sections: store
-                    .componentsFamilies
-                    .map { componentsFamily in
-                            .init(name: sectionTitle(forFamily: componentsFamily.family),
-                                  rows: componentsFamily.components.map { component in
-                                    .init(name: componentName(component, for: componentsFamily.family),
-                                          isSelected: store.selectedName == component.name,
-                                          onSelect: { store.selectComponent(withName: component.name) })
-                            },
-                                  onSelect: { store.selectFamily(withName: componentsFamily.family.name) })
-                    })
-                .frame(minWidth: 250)
-                
-                if let selectedComponent = store.selectedComponent {
-                    ComponentView(
-                        title: store.title(for: selectedComponent.name),
-                        platformsContent: {
-                            Group {
-                                CustomMenu(title: iOSPlatformMenuTitle(forComponent: selectedComponent),
-                                           data: IOSVersion.allCases,
-                                           onSelection: store.setIOSVersionForSelectedComponent(iOSVersion:),
-                                           hasRemove: selectedComponent.iOSVersion != nil,
-                                           onRemove: store.removeIOSVersionForSelectedComponent)
-                                .frame(width: 150)
-                                CustomMenu(title: macOSPlatformMenuTitle(forComponent: selectedComponent),
-                                           data: MacOSVersion.allCases,
-                                           onSelection: store.setMacOSVersionForSelectedComponent(macOSVersion:),
-                                           hasRemove: selectedComponent.macOSVersion != nil,
-                                           onRemove: store.removeMacOSVersionForSelectedComponent)
-                                .frame(width: 150)
-                            }
-                        },
-                        dependencies: selectedComponent.dependencies.sorted(),
-                        dependencyView: { dependencyType in
-                            VStack(spacing: 0) {
-                                Divider()
-                                switch dependencyType {
-                                case let .local(dependency):
-                                    DependencyView<TargetType, ModuleType>(
-                                        title: store.title(for: dependency.name),
-                                        onSelection: { store.selectComponent(withName: dependency.name) },
-                                        onRemove: { store.removeDependencyForSelectedComponent(componentDependency: dependency) },
-                                        allTypes: componentTypes(for: dependency, component: selectedComponent),
-                                        allSelectionValues: Array(ModuleType.allCases),
-                                        onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(dependency: dependency, type: $0, value: $1) })
-                                case let .remote(dependency):
-                                    RemoteDependencyView(
-                                        name: dependency.name.name,
-                                        urlString: dependency.url,
-                                        allVersionsTypes: [
-                                            .init(title: "branch", value: ExternalDependencyVersion.branch(name: "main")),
-                                            .init(title: "from", value: ExternalDependencyVersion.from(version: "1.0.0"))
-                                        ],
-                                        onSubmitVersionType: { updateVersion(for: dependency, version: $0) },
-                                        versionPlaceholder: versionPlaceholder(for: dependency),
-                                        versionTitle: dependency.version.title,
-                                        versionText: dependency.version.stringValue,
-                                        onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(dependency: dependency,
-                                                                                                                 stringValue: $0) },
-                                        allDependencyTypes: [
-                                            .init(title: "Contract", subtitle: nil, value: TargetType.contract, subValue: nil),
-                                            .init(title: "Implementation", subtitle: "Tests", value: TargetType.implementation, subValue: .tests),
-                                            .init(title: "Mock", subtitle: nil, value: TargetType.mock, subValue: nil),
-                                        ].filter { allType in
-                                            dependencyTypes(for: dependency, component: selectedComponent).contains(where: { allType.value.id == $0.id })
-                                        },
-                                        enabledTypes: enabledDependencyTypes(for: dependency),
-                                        onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(dependency: dependency, type: $0, value: $1) },
-                                        onRemove: { store.removeRemoteDependencyForSelectedComponent(dependency: dependency) }
-                                    )
-                                }
-                            }
-                        },
-                        allLibraryTypes: LibraryType.allCases,
-                        allModuleTypes: ModuleType.allCases,
-                        isModuleTypeOn: { selectedComponent.modules[$0] != nil },
-                        onModuleTypeSwitchedOn: store.addModuleTypeForSelectedComponent(moduleType:),
-                        onModuleTypeSwitchedOff: store.removeModuleTypeForSelectedComponent(moduleType:),
-                        moduleTypeTitle: { moduleTypeTitle(for: $0, component: selectedComponent) },
-                        onSelectionOfLibraryTypeForModuleType: { store.set(libraryType: $0, forModuleType: $1) },
-                        onRemove: { store.removeSelectedComponent() },
-                        allTargetTypes: allTargetTypes(forComponent: selectedComponent),
-                        onRemoveResourceWithId: store.removeResource(withId:),
-                        onAddResourceWithName: store.addResource(_:),
-                        resourcesValueBinding: componentResourcesValueBinding(component: selectedComponent),
-                        showingDependencyPopover: $viewModel.showingDependencyPopover
-                    )
-                    .frame(minWidth: 750)
+                componentsList()
+
+                if let selectedComponentName = viewModel.selectedComponentName,
+                   let selectedComponent = store.getComponent(withName: selectedComponentName) {
+                    componentView(for: selectedComponent)
                 } else {
                     HStack(alignment: .top) {
                         VStack(alignment: .leading) {
@@ -110,45 +27,8 @@ struct ContentView: View {
                 }
             }
             
-        }.sheet(isPresented: $viewModel.showingDependencyPopover) {
-            let filteredNames = Dictionary(grouping: store.allNames.filter { name in
-                store.selectedName != name && !store.selectedComponentDependenciesContains(dependencyName: name)
-            }, by: { $0.family })
-            let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
-                partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
-                                                                      rows: keyValue.value.map { name in
-                    ComponentDependenciesListRow(name: store.title(for: name),
-                                                 onSelect: { store.addDependencyToSelectedComponent(dependencyName: name) })
-                }))
-            }.sorted { lhs, rhs in
-                lhs.name < rhs.name
-            }
-            ComponentDependenciesPopover(
-                sections: sections,
-                onExternalSubmit: { remoteDependency in
-                    let urlString = remoteDependency.urlString
-
-                    let name: ExternalDependencyName
-                    switch remoteDependency.productType {
-                    case .name:
-                        name = .name(remoteDependency.productName)
-                    case .product:
-                        name = .product(name: remoteDependency.productName, package: remoteDependency.productPackage)
-                    }
-
-                    let version: ExternalDependencyVersion
-                    switch remoteDependency.versionType {
-                    case .from:
-                        version = .from(version: remoteDependency.versionValue)
-                    case .branch:
-                        version = .branch(name: remoteDependency.versionValue)
-                    }
-                    store.addRemoteDependencyToSelectedComponent(dependency: RemoteDependency(url: urlString,
-                                                                                              name: name,
-                                                                                              value: version))
-                },
-                onDismiss: { viewModel.showingDependencyPopover = false })
-            .frame(minWidth: 900, minHeight: 400)
+        }.sheet(item: $viewModel.showingDependencyPopover) { component in
+            depedencyPopover(component: component)
         }.sheet(isPresented: $viewModel.showingNewComponentPopup) {
             NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup) { name, familyName in
                 let name = Name(given: name, family: familyName)
@@ -160,20 +40,20 @@ struct ContentView: View {
                     return "Name already in use"
                 } else {
                     store.addNewComponent(withName: name)
-                    store.selectComponent(withName: name)
+                    viewModel.selectedComponentName = name
                 }
                 return nil
             }
             
-        }.sheet(item: .constant(store.selectedFamily)) { family in
+        }.sheet(item: .constant(store.getSelectedFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
             FamilyPopover(name: family.name,
                           ignoreSuffix: family.ignoreSuffix,
-                          onUpdateSelectedFamily: { store.updateSelectedFamily(ignoresSuffix: !$0) },
+                          onUpdateSelectedFamily: { store.updateSelectedFamily(withName: viewModel.selectedFamilyName, ignoresSuffix: !$0) },
                           folderName: family.folder ?? "",
-                          onUpdateFolderName: { store.updateSelectedFamily(folder: $0) },
+                          onUpdateFolderName: { store.updateSelectedFamily(withName: viewModel.selectedFamilyName, folder: $0) },
                           defaultFolderName: familyFolderNameProvider.folderName(forFamily: family.name),
                           componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
-                          onDismiss: store.deselectFamily)
+                          onDismiss: { viewModel.selectedFamilyName = nil })
         }.toolbar {
             //            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
             Button(action: viewModel.onAddButton, label: { Text("Add New Component") })
@@ -182,6 +62,145 @@ struct ContentView: View {
                 .keyboardShortcut(.init("R"), modifiers: .command)
         }
     }
+
+    // MARK: - Views
+    func componentsList() -> some View {
+        ComponentsList(sections: store
+            .componentsFamilies
+            .map { componentsFamily in
+                    .init(name: sectionTitle(forFamily: componentsFamily.family),
+                          rows: componentsFamily.components.map { component in
+                            .init(name: componentName(component, for: componentsFamily.family),
+                                  isSelected: viewModel.selectedComponentName == component.name,
+                                  onSelect: { viewModel.selectedComponentName = component.name })
+                    },
+                          onSelect: { viewModel.selectedFamilyName = componentsFamily.family.name })
+            })
+        .frame(minWidth: 250)
+    }
+
+    func componentView(for selectedComponent: Component) -> some View {
+        ComponentView(
+            title: store.title(for: selectedComponent.name),
+            platformsContent: {
+                Group {
+                    CustomMenu(title: iOSPlatformMenuTitle(forComponent: selectedComponent),
+                               data: IOSVersion.allCases,
+                               onSelection: { store.setIOSVersionForSelectedComponent(withName: selectedComponent.name, iOSVersion: $0) },
+                               hasRemove: selectedComponent.iOSVersion != nil,
+                               onRemove: { store.removeIOSVersionForSelectedComponent(withName: selectedComponent.name) })
+                    .frame(width: 150)
+                    CustomMenu(title: macOSPlatformMenuTitle(forComponent: selectedComponent),
+                               data: MacOSVersion.allCases,
+                               onSelection: { store.setMacOSVersionForSelectedComponent(withName: selectedComponent.name, macOSVersion: $0) },
+                               hasRemove: selectedComponent.macOSVersion != nil,
+                               onRemove: { store.removeMacOSVersionForSelectedComponent(withName: selectedComponent.name) })
+                    .frame(width: 150)
+                }
+            },
+            dependencies: selectedComponent.dependencies.sorted(),
+            dependencyView: { dependencyType in
+                VStack(spacing: 0) {
+                    Divider()
+                    switch dependencyType {
+                    case let .local(dependency):
+                        DependencyView<TargetType, ModuleType>(
+                            title: store.title(for: dependency.name),
+                            onSelection: { viewModel.selectedComponentName = dependency.name },
+                            onRemove: { store.removeDependencyForSelectedComponent(withComponentName: selectedComponent.name, componentDependency: dependency) },
+                            allTypes: componentTypes(for: dependency, component: selectedComponent),
+                            allSelectionValues: Array(ModuleType.allCases),
+                            onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: selectedComponent.name, dependency: dependency, type: $0, value: $1) })
+                    case let .remote(dependency):
+                        RemoteDependencyView(
+                            name: dependency.name.name,
+                            urlString: dependency.url,
+                            allVersionsTypes: [
+                                .init(title: "branch", value: ExternalDependencyVersion.branch(name: "main")),
+                                .init(title: "from", value: ExternalDependencyVersion.from(version: "1.0.0"))
+                            ],
+                            onSubmitVersionType: { updateVersion(for: dependency, version: $0) },
+                            versionPlaceholder: versionPlaceholder(for: dependency),
+                            versionTitle: dependency.version.title,
+                            versionText: dependency.version.stringValue,
+                            onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(withComponentName: selectedComponent.name, dependency: dependency, stringValue: $0) },
+                            allDependencyTypes: [
+                                .init(title: "Contract", subtitle: nil, value: TargetType.contract, subValue: nil),
+                                .init(title: "Implementation", subtitle: "Tests", value: TargetType.implementation, subValue: .tests),
+                                .init(title: "Mock", subtitle: nil, value: TargetType.mock, subValue: nil),
+                            ].filter { allType in
+                                dependencyTypes(for: dependency, component: selectedComponent).contains(where: { allType.value.id == $0.id })
+                            },
+                            enabledTypes: enabledDependencyTypes(for: dependency),
+                            onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(withComponentName: selectedComponent.name, dependency: dependency, type: $0, value: $1) },
+                            onRemove: { store.removeRemoteDependencyForSelectedComponent(withComponentName: selectedComponent.name, dependency: dependency) }
+                        )
+                    }
+                }
+            },
+            allLibraryTypes: LibraryType.allCases,
+            allModuleTypes: ModuleType.allCases,
+            isModuleTypeOn: { selectedComponent.modules[$0] != nil },
+            onModuleTypeSwitchedOn: { store.addModuleTypeForSelectedComponent(withName: selectedComponent.name, moduleType: $0) },
+            onModuleTypeSwitchedOff: { store.removeModuleTypeForSelectedComponent(withName: selectedComponent.name, moduleType:$0) },
+            moduleTypeTitle: { moduleTypeTitle(for: $0, component: selectedComponent) },
+            onSelectionOfLibraryTypeForModuleType: { store.set(forComponentWithName: selectedComponent.name, libraryType: $0, forModuleType: $1) },
+            onRemove: {
+                guard let name = viewModel.selectedComponentName else { return }
+                store.removeComponent(withName: name)
+                viewModel.selectedComponentName = nil
+            },
+            allTargetTypes: allTargetTypes(forComponent: selectedComponent),
+            onRemoveResourceWithId: { store.removeResource(withId: $0, forComponentWithName: selectedComponent.name) },
+            onAddResourceWithName: { store.addResource($0, forComponentWithName: selectedComponent.name) },
+            resourcesValueBinding: componentResourcesValueBinding(component: selectedComponent),
+            showingDependencyPopover: Binding(get: { viewModel.showingDependencyPopover != nil }, set: { guard !$0 else { return }; viewModel.showingDependencyPopover = nil })
+        )
+        .frame(minWidth: 750)
+    }
+
+    func depedencyPopover(component: Component) -> some View {
+        let filteredNames = Dictionary(grouping: store.allNames.filter { name in
+            viewModel.selectedComponentName != name && !store.selectedComponent(withName: viewModel.selectedComponentName, containsDependencyWithName: name)
+        }, by: { $0.family })
+        let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
+            partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
+                                                                  rows: keyValue.value.map { name in
+                ComponentDependenciesListRow(name: store.title(for: name),
+                                             onSelect: { store.addDependencyToSelectedComponent(withName: viewModel.selectedComponentName, dependencyName: name) })
+            }))
+        }.sorted { lhs, rhs in
+            lhs.name < rhs.name
+        }
+        return ComponentDependenciesPopover(
+            sections: sections,
+            onExternalSubmit: { remoteDependency in
+                guard let selectedName = viewModel.selectedComponentName else { return }
+                let urlString = remoteDependency.urlString
+
+                let name: ExternalDependencyName
+                switch remoteDependency.productType {
+                case .name:
+                    name = .name(remoteDependency.productName)
+                case .product:
+                    name = .product(name: remoteDependency.productName, package: remoteDependency.productPackage)
+                }
+
+                let version: ExternalDependencyVersion
+                switch remoteDependency.versionType {
+                case .from:
+                    version = .from(version: remoteDependency.versionValue)
+                case .branch:
+                    version = .branch(name: remoteDependency.versionValue)
+                }
+                store.addRemoteDependencyToSelectedComponent(withName: selectedName, dependency: RemoteDependency(url: urlString,
+                                                                                                                  name: name,
+                                                                                                                  value: version))
+            },
+            onDismiss: { viewModel.showingDependencyPopover = nil }).frame(minWidth: 900, minHeight: 400)
+    }
+
+    // MARK: - Private
     
     private func componentName(_ component: Component, for family: Family) -> String {
         family.ignoreSuffix == true ? component.name.given : component.name.given + component.name.family
@@ -240,7 +259,8 @@ struct ContentView: View {
     }
 
     private func updateVersion(for dependency: RemoteDependency, version: ExternalDependencyVersion) {
-        store.updateVersionForRemoteDependency(dependency: dependency, version: version)
+        guard let name = viewModel.selectedComponentName else { return }
+        store.updateVersionForRemoteDependency(withComponentName: name, dependency: dependency, version: version)
     }
 
     private func versionPlaceholder(for dependency: RemoteDependency) -> String {
@@ -295,7 +315,7 @@ struct ContentView: View {
                              targetTypes: resource.targets)
             }
         }, set: { store.updateResource($0.map {
-            ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) })
+            ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) }, forComponentWithName: component.name)
         })
     }
 

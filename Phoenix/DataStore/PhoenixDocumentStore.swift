@@ -9,21 +9,9 @@ class PhoenixDocumentStore: ObservableObject {
         self.fileURL = fileURL
         self.document = document
     }
-    
-    var selectedComponent: Component? {
-        guard
-            let selectedName = document.selectedName.wrappedValue,
-            let component = document.families.wrappedValue.flatMap(\.components).first(where: { $0.name == selectedName })
-        else { return nil }
-        return component
-    }
 
-    var selectedName: Name? { selectedComponent?.name }
-    var selectedComponentDependencies: [ComponentDependencyType] { selectedComponent?.dependencies.sorted() ?? [] }
-
-    var selectedFamily: Family? {
-        guard let selectedFamilyName = document.selectedFamilyName.wrappedValue else { return nil }
-        return document.families.wrappedValue.first(where: { $0.family.name == selectedFamilyName })?.family
+    func getSelectedFamily(withName name: String) -> Family? {
+        document.families.wrappedValue.first(where: { $0.family.name == name })?.family
     }
 
     var componentsFamilies: [ComponentsFamily] { document.families.wrappedValue }
@@ -38,11 +26,16 @@ class PhoenixDocumentStore: ObservableObject {
         allNames.contains(name)
     }
 
-    func selectedComponentDependenciesContains(dependencyName: Name) -> Bool {
-        selectedComponentDependencies.contains { componentDependencyType in
-            guard case let .local(componentDependency) = componentDependencyType else { return false }
-            return componentDependency.name == dependencyName
+    func selectedComponent(withName name: Name?, containsDependencyWithName dependencyName: Name) -> Bool {
+        guard let name = name else { return false }
+        var value: Bool = false
+        getSelectedComponent(withName: name) { component in
+            value = component.dependencies.contains { componentDependencyType in
+                guard case let .local(componentDependency) = componentDependencyType else { return false }
+                return componentDependency.name == dependencyName
+            }
         }
+        return value
     }
 
     func family(for name: Name) -> Family? {
@@ -50,25 +43,23 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     // MARK: - Private
-    private func getSelectedComponent(_ completion: (inout Component) -> Void) {
+    private func getSelectedComponent(withName selectedName: Name, _ completion: (inout Component) -> Void) {
         guard
-            let selectedName = selectedName,
             let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.components.contains(where: { $0.name == selectedName }) }),
             let componentIndex = document.families.wrappedValue[familyIndex].components.firstIndex(where: { $0.name == selectedName })
         else { return }
         completion(&document.families[familyIndex].components[componentIndex].wrappedValue)
     }
 
-    private func getSelectedFamily(_ completion: (inout Family) -> Void) {
+    private func getSelectedFamily(withName selectedFamilyName: String, _ completion: (inout Family) -> Void) {
         guard
-            let selectedFamilyName = document.selectedFamilyName.wrappedValue,
             let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.family.name == selectedFamilyName })
         else { return }
         completion(&document.families[familyIndex].family.wrappedValue)
     }
 
-    private func get(remoteDependency: RemoteDependency, _ completion: (inout RemoteDependency) -> Void) {
-        getSelectedComponent { component in
+    private func get(remoteDependency: RemoteDependency, componentWithName name: Name, _ completion: (inout RemoteDependency) -> Void) {
+        getSelectedComponent(withName: name) { component in
             var dependencies = component.dependencies
             guard
                 let index = dependencies.firstIndex(where: { $0 == .remote(remoteDependency) }),
@@ -82,10 +73,13 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     // MARK: - Document modifiers
-
-    func selectComponent(withName name: Name) {
-        document.selectedName.wrappedValue = name
+    func getComponent(withName name: Name) -> Component? {
+        guard
+            let component = document.families.wrappedValue.flatMap(\.components).first(where: { $0.name == name })
+        else { return nil }
+        return component
     }
+
 
     func addNewComponent(withName name: Name) {
         var componentsFamily: ComponentsFamily = document
@@ -118,24 +112,19 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func selectFamily(withName name: String) {
-        document.selectedFamilyName.wrappedValue = name
+    func updateSelectedFamily(withName name: String?, ignoresSuffix: Bool) {
+        guard let name = name else { return }
+        getSelectedFamily(withName: name) { $0.ignoreSuffix = ignoresSuffix }
     }
 
-    func deselectFamily() {
-        document.selectedFamilyName.wrappedValue = nil
-    }
-
-    func updateSelectedFamily(ignoresSuffix: Bool) {
-        getSelectedFamily { $0.ignoreSuffix = ignoresSuffix }
-    }
-
-    func updateSelectedFamily(folder: String?) {
-        getSelectedFamily { $0.folder = folder?.isEmpty == true ? nil : folder }
+    func updateSelectedFamily(withName name: String?, folder: String?) {
+        guard let name = name else { return }
+        getSelectedFamily(withName: name) { $0.folder = folder?.isEmpty == true ? nil : folder }
     }
     
-    func addDependencyToSelectedComponent(dependencyName: Name) {
-        getSelectedComponent {
+    func addDependencyToSelectedComponent(withName name: Name?, dependencyName: Name) {
+        guard let name = name else { return }
+        getSelectedComponent(withName: name) {
             var dependencies = $0.dependencies
             dependencies.append(.local(ComponentDependency(name: dependencyName,
                                                                           contract: nil,
@@ -147,8 +136,8 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func addRemoteDependencyToSelectedComponent(dependency: RemoteDependency) {
-        getSelectedComponent {
+    func addRemoteDependencyToSelectedComponent(withName name: Name, dependency: RemoteDependency) {
+        getSelectedComponent(withName: name) {
             var dependencies = $0.dependencies
             dependencies.append(.remote(dependency))
             dependencies.sort()
@@ -156,54 +145,52 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func setIOSVersionForSelectedComponent(iOSVersion: IOSVersion) {
-        getSelectedComponent { $0.iOSVersion = iOSVersion }
+    func setIOSVersionForSelectedComponent(withName name: Name, iOSVersion: IOSVersion) {
+        getSelectedComponent(withName: name) { $0.iOSVersion = iOSVersion }
     }
 
-    func removeIOSVersionForSelectedComponent() {
-        getSelectedComponent { $0.iOSVersion = nil }
+    func removeIOSVersionForSelectedComponent(withName name: Name) {
+        getSelectedComponent(withName: name) { $0.iOSVersion = nil }
     }
 
-    func setMacOSVersionForSelectedComponent(macOSVersion: MacOSVersion) {
-        getSelectedComponent { $0.macOSVersion = macOSVersion }
+    func setMacOSVersionForSelectedComponent(withName name: Name, macOSVersion: MacOSVersion) {
+        getSelectedComponent(withName: name) { $0.macOSVersion = macOSVersion }
     }
 
-    func removeMacOSVersionForSelectedComponent() {
-        getSelectedComponent { $0.macOSVersion = nil }
+    func removeMacOSVersionForSelectedComponent(withName name: Name) {
+        getSelectedComponent(withName: name) { $0.macOSVersion = nil }
     }
 
-    func addModuleTypeForSelectedComponent(moduleType: ModuleType) {
-        getSelectedComponent {
+    func addModuleTypeForSelectedComponent(withName name: Name, moduleType: ModuleType) {
+        getSelectedComponent(withName: name) {
             var modules = $0.modules
             modules[moduleType] = .undefined
             $0.modules = modules
         }
     }
 
-    func removeModuleTypeForSelectedComponent(moduleType: ModuleType) {
-        getSelectedComponent {
+    func removeModuleTypeForSelectedComponent(withName name: Name, moduleType: ModuleType) {
+        getSelectedComponent(withName: name) {
             var modules = $0.modules
             modules.removeValue(forKey: moduleType)
             $0.modules = modules
         }
     }
 
-    func set(libraryType: LibraryType?, forModuleType moduleType: ModuleType) {
-        getSelectedComponent { $0.modules[moduleType] = libraryType }
+    func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: ModuleType) {
+        getSelectedComponent(withName: name) { $0.modules[moduleType] = libraryType }
     }
 
-    func removeSelectedComponent() {
+    func removeComponent(withName name: Name) {
         guard
-            let selectedName = selectedName,
-            let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.components.contains(where: { $0.name == selectedName }) })
+            let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.components.contains(where: { $0.name == name }) })
         else { return }
-        document.families[familyIndex].components.wrappedValue.removeAll(where: { $0.name == selectedName })
+        document.families[familyIndex].components.wrappedValue.removeAll(where: { $0.name == name })
         document.families.wrappedValue.removeAll(where: { $0.components.isEmpty })
-        document.selectedName.wrappedValue = nil //document.wrappedValue.families.first?.components.first?.name
     }
 
-    func removeDependencyForSelectedComponent(componentDependency: ComponentDependency) {
-        getSelectedComponent {
+    func removeDependencyForSelectedComponent(withComponentName name: Name, componentDependency: ComponentDependency) {
+        getSelectedComponent(withName: name) {
             var dependencies = $0.dependencies
             dependencies.removeAll(where: { $0 == .local(componentDependency) })
             dependencies.sort()
@@ -211,8 +198,8 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func removeRemoteDependencyForSelectedComponent(dependency: RemoteDependency) {
-        getSelectedComponent {
+    func removeRemoteDependencyForSelectedComponent(withComponentName name: Name, dependency: RemoteDependency) {
+        getSelectedComponent(withName: name) {
             var dependencies = $0.dependencies
             dependencies.removeAll(where: { $0 == .remote(dependency) })
             dependencies.sort()
@@ -220,8 +207,8 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func updateModuleTypeForDependency(dependency: ComponentDependency, type: TargetType, value: ModuleType?) {
-        getSelectedComponent { component in
+    func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: TargetType, value: ModuleType?) {
+        getSelectedComponent(withName: name) { component in
             var dependencies = component.dependencies
             guard
                 let index = dependencies.firstIndex(where: { $0 == .local(dependency) }),
@@ -243,8 +230,8 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func updateModuleTypeForRemoteDependency(dependency: RemoteDependency, type: TargetType, value: Bool) {
-        get(remoteDependency: dependency) { dependency in
+    func updateModuleTypeForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, type: TargetType, value: Bool) {
+        get(remoteDependency: dependency, componentWithName: name) { dependency in
             switch type {
             case .contract:
                 dependency.contract = value
@@ -258,14 +245,12 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func updateVersionForRemoteDependency(dependency: RemoteDependency, version: ExternalDependencyVersion) {
-        get(remoteDependency: dependency) { dependency in
-            dependency.version = version
-        }
+    func updateVersionForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, version: ExternalDependencyVersion) {
+        get(remoteDependency: dependency, componentWithName: name) { $0.version = version }
     }
 
-    func updateVersionStringValueForRemoteDependency(dependency: RemoteDependency, stringValue: String) {
-        get(remoteDependency: dependency) { dependency in
+    func updateVersionStringValueForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, stringValue: String) {
+        get(remoteDependency: dependency, componentWithName: name) { dependency in
             switch dependency.version {
             case .from:
                 dependency.version = .from(version: stringValue)
@@ -275,17 +260,17 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func updateResource(_ resources: [ComponentResources]) {
-        getSelectedComponent { $0.resources = resources }
+    func updateResource(_ resources: [ComponentResources], forComponentWithName name: Name) {
+        getSelectedComponent(withName: name) { $0.resources = resources }
     }
 
-    func addResource(_ folderName: String) {
-        getSelectedComponent { $0.resources.append(.init(folderName: folderName,
+    func addResource(_ folderName: String, forComponentWithName name: Name) {
+        getSelectedComponent(withName: name) { $0.resources.append(.init(folderName: folderName,
                                                          type: .process,
                                                          targets: [])) }
     }
 
-    func removeResource(withId id: String) {
-        getSelectedComponent { $0.resources.removeAll(where: { $0.id == id }) }
+    func removeResource(withId id: String, forComponentWithName name: Name) {
+        getSelectedComponent(withName: name) { $0.resources.removeAll(where: { $0.id == id }) }
     }
 }

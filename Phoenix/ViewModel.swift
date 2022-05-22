@@ -2,10 +2,11 @@ import Package
 import SwiftUI
 
 class ViewModel: ObservableObject {
-    @Published var selectedFamilyName: String?
+    @Published var selectedComponentName: Name? = nil
+    @Published var selectedFamilyName: String? = nil
     @Published var showingNewComponentPopup: Bool = false
     @Published var fileErrorString: String? = nil
-    @Published var showingDependencyPopover: Bool = false
+    @Published var showingDependencyPopover: Component?
 
     func onAddButton() {
         showingNewComponentPopup = true
