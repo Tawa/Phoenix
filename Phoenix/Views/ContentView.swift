@@ -2,7 +2,7 @@ import Package
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject private var viewModel: ViewModel
+    @StateObject private var viewModel: ViewModel = .init()
     @EnvironmentObject private var store: PhoenixDocumentStore
     private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
     
@@ -178,7 +178,7 @@ struct ContentView: View {
             //            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
             Button(action: viewModel.onAddButton, label: { Text("Add New Component") })
                 .keyboardShortcut("A", modifiers: [.command, .shift])
-            Button(action: viewModel.onGenerate, label: { Text("Generate Packages") })
+            Button(action: { /*viewModel.onGenerate*/ }, label: { Text("Generate Packages") })
                 .keyboardShortcut(.init("R"), modifiers: .command)
         }
     }

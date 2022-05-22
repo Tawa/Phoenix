@@ -2,9 +2,11 @@ import Package
 import SwiftUI
 
 class PhoenixDocumentStore: ObservableObject {
+    private let fileURL: URL?
     private var document: Binding<PhoenixDocument>
     
-    init(document: Binding<PhoenixDocument>) {
+    init(fileURL: URL?, document: Binding<PhoenixDocument>) {
+        self.fileURL = fileURL
         self.document = document
     }
     
