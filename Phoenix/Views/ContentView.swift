@@ -27,7 +27,8 @@ struct ContentView: View {
                         title: store.title(for: selectedComponent.name),
                         onRemove: { store.removeSelectedComponent() },
                         component: selectedComponent,
-                        showingDependencyPopover: $viewModel.showingDependencyPopover)
+                        showingDependencyPopover: $viewModel.showingDependencyPopover
+                    )
                     .frame(minWidth: 750)
                 } else {
                     HStack(alignment: .top) {

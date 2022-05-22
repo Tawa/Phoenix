@@ -1,7 +1,8 @@
 import SwiftUI
-import Package
 
-struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable {
+struct DynamicTextFieldList<MenuOption, TargetType>: View
+where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
+      TargetType: Hashable & Identifiable {
     struct ValueContainer: Hashable, Identifiable {
         let id: String
         var value: String
@@ -12,6 +13,7 @@ struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable
     @State private var textValues: [String: String] = [:]
     @State private var newFieldValue: String = ""
     @Binding var values: [ValueContainer]
+    let allTargetTypes: [IdentifiableWithSubtype<TargetType>]
     let onRemoveValue: (String) -> Void
     let onNewValue: (String) -> Void
 
@@ -30,24 +32,22 @@ struct DynamicTextFieldList<MenuOption>: View where MenuOption: RawRepresentable
                         .frame(width: 150)
                         .foregroundColor(value.wrappedValue.value == textValues[value.id] ? nil : .red)
                         .onSubmit { value.wrappedValue.value = textValues[value.id] ?? "" }
-                    CustomToggle(title: "Contract",
-                                 isOnValue: value.targetTypes.wrappedValue.contains(.contract),
-                                 whenTurnedOn: { value.targetTypes.wrappedValue.append(.contract) },
-                                 whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == .contract }) })
-                    VStack(alignment: .leading) {
-                        CustomToggle(title: "Implementation",
-                                     isOnValue: value.targetTypes.wrappedValue.contains(.implementation),
-                                     whenTurnedOn: { value.targetTypes.wrappedValue.append(.implementation) },
-                                     whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == .implementation }) })
-                        CustomToggle(title: "Tests",
-                                     isOnValue: value.targetTypes.wrappedValue.contains(.tests),
-                                     whenTurnedOn: { value.targetTypes.wrappedValue.append(.tests) },
-                                     whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == .tests }) })
+
+                    ForEach(allTargetTypes) { targetType in
+                        VStack(alignment: .leading) {
+                            CustomToggle(title: targetType.title,
+                                         isOnValue: value.targetTypes.wrappedValue.contains(targetType.value),
+                                         whenTurnedOn: { value.targetTypes.wrappedValue.append(targetType.value) },
+                                         whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == targetType.value }) })
+                            if let subtitle = targetType.subtitle, let subvalue = targetType.subValue {
+                                CustomToggle(title: subtitle,
+                                             isOnValue: value.targetTypes.wrappedValue.contains(subvalue),
+                                             whenTurnedOn: { value.targetTypes.wrappedValue.append(subvalue) },
+                                             whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == subvalue }) })
+                            }
+                        }
+                        Divider()
                     }
-                    CustomToggle(title: "Mock",
-                                 isOnValue: value.targetTypes.wrappedValue.contains(.mock),
-                                 whenTurnedOn: { value.targetTypes.wrappedValue.append(.mock) },
-                                 whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == .mock }) })
                     Spacer()
                     Button(action: {
                         onRemoveValue(value.id)
@@ -90,12 +90,26 @@ struct DynamicTextFieldList_Previews: PreviewProvider {
         case process
     }
 
+    enum TargetType: Hashable, Identifiable {
+        var id: Int { hashValue }
+        case contract
+        case implementation
+        case tests
+        case mock
+    }
+
     static var previews: some View {
         Group {
             DynamicTextFieldList(values: .constant([.init(id: "ID1",
                                                           value: "Folder",
                                                           menuOption: Options.process,
                                                          targetTypes: [])]),
+                                 allTargetTypes: [
+                                    .init(title: "Contract", subtitle: nil, value: TargetType.contract, subValue: nil),
+                                    .init(title: "Implementation", subtitle: "Tests",
+                                          value: .implementation, subValue: .tests),
+                                    .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil)
+                                ],
                                  onRemoveValue: { _ in },
                                  onNewValue: { _ in })
         }

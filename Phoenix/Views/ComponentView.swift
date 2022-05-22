@@ -113,7 +113,8 @@ struct ComponentView: View {
                 Section {
                     DynamicTextFieldList(
                         values: Binding(get: {
-                            store.selectedComponent?.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType>.ValueContainer in
+                            store.selectedComponent?.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType,
+                                                                                                      TargetType>.ValueContainer in
                                 return .init(id: resource.id,
                                              value: resource.folderName,
                                              menuOption: resource.type,
@@ -122,6 +123,12 @@ struct ComponentView: View {
                         }, set: { store.updateResource($0.map {
                             ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) })
                         }),
+                        allTargetTypes: [
+                            .init(title: "Contract", subtitle: nil, value: .contract, subValue: nil),
+                            .init(title: "Implementation", subtitle: "Tests",
+                                  value: .implementation, subValue: .tests),
+                            .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil)
+                        ],
                         onRemoveValue: store.removeResource(withId:),
                         onNewValue: store.addResource)
                 } header: {
