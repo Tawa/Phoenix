@@ -105,10 +105,10 @@ struct DynamicTextFieldList_Previews: PreviewProvider {
                                                           menuOption: Options.process,
                                                          targetTypes: [])]),
                                  allTargetTypes: [
-                                    .init(title: "Contract", subtitle: nil, value: TargetType.contract, subValue: nil),
-                                    .init(title: "Implementation", subtitle: "Tests",
+                                    .init(title: "First", subtitle: nil, value: TargetType.contract, subValue: nil),
+                                    .init(title: "Second", subtitle: "Tests",
                                           value: .implementation, subValue: .tests),
-                                    .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil)
+                                    .init(title: "Third", subtitle: nil, value: .mock, subValue: nil)
                                 ],
                                  onRemoveValue: { _ in },
                                  onNewValue: { _ in })

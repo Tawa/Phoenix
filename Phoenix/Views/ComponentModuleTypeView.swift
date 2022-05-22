@@ -36,14 +36,14 @@ struct ComponentModuleTypeView<Data>: View where Data: Identifiable {
 struct ComponentModuleTypeView_Previews: PreviewProvider {
     enum MockType: Identifiable, CaseIterable, Hashable {
         var id: Int { hashValue }
-        case contract
-        case implementation
-        case mock
+        case first
+        case second
+        case third
     }
 
     static var previews: some View {
         Group {
-            ComponentModuleTypeView(title: "Contract",
+            ComponentModuleTypeView(title: "Package Type",
                                     isOn: false,
                                     onOn: {},
                                     onOff: {},
@@ -51,7 +51,7 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     selectionTitle: "undefined",
                                     onSelection: { _ in },
                                     onRemove: {})
-            ComponentModuleTypeView(title: "Contract",
+            ComponentModuleTypeView(title: "Package Type",
                                     isOn: true,
                                     onOn: {},
                                     onOff: {},
@@ -59,7 +59,7 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     selectionTitle: "undefined",
                                     onSelection: { _ in },
                                     onRemove: {})
-            ComponentModuleTypeView(title: "Contract",
+            ComponentModuleTypeView(title: "Package Type",
                                     isOn: true,
                                     onOn: {},
                                     onOff: {},

@@ -98,8 +98,8 @@ struct RemoteDependencyView_Previews: PreviewProvider {
                              versionText: "1.5.0",
                              onSubmitVersionText: { _ in },
                              allDependencyTypes: [
-                                .init(title: "Contract", subtitle: nil, value: DependencyTypeMock.contract, subValue: nil),
-                                .init(title: "Implementation", subtitle: "Tests", value: DependencyTypeMock.implementation, subValue: .tests)
+                                .init(title: "First", subtitle: nil, value: DependencyTypeMock.contract, subValue: nil),
+                                .init(title: "Second", subtitle: "Tests", value: DependencyTypeMock.implementation, subValue: .tests)
                              ],
                              enabledTypes: [.implementation, .tests],
                              onUpdateDependencyType: { _ , _ in},
