@@ -25,8 +25,75 @@ struct ContentView: View {
                 if let selectedComponent = store.selectedComponent {
                     ComponentView(
                         title: store.title(for: selectedComponent.name),
+                        platformsContent: {
+                            Group {
+                                CustomMenu(title: iOSPlatformMenuTitle(forComponent: selectedComponent),
+                                           data: IOSVersion.allCases,
+                                           onSelection: store.setIOSVersionForSelectedComponent(iOSVersion:),
+                                           hasRemove: selectedComponent.iOSVersion != nil,
+                                           onRemove: store.removeIOSVersionForSelectedComponent)
+                                .frame(width: 150)
+                                CustomMenu(title: macOSPlatformMenuTitle(forComponent: selectedComponent),
+                                           data: MacOSVersion.allCases,
+                                           onSelection: store.setMacOSVersionForSelectedComponent(macOSVersion:),
+                                           hasRemove: selectedComponent.macOSVersion != nil,
+                                           onRemove: store.removeMacOSVersionForSelectedComponent)
+                                .frame(width: 150)
+                            }
+                        },
+                        dependencies: selectedComponent.dependencies.sorted(),
+                        dependencyView: { dependencyType in
+                            VStack(spacing: 0) {
+                                Divider()
+                                switch dependencyType {
+                                case let .local(dependency):
+                                    DependencyView<TargetType, ModuleType>(
+                                        title: store.title(for: dependency.name),
+                                        onSelection: { store.selectComponent(withName: dependency.name) },
+                                        onRemove: { store.removeDependencyForSelectedComponent(componentDependency: dependency) },
+                                        allTypes: componentTypes(for: dependency, component: selectedComponent),
+                                        allSelectionValues: Array(ModuleType.allCases),
+                                        onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(dependency: dependency, type: $0, value: $1) })
+                                case let .remote(dependency):
+                                    RemoteDependencyView(
+                                        name: dependency.name.name,
+                                        urlString: dependency.url,
+                                        allVersionsTypes: [
+                                            .init(title: "branch", value: ExternalDependencyVersion.branch(name: "main")),
+                                            .init(title: "from", value: ExternalDependencyVersion.from(version: "1.0.0"))
+                                        ],
+                                        onSubmitVersionType: { updateVersion(for: dependency, version: $0) },
+                                        versionPlaceholder: versionPlaceholder(for: dependency),
+                                        versionTitle: dependency.version.title,
+                                        versionText: dependency.version.stringValue,
+                                        onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(dependency: dependency,
+                                                                                                                 stringValue: $0) },
+                                        allDependencyTypes: [
+                                            .init(title: "Contract", subtitle: nil, value: TargetType.contract, subValue: nil),
+                                            .init(title: "Implementation", subtitle: "Tests", value: TargetType.implementation, subValue: .tests),
+                                            .init(title: "Mock", subtitle: nil, value: TargetType.mock, subValue: nil),
+                                        ].filter { allType in
+                                            dependencyTypes(for: dependency, component: selectedComponent).contains(where: { allType.value.id == $0.id })
+                                        },
+                                        enabledTypes: enabledDependencyTypes(for: dependency),
+                                        onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(dependency: dependency, type: $0, value: $1) },
+                                        onRemove: { store.removeRemoteDependencyForSelectedComponent(dependency: dependency) }
+                                    )
+                                }
+                            }
+                        },
+                        allLibraryTypes: LibraryType.allCases,
+                        allModuleTypes: ModuleType.allCases,
+                        isModuleTypeOn: { selectedComponent.modules[$0] != nil },
+                        onModuleTypeSwitchedOn: store.addModuleTypeForSelectedComponent(moduleType:),
+                        onModuleTypeSwitchedOff: store.removeModuleTypeForSelectedComponent(moduleType:),
+                        moduleTypeTitle: { moduleTypeTitle(for: $0, component: selectedComponent) },
+                        onSelectionOfLibraryTypeForModuleType: { store.set(libraryType: $0, forModuleType: $1) },
                         onRemove: { store.removeSelectedComponent() },
-                        component: selectedComponent,
+                        allTargetTypes: allTargetTypes(forComponent: selectedComponent),
+                        onRemoveResourceWithId: store.removeResource(withId:),
+                        onAddResourceWithName: store.addResource(_:),
+                        resourcesValueBinding: componentResourcesValueBinding(component: selectedComponent),
                         showingDependencyPopover: $viewModel.showingDependencyPopover
                     )
                     .frame(minWidth: 750)
@@ -125,5 +192,121 @@ struct ContentView: View {
             return folder
         }
         return familyFolderNameProvider.folderName(forFamily: family.name)
+    }
+
+    private func iOSPlatformMenuTitle(forComponent component: Component) -> String {
+        if let iOSVersion = component.iOSVersion {
+            return ".iOS(.\(iOSVersion))"
+        } else {
+            return "Add iOS"
+        }
+    }
+
+    private func macOSPlatformMenuTitle(forComponent component: Component) -> String {
+        if let macOSVersion = component.macOSVersion {
+            return ".macOS(.\(macOSVersion))"
+        } else {
+            return "Add macOS"
+        }
+    }
+
+    private func moduleTypeTitle(for moduleType: ModuleType, component: Component) -> String {
+        if let libraryType = component.modules[moduleType] {
+            return "\(libraryType)"
+        } else {
+            return "Add Type"
+        }
+    }
+
+    private func componentTypes(for dependency: ComponentDependency, component: Component) -> [IdentifiableWithSubtypeAndSelection<TargetType, ModuleType>] {
+        [
+            .init(title: "Contract", subtitle: nil, value: .contract, subValue: nil, selectedValue: dependency.contract, selectedSubValue: nil),
+            .init(title: "Implementation", subtitle: "Tests",
+                  value: .implementation, subValue: .tests,
+                  selectedValue: dependency.implementation, selectedSubValue: dependency.tests),
+            .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil, selectedValue: dependency.mock, selectedSubValue: nil),
+        ].filter { value in
+            component.modules.keys.contains { moduleType in
+                switch (moduleType, value.value) {
+                case (.contract, .contract),
+                    (.implementation, .implementation),
+                    (.mock, .mock):
+                    return true
+                default:
+                    return false
+                }
+            }
+        }
+    }
+
+    private func updateVersion(for dependency: RemoteDependency, version: ExternalDependencyVersion) {
+        store.updateVersionForRemoteDependency(dependency: dependency, version: version)
+    }
+
+    private func versionPlaceholder(for dependency: RemoteDependency) -> String {
+        switch dependency.version {
+        case .from:
+            return "1.0.0"
+        case .branch:
+            return "main"
+        }
+    }
+
+    private func dependencyTypes(for dependency: RemoteDependency, component: Component) -> [TargetType] {
+        component.modules.keys.sorted().reduce(into: [TargetType](), { partialResult, moduleType in
+            switch moduleType {
+            case .contract:
+                partialResult.append(TargetType.contract)
+            case .implementation:
+                partialResult.append(TargetType.implementation)
+                partialResult.append(TargetType.tests)
+            case .mock:
+                partialResult.append(TargetType.mock)
+            }
+        })
+    }
+
+    private func enabledDependencyTypes(for dependency: RemoteDependency) -> [TargetType] {
+        var types = [TargetType]()
+        if dependency.contract {
+            types.append(.contract)
+        }
+        if dependency.implementation {
+            types.append(.implementation)
+        }
+        if dependency.tests {
+            types.append(.tests)
+        }
+        if dependency.mock {
+            types.append(.mock)
+        }
+
+        return types
+    }
+
+    private func componentResourcesValueBinding(component: Component) -> Binding<[DynamicTextFieldList<TargetResources.ResourcesType,
+                                                                                  TargetType>.ValueContainer]> {
+        Binding(get: {
+            component.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType,
+                                                                       TargetType>.ValueContainer in
+                return .init(id: resource.id,
+                             value: resource.folderName,
+                             menuOption: resource.type,
+                             targetTypes: resource.targets)
+            }
+        }, set: { store.updateResource($0.map {
+            ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) })
+        })
+    }
+
+    private func allTargetTypes(forComponent component: Component) -> [IdentifiableWithSubtype<TargetType>] {
+        [
+            .init(title: "Contract", subtitle: nil, value: .contract, subValue: nil),
+            .init(title: "Implementation", subtitle: "Tests",
+                  value: .implementation, subValue: .tests),
+            .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil)
+        ].filter { target in
+            component.modules.keys.contains(where: { $0.rawValue == target.value.rawValue })
+        }
     }
 }
