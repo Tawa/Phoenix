@@ -58,7 +58,7 @@ struct ContentView: View {
             //            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
             Button(action: viewModel.onAddButton, label: { Text("Add New Component") })
                 .keyboardShortcut("A", modifiers: [.command, .shift])
-            Button(action: { /*viewModel.onGenerate*/ }, label: { Text("Generate Packages") })
+            Button(action: { viewModel.onGenerate(document: store.document.wrappedValue, withFileURL: store.fileURL) }, label: { Text("Generate Packages") })
                 .keyboardShortcut(.init("R"), modifiers: .command)
         }
     }
