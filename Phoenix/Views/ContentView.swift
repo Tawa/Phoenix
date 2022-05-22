@@ -45,12 +45,12 @@ struct ContentView: View {
                 return nil
             }
             
-        }.sheet(item: .constant(store.getSelectedFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
+        }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
             FamilyPopover(name: family.name,
                           ignoreSuffix: family.ignoreSuffix,
-                          onUpdateSelectedFamily: { store.updateSelectedFamily(withName: viewModel.selectedFamilyName, ignoresSuffix: !$0) },
+                          onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
                           folderName: family.folder ?? "",
-                          onUpdateFolderName: { store.updateSelectedFamily(withName: viewModel.selectedFamilyName, folder: $0) },
+                          onUpdateFolderName: { store.updateFamily(withName: family.name, folder: $0) },
                           defaultFolderName: familyFolderNameProvider.folderName(forFamily: family.name),
                           componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
                           onDismiss: { viewModel.selectedFamilyName = nil })
@@ -79,26 +79,26 @@ struct ContentView: View {
         .frame(minWidth: 250)
     }
 
-    func componentView(for selectedComponent: Component) -> some View {
+    func componentView(for component: Component) -> some View {
         ComponentView(
-            title: store.title(for: selectedComponent.name),
+            title: store.title(for: component.name),
             platformsContent: {
                 Group {
-                    CustomMenu(title: iOSPlatformMenuTitle(forComponent: selectedComponent),
+                    CustomMenu(title: iOSPlatformMenuTitle(forComponent: component),
                                data: IOSVersion.allCases,
-                               onSelection: { store.setIOSVersionForSelectedComponent(withName: selectedComponent.name, iOSVersion: $0) },
-                               hasRemove: selectedComponent.iOSVersion != nil,
-                               onRemove: { store.removeIOSVersionForSelectedComponent(withName: selectedComponent.name) })
+                               onSelection: { store.setIOSVersionForComponent(withName: component.name, iOSVersion: $0) },
+                               hasRemove: component.iOSVersion != nil,
+                               onRemove: { store.removeIOSVersionForComponent(withName: component.name) })
                     .frame(width: 150)
-                    CustomMenu(title: macOSPlatformMenuTitle(forComponent: selectedComponent),
+                    CustomMenu(title: macOSPlatformMenuTitle(forComponent: component),
                                data: MacOSVersion.allCases,
-                               onSelection: { store.setMacOSVersionForSelectedComponent(withName: selectedComponent.name, macOSVersion: $0) },
-                               hasRemove: selectedComponent.macOSVersion != nil,
-                               onRemove: { store.removeMacOSVersionForSelectedComponent(withName: selectedComponent.name) })
+                               onSelection: { store.setMacOSVersionForComponent(withName: component.name, macOSVersion: $0) },
+                               hasRemove: component.macOSVersion != nil,
+                               onRemove: { store.removeMacOSVersionForComponent(withName: component.name) })
                     .frame(width: 150)
                 }
             },
-            dependencies: selectedComponent.dependencies.sorted(),
+            dependencies: component.dependencies.sorted(),
             dependencyView: { dependencyType in
                 VStack(spacing: 0) {
                     Divider()
@@ -107,10 +107,10 @@ struct ContentView: View {
                         DependencyView<TargetType, ModuleType>(
                             title: store.title(for: dependency.name),
                             onSelection: { viewModel.selectedComponentName = dependency.name },
-                            onRemove: { store.removeDependencyForSelectedComponent(withComponentName: selectedComponent.name, componentDependency: dependency) },
-                            allTypes: componentTypes(for: dependency, component: selectedComponent),
+                            onRemove: { store.removeDependencyForComponent(withComponentName: component.name, componentDependency: dependency) },
+                            allTypes: componentTypes(for: dependency, component: component),
                             allSelectionValues: Array(ModuleType.allCases),
-                            onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: selectedComponent.name, dependency: dependency, type: $0, value: $1) })
+                            onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
                     case let .remote(dependency):
                         RemoteDependencyView(
                             name: dependency.name.name,
@@ -123,37 +123,37 @@ struct ContentView: View {
                             versionPlaceholder: versionPlaceholder(for: dependency),
                             versionTitle: dependency.version.title,
                             versionText: dependency.version.stringValue,
-                            onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(withComponentName: selectedComponent.name, dependency: dependency, stringValue: $0) },
+                            onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(withComponentName: component.name, dependency: dependency, stringValue: $0) },
                             allDependencyTypes: [
                                 .init(title: "Contract", subtitle: nil, value: TargetType.contract, subValue: nil),
                                 .init(title: "Implementation", subtitle: "Tests", value: TargetType.implementation, subValue: .tests),
                                 .init(title: "Mock", subtitle: nil, value: TargetType.mock, subValue: nil),
                             ].filter { allType in
-                                dependencyTypes(for: dependency, component: selectedComponent).contains(where: { allType.value.id == $0.id })
+                                dependencyTypes(for: dependency, component: component).contains(where: { allType.value.id == $0.id })
                             },
                             enabledTypes: enabledDependencyTypes(for: dependency),
-                            onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(withComponentName: selectedComponent.name, dependency: dependency, type: $0, value: $1) },
-                            onRemove: { store.removeRemoteDependencyForSelectedComponent(withComponentName: selectedComponent.name, dependency: dependency) }
+                            onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) },
+                            onRemove: { store.removeRemoteDependencyForComponent(withComponentName: component.name, dependency: dependency) }
                         )
                     }
                 }
             },
             allLibraryTypes: LibraryType.allCases,
             allModuleTypes: ModuleType.allCases,
-            isModuleTypeOn: { selectedComponent.modules[$0] != nil },
-            onModuleTypeSwitchedOn: { store.addModuleTypeForSelectedComponent(withName: selectedComponent.name, moduleType: $0) },
-            onModuleTypeSwitchedOff: { store.removeModuleTypeForSelectedComponent(withName: selectedComponent.name, moduleType:$0) },
-            moduleTypeTitle: { moduleTypeTitle(for: $0, component: selectedComponent) },
-            onSelectionOfLibraryTypeForModuleType: { store.set(forComponentWithName: selectedComponent.name, libraryType: $0, forModuleType: $1) },
+            isModuleTypeOn: { component.modules[$0] != nil },
+            onModuleTypeSwitchedOn: { store.addModuleTypeForComponent(withName: component.name, moduleType: $0) },
+            onModuleTypeSwitchedOff: { store.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
+            moduleTypeTitle: { moduleTypeTitle(for: $0, component: component) },
+            onSelectionOfLibraryTypeForModuleType: { store.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
             onRemove: {
                 guard let name = viewModel.selectedComponentName else { return }
                 store.removeComponent(withName: name)
                 viewModel.selectedComponentName = nil
             },
-            allTargetTypes: allTargetTypes(forComponent: selectedComponent),
-            onRemoveResourceWithId: { store.removeResource(withId: $0, forComponentWithName: selectedComponent.name) },
-            onAddResourceWithName: { store.addResource($0, forComponentWithName: selectedComponent.name) },
-            resourcesValueBinding: componentResourcesValueBinding(component: selectedComponent),
+            allTargetTypes: allTargetTypes(forComponent: component),
+            onRemoveResourceWithId: { store.removeResource(withId: $0, forComponentWithName: component.name) },
+            onAddResourceWithName: { store.addResource($0, forComponentWithName: component.name) },
+            resourcesValueBinding: componentResourcesValueBinding(component: component),
             showingDependencyPopover: Binding(get: { viewModel.showingDependencyPopover != nil }, set: { guard !$0 else { return }; viewModel.showingDependencyPopover = nil })
         )
         .frame(minWidth: 750)
@@ -161,13 +161,13 @@ struct ContentView: View {
 
     func depedencyPopover(component: Component) -> some View {
         let filteredNames = Dictionary(grouping: store.allNames.filter { name in
-            viewModel.selectedComponentName != name && !store.selectedComponent(withName: viewModel.selectedComponentName, containsDependencyWithName: name)
+            viewModel.selectedComponentName != name && !store.component(withName: component.name, containsDependencyWithName: name)
         }, by: { $0.family })
         let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
             partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
                                                                   rows: keyValue.value.map { name in
                 ComponentDependenciesListRow(name: store.title(for: name),
-                                             onSelect: { store.addDependencyToSelectedComponent(withName: viewModel.selectedComponentName, dependencyName: name) })
+                                             onSelect: { store.addDependencyToComponent(withName: component.name, dependencyName: name) })
             }))
         }.sorted { lhs, rhs in
             lhs.name < rhs.name
@@ -175,7 +175,6 @@ struct ContentView: View {
         return ComponentDependenciesPopover(
             sections: sections,
             onExternalSubmit: { remoteDependency in
-                guard let selectedName = viewModel.selectedComponentName else { return }
                 let urlString = remoteDependency.urlString
 
                 let name: ExternalDependencyName
@@ -193,9 +192,9 @@ struct ContentView: View {
                 case .branch:
                     version = .branch(name: remoteDependency.versionValue)
                 }
-                store.addRemoteDependencyToSelectedComponent(withName: selectedName, dependency: RemoteDependency(url: urlString,
-                                                                                                                  name: name,
-                                                                                                                  value: version))
+                store.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
+                                                                                                                    name: name,
+                                                                                                                    value: version))
             },
             onDismiss: { viewModel.showingDependencyPopover = nil }).frame(minWidth: 900, minHeight: 400)
     }
