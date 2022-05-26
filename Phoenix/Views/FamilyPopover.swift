@@ -1,12 +1,6 @@
 import SwiftUI
 
 struct FamilyPopover: View {
-    enum FocusFields: Hashable {
-        case name
-        case suffix
-        case folder
-    }
-    
     let name: String
     let ignoreSuffix: Bool
     let onUpdateSelectedFamily: (Bool) -> Void

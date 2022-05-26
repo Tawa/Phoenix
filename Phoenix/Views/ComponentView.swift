@@ -28,8 +28,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let onShowDependencyPopover: () -> Void
     @Binding var resourcesValueBinding: [DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]
 
-    @FocusState private var focusedField: String?
-
     var body: some View {
         List {
             VStack(alignment: .leading) {

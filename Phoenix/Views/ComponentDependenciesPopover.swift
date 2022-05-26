@@ -48,7 +48,6 @@ struct ComponentDependenciesPopover: View {
                             Section {
                                 ForEach(section.rows) { row in
                                     Button {
-                                        onDismiss()
                                         row.onSelect()
                                     } label: {
                                         Text(row.name)

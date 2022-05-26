@@ -13,7 +13,7 @@ struct ContentView: View {
             if let selectedComponentName = viewModel.selectedComponentName,
                let selectedComponent = store.getComponent(withName: selectedComponentName) {
                 componentView(for: selectedComponent)
-                    .sheet(isPresented: $viewModel.showingDependencyPopover) {
+                    .sheet(isPresented: .constant(viewModel.showingDependencyPopover)) {
                         dependencyPopover(component: selectedComponent)
                     }
             } else {
@@ -29,8 +29,6 @@ struct ContentView: View {
             }
         }.sheet(isPresented: .constant(viewModel.showingNewComponentPopup)) {
             newComponentPopover()
-//        }.sheet(item: .constant(store.getComponent(withName: viewModel.showingDependencyPopover ?? .init(given: "", family: "")))) { component in
-//            dependencyPopover(component: component)
         }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
             familyPopover(family: family)
         }.toolbar {
@@ -143,7 +141,7 @@ struct ContentView: View {
     }
 
     func newComponentPopover() -> some View {
-        NewComponentPopover(onSubmit: { name, familyName in
+        return NewComponentPopover(onSubmit: { name, familyName in
             let name = Name(given: name, family: familyName)
             if name.given.isEmpty {
                 return "Given name cannot be empty"
@@ -164,13 +162,19 @@ struct ContentView: View {
 
     func dependencyPopover(component: Component) -> some View {
         let filteredNames = Dictionary(grouping: store.allNames.filter { name in
-            component.name != name && !store.component(withName: component.name, containsDependencyWithName: name)
+            component.name != name && !component.dependencies.contains { componentDependencyType in
+                guard case let .local(componentDependency) = componentDependencyType else { return false }
+                return componentDependency.name == name
+            }
         }, by: { $0.family })
         let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
             partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
                                                                   rows: keyValue.value.map { name in
                 ComponentDependenciesListRow(name: store.title(for: name),
-                                             onSelect: { store.addDependencyToComponent(withName: component.name, dependencyName: name) })
+                                             onSelect: {
+                    store.addDependencyToComponent(withName: component.name, dependencyName: name)
+                    viewModel.showingDependencyPopover = false
+                })
             }))
         }.sorted { lhs, rhs in
             lhs.name < rhs.name
@@ -198,6 +202,7 @@ struct ContentView: View {
                 store.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
                                                                                                             name: name,
                                                                                                             value: version))
+                viewModel.showingDependencyPopover = false
             },
             onDismiss: {
                 viewModel.showingDependencyPopover = false
@@ -205,14 +210,14 @@ struct ContentView: View {
     }
 
     func familyPopover(family: Family) -> some View {
-        FamilyPopover(name: family.name,
-                      ignoreSuffix: family.ignoreSuffix,
-                      onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
-                      folderName: family.folder ?? "",
-                      onUpdateFolderName: { store.updateFamily(withName: family.name, folder: $0) },
-                      defaultFolderName: familyFolderNameProvider.folderName(forFamily: family.name),
-                      componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
-                      onDismiss: { viewModel.selectedFamilyName = nil })
+        return FamilyPopover(name: family.name,
+                             ignoreSuffix: family.ignoreSuffix,
+                             onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
+                             folderName: family.folder ?? "",
+                             onUpdateFolderName: { store.updateFamily(withName: family.name, folder: $0) },
+                             defaultFolderName: familyFolderNameProvider.folderName(forFamily: family.name),
+                             componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
+                             onDismiss: { viewModel.selectedFamilyName = nil })
     }
 
     // MARK: - Private
