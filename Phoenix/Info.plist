@@ -24,12 +24,17 @@
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.json</string>
+				<string>com.apple.package</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>Phoenix Ash File</string>
 			<key>UTTypeIcons</key>
-			<dict/>
+			<dict>
+				<key>UTTypeIconBackgroundName</key>
+				<string>fileicon</string>
+				<key>UTTypeIconText</key>
+				<string>ash</string>
+			</dict>
 			<key>UTTypeIdentifier</key>
 			<string>com.tawanicolas.ash</string>
 			<key>UTTypeTagSpecification</key>
@@ -46,7 +51,7 @@
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.json</string>
+				<string>com.apple.package</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>Phoenix Ash File</string>

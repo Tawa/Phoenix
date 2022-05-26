@@ -25,8 +25,8 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let allTargetTypes: [IdentifiableWithSubtype<TargetType>]
     let onRemoveResourceWithId: (String) -> Void
     let onAddResourceWithName: (String) -> Void
+    let onShowDependencyPopover: () -> Void
     @Binding var resourcesValueBinding: [DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]
-    @Binding var showingDependencyPopover: Bool
 
     @FocusState private var focusedField: String?
 
@@ -72,9 +72,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                     HStack {
                         Text("Dependencies")
                             .font(.largeTitle)
-                        Button(action: {
-                            showingDependencyPopover = true
-                        }, label: { Image(systemName: "plus") })
+                        Button(action: onShowDependencyPopover) { Image(systemName: "plus") }
                     }
                 }
                 Divider()

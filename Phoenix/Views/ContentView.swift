@@ -26,40 +26,22 @@ struct ContentView: View {
                     }.frame(minWidth: 750)
                 }
             }
-            
-        }.sheet(item: $viewModel.showingDependencyPopover) { component in
+        }.sheet(isPresented: .constant(viewModel.showingNewComponentPopup)) {
+            newComponentPopover()
+        }.sheet(item: .constant(store.getComponent(withName: viewModel.showingDependencyPopover ?? .init(given: "", family: "")))) { component in
             depedencyPopover(component: component)
-        }.sheet(isPresented: $viewModel.showingNewComponentPopup) {
-            NewComponentPopover(isPresenting: $viewModel.showingNewComponentPopup) { name, familyName in
-                let name = Name(given: name, family: familyName)
-                if name.given.isEmpty {
-                    return "Given name cannot be empty"
-                } else if name.family.isEmpty {
-                    return "Component must be part of a family"
-                } else if store.nameExists(name: name) {
-                    return "Name already in use"
-                } else {
-                    store.addNewComponent(withName: name)
-                    viewModel.selectedComponentName = name
-                }
-                return nil
-            }
-            
         }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
-            FamilyPopover(name: family.name,
-                          ignoreSuffix: family.ignoreSuffix,
-                          onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
-                          folderName: family.folder ?? "",
-                          onUpdateFolderName: { store.updateFamily(withName: family.name, folder: $0) },
-                          defaultFolderName: familyFolderNameProvider.folderName(forFamily: family.name),
-                          componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
-                          onDismiss: { viewModel.selectedFamilyName = nil })
+            familyPopover(family: family)
         }.toolbar {
             //            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
-            Button(action: viewModel.onAddButton, label: { Text("Add New Component") })
-                .keyboardShortcut("A", modifiers: [.command, .shift])
-            Button(action: { viewModel.onGenerate(document: store.document.wrappedValue, withFileURL: store.fileURL) }, label: { Text("Generate Packages") })
-                .keyboardShortcut(.init("R"), modifiers: .command)
+            Button(action: viewModel.onAddButton) {
+                Image(systemName: "plus.circle.fill")
+                Text("New Component")
+            }.keyboardShortcut("A", modifiers: [.command, .shift])
+            Button(action: { viewModel.onGenerate(document: store.document.wrappedValue, withFileURL: store.fileURL) }) {
+                Image(systemName: "shippingbox.fill")
+                Text("Generate")
+            }.keyboardShortcut(.init("R"), modifiers: .command)
         }
     }
 
@@ -153,15 +135,35 @@ struct ContentView: View {
             allTargetTypes: allTargetTypes(forComponent: component),
             onRemoveResourceWithId: { store.removeResource(withId: $0, forComponentWithName: component.name) },
             onAddResourceWithName: { store.addResource($0, forComponentWithName: component.name) },
-            resourcesValueBinding: componentResourcesValueBinding(component: component),
-            showingDependencyPopover: Binding(get: { viewModel.showingDependencyPopover != nil }, set: { guard !$0 else { return }; viewModel.showingDependencyPopover = nil })
+            onShowDependencyPopover: { viewModel.showingDependencyPopover = component.name },
+            resourcesValueBinding: componentResourcesValueBinding(component: component)
         )
         .frame(minWidth: 750)
     }
 
+    func newComponentPopover() -> some View {
+        NewComponentPopover(onSubmit: { name, familyName in
+            let name = Name(given: name, family: familyName)
+            if name.given.isEmpty {
+                return "Given name cannot be empty"
+            } else if name.family.isEmpty {
+                return "Component must be part of a family"
+            } else if store.nameExists(name: name) {
+                return "Name already in use"
+            } else {
+                store.addNewComponent(withName: name)
+                viewModel.selectedComponentName = name
+                viewModel.showingNewComponentPopup = false
+            }
+            return nil
+        }, onDismiss: {
+            viewModel.showingNewComponentPopup = false
+        })
+    }
+
     func depedencyPopover(component: Component) -> some View {
         let filteredNames = Dictionary(grouping: store.allNames.filter { name in
-            viewModel.selectedComponentName != name && !store.component(withName: component.name, containsDependencyWithName: name)
+            component.name != name && !store.component(withName: component.name, containsDependencyWithName: name)
         }, by: { $0.family })
         let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
             partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
@@ -193,10 +195,21 @@ struct ContentView: View {
                     version = .branch(name: remoteDependency.versionValue)
                 }
                 store.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
-                                                                                                                    name: name,
-                                                                                                                    value: version))
+                                                                                                            name: name,
+                                                                                                            value: version))
             },
             onDismiss: { viewModel.showingDependencyPopover = nil }).frame(minWidth: 900, minHeight: 400)
+    }
+
+    func familyPopover(family: Family) -> some View {
+        FamilyPopover(name: family.name,
+                      ignoreSuffix: family.ignoreSuffix,
+                      onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
+                      folderName: family.folder ?? "",
+                      onUpdateFolderName: { store.updateFamily(withName: family.name, folder: $0) },
+                      defaultFolderName: familyFolderNameProvider.folderName(forFamily: family.name),
+                      componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
+                      onDismiss: { viewModel.selectedFamilyName = nil })
     }
 
     // MARK: - Private
