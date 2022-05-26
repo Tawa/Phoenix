@@ -6,7 +6,7 @@ class ViewModel: ObservableObject {
     @Published var selectedFamilyName: String? = nil
     @Published var showingNewComponentPopup: Bool = false
     @Published var fileErrorString: String? = nil
-    @Published var showingDependencyPopover: Name?
+    @Published var showingDependencyPopover: Bool = false
 
     func onAddButton() {
         showingNewComponentPopup = true

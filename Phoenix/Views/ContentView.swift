@@ -7,29 +7,30 @@ struct ContentView: View {
     private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
     
     var body: some View {
-        ZStack {
-            HSplitView {
-                componentsList()
+        HSplitView {
+            componentsList()
 
-                if let selectedComponentName = viewModel.selectedComponentName,
-                   let selectedComponent = store.getComponent(withName: selectedComponentName) {
-                    componentView(for: selectedComponent)
-                } else {
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading) {
-                            Text("No Component Selected")
-                                .font(.title)
-                                .padding()
-                            Spacer()
-                        }
+            if let selectedComponentName = viewModel.selectedComponentName,
+               let selectedComponent = store.getComponent(withName: selectedComponentName) {
+                componentView(for: selectedComponent)
+                    .sheet(isPresented: $viewModel.showingDependencyPopover) {
+                        dependencyPopover(component: selectedComponent)
+                    }
+            } else {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading) {
+                        Text("No Component Selected")
+                            .font(.title)
+                            .padding()
                         Spacer()
-                    }.frame(minWidth: 750)
-                }
+                    }
+                    Spacer()
+                }.frame(minWidth: 750)
             }
         }.sheet(isPresented: .constant(viewModel.showingNewComponentPopup)) {
             newComponentPopover()
-        }.sheet(item: .constant(store.getComponent(withName: viewModel.showingDependencyPopover ?? .init(given: "", family: "")))) { component in
-            depedencyPopover(component: component)
+//        }.sheet(item: .constant(store.getComponent(withName: viewModel.showingDependencyPopover ?? .init(given: "", family: "")))) { component in
+//            dependencyPopover(component: component)
         }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
             familyPopover(family: family)
         }.toolbar {
@@ -135,7 +136,7 @@ struct ContentView: View {
             allTargetTypes: allTargetTypes(forComponent: component),
             onRemoveResourceWithId: { store.removeResource(withId: $0, forComponentWithName: component.name) },
             onAddResourceWithName: { store.addResource($0, forComponentWithName: component.name) },
-            onShowDependencyPopover: { viewModel.showingDependencyPopover = component.name },
+            onShowDependencyPopover: { viewModel.showingDependencyPopover = true },
             resourcesValueBinding: componentResourcesValueBinding(component: component)
         )
         .frame(minWidth: 750)
@@ -161,7 +162,7 @@ struct ContentView: View {
         })
     }
 
-    func depedencyPopover(component: Component) -> some View {
+    func dependencyPopover(component: Component) -> some View {
         let filteredNames = Dictionary(grouping: store.allNames.filter { name in
             component.name != name && !store.component(withName: component.name, containsDependencyWithName: name)
         }, by: { $0.family })
@@ -198,7 +199,9 @@ struct ContentView: View {
                                                                                                             name: name,
                                                                                                             value: version))
             },
-            onDismiss: { viewModel.showingDependencyPopover = nil }).frame(minWidth: 900, minHeight: 400)
+            onDismiss: {
+                viewModel.showingDependencyPopover = false
+            }).frame(minWidth: 900, minHeight: 400)
     }
 
     func familyPopover(family: Family) -> some View {
