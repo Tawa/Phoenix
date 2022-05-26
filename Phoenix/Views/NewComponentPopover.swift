@@ -6,8 +6,8 @@ struct NewComponentPopover: View {
         case family
     }
 
-    @Binding var isPresenting: Bool
     let onSubmit: (String, String) -> String?
+    let onDismiss: () -> Void
     @State private var name: String = ""
     @State private var familyName: String = ""
     @State private var popoverViewModel: PopoverViewModel? = nil
@@ -57,10 +57,6 @@ struct NewComponentPopover: View {
         onSubmit(name, familyName).map { popoverViewModel = .init(text: $0) }
     }
 
-    private func onDismiss() {
-        isPresenting = false
-    }
-
     private func onPopoverOkayButton() {
         focusField = nil
         popoverViewModel = nil
@@ -69,7 +65,7 @@ struct NewComponentPopover: View {
 
 struct NewComponentPopover_Previews: PreviewProvider {
     static var previews: some View {
-        NewComponentPopover(isPresenting: .constant(true),
-                            onSubmit: { _, _ in nil })
+        NewComponentPopover(onSubmit: { _, _ in nil },
+                            onDismiss: {})
     }
 }

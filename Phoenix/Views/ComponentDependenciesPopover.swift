@@ -27,7 +27,6 @@ struct ComponentDependenciesPopover: View {
     let onDismiss: () -> Void
 
     @State private var filter: String = ""
-    @FocusState private var textFieldFocus
 
     var body: some View {
         VStack {
@@ -49,7 +48,6 @@ struct ComponentDependenciesPopover: View {
                             Section {
                                 ForEach(section.rows) { row in
                                     Button {
-                                        onDismiss()
                                         row.onSelect()
                                     } label: {
                                         Text(row.name)

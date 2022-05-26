@@ -17,11 +17,11 @@ struct CustomToggle: View {
 struct CustomToggle_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            CustomToggle(title: "Contract",
+            CustomToggle(title: "Package Type",
                          isOnValue: true,
                          whenTurnedOn: {},
                          whenTurnedOff: {})
-            CustomToggle(title: "Contract",
+            CustomToggle(title: "Package Type",
                          isOnValue: false,
                          whenTurnedOn: {},
                          whenTurnedOff: {})
