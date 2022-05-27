@@ -23,7 +23,7 @@ public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
     public let id: String
     public var folderName: String
     public var type: TargetResources.ResourcesType
-    public var targets: [TargetType]
+    public var targets: [PackageTargetType]
 
     enum CodingKeys: String, CodingKey {
         case folderName
@@ -34,7 +34,7 @@ public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
     public init(id: String = UUID().uuidString,
                 folderName: String,
                 type: TargetResources.ResourcesType,
-                targets: [TargetType]) {
+                targets: [PackageTargetType]) {
         self.id = id
         self.folderName = folderName
         self.type = type
@@ -47,7 +47,7 @@ public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
         self.id = UUID().uuidString
         self.folderName = try container.decode(String.self, forKey: .folderName)
         self.type = try container.decode(TargetResources.ResourcesType.self, forKey: .type)
-        self.targets = try container.decode([TargetType].self, forKey: .targets)
+        self.targets = try container.decode([PackageTargetType].self, forKey: .targets)
     }
 
     public func encode(to encoder: Encoder) throws {

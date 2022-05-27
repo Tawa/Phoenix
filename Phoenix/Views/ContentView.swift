@@ -306,42 +306,13 @@ struct ContentView: View {
         Binding(get: {
             component.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType,
                                                                        PackageTargetType>.ValueContainer in
-
-                let targetTypes = resource.targets.map { target -> PackageTargetType in
-                    switch target {
-                    case .contract:
-                        return .init(name: "Contract", isTests: false)
-                    case .implementation:
-                        return .init(name: "Implementation", isTests: false)
-                    case .tests:
-                        return .init(name: "Implementation", isTests: true)
-                    case .mock:
-                        return .init(name: "Mock", isTests: false)
-                    }
-                }
-
                 return .init(id: resource.id,
                              value: resource.folderName,
                              menuOption: resource.type,
-                             targetTypes: targetTypes)
+                             targetTypes: resource.targets)
             }
         }, set: { store.updateResource($0.map {
-            let targets = $0.targetTypes.compactMap { packageTargetType -> TargetType? in
-                switch (packageTargetType.name, packageTargetType.isTests) {
-                case ("Contract", false):
-                    return TargetType.contract
-                case ("Implementation", false):
-                    return TargetType.implementation
-                case ("Implementation", true):
-                    return TargetType.tests
-                case ("Mock", false):
-                    return TargetType.mock
-                default:
-                    return nil
-                }
-
-            }
-            return ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: targets) }, forComponentWithName: component.name)
+            return ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) }, forComponentWithName: component.name)
         })
     }
 
