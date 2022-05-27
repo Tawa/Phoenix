@@ -1,7 +1,7 @@
 import Foundation
 
 struct IdentifiableWithSubtypeAndSelection<ValueType, SelectionType>: Identifiable
-where ValueType: Identifiable, SelectionType: Identifiable {
+where ValueType: Identifiable, SelectionType: Hashable {
     var id: ValueType.ID { value.id }
     let title: String
     let subtitle: String?

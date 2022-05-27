@@ -85,12 +85,12 @@ struct ContentView: View {
                     Divider()
                     switch dependencyType {
                     case let .local(dependency):
-                        DependencyView<TargetType, ModuleType>(
+                        DependencyView<PackageTargetType, String>(
                             title: store.title(for: dependency.name),
                             onSelection: { viewModel.selectedComponentName = dependency.name },
                             onRemove: { store.removeDependencyForComponent(withComponentName: component.name, componentDependency: dependency) },
                             allTypes: componentTypes(for: dependency, component: component),
-                            allSelectionValues: Array(ModuleType.allCases),
+                            allSelectionValues: configurationTargetTypes().map { $0.title },
                             onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
                     case let .remote(dependency):
                         RemoteDependencyView(
@@ -105,9 +105,7 @@ struct ContentView: View {
                             versionTitle: dependency.version.title,
                             versionText: dependency.version.stringValue,
                             onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(withComponentName: component.name, dependency: dependency, stringValue: $0) },
-                            allDependencyTypes: allDependencyTypes().filter { allType in
-                                dependencyTypes(for: dependency, component: component).contains(where: { allType.value.id == $0.id })
-                            },
+                            allDependencyTypes: allDependencyTypes(dependency: dependency, component: component),
                             enabledTypes: enabledDependencyTypes(for: dependency),
                             onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) },
                             onRemove: { store.removeRemoteDependencyForComponent(withComponentName: component.name, dependency: dependency) }
@@ -253,19 +251,52 @@ struct ContentView: View {
         }
     }
 
-    private func componentTypes(for dependency: ComponentDependency, component: Component) -> [IdentifiableWithSubtypeAndSelection<TargetType, ModuleType>] {
-        [
-            .init(title: "Contract", subtitle: nil, value: .contract, subValue: nil, selectedValue: dependency.contract, selectedSubValue: nil),
-            .init(title: "Implementation", subtitle: "Tests",
-                  value: .implementation, subValue: .tests,
-                  selectedValue: dependency.implementation, selectedSubValue: dependency.tests),
-            .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil, selectedValue: dependency.mock, selectedSubValue: nil),
-        ].filter { value in
+    private func packageTargetType(for targetType: ModuleType?) -> PackageTargetType? {
+        switch targetType {
+        case .contract:
+            return .init(name: "Contract", isTests: false)
+        case .implementation:
+            return .init(name: "Implementation", isTests: false)
+        case .mock:
+            return .init(name: "Mock", isTests: false)
+        default:
+            return nil
+        }
+    }
+
+    private func componentTypes(for dependency: ComponentDependency, component: Component) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
+        let values = configurationTargetTypes().compactMap { targetType -> IdentifiableWithSubtypeAndSelection<PackageTargetType, String>? in
+            let selectedValue: PackageTargetType?
+            let selectedSubValue: PackageTargetType?
+            switch (targetType.value, targetType.subValue) {
+            case (PackageTargetType(name: "Contract", isTests: false), nil):
+                selectedValue = packageTargetType(for: dependency.contract)
+                selectedSubValue = nil
+            case (PackageTargetType(name: "Implementation", isTests: false), PackageTargetType(name: "Implementation", isTests: true)):
+                selectedValue = packageTargetType(for: dependency.implementation)
+                selectedSubValue = packageTargetType(for: dependency.tests)
+            case (PackageTargetType(name: "Mock", isTests: false), nil):
+                selectedValue = packageTargetType(for: dependency.mock)
+                selectedSubValue = nil
+            default:
+                return nil
+            }
+
+            return IdentifiableWithSubtypeAndSelection<PackageTargetType, String>(
+                title: targetType.title,
+                subtitle: targetType.subtitle,
+                value: targetType.value,
+                subValue: targetType.subValue,
+                selectedValue: selectedValue?.name,
+                selectedSubValue: selectedSubValue?.name)
+        }
+
+        return values.filter { value in
             component.modules.keys.contains { moduleType in
-                switch (moduleType, value.value) {
-                case (.contract, .contract),
-                    (.implementation, .implementation),
-                    (.mock, .mock):
+                switch (moduleType, value.title) {
+                case (.contract, "Contract"),
+                    (.implementation, "Implementation"),
+                    (.mock, "Mock"):
                     return true
                 default:
                     return false
@@ -321,32 +352,62 @@ struct ContentView: View {
     }
 
     private func componentResourcesValueBinding(component: Component) -> Binding<[DynamicTextFieldList<TargetResources.ResourcesType,
-                                                                                  TargetType>.ValueContainer]> {
+                                                                                  PackageTargetType>.ValueContainer]> {
         Binding(get: {
             component.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType,
-                                                                       TargetType>.ValueContainer in
+                                                                       PackageTargetType>.ValueContainer in
+
+                let targetTypes = resource.targets.map { target -> PackageTargetType in
+                    switch target {
+                    case .contract:
+                        return .init(name: "Contract", isTests: false)
+                    case .implementation:
+                        return .init(name: "Implementation", isTests: false)
+                    case .tests:
+                        return .init(name: "Implementation", isTests: true)
+                    case .mock:
+                        return .init(name: "Mock", isTests: false)
+                    }
+                }
+
                 return .init(id: resource.id,
                              value: resource.folderName,
                              menuOption: resource.type,
-                             targetTypes: resource.targets)
+                             targetTypes: targetTypes)
             }
         }, set: { store.updateResource($0.map {
-            ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) }, forComponentWithName: component.name)
+            let targets = $0.targetTypes.compactMap { packageTargetType -> TargetType? in
+                switch (packageTargetType.name, packageTargetType.isTests) {
+                case ("Contract", false):
+                    return TargetType.contract
+                case ("Implementation", false):
+                    return TargetType.implementation
+                case ("Implementation", true):
+                    return TargetType.tests
+                case ("Mock", false):
+                    return TargetType.mock
+                default:
+                    return nil
+                }
+
+            }
+            return ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: targets) }, forComponentWithName: component.name)
         })
     }
 
-    private func allTargetTypes(forComponent component: Component) -> [IdentifiableWithSubtype<TargetType>] {
-        [
-            .init(title: "Contract", subtitle: nil, value: .contract, subValue: nil),
-            .init(title: "Implementation", subtitle: "Tests",
-                  value: .implementation, subValue: .tests),
-            .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil)
-        ].filter { target in
-            component.modules.keys.contains(where: { $0.rawValue == target.value.rawValue })
+    private func allTargetTypes(forComponent component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
+        configurationTargetTypes().filter { target in
+            component.modules.keys.contains(where: { $0.rawValue.lowercased() == target.value.name.lowercased() })
         }
     }
 
-    private func allDependencyTypes() -> [IdentifiableWithSubtype<PackageTargetType>] {
+    private func allDependencyTypes(dependency: RemoteDependency, component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
+        configurationTargetTypes().filter { allType in
+            dependencyTypes(for: dependency, component: component).contains(where: { allType.value.id == $0.id })
+        }
+    }
+
+    private func configurationTargetTypes() -> [IdentifiableWithSubtype<PackageTargetType>] {
         store.document.wrappedValue.projectConfiguration.packageConfigurations.map { packageConfiguration in
             IdentifiableWithSubtype(title: packageConfiguration.name,
                                     subtitle: packageConfiguration.hasTests ? "Tests" : nil,

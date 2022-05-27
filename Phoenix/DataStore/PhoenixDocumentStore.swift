@@ -203,22 +203,25 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: TargetType, value: ModuleType?) {
+    func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: PackageTargetType, value: String?) {
         getComponent(withName: name) { component in
             var dependencies = component.dependencies
             guard
                 let index = dependencies.firstIndex(where: { $0 == .local(dependency) }),
                 case var .local(temp) = dependencies.remove(at: index)
             else { return }
-            switch type {
-            case .contract:
-                temp.contract = value
-            case .implementation:
-                temp.implementation = value
-            case .tests:
-                temp.tests = value
-            case .mock:
-                temp.mock = value
+            let moduleType = ModuleType(rawValue: value?.lowercased() ?? "")
+            switch (type.name, type.isTests) {
+            case ("Contract", false):
+                temp.contract = moduleType
+            case ("Implementation", false):
+                temp.implementation = moduleType
+            case ("Implementation", true):
+                temp.tests = moduleType
+            case ("Mock", false):
+                temp.mock = moduleType
+            default:
+                break
             }
             dependencies.append(.local(temp))
             dependencies.sort()
