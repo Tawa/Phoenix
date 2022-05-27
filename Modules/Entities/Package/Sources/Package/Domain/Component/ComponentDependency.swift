@@ -3,23 +3,14 @@ public struct ComponentDependency: Codable, Hashable, Identifiable {
     public var id: String { name.given + name.family }
 
     public let name: Name
-    public var contract: ModuleType?
-    public var implementation: ModuleType?
-    public var tests: ModuleType?
-    public var mock: ModuleType?
+    public var targetTypes: [PackageTargetType: String] = [:]
 
     public init(
         name: Name,
-        contract: ModuleType?,
-        implementation: ModuleType?,
-        tests: ModuleType?,
-        mock: ModuleType?
+        targetTypes: [PackageTargetType: String]
     ) {
         self.name = name
-        self.contract = contract
-        self.implementation = implementation
-        self.tests = tests
-        self.mock = mock
+        self.targetTypes = targetTypes
     }
 }
 

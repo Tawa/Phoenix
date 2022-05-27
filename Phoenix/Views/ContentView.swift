@@ -121,7 +121,7 @@ struct ContentView: View {
             },
             onModuleTypeSwitchedOn: { store.addModuleTypeForComponent(withName: component.name, moduleType: $0) },
             onModuleTypeSwitchedOff: { store.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
-            moduleTypeTitle: { $0 },
+            moduleTypeTitle: { ModuleType(rawValue: $0.lowercased()).flatMap { component.modules[$0] }?.rawValue ?? "undefined" },
             onSelectionOfLibraryTypeForModuleType: { store.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
             onRemove: {
                 guard let name = viewModel.selectedComponentName else { return }
@@ -254,57 +254,18 @@ struct ContentView: View {
         }
     }
 
-    private func packageTargetType(for targetType: ModuleType?) -> PackageTargetType? {
-        switch targetType {
-        case .contract:
-            return .init(name: "Contract", isTests: false)
-        case .implementation:
-            return .init(name: "Implementation", isTests: false)
-        case .mock:
-            return .init(name: "Mock", isTests: false)
-        default:
-            return nil
-        }
-    }
-
     private func componentTypes(for dependency: ComponentDependency, component: Component) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
-        let values = configurationTargetTypes().compactMap { targetType -> IdentifiableWithSubtypeAndSelection<PackageTargetType, String>? in
-            let selectedValue: PackageTargetType?
-            let selectedSubValue: PackageTargetType?
-            switch (targetType.value, targetType.subValue) {
-            case (PackageTargetType(name: "Contract", isTests: false), nil):
-                selectedValue = packageTargetType(for: dependency.contract)
-                selectedSubValue = nil
-            case (PackageTargetType(name: "Implementation", isTests: false), PackageTargetType(name: "Implementation", isTests: true)):
-                selectedValue = packageTargetType(for: dependency.implementation)
-                selectedSubValue = packageTargetType(for: dependency.tests)
-            case (PackageTargetType(name: "Mock", isTests: false), nil):
-                selectedValue = packageTargetType(for: dependency.mock)
-                selectedSubValue = nil
-            default:
-                return nil
-            }
+        configurationTargetTypes().compactMap { targetType -> IdentifiableWithSubtypeAndSelection<PackageTargetType, String>? in
+            let selectedValue = dependency.targetTypes[targetType.value]
+            let selectedSubValue: String? = targetType.subValue.flatMap { dependency.targetTypes[$0] }
 
             return IdentifiableWithSubtypeAndSelection<PackageTargetType, String>(
                 title: targetType.title,
                 subtitle: targetType.subtitle,
                 value: targetType.value,
                 subValue: targetType.subValue,
-                selectedValue: selectedValue?.name,
-                selectedSubValue: selectedSubValue?.name)
-        }
-
-        return values.filter { value in
-            component.modules.keys.contains { moduleType in
-                switch (moduleType, value.title) {
-                case (.contract, "Contract"),
-                    (.implementation, "Implementation"),
-                    (.mock, "Mock"):
-                    return true
-                default:
-                    return false
-                }
-            }
+                selectedValue: selectedValue,
+                selectedSubValue: selectedSubValue)
         }
     }
 

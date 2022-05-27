@@ -19,17 +19,17 @@ public struct PackagesExtractor: PackagesExtracting {
         let packagePathProvider = PackagePathProvider(packageFolderNameProvider: packageFolderNameProvider,
                                                       packageNameProvider: packageNameProvider)
 
-        self.packageExtractors = [
-            .contract: ContractPackageExtractor(packageNameProvider: packageNameProvider,
-                                                packageFolderNameProvider: packageFolderNameProvider,
-                                                packagePathProvider: packagePathProvider),
-            .implementation: ImplementationPackageExtractor(packageNameProvider: packageNameProvider,
-                                                            packageFolderNameProvider: packageFolderNameProvider,
-                                                            packagePathProvider: packagePathProvider),
-            .mock: MockPackageExtractor(packageNameProvider: packageNameProvider,
-                                        packageFolderNameProvider: packageFolderNameProvider,
-                                        packagePathProvider: packagePathProvider)
-        ]
+        self.packageExtractors = [:]
+//            .contract: ContractPackageExtractor(packageNameProvider: packageNameProvider,
+//                                                packageFolderNameProvider: packageFolderNameProvider,
+//                                                packagePathProvider: packagePathProvider),
+//            .implementation: ImplementationPackageExtractor(packageNameProvider: packageNameProvider,
+//                                                            packageFolderNameProvider: packageFolderNameProvider,
+//                                                            packagePathProvider: packagePathProvider),
+//            .mock: MockPackageExtractor(packageNameProvider: packageNameProvider,
+//                                        packageFolderNameProvider: packageFolderNameProvider,
+//                                        packagePathProvider: packagePathProvider)
+//        ]
     }
 
     init(packageExtractors: [ModuleType: PackageExtracting]) {

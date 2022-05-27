@@ -71,6 +71,20 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
+    private func get(dependency: ComponentDependency, componentWithName name: Name, _ completion: (inout ComponentDependency) -> Void) {
+        getComponent(withName: name) { component in
+            var dependencies = component.dependencies
+            guard
+                let index = dependencies.firstIndex(where: { $0 == .local(dependency) }),
+                case var .local(temp) = dependencies.remove(at: index)
+            else { return }
+            completion(&temp)
+            dependencies.append(.local(temp))
+            dependencies.sort()
+            component.dependencies = dependencies
+        }
+    }
+
     // MARK: - Document modifiers
     func getComponent(withName name: Name) -> Component? {
         guard
@@ -122,11 +136,7 @@ class PhoenixDocumentStore: ObservableObject {
     func addDependencyToComponent(withName name: Name, dependencyName: Name) {
         getComponent(withName: name) {
             var dependencies = $0.dependencies
-            dependencies.append(.local(ComponentDependency(name: dependencyName,
-                                                                          contract: nil,
-                                                                          implementation: nil,
-                                                                          tests: nil,
-                                                                          mock: nil)))
+            dependencies.append(.local(ComponentDependency(name: dependencyName, targetTypes: [:])))
             dependencies.sort()
             $0.dependencies = dependencies
         }
@@ -209,28 +219,12 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: PackageTargetType, value: String?) {
-        getComponent(withName: name) { component in
-            var dependencies = component.dependencies
-            guard
-                let index = dependencies.firstIndex(where: { $0 == .local(dependency) }),
-                case var .local(temp) = dependencies.remove(at: index)
-            else { return }
-            let moduleType = ModuleType(rawValue: value?.lowercased() ?? "")
-            switch (type.name, type.isTests) {
-            case ("Contract", false):
-                temp.contract = moduleType
-            case ("Implementation", false):
-                temp.implementation = moduleType
-            case ("Implementation", true):
-                temp.tests = moduleType
-            case ("Mock", false):
-                temp.mock = moduleType
-            default:
-                break
+        get(dependency: dependency, componentWithName: name) { dependency in
+            if let value = value {
+                dependency.targetTypes[type] = value
+            } else {
+                dependency.targetTypes.removeValue(forKey: type)
             }
-            dependencies.append(.local(temp))
-            dependencies.sort()
-            component.dependencies = dependencies
         }
     }
 
