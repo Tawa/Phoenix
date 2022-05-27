@@ -226,17 +226,19 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func updateModuleTypeForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, type: TargetType, value: Bool) {
+    func updateModuleTypeForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, type: PackageTargetType, value: Bool) {
         get(remoteDependency: dependency, componentWithName: name) { dependency in
-            switch type {
-            case .contract:
+            switch (type.name, type.isTests) {
+            case ("Contract", false):
                 dependency.contract = value
-            case .implementation:
+            case ("Implementation", false):
                 dependency.implementation = value
-            case .tests:
+            case ("Implementation", true):
                 dependency.tests = value
-            case .mock:
+            case ("Mock", false):
                 dependency.mock = value
+            default:
+                break
             }
         }
     }

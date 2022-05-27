@@ -1,13 +1,24 @@
 public struct PackageConfiguration: Codable, Hashable {
-    let name: String
-    let containerFolderName: String?
-    let appendPackageName: Bool
-    let internalDependency: String?
-    let hasTests: Bool
+    public let name: String
+    public let containerFolderName: String?
+    public let appendPackageName: Bool
+    public let internalDependency: String?
+    public let hasTests: Bool
 }
 
 public struct ProjectConfiguration: Codable, Hashable {
     public let packageConfigurations: [PackageConfiguration]
+}
+
+public struct PackageTargetType: Codable, Hashable, Identifiable {
+    public var id: Int { hashValue }
+    public let name: String
+    public let isTests: Bool
+
+    public init(name: String, isTests: Bool) {
+        self.name = name
+        self.isTests = isTests
+    }
 }
 
 extension ProjectConfiguration {

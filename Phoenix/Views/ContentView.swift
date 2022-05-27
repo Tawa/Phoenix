@@ -105,11 +105,7 @@ struct ContentView: View {
                             versionTitle: dependency.version.title,
                             versionText: dependency.version.stringValue,
                             onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(withComponentName: component.name, dependency: dependency, stringValue: $0) },
-                            allDependencyTypes: [
-                                .init(title: "Contract", subtitle: nil, value: TargetType.contract, subValue: nil),
-                                .init(title: "Implementation", subtitle: "Tests", value: TargetType.implementation, subValue: .tests),
-                                .init(title: "Mock", subtitle: nil, value: TargetType.mock, subValue: nil),
-                            ].filter { allType in
+                            allDependencyTypes: allDependencyTypes().filter { allType in
                                 dependencyTypes(for: dependency, component: component).contains(where: { allType.value.id == $0.id })
                             },
                             enabledTypes: enabledDependencyTypes(for: dependency),
@@ -292,33 +288,33 @@ struct ContentView: View {
         }
     }
 
-    private func dependencyTypes(for dependency: RemoteDependency, component: Component) -> [TargetType] {
-        component.modules.keys.sorted().reduce(into: [TargetType](), { partialResult, moduleType in
+    private func dependencyTypes(for dependency: RemoteDependency, component: Component) -> [PackageTargetType] {
+        component.modules.keys.sorted().reduce(into: [PackageTargetType](), { partialResult, moduleType in
             switch moduleType {
             case .contract:
-                partialResult.append(TargetType.contract)
+                partialResult.append(PackageTargetType(name: "Contract", isTests: false))
             case .implementation:
-                partialResult.append(TargetType.implementation)
-                partialResult.append(TargetType.tests)
+                partialResult.append(PackageTargetType(name: "Implementation", isTests: false))
+                partialResult.append(PackageTargetType(name: "Tests", isTests: true))
             case .mock:
-                partialResult.append(TargetType.mock)
+                partialResult.append(PackageTargetType(name: "Mock", isTests: false))
             }
         })
     }
 
-    private func enabledDependencyTypes(for dependency: RemoteDependency) -> [TargetType] {
-        var types = [TargetType]()
+    private func enabledDependencyTypes(for dependency: RemoteDependency) -> [PackageTargetType] {
+        var types = [PackageTargetType]()
         if dependency.contract {
-            types.append(.contract)
+            types.append(PackageTargetType(name: "Contract", isTests: false))
         }
         if dependency.implementation {
-            types.append(.implementation)
+            types.append(PackageTargetType(name: "Implementation", isTests: false))
         }
         if dependency.tests {
-            types.append(.tests)
+            types.append(PackageTargetType(name: "Implementation", isTests: true))
         }
         if dependency.mock {
-            types.append(.mock)
+            types.append(PackageTargetType(name: "Mock", isTests: false))
         }
 
         return types
@@ -347,6 +343,15 @@ struct ContentView: View {
             .init(title: "Mock", subtitle: nil, value: .mock, subValue: nil)
         ].filter { target in
             component.modules.keys.contains(where: { $0.rawValue == target.value.rawValue })
+        }
+    }
+
+    private func allDependencyTypes() -> [IdentifiableWithSubtype<PackageTargetType>] {
+        store.document.wrappedValue.projectConfiguration.packageConfigurations.map { packageConfiguration in
+            IdentifiableWithSubtype(title: packageConfiguration.name,
+                                    subtitle: packageConfiguration.hasTests ? "Tests" : nil,
+                                    value: PackageTargetType(name: packageConfiguration.name, isTests: false),
+                                    subValue: packageConfiguration.hasTests ? PackageTargetType(name: packageConfiguration.name, isTests: true) : nil)
         }
     }
 }
