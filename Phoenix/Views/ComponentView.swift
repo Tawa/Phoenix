@@ -5,7 +5,7 @@ where
 PlatformsContent: View,
 DependencyType: Identifiable,
 DependencyContent: View,
-ModuleType: Identifiable,
+ModuleType: Hashable,
 LibraryType: Identifiable,
 TargetType: Identifiable & Hashable,
 ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
@@ -48,7 +48,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                 Divider()
                 HStack {
                     Text("Module Types:")
-                    ForEach(allModuleTypes) { moduleType in
+                    ForEach(allModuleTypes, id: \.self) { moduleType in
                         ComponentModuleTypeView(title: "\(moduleType)",
                                                 isOn: isModuleTypeOn(moduleType),
                                                 onOn: { onModuleTypeSwitchedOn(moduleType) },

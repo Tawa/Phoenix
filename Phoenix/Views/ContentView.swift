@@ -114,11 +114,14 @@ struct ContentView: View {
                 }
             },
             allLibraryTypes: LibraryType.allCases,
-            allModuleTypes: ModuleType.allCases,
-            isModuleTypeOn: { component.modules[$0] != nil },
+            allModuleTypes: configurationTargetTypes().map { $0.title },
+            isModuleTypeOn: {
+                guard let moduleType = ModuleType(rawValue: $0.lowercased()) else { return false }
+                return component.modules[moduleType] != nil
+            },
             onModuleTypeSwitchedOn: { store.addModuleTypeForComponent(withName: component.name, moduleType: $0) },
             onModuleTypeSwitchedOff: { store.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
-            moduleTypeTitle: { moduleTypeTitle(for: $0, component: component) },
+            moduleTypeTitle: { $0 },
             onSelectionOfLibraryTypeForModuleType: { store.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
             onRemove: {
                 guard let name = viewModel.selectedComponentName else { return }

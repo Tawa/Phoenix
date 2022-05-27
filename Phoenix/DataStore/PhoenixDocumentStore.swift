@@ -157,7 +157,8 @@ class PhoenixDocumentStore: ObservableObject {
         getComponent(withName: name) { $0.macOSVersion = nil }
     }
 
-    func addModuleTypeForComponent(withName name: Name, moduleType: ModuleType) {
+    func addModuleTypeForComponent(withName name: Name, moduleType: String) {
+        guard let moduleType = ModuleType(rawValue: moduleType.lowercased()) else { return }
         getComponent(withName: name) {
             var modules = $0.modules
             modules[moduleType] = .undefined
@@ -165,7 +166,8 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func removeModuleTypeForComponent(withName name: Name, moduleType: ModuleType) {
+    func removeModuleTypeForComponent(withName name: Name, moduleType: String) {
+        guard let moduleType = ModuleType(rawValue: moduleType.lowercased()) else { return }
         getComponent(withName: name) {
             var modules = $0.modules
             modules.removeValue(forKey: moduleType)
@@ -173,8 +175,11 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: ModuleType) {
-        getComponent(withName: name) { $0.modules[moduleType] = libraryType }
+    func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: String) {
+        guard let moduleType = ModuleType(rawValue: moduleType.lowercased()) else { return }
+        getComponent(withName: name) {
+            $0.modules[moduleType] = libraryType
+        }
     }
 
     func removeComponent(withName name: Name) {
