@@ -236,17 +236,11 @@ class PhoenixDocumentStore: ObservableObject {
 
     func updateModuleTypeForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, type: PackageTargetType, value: Bool) {
         get(remoteDependency: dependency, componentWithName: name) { dependency in
-            switch (type.name, type.isTests) {
-            case ("Contract", false):
-                dependency.contract = value
-            case ("Implementation", false):
-                dependency.implementation = value
-            case ("Implementation", true):
-                dependency.tests = value
-            case ("Mock", false):
-                dependency.mock = value
-            default:
-                break
+            let typeIndex = dependency.targetTypes.firstIndex(of: type)
+            if value && typeIndex == nil {
+                dependency.targetTypes.append(type)
+            } else if !value, let typeIndex = typeIndex {
+                dependency.targetTypes.remove(at: typeIndex)
             }
         }
     }

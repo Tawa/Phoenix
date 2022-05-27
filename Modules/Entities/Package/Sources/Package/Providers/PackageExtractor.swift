@@ -37,7 +37,7 @@ struct ContractPackageExtractor: PackageExtracting {
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
             case let .remote(remoteDependency):
-                guard remoteDependency.contract else { return nil }
+                guard remoteDependency.targetTypes.contains(PackageTargetType(name: "Contract", isTests: false)) else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
                                            description: remoteDependency.version)
@@ -116,7 +116,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
             case let .remote(remoteDependency):
-                guard remoteDependency.implementation else { return nil }
+                guard remoteDependency.targetTypes.contains(PackageTargetType(name: "Implementation", isTests: false)) else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
                                            description: remoteDependency.version)
@@ -137,7 +137,7 @@ struct ImplementationPackageExtractor: PackageExtracting {
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
             case let .remote(remoteDependency):
-                guard remoteDependency.tests else { return nil }
+                guard remoteDependency.targetTypes.contains(PackageTargetType(name: "Implementation", isTests: true)) else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
                                            description: remoteDependency.version)
@@ -232,7 +232,7 @@ struct MockPackageExtractor: PackageExtracting {
                                                                     of: dependencyFamily)
                 return Dependency.module(path: path.full, name: componentName)
             case let .remote(remoteDependency):
-                guard remoteDependency.mock else { return nil }
+                guard remoteDependency.targetTypes.contains(PackageTargetType(name: "Mock", isTests: false)) else { return nil }
                 return Dependency.external(url: remoteDependency.url,
                                            name: remoteDependency.name,
                                            description: remoteDependency.version)

@@ -337,21 +337,7 @@ struct ContentView: View {
     }
 
     private func enabledDependencyTypes(for dependency: RemoteDependency) -> [PackageTargetType] {
-        var types = [PackageTargetType]()
-        if dependency.contract {
-            types.append(PackageTargetType(name: "Contract", isTests: false))
-        }
-        if dependency.implementation {
-            types.append(PackageTargetType(name: "Implementation", isTests: false))
-        }
-        if dependency.tests {
-            types.append(PackageTargetType(name: "Implementation", isTests: true))
-        }
-        if dependency.mock {
-            types.append(PackageTargetType(name: "Mock", isTests: false))
-        }
-
-        return types
+        dependency.targetTypes
     }
 
     private func componentResourcesValueBinding(component: Component) -> Binding<[DynamicTextFieldList<TargetResources.ResourcesType,
