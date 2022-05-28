@@ -1,6 +1,6 @@
 import Foundation
 public struct PackageConfiguration: Codable, Hashable, Identifiable {
-    public let id: String = UUID().uuidString
+    public var id: Int { hashValue }
     public var name: String
     public var containerFolderName: String?
     public var appendPackageName: Bool

@@ -49,12 +49,15 @@ class ViewModel: ObservableObject {
             return
         }
 
-        let packagesExtractor = PackagesExtractor()
+        let componentExtractor = ComponentExtractor()
         let allFamilies: [Family] = document.families.map { $0.family }
         let packagesWithPath: [PackageWithPath] = document.families.flatMap { componentFamily -> [PackageWithPath] in
             let family = componentFamily.family
             return componentFamily.components.flatMap { (component: Component) -> [PackageWithPath] in
-                packagesExtractor.packages(for: component, of: family, allFamilies: allFamilies)
+                componentExtractor.packages(for: component,
+                                            of: family,
+                                            allFamilies: allFamilies,
+                                            projectConfiguration: document.projectConfiguration)
             }
         }
 

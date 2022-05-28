@@ -1,268 +1,137 @@
 import Foundation
 
-protocol PackageExtracting {
-    func package(for component: Component, of family: Family, allFamilies: [Family]) -> PackageWithPath
+extension Sequence where Element: Hashable {
+    func uniqued() -> [Element] {
+        var set = Set<Element>()
+        return filter { set.insert($0).inserted }
+    }
 }
 
-//struct ContractPackageExtractor: PackageExtracting {
-//    private let packageNameProvider: PackageNameProviding
-//    private let packageFolderNameProvider: PackageFolderNameProviding
-//    private let packagePathProvider: PackagePathProviding
-//
-//    init(packageNameProvider: PackageNameProviding,
-//         packageFolderNameProvider: PackageFolderNameProviding,
-//         packagePathProvider: PackagePathProviding) {
-//        self.packageNameProvider = packageNameProvider
-//        self.packageFolderNameProvider = packageFolderNameProvider
-//        self.packagePathProvider = packagePathProvider
-//    }
-//
-//    func package(for component: Component, of family: Family, allFamilies: [Family]) -> PackageWithPath {
-//        let packageName = packageNameProvider.packageName(forType: .contract,
-//                                                          name: component.name,
-//                                                          of: family)
-//
-//        var dependencies: [Dependency] = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
-//            switch componentDependencyType {
-//            case let .local(componentDependency):
-//                guard let dependencyType = componentDependency.targetTypes[PackageTargetType(name: "Contract", isTests: false)],
-//                      let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
-//                else { return nil }
-//                let path = packagePathProvider.path(for: componentDependency.name,
-//                                                    of: dependencyFamily,
-//                                                    type: dependencyType,
-//                                                    relativeToType: .contract)
-//                let componentName = packageNameProvider.packageName(forType: dependencyType,
-//                                                                    name: componentDependency.name,
-//                                                                    of: dependencyFamily)
-//                return Dependency.module(path: path.full, name: componentName)
-//            case let .remote(remoteDependency):
-//                guard remoteDependency.targetTypes.contains(PackageTargetType(name: "Contract", isTests: false)) else { return nil }
-//                return Dependency.external(url: remoteDependency.url,
-//                                           name: remoteDependency.name,
-//                                           description: remoteDependency.version)
-//            }
-//        }
-//        dependencies.sort()
-//
-//        return PackageWithPath(
-//            package: Package(
-//                name: packageName,
-//                iOSVersion: component.iOSVersion,
-//                macOSVersion: component.macOSVersion,
-//                products: [
-//                    .library(Library(name: packageName,
-//                                     type: component.modules[.contract] ?? .undefined,
-//                                     targets: [packageName]))],
-//                dependencies: dependencies,
-//                targets: [
-//                    Target(name: packageName,
-//                           dependencies: dependencies,
-//                           isTest: false,
-//                           resources: component.resources.filter { $0.targets.contains(.contract) }
-//                        .map { TargetResources(folderName: $0.folderName,
-//                                               resourcesType: $0.type) })
-//                ]
-//            ),
-//            path: packagePathProvider.path(for: component.name,
-//                                           of: family,
-//                                           type: .contract,
-//                                           relativeToType: .contract).path
-//        )
-//    }
-//}
-//
-//struct ImplementationPackageExtractor: PackageExtracting {
-//    private let packageNameProvider: PackageNameProviding
-//    private let packageFolderNameProvider: PackageFolderNameProviding
-//    private let packagePathProvider: PackagePathProviding
-//
-//    init(packageNameProvider: PackageNameProviding,
-//         packageFolderNameProvider: PackageFolderNameProviding,
-//         packagePathProvider: PackagePathProviding) {
-//        self.packageNameProvider = packageNameProvider
-//        self.packageFolderNameProvider = packageFolderNameProvider
-//        self.packagePathProvider = packagePathProvider
-//    }
-//
-//    func package(for component: Component, of family: Family, allFamilies: [Family]) -> PackageWithPath {
-//        let packageName = packageNameProvider.packageName(forType: .implementation,
-//                                                          name: component.name,
-//                                                          of: family)
-//
-//        var dependencies: [Dependency] = []
-//        if component.modules[.contract] != nil {
-//            let contractPath = packagePathProvider.path(for: component.name,
-//                                                        of: family,
-//                                                        type: .contract,
-//                                                        relativeToType: .implementation)
-//            let contractName = packageNameProvider.packageName(forType: .contract,
-//                                                               name: component.name,
-//                                                               of: family)
-//            dependencies.append(.module(path: contractPath.full, name: contractName))
-//        }
-//        let implementationDependencies = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
-//            switch componentDependencyType {
-//            case let .local(componentDependency):
-//                guard let dependencyType = componentDependency.implementation,
-//                      let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
-//                else { return nil }
-//                let path = packagePathProvider.path(for: componentDependency.name,
-//                                                    of: dependencyFamily,
-//                                                    type: dependencyType,
-//                                                    relativeToType: .implementation)
-//                let componentName = packageNameProvider.packageName(forType: dependencyType,
-//                                                                    name: componentDependency.name,
-//                                                                    of: dependencyFamily)
-//                return Dependency.module(path: path.full, name: componentName)
-//            case let .remote(remoteDependency):
-//                guard remoteDependency.targetTypes.contains(PackageTargetType(name: "Implementation", isTests: false)) else { return nil }
-//                return Dependency.external(url: remoteDependency.url,
-//                                           name: remoteDependency.name,
-//                                           description: remoteDependency.version)
-//            }
-//        }
-//        let testsDependencies = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
-//            switch componentDependencyType {
-//            case let .local(componentDependency):
-//                guard let dependencyType = componentDependency.tests,
-//                      let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
-//                else { return nil }
-//                let path = packagePathProvider.path(for: componentDependency.name,
-//                                                    of: dependencyFamily,
-//                                                    type: dependencyType,
-//                                                    relativeToType: .implementation)
-//                let componentName = packageNameProvider.packageName(forType: dependencyType,
-//                                                                    name: componentDependency.name,
-//                                                                    of: dependencyFamily)
-//                return Dependency.module(path: path.full, name: componentName)
-//            case let .remote(remoteDependency):
-//                guard remoteDependency.targetTypes.contains(PackageTargetType(name: "Implementation", isTests: true)) else { return nil }
-//                return Dependency.external(url: remoteDependency.url,
-//                                           name: remoteDependency.name,
-//                                           description: remoteDependency.version)
-//            }
-//        }
-//
-//        return PackageWithPath(
-//            package: Package(
-//                name: packageName,
-//                iOSVersion: component.iOSVersion,
-//                macOSVersion: component.macOSVersion,
-//                products: [
-//                    .library(Library(name: packageName,
-//                                     type: component.modules[.implementation] ?? .undefined,
-//                                     targets: [packageName]))],
-//                dependencies: Array(Set((dependencies + implementationDependencies + testsDependencies))).sorted(),
-//                targets: [
-//                    Target(name: packageName,
-//                           dependencies: (implementationDependencies + dependencies).sorted(),
-//                           isTest: false,
-//                           resources: component.resources.filter { $0.targets.contains(.implementation) }
-//                        .map { TargetResources(folderName: $0.folderName,
-//                                               resourcesType: $0.type) }),
-//                    Target(name: packageName + "Tests",
-//                           dependencies: (testsDependencies + [
-//                            Dependency.module(path: "",
-//                                              name: packageName)
-//                           ]).sorted(),
-//                           isTest: true,
-//                           resources: component.resources.filter { $0.targets.contains(.tests) }
-//                        .map { TargetResources(folderName: $0.folderName,
-//                                               resourcesType: $0.type) })
-//                ]
-//            ),
-//            path: packagePathProvider.path(for: component.name,
-//                                           of: family,
-//                                           type: .implementation,
-//                                           relativeToType: .implementation).path)
-//    }
-//}
-//
-//struct MockPackageExtractor: PackageExtracting {
-//    private let packageNameProvider: PackageNameProviding
-//    private let packageFolderNameProvider: PackageFolderNameProviding
-//    private let packagePathProvider: PackagePathProviding
-//
-//    init(packageNameProvider: PackageNameProviding,
-//         packageFolderNameProvider: PackageFolderNameProviding,
-//         packagePathProvider: PackagePathProviding) {
-//        self.packageNameProvider = packageNameProvider
-//        self.packageFolderNameProvider = packageFolderNameProvider
-//        self.packagePathProvider = packagePathProvider
-//    }
-//
-//    func package(for component: Component, of family: Family, allFamilies: [Family]) -> PackageWithPath {
-//        let packageName = packageNameProvider.packageName(forType: .mock,
-//                                                          name: component.name,
-//                                                          of: family)
-//
-//        var dependencies: [Dependency] = []
-//        if component.modules[.contract] != nil {
-//            let contractPath = packagePathProvider.path(for: component.name,
-//                                                        of: family,
-//                                                        type: .contract,
-//                                                        relativeToType: .mock)
-//            let contractName = packageNameProvider.packageName(forType: .contract,
-//                                                               name: component.name,
-//                                                               of: family)
-//            dependencies.append(.module(path: contractPath.full, name: contractName))
-//        } else if component.modules[.implementation] != nil {
-//            let implementationPath = packagePathProvider.path(for: component.name,
-//                                                              of: family,
-//                                                              type: .implementation,
-//                                                              relativeToType: .mock)
-//            let implementationName = packageNameProvider.packageName(forType: .contract,
-//                                                                     name: component.name,
-//                                                                     of: family)
-//            dependencies.append(.module(path: implementationPath.full, name: implementationName))
-//        }
-//        let otherDependencies: [Dependency] = component.dependencies.compactMap { componentDependencyType -> (Dependency)? in
-//            switch componentDependencyType {
-//            case let .local(componentDependency):
-//                guard let dependencyType = componentDependency.mock,
-//                      let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family })
-//                else { return nil }
-//                let path = packagePathProvider.path(for: componentDependency.name,
-//                                                    of: dependencyFamily,
-//                                                    type: dependencyType,
-//                                                    relativeToType: .mock)
-//                let componentName = packageNameProvider.packageName(forType: dependencyType,
-//                                                                    name: componentDependency.name,
-//                                                                    of: dependencyFamily)
-//                return Dependency.module(path: path.full, name: componentName)
-//            case let .remote(remoteDependency):
-//                guard remoteDependency.targetTypes.contains(PackageTargetType(name: "Mock", isTests: false)) else { return nil }
-//                return Dependency.external(url: remoteDependency.url,
-//                                           name: remoteDependency.name,
-//                                           description: remoteDependency.version)
-//            }
-//        }
-//        dependencies.append(contentsOf: otherDependencies)
-//        dependencies.sort()
-//
-//        return PackageWithPath(
-//            package: Package(
-//                name: packageName,
-//                iOSVersion: component.iOSVersion,
-//                macOSVersion: component.macOSVersion,
-//                products: [
-//                    .library(Library(name: packageName,
-//                                     type: component.modules[.mock] ?? .undefined,
-//                                     targets: [packageName]))],
-//                dependencies: dependencies,
-//                targets: [
-//                    Target(name: packageName,
-//                           dependencies: dependencies,
-//                           isTest: false,
-//                           resources: component.resources.filter { $0.targets.contains(.mock) }
-//                        .map { TargetResources(folderName: $0.folderName,
-//                                               resourcesType: $0.type) })
-//                ]
-//            ),
-//            path: packagePathProvider.path(for: component.name,
-//                                           of: family,
-//                                           type: .mock,
-//                                           relativeToType: .mock).path)
-//    }
-//}
+protocol PackageExtracting {
+    func package(for component: Component,
+                 of family: Family,
+                 allFamilies: [Family],
+                 packageConfiguration: PackageConfiguration,
+                 projectConfiguration: ProjectConfiguration) -> PackageWithPath
+}
+
+struct PackageExtractor: PackageExtracting {
+    private let packageNameProvider: PackageNameProviding
+    private let packageFolderNameProvider: PackageFolderNameProviding
+    private let packagePathProvider: PackagePathProviding
+
+    init(packageNameProvider: PackageNameProviding,
+         packageFolderNameProvider: PackageFolderNameProviding,
+         packagePathProvider: PackagePathProviding) {
+        self.packageNameProvider = packageNameProvider
+        self.packageFolderNameProvider = packageFolderNameProvider
+        self.packagePathProvider = packagePathProvider
+    }
+
+
+    func package(for component: Component,
+                 of family: Family,
+                 allFamilies: [Family],
+                 packageConfiguration: PackageConfiguration,
+                 projectConfiguration: ProjectConfiguration) -> PackageWithPath {
+        let packageName = packageNameProvider.packageName(forComponentName: component.name,
+                                                          of: family,
+                                                          packageConfiguration: packageConfiguration)
+
+        let packageTargetType = PackageTargetType(name: packageConfiguration.name, isTests: false)
+        var dependencies: [Dependency] = []
+        var implementationDependencies: [Dependency] = component.dependencies.sorted().compactMap { dependencyType -> Dependency? in
+            switch dependencyType {
+            case let .local(componentDependency):
+                guard
+                    let targetTypeString = componentDependency.targetTypes[packageTargetType],
+                    let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family }),
+                    let dependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == targetTypeString })
+                else { return nil }
+                return .module(path: packagePathProvider.path(for: componentDependency.name,
+                                                              of: dependencyFamily,
+                                                              packageConfiguration: dependencyConfiguration,
+                                                              relativeToConfiguration: packageConfiguration),
+                               name: packageNameProvider.packageName(forComponentName: componentDependency.name,
+                                                                     of: dependencyFamily,
+                                                                     packageConfiguration: dependencyConfiguration))
+            case let .remote(remoteDependency):
+                guard remoteDependency.targetTypes.contains(packageTargetType) else { return nil }
+                return .external(url: remoteDependency.url,
+                                 name: remoteDependency.name,
+                                 description: remoteDependency.version)
+            }
+        }
+        if let internalDependencyString = packageConfiguration.internalDependency,
+           component.modules[internalDependencyString] != nil,
+           let internalDependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == internalDependencyString }) {
+            implementationDependencies.insert(
+                .module(path: packagePathProvider.path(for: component.name,
+                                                       of: family,
+                                                       packageConfiguration: internalDependencyConfiguration,
+                                                       relativeToConfiguration: packageConfiguration),
+                        name: packageNameProvider.packageName(forComponentName: component.name,
+                                                              of: family,
+                                                              packageConfiguration: internalDependencyConfiguration)),
+                at: 0)
+        }
+
+        var targets: [Target] = [
+            Target(name: packageName,
+                   dependencies: implementationDependencies,
+                   isTest: false,
+                   resources: component.resources.filter { $0.targets.contains(packageTargetType) }
+                .map { TargetResources(folderName: $0.folderName,
+                                       resourcesType: $0.type) })
+        ]
+
+        dependencies = implementationDependencies
+        if packageConfiguration.hasTests {
+            let packageTestsTargetType = PackageTargetType(name: packageConfiguration.name, isTests: true)
+            let testsDependencies: [Dependency] = component.dependencies.sorted().compactMap { dependencyType -> Dependency? in
+                switch dependencyType {
+                case let .local(componentDependency):
+                    guard
+                        let targetTypeString = componentDependency.targetTypes[packageTestsTargetType],
+                        let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family }),
+                        let dependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == targetTypeString })
+                    else { return nil }
+                    return .module(path: packagePathProvider.path(for: componentDependency.name,
+                                                                  of: dependencyFamily,
+                                                                  packageConfiguration: dependencyConfiguration,
+                                                                  relativeToConfiguration: packageConfiguration),
+                                   name: packageNameProvider.packageName(forComponentName: componentDependency.name,
+                                                                         of: dependencyFamily,
+                                                                         packageConfiguration: dependencyConfiguration))
+                case let .remote(remoteDependency):
+                    guard remoteDependency.targetTypes.contains(packageTestsTargetType) else { return nil }
+                    return .external(url: remoteDependency.url,
+                                     name: remoteDependency.name,
+                                     description: remoteDependency.version)
+                }
+            }
+            targets.append(
+                Target(name: packageName + "Tests",
+                       dependencies: [Dependency.module(path: "", name: packageName)] + testsDependencies,
+                       isTest: true,
+                       resources: component.resources.filter { $0.targets.contains(PackageTargetType(name: packageConfiguration.name,
+                                                                                                     isTests: true)) }
+                    .map { TargetResources(folderName: $0.folderName,
+                                           resourcesType: $0.type) })
+            )
+            dependencies += testsDependencies
+        }
+
+        return .init(package: .init(name: packageName,
+                                    iOSVersion: component.iOSVersion,
+                                    macOSVersion: component.macOSVersion,
+                                    products: [Product.library(Library(name: packageName,
+                                                                       type: component.modules[packageConfiguration.name] ?? .undefined,
+                                                                       targets: [packageName]))],
+                                    dependencies: dependencies.uniqued(),
+                                    targets: targets),
+                     path: packagePathProvider.path(for: component.name,
+                                                    of: family,
+                                                    packageConfiguration: packageConfiguration))
+    }
+}
