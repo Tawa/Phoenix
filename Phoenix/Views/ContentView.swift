@@ -63,65 +63,25 @@ struct ContentView: View {
     func componentView(for component: Component) -> some View {
         ComponentView(
             title: store.title(for: component.name),
-            platformsContent: {
-                Group {
-                    CustomMenu(title: iOSPlatformMenuTitle(forComponent: component),
-                               data: IOSVersion.allCases,
-                               onSelection: { store.setIOSVersionForComponent(withName: component.name, iOSVersion: $0) },
-                               hasRemove: component.iOSVersion != nil,
-                               onRemove: { store.removeIOSVersionForComponent(withName: component.name) })
-                    .frame(width: 150)
-                    CustomMenu(title: macOSPlatformMenuTitle(forComponent: component),
-                               data: MacOSVersion.allCases,
-                               onSelection: { store.setMacOSVersionForComponent(withName: component.name, macOSVersion: $0) },
-                               hasRemove: component.macOSVersion != nil,
-                               onRemove: { store.removeMacOSVersionForComponent(withName: component.name) })
-                    .frame(width: 150)
-                }
-            },
+            platformsContent: { platformsContent(forComponent: component) },
             dependencies: component.dependencies.sorted(),
             dependencyView: { dependencyType in
                 VStack(spacing: 0) {
                     Divider()
                     switch dependencyType {
                     case let .local(dependency):
-                        DependencyView<PackageTargetType, String>(
-                            title: store.title(for: dependency.name),
-                            onSelection: { viewModel.selectedComponentName = dependency.name },
-                            onRemove: { store.removeDependencyForComponent(withComponentName: component.name, componentDependency: dependency) },
-                            allTypes: componentTypes(for: dependency, component: component),
-                            allSelectionValues: configurationTargetTypes().map { $0.title },
-                            onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
+                        componentDependencyView(forComponent: component, dependency: dependency)
                     case let .remote(dependency):
-                        RemoteDependencyView(
-                            name: dependency.name.name,
-                            urlString: dependency.url,
-                            allVersionsTypes: [
-                                .init(title: "branch", value: ExternalDependencyVersion.branch(name: "main")),
-                                .init(title: "from", value: ExternalDependencyVersion.from(version: "1.0.0"))
-                            ],
-                            onSubmitVersionType: { updateVersion(for: dependency, version: $0) },
-                            versionPlaceholder: versionPlaceholder(for: dependency),
-                            versionTitle: dependency.version.title,
-                            versionText: dependency.version.stringValue,
-                            onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(withComponentName: component.name, dependency: dependency, stringValue: $0) },
-                            allDependencyTypes: allDependencyTypes(dependency: dependency, component: component),
-                            enabledTypes: enabledDependencyTypes(for: dependency),
-                            onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) },
-                            onRemove: { store.removeRemoteDependencyForComponent(withComponentName: component.name, dependency: dependency) }
-                        )
+                        remoteDependencyView(forComponent: component, dependency: dependency)
                     }
                 }
             },
             allLibraryTypes: LibraryType.allCases,
             allModuleTypes: configurationTargetTypes().map { $0.title },
-            isModuleTypeOn: {
-                guard let moduleType = ModuleType(rawValue: $0.lowercased()) else { return false }
-                return component.modules[moduleType] != nil
-            },
+            isModuleTypeOn: { component.modules[$0] != nil },
             onModuleTypeSwitchedOn: { store.addModuleTypeForComponent(withName: component.name, moduleType: $0) },
             onModuleTypeSwitchedOff: { store.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
-            moduleTypeTitle: { ModuleType(rawValue: $0.lowercased()).flatMap { component.modules[$0] }?.rawValue ?? "undefined" },
+            moduleTypeTitle: { component.modules[$0]?.rawValue ?? "undefined" },
             onSelectionOfLibraryTypeForModuleType: { store.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
             onRemove: {
                 guard let name = viewModel.selectedComponentName else { return }
@@ -217,6 +177,53 @@ struct ContentView: View {
                              onDismiss: { viewModel.selectedFamilyName = nil })
     }
 
+    func componentDependencyView(forComponent component: Component, dependency: ComponentDependency) -> some View {
+        DependencyView<PackageTargetType, String>(
+            title: store.title(for: dependency.name),
+            onSelection: { viewModel.selectedComponentName = dependency.name },
+            onRemove: { store.removeDependencyForComponent(withComponentName: component.name, componentDependency: dependency) },
+            allTypes: componentTypes(for: dependency, component: component),
+            allSelectionValues: allTargetTypes(forComponent: component).map { $0.title },
+            onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
+    }
+
+    func remoteDependencyView(forComponent component: Component, dependency: RemoteDependency) -> some View {
+        RemoteDependencyView(
+            name: dependency.name.name,
+            urlString: dependency.url,
+            allVersionsTypes: [
+                .init(title: "branch", value: ExternalDependencyVersion.branch(name: "main")),
+                .init(title: "from", value: ExternalDependencyVersion.from(version: "1.0.0"))
+            ],
+            onSubmitVersionType: { updateVersion(for: dependency, version: $0) },
+            versionPlaceholder: versionPlaceholder(for: dependency),
+            versionTitle: dependency.version.title,
+            versionText: dependency.version.stringValue,
+            onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(withComponentName: component.name, dependency: dependency, stringValue: $0) },
+            allDependencyTypes: allDependencyTypes(dependency: dependency, component: component),
+            enabledTypes: enabledDependencyTypes(for: dependency, component: component),
+            onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) },
+            onRemove: { store.removeRemoteDependencyForComponent(withComponentName: component.name, dependency: dependency) }
+        )
+    }
+
+    func platformsContent(forComponent component: Component) -> some View {
+        Group {
+            CustomMenu(title: iOSPlatformMenuTitle(forComponent: component),
+                       data: IOSVersion.allCases,
+                       onSelection: { store.setIOSVersionForComponent(withName: component.name, iOSVersion: $0) },
+                       hasRemove: component.iOSVersion != nil,
+                       onRemove: { store.removeIOSVersionForComponent(withName: component.name) })
+            .frame(width: 150)
+            CustomMenu(title: macOSPlatformMenuTitle(forComponent: component),
+                       data: MacOSVersion.allCases,
+                       onSelection: { store.setMacOSVersionForComponent(withName: component.name, macOSVersion: $0) },
+                       hasRemove: component.macOSVersion != nil,
+                       onRemove: { store.removeMacOSVersionForComponent(withName: component.name) })
+            .frame(width: 150)
+        }
+    }
+
     // MARK: - Private
     
     private func componentName(_ component: Component, for family: Family) -> String {
@@ -246,16 +253,8 @@ struct ContentView: View {
         }
     }
 
-    private func moduleTypeTitle(for moduleType: ModuleType, component: Component) -> String {
-        if let libraryType = component.modules[moduleType] {
-            return "\(libraryType)"
-        } else {
-            return "Add Type"
-        }
-    }
-
     private func componentTypes(for dependency: ComponentDependency, component: Component) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
-        configurationTargetTypes().compactMap { targetType -> IdentifiableWithSubtypeAndSelection<PackageTargetType, String>? in
+        allTargetTypes(forComponent: component).compactMap { targetType -> IdentifiableWithSubtypeAndSelection<PackageTargetType, String>? in
             let selectedValue = dependency.targetTypes[targetType.value]
             let selectedSubValue: String? = targetType.subValue.flatMap { dependency.targetTypes[$0] }
 
@@ -283,22 +282,8 @@ struct ContentView: View {
         }
     }
 
-    private func dependencyTypes(for dependency: RemoteDependency, component: Component) -> [PackageTargetType] {
-        component.modules.keys.sorted().reduce(into: [PackageTargetType](), { partialResult, moduleType in
-            switch moduleType {
-            case .contract:
-                partialResult.append(PackageTargetType(name: "Contract", isTests: false))
-            case .implementation:
-                partialResult.append(PackageTargetType(name: "Implementation", isTests: false))
-                partialResult.append(PackageTargetType(name: "Tests", isTests: true))
-            case .mock:
-                partialResult.append(PackageTargetType(name: "Mock", isTests: false))
-            }
-        })
-    }
-
-    private func enabledDependencyTypes(for dependency: RemoteDependency) -> [PackageTargetType] {
-        dependency.targetTypes
+    private func enabledDependencyTypes(for dependency: RemoteDependency, component: Component) -> [PackageTargetType] {
+        allTargetTypes(forComponent: component).filter { dependency.targetTypes.contains($0.value) }.map { $0.value }
     }
 
     private func componentResourcesValueBinding(component: Component) -> Binding<[DynamicTextFieldList<TargetResources.ResourcesType,
@@ -316,15 +301,14 @@ struct ContentView: View {
         })
     }
 
-    private func allTargetTypes(forComponent component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
-        configurationTargetTypes().filter { target in
-            component.modules.keys.contains(where: { $0.rawValue.lowercased() == target.value.name.lowercased() })
-        }
-    }
 
     private func allDependencyTypes(dependency: RemoteDependency, component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
-        configurationTargetTypes().filter { allType in
-            dependencyTypes(for: dependency, component: component).contains(where: { allType.value.id == $0.id })
+        allTargetTypes(forComponent: component)
+    }
+
+    private func allTargetTypes(forComponent component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
+        configurationTargetTypes().filter { target in
+            component.modules.keys.contains(where: { $0.lowercased() == target.value.name.lowercased() })
         }
     }
 

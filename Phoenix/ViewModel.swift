@@ -24,9 +24,9 @@ class ViewModel: ObservableObject {
                 family.components.append(Component(name: Name(given: "Component\(componentIndex)", family: familyName),
                                                    iOSVersion: nil,
                                                    macOSVersion: nil,
-                                                   modules: [.contract: .dynamic,
-                                                             .implementation: .static,
-                                                             .mock: .undefined],
+                                                   modules: document.projectConfiguration.packageConfigurations.reduce(into: [String: LibraryType](), { partialResult, packageConfiguration in
+                    partialResult[packageConfiguration.name] = .undefined
+                }),
                                                    dependencies: [],
                                                    resources: []))
             }

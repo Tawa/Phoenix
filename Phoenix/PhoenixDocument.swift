@@ -36,6 +36,7 @@ struct PhoenixDocument: FileDocument, Codable {
                 let family = try jsonDecoder.decode(Family.self, from: familyData)
                 let components = try componentsWrappers.compactMap(\.regularFileContents)
                     .map { try jsonDecoder.decode(Component.self, from: $0) }
+                    .sorted(by: { $0.name < $1.name })
 
                 guard !components.isEmpty else { continue }
                 componentsFamilies.append(.init(family: family, components: components))
@@ -44,6 +45,8 @@ struct PhoenixDocument: FileDocument, Codable {
             let configurationFileWrapper = fileWrapper.values.filter{ !$0.isDirectory }.first
             let projectConfiguration: ProjectConfiguration = try configurationFileWrapper?.regularFileContents
                 .map({ try jsonDecoder.decode(ProjectConfiguration.self, from: $0) }) ?? .default
+
+            componentsFamilies.sort(by: { $0.family.name < $1.family.name })
 
             self = .init(families: componentsFamilies, projectConfiguration: projectConfiguration)
         } else {

@@ -104,10 +104,15 @@ class PhoenixDocumentStore: ObservableObject {
 
         var array = componentsFamily.components
 
+        let moduleTypes: [String: LibraryType] = document.wrappedValue.projectConfiguration.packageConfigurations
+            .reduce(into: [String: LibraryType](), { partialResult, packageConfiguration in
+                partialResult[packageConfiguration.name] = .undefined
+            })
+
         let newComponent = Component(name: name,
                                      iOSVersion: nil,
                                      macOSVersion: nil,
-                                     modules: [.contract: .dynamic, .implementation: .static, .mock: .undefined],
+                                     modules: moduleTypes,
                                      dependencies: [],
                                      resources: [])
         array.append(newComponent)
@@ -168,7 +173,6 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func addModuleTypeForComponent(withName name: Name, moduleType: String) {
-        guard let moduleType = ModuleType(rawValue: moduleType.lowercased()) else { return }
         getComponent(withName: name) {
             var modules = $0.modules
             modules[moduleType] = .undefined
@@ -177,7 +181,6 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func removeModuleTypeForComponent(withName name: Name, moduleType: String) {
-        guard let moduleType = ModuleType(rawValue: moduleType.lowercased()) else { return }
         getComponent(withName: name) {
             var modules = $0.modules
             modules.removeValue(forKey: moduleType)
@@ -186,7 +189,6 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
     func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: String) {
-        guard let moduleType = ModuleType(rawValue: moduleType.lowercased()) else { return }
         getComponent(withName: name) {
             $0.modules[moduleType] = libraryType
         }

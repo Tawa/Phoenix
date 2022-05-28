@@ -37,6 +37,6 @@ public struct PackagesExtractor: PackagesExtracting {
     }
 
     public func packages(for component: Component, of family: Family, allFamilies: [Family]) -> [PackageWithPath] {
-        component.modules.keys.compactMap { packageExtractors[$0]?.package(for: component, of: family, allFamilies: allFamilies) }
+        []//component.modules.keys.compactMap { packageExtractors[$0]?.package(for: component, of: family, allFamilies: allFamilies) }
     }
 }
