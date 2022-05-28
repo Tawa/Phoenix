@@ -1,0 +1,15 @@
+{
+  "dependencies" : [
+
+  ],
+  "modules" : {
+    "Implementation" : "dynamic"
+  },
+  "name" : {
+    "family" : "Entity",
+    "given" : "Package"
+  },
+  "resources" : [
+
+  ]
+}

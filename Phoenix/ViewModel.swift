@@ -12,6 +12,10 @@ class ViewModel: ObservableObject {
     @Published var showingDependencyPopover: Bool = false
     @Published var fileErrorString: String? = nil
 
+    func update(value: String) {
+        print("Value: \(value)")
+    }
+
     func onConfigurationButton() {
         showingConfigurationPopup = true
     }

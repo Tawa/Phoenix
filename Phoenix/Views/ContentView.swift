@@ -5,7 +5,7 @@ struct ContentView: View {
     @StateObject private var viewModel: ViewModel = .init()
     @EnvironmentObject private var store: PhoenixDocumentStore
     private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
-    
+
     var body: some View {
         HSplitView {
             componentsList()

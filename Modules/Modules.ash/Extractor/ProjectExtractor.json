@@ -1,0 +1,38 @@
+{
+  "dependencies" : [
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Extractor",
+            "given" : "Component"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Contract",
+            {
+              "isTests" : true,
+              "name" : "Implementation"
+            },
+            "Mock"
+          ]
+        }
+      }
+    }
+  ],
+  "modules" : {
+    "Contract" : "dynamic",
+    "Implementation" : "static",
+    "Mock" : "undefined"
+  },
+  "name" : {
+    "family" : "Extractor",
+    "given" : "Project"
+  },
+  "resources" : [
+
+  ]
+}
