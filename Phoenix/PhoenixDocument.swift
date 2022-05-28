@@ -10,9 +10,12 @@ extension UTType {
 
 struct PhoenixDocument: FileDocument, Codable {
     var families: [ComponentsFamily]
+    var projectConfiguration: ProjectConfiguration
 
-    init(families: [ComponentsFamily] = []) {
+    init(families: [ComponentsFamily] = [],
+         projectConfiguration: ProjectConfiguration = .default) {
         self.families = families
+        self.projectConfiguration = projectConfiguration
     }
 
     static var readableContentTypes: [UTType] { [.ash] }
@@ -21,23 +24,31 @@ struct PhoenixDocument: FileDocument, Codable {
         let jsonDecoder = JSONDecoder()
 
         if configuration.file.isDirectory, let fileWrapper = configuration.file.fileWrappers {
-            let familyFolderWrappers = fileWrapper.values
+            let familyFolderWrappers = fileWrapper.values.filter(\.isDirectory)
             var componentsFamilies = [ComponentsFamily]()
             for familyFolderWrapper in familyFolderWrappers {
                 guard
-                    let familyFileWrapper = familyFolderWrapper.fileWrappers?["family.ashf"],
+                    let familyFileWrapper = familyFolderWrapper.fileWrappers?["family.json"],
                     let familyData = familyFileWrapper.regularFileContents,
-                    let componentsWrappers = familyFolderWrapper.fileWrappers?.filter({ $0.key.hasSuffix(".ashc") }).map(\.value)
+                    let componentsWrappers = familyFolderWrapper.fileWrappers?.filter({ $0.value != familyFileWrapper })
+                        .filter({ $0.key.hasSuffix(".json") }).map(\.value)
                 else { continue }
                 let family = try jsonDecoder.decode(Family.self, from: familyData)
                 let components = try componentsWrappers.compactMap(\.regularFileContents)
                     .map { try jsonDecoder.decode(Component.self, from: $0) }
+                    .sorted(by: { $0.name < $1.name })
 
                 guard !components.isEmpty else { continue }
                 componentsFamilies.append(.init(family: family, components: components))
             }
 
-            self = .init(families: componentsFamilies)
+            let configurationFileWrapper = fileWrapper.values.filter{ !$0.isDirectory }.first
+            let projectConfiguration: ProjectConfiguration = try configurationFileWrapper?.regularFileContents
+                .map({ try jsonDecoder.decode(ProjectConfiguration.self, from: $0) }) ?? .default
+
+            componentsFamilies.sort(by: { $0.family.name < $1.family.name })
+
+            self = .init(families: componentsFamilies, projectConfiguration: projectConfiguration)
         } else {
             guard let data = configuration.file.regularFileContents
             else {
@@ -52,17 +63,22 @@ struct PhoenixDocument: FileDocument, Codable {
         jsonEncoder.outputFormatting = [.sortedKeys, .prettyPrinted]
 
         let mainFolderWrapper = FileWrapper(directoryWithFileWrappers: [:])
+
+        let configurationFolderWrapper = FileWrapper(regularFileWithContents: try jsonEncoder.encode(projectConfiguration))
+        configurationFolderWrapper.preferredFilename = "config.json"
+        mainFolderWrapper.addFileWrapper(configurationFolderWrapper)
+
         for family in families {
             let familyFolderWrapper = FileWrapper(directoryWithFileWrappers: [:])
             familyFolderWrapper.preferredFilename = family.family.name
 
             let familyFileWrapper = FileWrapper(regularFileWithContents: try jsonEncoder.encode(family.family))
-            familyFileWrapper.preferredFilename = "family.ashf"
+            familyFileWrapper.preferredFilename = "family.json"
             familyFolderWrapper.addFileWrapper(familyFileWrapper)
 
             for component in family.components {
                 let componentFileWrapper = FileWrapper(regularFileWithContents: try jsonEncoder.encode(component))
-                componentFileWrapper.preferredFilename = component.name.full + ".ashc"
+                componentFileWrapper.preferredFilename = component.name.full + ".json"
                 familyFolderWrapper.addFileWrapper(componentFileWrapper)
             }
             mainFolderWrapper.addFileWrapper(familyFolderWrapper)

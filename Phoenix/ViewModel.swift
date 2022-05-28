@@ -2,11 +2,19 @@ import Package
 import SwiftUI
 
 class ViewModel: ObservableObject {
+    // MARK: - Selection
     @Published var selectedComponentName: Name? = nil
     @Published var selectedFamilyName: String? = nil
+
+    // MARK: - Popovers
+    @Published var showingConfigurationPopup: Bool = false
     @Published var showingNewComponentPopup: Bool = false
-    @Published var fileErrorString: String? = nil
     @Published var showingDependencyPopover: Bool = false
+    @Published var fileErrorString: String? = nil
+
+    func onConfigurationButton() {
+        showingConfigurationPopup = true
+    }
 
     func onAddButton() {
         showingNewComponentPopup = true
@@ -24,9 +32,9 @@ class ViewModel: ObservableObject {
                 family.components.append(Component(name: Name(given: "Component\(componentIndex)", family: familyName),
                                                    iOSVersion: nil,
                                                    macOSVersion: nil,
-                                                   modules: [.contract: .dynamic,
-                                                             .implementation: .static,
-                                                             .mock: .undefined],
+                                                   modules: document.projectConfiguration.packageConfigurations.reduce(into: [String: LibraryType](), { partialResult, packageConfiguration in
+                    partialResult[packageConfiguration.name] = .undefined
+                }),
                                                    dependencies: [],
                                                    resources: []))
             }
@@ -41,12 +49,15 @@ class ViewModel: ObservableObject {
             return
         }
 
-        let packagesExtractor = PackagesExtractor()
+        let componentExtractor = ComponentExtractor()
         let allFamilies: [Family] = document.families.map { $0.family }
         let packagesWithPath: [PackageWithPath] = document.families.flatMap { componentFamily -> [PackageWithPath] in
             let family = componentFamily.family
             return componentFamily.components.flatMap { (component: Component) -> [PackageWithPath] in
-                packagesExtractor.packages(for: component, of: family, allFamilies: allFamilies)
+                componentExtractor.packages(for: component,
+                                            of: family,
+                                            allFamilies: allFamilies,
+                                            projectConfiguration: document.projectConfiguration)
             }
         }
 

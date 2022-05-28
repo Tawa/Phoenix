@@ -8,8 +8,12 @@ public struct PackagePath {
 protocol PackagePathProviding {
     func path(for name: Name,
               of family: Family,
-              type: ModuleType,
-              relativeToType otherType: ModuleType) -> PackagePath
+              packageConfiguration: PackageConfiguration) -> String
+
+    func path(for name: Name,
+              of family: Family,
+              packageConfiguration: PackageConfiguration,
+              relativeToConfiguration: PackageConfiguration) -> String
 }
 
 struct PackagePathProvider: PackagePathProviding {
@@ -21,34 +25,37 @@ struct PackagePathProvider: PackagePathProviding {
         self.packageNameProvider = packageNameProvider
     }
 
-    func path(for name: Name,
-              of family: Family,
-              type: ModuleType,
-              relativeToType otherType: ModuleType) -> PackagePath {
+    func path(for name: Name, of family: Family, packageConfiguration: PackageConfiguration) -> String {
         var path: String = ""
 
-        let parent: String
-        switch otherType {
-        case .contract:
-            parent = "../../../"
-        case .implementation:
-            parent = "../../"
-        case .mock:
-            parent = "../../../"
-        }
-
-        switch type {
-        case .contract:
-            path += "Contracts/"
-        case .implementation:
-            break
-        case .mock:
-            path += "Mocks/"
+        if let containerFolder = packageConfiguration.containerFolderName {
+            path += containerFolder + "/"
         }
 
         path += packageFolderNameProvider.folderName(for: name, of: family) + "/"
-        path += packageNameProvider.packageName(forType: type, name: name, of: family)
+        path += packageNameProvider.packageName(forComponentName: name, of: family, packageConfiguration: packageConfiguration) + "/"
 
-        return PackagePath(parent: parent, path: path)
+        return path
+    }
+
+    func path(for name: Name,
+              of family: Family,
+              packageConfiguration: PackageConfiguration,
+              relativeToConfiguration: PackageConfiguration) -> String {
+        var path: String = ""
+        if relativeToConfiguration.containerFolderName != nil {
+            path = "../../../"
+        } else {
+            path = "../../"
+        }
+
+        if let containerFolder = packageConfiguration.containerFolderName {
+            path += containerFolder + "/"
+        }
+
+        path += packageFolderNameProvider.folderName(for: name, of: family) + "/"
+        path += packageNameProvider.packageName(forComponentName: name, of: family, packageConfiguration: packageConfiguration) + "/"
+
+        return path
     }
 }

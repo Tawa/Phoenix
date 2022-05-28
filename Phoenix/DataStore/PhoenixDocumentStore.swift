@@ -71,6 +71,20 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
+    private func get(dependency: ComponentDependency, componentWithName name: Name, _ completion: (inout ComponentDependency) -> Void) {
+        getComponent(withName: name) { component in
+            var dependencies = component.dependencies
+            guard
+                let index = dependencies.firstIndex(where: { $0 == .local(dependency) }),
+                case var .local(temp) = dependencies.remove(at: index)
+            else { return }
+            completion(&temp)
+            dependencies.append(.local(temp))
+            dependencies.sort()
+            component.dependencies = dependencies
+        }
+    }
+
     // MARK: - Document modifiers
     func getComponent(withName name: Name) -> Component? {
         guard
@@ -90,10 +104,15 @@ class PhoenixDocumentStore: ObservableObject {
 
         var array = componentsFamily.components
 
+        let moduleTypes: [String: LibraryType] = document.wrappedValue.projectConfiguration.packageConfigurations
+            .reduce(into: [String: LibraryType](), { partialResult, packageConfiguration in
+                partialResult[packageConfiguration.name] = .undefined
+            })
+
         let newComponent = Component(name: name,
                                      iOSVersion: nil,
                                      macOSVersion: nil,
-                                     modules: [.contract: .dynamic, .implementation: .static, .mock: .undefined],
+                                     modules: moduleTypes,
                                      dependencies: [],
                                      resources: [])
         array.append(newComponent)
@@ -122,11 +141,7 @@ class PhoenixDocumentStore: ObservableObject {
     func addDependencyToComponent(withName name: Name, dependencyName: Name) {
         getComponent(withName: name) {
             var dependencies = $0.dependencies
-            dependencies.append(.local(ComponentDependency(name: dependencyName,
-                                                                          contract: nil,
-                                                                          implementation: nil,
-                                                                          tests: nil,
-                                                                          mock: nil)))
+            dependencies.append(.local(ComponentDependency(name: dependencyName, targetTypes: [:])))
             dependencies.sort()
             $0.dependencies = dependencies
         }
@@ -157,7 +172,7 @@ class PhoenixDocumentStore: ObservableObject {
         getComponent(withName: name) { $0.macOSVersion = nil }
     }
 
-    func addModuleTypeForComponent(withName name: Name, moduleType: ModuleType) {
+    func addModuleTypeForComponent(withName name: Name, moduleType: String) {
         getComponent(withName: name) {
             var modules = $0.modules
             modules[moduleType] = .undefined
@@ -165,7 +180,7 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func removeModuleTypeForComponent(withName name: Name, moduleType: ModuleType) {
+    func removeModuleTypeForComponent(withName name: Name, moduleType: String) {
         getComponent(withName: name) {
             var modules = $0.modules
             modules.removeValue(forKey: moduleType)
@@ -173,8 +188,10 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: ModuleType) {
-        getComponent(withName: name) { $0.modules[moduleType] = libraryType }
+    func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: String) {
+        getComponent(withName: name) {
+            $0.modules[moduleType] = libraryType
+        }
     }
 
     func removeComponent(withName name: Name) {
@@ -203,40 +220,23 @@ class PhoenixDocumentStore: ObservableObject {
         }
     }
 
-    func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: TargetType, value: ModuleType?) {
-        getComponent(withName: name) { component in
-            var dependencies = component.dependencies
-            guard
-                let index = dependencies.firstIndex(where: { $0 == .local(dependency) }),
-                case var .local(temp) = dependencies.remove(at: index)
-            else { return }
-            switch type {
-            case .contract:
-                temp.contract = value
-            case .implementation:
-                temp.implementation = value
-            case .tests:
-                temp.tests = value
-            case .mock:
-                temp.mock = value
+    func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: PackageTargetType, value: String?) {
+        get(dependency: dependency, componentWithName: name) { dependency in
+            if let value = value {
+                dependency.targetTypes[type] = value
+            } else {
+                dependency.targetTypes.removeValue(forKey: type)
             }
-            dependencies.append(.local(temp))
-            dependencies.sort()
-            component.dependencies = dependencies
         }
     }
 
-    func updateModuleTypeForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, type: TargetType, value: Bool) {
+    func updateModuleTypeForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, type: PackageTargetType, value: Bool) {
         get(remoteDependency: dependency, componentWithName: name) { dependency in
-            switch type {
-            case .contract:
-                dependency.contract = value
-            case .implementation:
-                dependency.implementation = value
-            case .tests:
-                dependency.tests = value
-            case .mock:
-                dependency.mock = value
+            let typeIndex = dependency.targetTypes.firstIndex(of: type)
+            if value && typeIndex == nil {
+                dependency.targetTypes.append(type)
+            } else if !value, let typeIndex = typeIndex {
+                dependency.targetTypes.remove(at: typeIndex)
             }
         }
     }

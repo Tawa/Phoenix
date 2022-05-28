@@ -4,10 +4,7 @@ public struct RemoteDependency: Codable, Hashable, Identifiable {
     public let url: String
     public var name: ExternalDependencyName
     public var version: ExternalDependencyVersion
-    public var contract: Bool = false
-    public var implementation: Bool = false
-    public var tests: Bool = false
-    public var mock: Bool = false
+    public var targetTypes: [PackageTargetType] = []
 
     public var versionText: String {
         switch version {

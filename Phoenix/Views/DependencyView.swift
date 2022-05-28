@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Identifiable {
+struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable {
     let title: String
 
     let value: DataType?
@@ -11,7 +11,7 @@ struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Identifi
         VStack(alignment: .leading, spacing: 0) {
             Text(title)
             Menu {
-                ForEach(allValues) { type in
+                ForEach(allValues, id: \.self) { type in
                     Button(String(describing: type), action: { onValueChange(type) })
                 }
                 if value != nil {
@@ -30,7 +30,7 @@ struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Identifi
 }
 
 struct DependencyView<TargetType, SelectionType>: View
-where TargetType: Identifiable, SelectionType: Identifiable {
+where TargetType: Identifiable, SelectionType: Hashable {
     let title: String
     let onSelection: () -> Void
     let onRemove: () -> Void
