@@ -31,8 +31,16 @@ struct ContentView: View {
             newComponentPopover()
         }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
             familyPopover(family: family)
+        }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
+            ConfigurationView(configuration: store.document.projectConfiguration) {
+                viewModel.showingConfigurationPopup = false
+            }.frame(minHeight: 300)
         }.toolbar {
             //            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
+            Button(action: viewModel.onConfigurationButton) {
+                Image(systemName: "wrench.and.screwdriver")
+                Text("Configuration")
+            }.keyboardShortcut(",", modifiers: [.command])
             Button(action: viewModel.onAddButton) {
                 Image(systemName: "plus.circle.fill")
                 Text("New Component")

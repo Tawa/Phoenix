@@ -1,13 +1,23 @@
-public struct PackageConfiguration: Codable, Hashable {
-    public let name: String
-    public let containerFolderName: String?
-    public let appendPackageName: Bool
-    public let internalDependency: String?
-    public let hasTests: Bool
+import Foundation
+public struct PackageConfiguration: Codable, Hashable, Identifiable {
+    public let id: String = UUID().uuidString
+    public var name: String
+    public var containerFolderName: String?
+    public var appendPackageName: Bool
+    public var internalDependency: String?
+    public var hasTests: Bool
+
+    public init(name: String, containerFolderName: String? = nil, appendPackageName: Bool, internalDependency: String? = nil, hasTests: Bool) {
+        self.name = name
+        self.containerFolderName = containerFolderName
+        self.appendPackageName = appendPackageName
+        self.internalDependency = internalDependency
+        self.hasTests = hasTests
+    }
 }
 
 public struct ProjectConfiguration: Codable, Hashable {
-    public let packageConfigurations: [PackageConfiguration]
+    public var packageConfigurations: [PackageConfiguration]
 }
 
 public struct PackageTargetType: Codable, Hashable, Identifiable {
@@ -23,21 +33,11 @@ public struct PackageTargetType: Codable, Hashable, Identifiable {
 
 extension ProjectConfiguration {
     public static let `default`: ProjectConfiguration = .init(packageConfigurations: [
-        .init(name: "Contract",
-              containerFolderName: "Contracts",
-              appendPackageName: true,
-              internalDependency: nil,
-              hasTests: false),
         .init(name: "Implementation",
               containerFolderName: nil,
-              appendPackageName: true,
-              internalDependency: "Contract",
-              hasTests: true),
-        .init(name: "Mock",
-              containerFolderName: "Mocks",
-              appendPackageName: true,
+              appendPackageName: false,
               internalDependency: nil,
-              hasTests: false)
+              hasTests: true)
     ])
 }
 

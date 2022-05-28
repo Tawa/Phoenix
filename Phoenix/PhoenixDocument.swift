@@ -10,7 +10,7 @@ extension UTType {
 
 struct PhoenixDocument: FileDocument, Codable {
     var families: [ComponentsFamily]
-    let projectConfiguration: ProjectConfiguration
+    var projectConfiguration: ProjectConfiguration
 
     init(families: [ComponentsFamily] = [],
          projectConfiguration: ProjectConfiguration = .default) {

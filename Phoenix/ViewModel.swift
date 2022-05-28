@@ -2,11 +2,19 @@ import Package
 import SwiftUI
 
 class ViewModel: ObservableObject {
+    // MARK: - Selection
     @Published var selectedComponentName: Name? = nil
     @Published var selectedFamilyName: String? = nil
+
+    // MARK: - Popovers
+    @Published var showingConfigurationPopup: Bool = false
     @Published var showingNewComponentPopup: Bool = false
-    @Published var fileErrorString: String? = nil
     @Published var showingDependencyPopover: Bool = false
+    @Published var fileErrorString: String? = nil
+
+    func onConfigurationButton() {
+        showingConfigurationPopup = true
+    }
 
     func onAddButton() {
         showingNewComponentPopup = true
