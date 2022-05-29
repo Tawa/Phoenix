@@ -11,4 +11,3 @@ public struct Family: Codable, Hashable, Identifiable {
         self.folder = folder
     }
 }
-
