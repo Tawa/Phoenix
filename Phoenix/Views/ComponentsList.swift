@@ -5,6 +5,7 @@ struct ComponentsListRow: Hashable, Identifiable {
     let name: String
     let isSelected: Bool
     let onSelect: () -> Void
+    let onDuplicate: () -> Void
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(name)
@@ -53,7 +54,8 @@ struct ComponentsList: View {
                                     ComponentListItem(
                                         name: row.name,
                                         isSelected: row.isSelected,
-                                        onSelect: row.onSelect
+                                        onSelect: row.onSelect,
+                                        onDuplicate: row.onDuplicate
                                     )
                                 }
                             } header: {
@@ -84,15 +86,15 @@ struct ComponentsList_Previews: PreviewProvider {
         var body: some View {
             ComponentsList(sections: [
                 .init(name: "DataStore", rows: [
-                    .init(name: "WordpressDataStore", isSelected: false, onSelect: {})
+                    .init(name: "WordpressDataStore", isSelected: false, onSelect: {}, onDuplicate: {})
                 ],
                       onSelect: {}),
                 .init(name: "Repository", rows: [
-                    .init(name: "WordpressRepository", isSelected: true, onSelect: {})
+                    .init(name: "WordpressRepository", isSelected: true, onSelect: {}, onDuplicate: {})
                 ],
                       onSelect: {}),
                 .init(name: "Shared", rows: [
-                    .init(name: "Networking", isSelected: false, onSelect: {})
+                    .init(name: "Networking", isSelected: false, onSelect: {}, onDuplicate: {})
                 ],
                       onSelect: {})
 

@@ -9,15 +9,15 @@
           },
           "targetTypes" : [
             {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Contract",
-            {
               "isTests" : true,
               "name" : "Implementation"
             },
-            "Mock"
+            "Mock",
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Contract"
           ]
         }
       }

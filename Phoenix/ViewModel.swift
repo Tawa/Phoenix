@@ -24,6 +24,10 @@ class ViewModel: ObservableObject {
         showingNewComponentPopup = true
     }
 
+    func onDuplicate(component: Component) {
+        
+    }
+
     func onAddAll(document: inout PhoenixDocument) {
         var componentsFamilies = document.families
         for familyIndex in 0..<10 {
