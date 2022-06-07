@@ -5,11 +5,11 @@ struct ContentView: View {
     @StateObject private var viewModel: ViewModel = .init()
     @EnvironmentObject private var store: PhoenixDocumentStore
     private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
-    
+
     var body: some View {
         HSplitView {
             componentsList()
-            
+
             if let selectedComponentName = viewModel.selectedComponentName,
                let selectedComponent = store.getComponent(withName: selectedComponentName) {
                 componentView(for: selectedComponent)
@@ -27,8 +27,8 @@ struct ContentView: View {
                     Spacer()
                 }.frame(minWidth: 750)
             }
-        }.sheet(isPresented: .constant(viewModel.showingNewComponentPopup)) {
-            newComponentPopover()
+        }.sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
+            newComponentPopover(state: state)
         }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
             familyPopover(family: family)
         }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
@@ -51,7 +51,7 @@ struct ContentView: View {
             }.keyboardShortcut(.init("R"), modifiers: .command)
         }
     }
-    
+
     // MARK: - Views
     func componentsList() -> some View {
         ComponentsList(sections: store
@@ -68,7 +68,7 @@ struct ContentView: View {
             })
         .frame(minWidth: 250)
     }
-    
+
     func componentView(for component: Component) -> some View {
         ComponentView(
             title: store.title(for: component.name),
@@ -105,18 +105,23 @@ struct ContentView: View {
         )
         .frame(minWidth: 750)
     }
-    
-    func newComponentPopover() -> some View {
+
+    func newComponentPopover(state: ComponentPopupState) -> some View {
         return NewComponentPopover(onSubmit: { name, familyName in
             let name = Name(given: name, family: familyName)
-            try store.addNewComponent(withName: name)
+            switch state {
+            case .new:
+                try store.addNewComponent(withName: name)
+            case let .template(component):
+                try store.addNewComponent(withName: name, template: component)
+            }
             viewModel.selectedComponentName = name
-            viewModel.showingNewComponentPopup = false
+            viewModel.showingNewComponentPopup = nil
         }, onDismiss: {
-            viewModel.showingNewComponentPopup = false
+            viewModel.showingNewComponentPopup = nil
         })
     }
-    
+
     func dependencyPopover(component: Component) -> some View {
         let filteredNames = Dictionary(grouping: store.allNames.filter { name in
             component.name != name && !component.dependencies.contains { componentDependencyType in
@@ -140,7 +145,7 @@ struct ContentView: View {
             sections: sections,
             onExternalSubmit: { remoteDependency in
                 let urlString = remoteDependency.urlString
-                
+
                 let name: ExternalDependencyName
                 switch remoteDependency.productType {
                 case .name:
@@ -148,7 +153,7 @@ struct ContentView: View {
                 case .product:
                     name = .product(name: remoteDependency.productName, package: remoteDependency.productPackage)
                 }
-                
+
                 let version: ExternalDependencyVersion
                 switch remoteDependency.versionType {
                 case .from:
@@ -165,7 +170,7 @@ struct ContentView: View {
                 viewModel.showingDependencyPopover = false
             }).frame(minWidth: 900, minHeight: 400)
     }
-    
+
     func familyPopover(family: Family) -> some View {
         return FamilyPopover(name: family.name,
                              ignoreSuffix: family.ignoreSuffix,
@@ -176,7 +181,7 @@ struct ContentView: View {
                              componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
                              onDismiss: { viewModel.selectedFamilyName = nil })
     }
-    
+
     func componentDependencyView(forComponent component: Component, dependency: ComponentDependency) -> some View {
         DependencyView<PackageTargetType, String>(
             title: store.title(for: dependency.name),
@@ -186,7 +191,7 @@ struct ContentView: View {
             allSelectionValues: allTargetTypes(forComponent: component).map { $0.title },
             onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
     }
-    
+
     func remoteDependencyView(forComponent component: Component, dependency: RemoteDependency) -> some View {
         RemoteDependencyView(
             name: dependency.name.name,
@@ -206,7 +211,7 @@ struct ContentView: View {
             onRemove: { store.removeRemoteDependencyForComponent(withComponentName: component.name, dependency: dependency) }
         )
     }
-    
+
     func platformsContent(forComponent component: Component) -> some View {
         Group {
             CustomMenu(title: iOSPlatformMenuTitle(forComponent: component),
@@ -223,7 +228,7 @@ struct ContentView: View {
             .frame(width: 150)
         }
     }
-    
+
     // MARK: - Private
     
     private func componentName(_ component: Component, for family: Family) -> String {
@@ -236,7 +241,7 @@ struct ContentView: View {
         }
         return familyFolderNameProvider.folderName(forFamily: family.name)
     }
-    
+
     private func iOSPlatformMenuTitle(forComponent component: Component) -> String {
         if let iOSVersion = component.iOSVersion {
             return ".iOS(.\(iOSVersion))"
@@ -244,7 +249,7 @@ struct ContentView: View {
             return "Add iOS"
         }
     }
-    
+
     private func macOSPlatformMenuTitle(forComponent component: Component) -> String {
         if let macOSVersion = component.macOSVersion {
             return ".macOS(.\(macOSVersion))"
@@ -252,12 +257,12 @@ struct ContentView: View {
             return "Add macOS"
         }
     }
-    
+
     private func componentTypes(for dependency: ComponentDependency, component: Component) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
         allTargetTypes(forComponent: component).compactMap { targetType -> IdentifiableWithSubtypeAndSelection<PackageTargetType, String>? in
             let selectedValue = dependency.targetTypes[targetType.value]
             let selectedSubValue: String? = targetType.subValue.flatMap { dependency.targetTypes[$0] }
-            
+
             return IdentifiableWithSubtypeAndSelection<PackageTargetType, String>(
                 title: targetType.title,
                 subtitle: targetType.subtitle,
@@ -267,12 +272,12 @@ struct ContentView: View {
                 selectedSubValue: selectedSubValue)
         }
     }
-    
+
     private func updateVersion(for dependency: RemoteDependency, version: ExternalDependencyVersion) {
         guard let name = viewModel.selectedComponentName else { return }
         store.updateVersionForRemoteDependency(withComponentName: name, dependency: dependency, version: version)
     }
-    
+
     private func versionPlaceholder(for dependency: RemoteDependency) -> String {
         switch dependency.version {
         case .from:
@@ -281,11 +286,11 @@ struct ContentView: View {
             return "main"
         }
     }
-    
+
     private func enabledDependencyTypes(for dependency: RemoteDependency, component: Component) -> [PackageTargetType] {
         allTargetTypes(forComponent: component).filter { dependency.targetTypes.contains($0.value) }.map { $0.value }
     }
-    
+
     private func componentResourcesValueBinding(component: Component) -> Binding<[DynamicTextFieldList<TargetResources.ResourcesType,
                                                                                   PackageTargetType>.ValueContainer]> {
         Binding(get: {
@@ -300,18 +305,18 @@ struct ContentView: View {
             return ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) }, forComponentWithName: component.name)
         })
     }
-    
-    
+
+
     private func allDependencyTypes(dependency: RemoteDependency, component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
         allTargetTypes(forComponent: component)
     }
-    
+
     private func allTargetTypes(forComponent component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
         configurationTargetTypes().filter { target in
             component.modules.keys.contains(where: { $0.lowercased() == target.value.name.lowercased() })
         }
     }
-    
+
     private func configurationTargetTypes() -> [IdentifiableWithSubtype<PackageTargetType>] {
         store.document.wrappedValue.projectConfiguration.packageConfigurations.map { packageConfiguration in
             IdentifiableWithSubtype(title: packageConfiguration.name,

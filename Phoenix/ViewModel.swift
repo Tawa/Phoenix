@@ -1,6 +1,12 @@
 import Package
 import SwiftUI
 
+enum ComponentPopupState: Hashable, Identifiable {
+    var id: Int { hashValue }
+    case new
+    case template(Component)
+}
+
 class ViewModel: ObservableObject {
     // MARK: - Selection
     @Published var selectedComponentName: Name? = nil
@@ -8,7 +14,7 @@ class ViewModel: ObservableObject {
 
     // MARK: - Popovers
     @Published var showingConfigurationPopup: Bool = false
-    @Published var showingNewComponentPopup: Bool = false
+    @Published var showingNewComponentPopup: ComponentPopupState? = nil
     @Published var showingDependencyPopover: Bool = false
     @Published var fileErrorString: String? = nil
 
@@ -21,11 +27,11 @@ class ViewModel: ObservableObject {
     }
 
     func onAddButton() {
-        showingNewComponentPopup = true
+        showingNewComponentPopup = .new
     }
 
     func onDuplicate(component: Component) {
-        
+        showingNewComponentPopup = .template(component)
     }
 
     func onAddAll(document: inout PhoenixDocument) {
