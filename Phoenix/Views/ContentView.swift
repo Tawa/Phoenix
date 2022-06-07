@@ -188,7 +188,7 @@ struct ContentView: View {
             onSelection: { viewModel.selectedComponentName = dependency.name },
             onRemove: { store.removeDependencyForComponent(withComponentName: component.name, componentDependency: dependency) },
             allTypes: componentTypes(for: dependency, component: component),
-            allSelectionValues: allTargetTypes(forComponent: component).map { $0.title },
+            allSelectionValues: allTargetTypes(forDependency: dependency).map { $0.title },
             onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
     }
 
@@ -315,6 +315,11 @@ struct ContentView: View {
         configurationTargetTypes().filter { target in
             component.modules.keys.contains(where: { $0.lowercased() == target.value.name.lowercased() })
         }
+    }
+
+    private func allTargetTypes(forDependency dependency: ComponentDependency) -> [IdentifiableWithSubtype<PackageTargetType>] {
+        guard let component = store.getComponent(withName: dependency.name) else { return [] }
+        return allTargetTypes(forComponent: component)
     }
 
     private func configurationTargetTypes() -> [IdentifiableWithSubtype<PackageTargetType>] {

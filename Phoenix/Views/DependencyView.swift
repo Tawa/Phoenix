@@ -10,19 +10,31 @@ struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(title)
-            Menu {
-                ForEach(allValues, id: \.self) { type in
-                    Button(String(describing: type), action: { onValueChange(type) })
+            if allValues.count == 1 {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading) {
+                        Toggle("",
+                               isOn: .init(get: { value != nil },
+                                           set: { onValueChange($0 ? allValues[0] : nil) }))
+                    }
+                    Spacer()
                 }
-                if value != nil {
-                    Divider()
-                    Button(action: { onValueChange(nil) }, label: { Text("Remove") })
-                }
-            } label: {
-                if let value = value {
-                    Text(String(describing: value))
-                } else {
-                    Text("Add")
+                Spacer()
+            } else {
+                Menu {
+                    ForEach(allValues, id: \.self) { type in
+                        Button(String(describing: type), action: { onValueChange(type) })
+                    }
+                    if value != nil {
+                        Divider()
+                        Button(action: { onValueChange(nil) }, label: { Text("Remove") })
+                    }
+                } label: {
+                    if let value = value {
+                        Text(String(describing: value))
+                    } else {
+                        Text("Add")
+                    }
                 }
             }
         }
@@ -66,6 +78,7 @@ where TargetType: Identifiable, SelectionType: Hashable {
                         }
                     }
                 }
+                Spacer()
             }
         }.padding()
     }
