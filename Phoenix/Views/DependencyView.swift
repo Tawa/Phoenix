@@ -8,19 +8,18 @@ struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable
     let onValueChange: (DataType?) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(title)
-            if allValues.count == 1 {
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading) {
-                        Toggle("",
-                               isOn: .init(get: { value != nil },
-                                           set: { onValueChange($0 ? allValues[0] : nil) }))
-                    }
-                    Spacer()
-                }
+        if allValues.count == 1 {
+            HStack(alignment: .top) {
+                Toggle("",
+                       isOn: .init(get: { value != nil },
+                                   set: { onValueChange($0 ? allValues[0] : nil) }))
+                Text(title)
                 Spacer()
-            } else {
+            }
+        } else {
+            VStack(alignment: .leading) {
+                Text(title)
+                Image(systemName: "arrow.down")
                 Menu {
                     ForEach(allValues, id: \.self) { type in
                         Button(String(describing: type), action: { onValueChange(type) })
@@ -30,11 +29,7 @@ struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable
                         Button(action: { onValueChange(nil) }, label: { Text("Remove") })
                     }
                 } label: {
-                    if let value = value {
-                        Text(String(describing: value))
-                    } else {
-                        Text("Add")
-                    }
+                    Text(value.map { String(describing:$0) } ?? "Add")
                 }
             }
         }
@@ -59,8 +54,10 @@ where TargetType: Identifiable, SelectionType: Hashable {
                 Button(action: onSelection) { Text("Jump to") }
                 Button(action: onRemove) { Text("Remove") }
             }
+            .padding(.bottom)
             HStack(alignment: .top) {
                 ForEach(allTypes) { dependencyType in
+                    Divider()
                     VStack {
                         DependencyModuleTypeSelectorView<SelectionType>(
                             title: dependencyType.title,
@@ -70,13 +67,14 @@ where TargetType: Identifiable, SelectionType: Hashable {
 
                         if let subtitle = dependencyType.subtitle,
                            let subvalue = dependencyType.subValue {
+                            Divider()
                             DependencyModuleTypeSelectorView<SelectionType>(
                                 title: subtitle,
                                 value: dependencyType.selectedSubValue,
                                 allValues: allSelectionValues,
                                 onValueChange: { onUpdateTargetTypeValue(subvalue, $0) })
                         }
-                    }
+                    }.frame(width: 150)
                 }
                 Spacer()
             }
