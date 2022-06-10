@@ -4,6 +4,7 @@ struct ComponentListItem: View {
     let name: String
     let isSelected: Bool
     let onSelect: () -> Void
+    let onDuplicate: () -> Void
 
     var body: some View {
         ZStack(alignment: .leading) {
@@ -16,6 +17,11 @@ struct ComponentListItem: View {
         .contentShape(Rectangle())
         .cornerRadius(8)
         .onTapGesture(perform: onSelect)
+        .contextMenu {
+            Button(action: onDuplicate) {
+                Text("Duplicate")
+            }
+        }
     }
 }
 
@@ -24,10 +30,12 @@ struct ComponentListItem_Previews: PreviewProvider {
         Group {
             ComponentListItem(name: "WordpressRepository",
                               isSelected: true,
-                              onSelect: {})
+                              onSelect: {},
+                              onDuplicate: {})
             ComponentListItem(name: "WordpressRepository",
                               isSelected: false,
-                              onSelect: {})
+                              onSelect: {},
+                              onDuplicate: {})
         }
     }
 }

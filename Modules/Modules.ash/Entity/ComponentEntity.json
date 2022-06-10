@@ -1,0 +1,31 @@
+{
+  "dependencies" : [
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "Package"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Implementation"
+          ]
+        }
+      }
+    }
+  ],
+  "modules" : {
+    "Implementation" : "dynamic"
+  },
+  "name" : {
+    "family" : "Entity",
+    "given" : "Component"
+  },
+  "resources" : [
+
+  ]
+}

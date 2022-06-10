@@ -49,6 +49,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                 HStack {
                     Text("Module Types:")
                     ForEach(allModuleTypes, id: \.self) { moduleType in
+                        Divider()
                         ComponentModuleTypeView(title: "\(moduleType)",
                                                 isOn: isModuleTypeOn(moduleType),
                                                 onOn: { onModuleTypeSwitchedOn(moduleType) },
@@ -57,7 +58,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                                                 selectionTitle: moduleTypeTitle(moduleType),
                                                 onSelection: { onSelectionOfLibraryTypeForModuleType($0, moduleType) },
                                                 onRemove: { onSelectionOfLibraryTypeForModuleType(nil, moduleType) })
-                        Divider()
                     }
                     Spacer()
                 }.frame(height: 50)

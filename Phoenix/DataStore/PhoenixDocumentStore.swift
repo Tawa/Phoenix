@@ -94,7 +94,15 @@ class PhoenixDocumentStore: ObservableObject {
     }
 
 
-    func addNewComponent(withName name: Name) {
+    func addNewComponent(withName name: Name, template: Component? = nil) throws {
+        if name.given.isEmpty {
+            throw NSError(domain: "Given name cannot be empty", code: 500)
+        } else if name.family.isEmpty {
+            throw NSError(domain: "Component must be part of a family", code: 501)
+        } else if nameExists(name: name) {
+            throw NSError(domain: "Name already in use", code: 502)
+        }
+
         var componentsFamily: ComponentsFamily = document
             .families
             .first(where: { componentsFamily in
@@ -110,11 +118,11 @@ class PhoenixDocumentStore: ObservableObject {
             })
 
         let newComponent = Component(name: name,
-                                     iOSVersion: nil,
-                                     macOSVersion: nil,
-                                     modules: moduleTypes,
-                                     dependencies: [],
-                                     resources: [])
+                                     iOSVersion: template?.iOSVersion,
+                                     macOSVersion: template?.macOSVersion,
+                                     modules: template?.modules ?? moduleTypes,
+                                     dependencies: template?.dependencies ?? [],
+                                     resources: template?.resources ?? [])
         array.append(newComponent)
         array.sort(by: { $0.name.full < $1.name.full })
 
@@ -262,8 +270,8 @@ class PhoenixDocumentStore: ObservableObject {
 
     func addResource(_ folderName: String, forComponentWithName name: Name) {
         getComponent(withName: name) { $0.resources.append(.init(folderName: folderName,
-                                                         type: .process,
-                                                         targets: [])) }
+                                                                 type: .process,
+                                                                 targets: [])) }
     }
 
     func removeResource(withId id: String, forComponentWithName name: Name) {

@@ -5,7 +5,7 @@ struct ContentView: View {
     @StateObject private var viewModel: ViewModel = .init()
     @EnvironmentObject private var store: PhoenixDocumentStore
     private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
-    
+
     var body: some View {
         HSplitView {
             componentsList()
@@ -27,8 +27,8 @@ struct ContentView: View {
                     Spacer()
                 }.frame(minWidth: 750)
             }
-        }.sheet(isPresented: .constant(viewModel.showingNewComponentPopup)) {
-            newComponentPopover()
+        }.sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
+            newComponentPopover(state: state)
         }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
             familyPopover(family: family)
         }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
@@ -61,7 +61,8 @@ struct ContentView: View {
                           rows: componentsFamily.components.map { component in
                             .init(name: componentName(component, for: componentsFamily.family),
                                   isSelected: viewModel.selectedComponentName == component.name,
-                                  onSelect: { viewModel.selectedComponentName = component.name })
+                                  onSelect: { viewModel.selectedComponentName = component.name },
+                                  onDuplicate: { viewModel.onDuplicate(component: component) })
                     },
                           onSelect: { viewModel.selectedFamilyName = componentsFamily.family.name })
             })
@@ -105,23 +106,19 @@ struct ContentView: View {
         .frame(minWidth: 750)
     }
 
-    func newComponentPopover() -> some View {
+    func newComponentPopover(state: ComponentPopupState) -> some View {
         return NewComponentPopover(onSubmit: { name, familyName in
             let name = Name(given: name, family: familyName)
-            if name.given.isEmpty {
-                return "Given name cannot be empty"
-            } else if name.family.isEmpty {
-                return "Component must be part of a family"
-            } else if store.nameExists(name: name) {
-                return "Name already in use"
-            } else {
-                store.addNewComponent(withName: name)
-                viewModel.selectedComponentName = name
-                viewModel.showingNewComponentPopup = false
+            switch state {
+            case .new:
+                try store.addNewComponent(withName: name)
+            case let .template(component):
+                try store.addNewComponent(withName: name, template: component)
             }
-            return nil
+            viewModel.selectedComponentName = name
+            viewModel.showingNewComponentPopup = nil
         }, onDismiss: {
-            viewModel.showingNewComponentPopup = false
+            viewModel.showingNewComponentPopup = nil
         })
     }
 
@@ -191,7 +188,7 @@ struct ContentView: View {
             onSelection: { viewModel.selectedComponentName = dependency.name },
             onRemove: { store.removeDependencyForComponent(withComponentName: component.name, componentDependency: dependency) },
             allTypes: componentTypes(for: dependency, component: component),
-            allSelectionValues: allTargetTypes(forComponent: component).map { $0.title },
+            allSelectionValues: allTargetTypes(forDependency: dependency).map { $0.title },
             onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
     }
 
@@ -318,6 +315,11 @@ struct ContentView: View {
         configurationTargetTypes().filter { target in
             component.modules.keys.contains(where: { $0.lowercased() == target.value.name.lowercased() })
         }
+    }
+
+    private func allTargetTypes(forDependency dependency: ComponentDependency) -> [IdentifiableWithSubtype<PackageTargetType>] {
+        guard let component = store.getComponent(withName: dependency.name) else { return [] }
+        return allTargetTypes(forComponent: component)
     }
 
     private func configurationTargetTypes() -> [IdentifiableWithSubtype<PackageTargetType>] {
