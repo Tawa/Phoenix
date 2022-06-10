@@ -21,5 +21,6 @@ struct CustomMenu<Data>: View where Data: Identifiable {
                 }
             }
         }
+        .frame(width: 150)
     }
 }

@@ -46,21 +46,22 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                     platformsContent()
                 }
                 Divider()
-                HStack {
+                HStack(alignment: .top) {
                     Text("Module Types:")
-                    ForEach(allModuleTypes, id: \.self) { moduleType in
-                        Divider()
-                        ComponentModuleTypeView(title: "\(moduleType)",
-                                                isOn: isModuleTypeOn(moduleType),
-                                                onOn: { onModuleTypeSwitchedOn(moduleType) },
-                                                onOff: { onModuleTypeSwitchedOff(moduleType) },
-                                                selectionData: allLibraryTypes,
-                                                selectionTitle: moduleTypeTitle(moduleType),
-                                                onSelection: { onSelectionOfLibraryTypeForModuleType($0, moduleType) },
-                                                onRemove: { onSelectionOfLibraryTypeForModuleType(nil, moduleType) })
+                    VStack {
+                        ForEach(allModuleTypes, id: \.self) { moduleType in
+                            ComponentModuleTypeView(title: "\(moduleType)",
+                                                    isOn: isModuleTypeOn(moduleType),
+                                                    onOn: { onModuleTypeSwitchedOn(moduleType) },
+                                                    onOff: { onModuleTypeSwitchedOff(moduleType) },
+                                                    selectionData: allLibraryTypes,
+                                                    selectionTitle: moduleTypeTitle(moduleType),
+                                                    onSelection: { onSelectionOfLibraryTypeForModuleType($0, moduleType) },
+                                                    onRemove: { onSelectionOfLibraryTypeForModuleType(nil, moduleType) })
+                        }
                     }
                     Spacer()
-                }.frame(height: 50)
+                }
                 Divider()
 
                 Section {

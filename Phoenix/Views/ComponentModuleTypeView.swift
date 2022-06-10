@@ -11,25 +11,21 @@ struct ComponentModuleTypeView<Data>: View where Data: Identifiable {
     let onRemove: () -> Void
 
     var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading) {
-                CustomToggle(title: title,
-                             isOnValue: isOn,
-                             whenTurnedOn: onOn,
-                             whenTurnedOff: onOff)
+        HStack {
+            CustomToggle(title: title,
+                         isOnValue: isOn,
+                         whenTurnedOn: onOn,
+                         whenTurnedOff: onOff)
 
-                if isOn {
-                    CustomMenu(title: selectionTitle,
-                               data: selectionData,
-                               onSelection: onSelection,
-                               hasRemove: false,
-                               onRemove: onRemove)
-                }
-                Spacer()
+            if isOn {
+                CustomMenu(title: selectionTitle,
+                           data: selectionData,
+                           onSelection: onSelection,
+                           hasRemove: false,
+                           onRemove: onRemove)
             }
             Spacer()
         }
-        .frame(width: 150)
     }
 }
 

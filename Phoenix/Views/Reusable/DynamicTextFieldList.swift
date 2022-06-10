@@ -18,23 +18,30 @@ where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
     let onNewValue: (String) -> Void
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             ForEach($values, id: \.self) { value in
-                HStack {
-                    CustomMenu(title: String(describing: value.menuOption.wrappedValue.rawValue),
-                               data: Array(MenuOption.allCases),
-                               onSelection: { value.wrappedValue.menuOption = $0 },
-                               hasRemove: false,
-                               onRemove: {})
-                    .frame(width: 150)
-                    TextField("Folder Name", text: Binding(get: { value.value.wrappedValue }, set: { textValues[value.id] = $0 }))
-                        .font(.largeTitle)
+                VStack(alignment: .leading) {
+                    HStack {
+                        CustomMenu(title: String(describing: value.menuOption.wrappedValue.rawValue),
+                                   data: Array(MenuOption.allCases),
+                                   onSelection: { value.wrappedValue.menuOption = $0 },
+                                   hasRemove: false,
+                                   onRemove: {})
                         .frame(width: 150)
-                        .foregroundColor(value.wrappedValue.value == textValues[value.id] ? nil : .red)
-                        .onSubmit { value.wrappedValue.value = textValues[value.id] ?? "" }
+                        TextField("Folder Name", text: Binding(get: { value.value.wrappedValue }, set: { textValues[value.id] = $0 }))
+                            .font(.largeTitle)
+                            .frame(width: 150)
+                            .foregroundColor(value.wrappedValue.value == textValues[value.id] ? nil : .red)
+                            .onSubmit { value.wrappedValue.value = textValues[value.id] ?? "" }
+                        Button(action: {
+                            onRemoveValue(value.id)
+                        }) {
+                            Text("Remove")
+                        }
+                    }
 
                     ForEach(allTargetTypes) { targetType in
-                        VStack(alignment: .leading) {
+                        HStack {
                             CustomToggle(title: targetType.title,
                                          isOnValue: value.targetTypes.wrappedValue.contains(targetType.value),
                                          whenTurnedOn: { value.targetTypes.wrappedValue.append(targetType.value) },
@@ -45,14 +52,8 @@ where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
                                              whenTurnedOn: { value.targetTypes.wrappedValue.append(subvalue) },
                                              whenTurnedOff: { value.targetTypes.wrappedValue.removeAll(where: { $0 == subvalue }) })
                             }
+                            Spacer()
                         }
-                        Divider()
-                    }
-                    Spacer()
-                    Button(action: {
-                        onRemoveValue(value.id)
-                    }) {
-                        Text("Remove")
                     }
                 }
             }
@@ -103,13 +104,13 @@ struct DynamicTextFieldList_Previews: PreviewProvider {
             DynamicTextFieldList(values: .constant([.init(id: "ID1",
                                                           value: "Folder",
                                                           menuOption: Options.process,
-                                                         targetTypes: [])]),
+                                                          targetTypes: [])]),
                                  allTargetTypes: [
                                     .init(title: "First", subtitle: nil, value: TargetType.contract, subValue: nil),
                                     .init(title: "Second", subtitle: "Tests",
                                           value: .implementation, subValue: .tests),
                                     .init(title: "Third", subtitle: nil, value: .mock, subValue: nil)
-                                ],
+                                 ],
                                  onRemoveValue: { _ in },
                                  onNewValue: { _ in })
         }

@@ -9,17 +9,13 @@ struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable
 
     var body: some View {
         if allValues.count == 1 {
-            HStack(alignment: .top) {
-                Toggle("",
-                       isOn: .init(get: { value != nil },
-                                   set: { onValueChange($0 ? allValues[0] : nil) }))
-                Text(title)
-                Spacer()
-            }
+            Toggle(title,
+                   isOn: .init(get: { value != nil },
+                               set: { onValueChange($0 ? allValues[0] : nil) }))
         } else {
-            VStack(alignment: .leading) {
+            HStack {
                 Text(title)
-                Image(systemName: "arrow.down")
+                Image(systemName: "arrow.right")
                 Menu {
                     ForEach(allValues, id: \.self) { type in
                         Button(String(describing: type), action: { onValueChange(type) })
@@ -30,7 +26,7 @@ struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable
                     }
                 } label: {
                     Text(value.map { String(describing:$0) } ?? "Add")
-                }
+                }.frame(width: 150)
             }
         }
     }
@@ -55,10 +51,9 @@ where TargetType: Identifiable, SelectionType: Hashable {
                 Button(action: onRemove) { Text("Remove") }
             }
             .padding(.bottom)
-            HStack(alignment: .top) {
+            VStack {
                 ForEach(allTypes) { dependencyType in
-                    Divider()
-                    VStack {
+                    HStack {
                         DependencyModuleTypeSelectorView<SelectionType>(
                             title: dependencyType.title,
                             value: dependencyType.selectedValue,
@@ -74,9 +69,9 @@ where TargetType: Identifiable, SelectionType: Hashable {
                                 allValues: allSelectionValues,
                                 onValueChange: { onUpdateTargetTypeValue(subvalue, $0) })
                         }
-                    }.frame(width: 150)
+                        Spacer()
+                    }
                 }
-                Spacer()
             }
         }.padding()
     }

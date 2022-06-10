@@ -45,26 +45,21 @@ where DependencyType: Identifiable,
                                     onSubmit: onSubmitVersionText)
                 Spacer()
             }
-
-            HStack(alignment: .top) {
+            VStack {
                 ForEach(allDependencyTypes) { dependencyType in
-                    Divider()
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading) {
-                            Toggle(isOn: .init(get: { enabledTypes.contains(where: { dependencyType.value == $0 }) },
-                                               set: { onUpdateDependencyType(dependencyType.value, $0) })) {
-                                Text(dependencyType.title)
+                    HStack {
+                        Toggle(isOn: .init(get: { enabledTypes.contains(where: { dependencyType.value == $0 }) },
+                                           set: { onUpdateDependencyType(dependencyType.value, $0) })) {
+                            Text(dependencyType.title)
+                        }
+                        if let subtitle = dependencyType.subtitle, let subvalue = dependencyType.subValue {
+                            Toggle(isOn: .init(get: { enabledTypes.contains(where: { subvalue == $0 }) },
+                                               set: { onUpdateDependencyType(subvalue, $0) })) {
+                                Text(subtitle)
                             }
-                            if let subtitle = dependencyType.subtitle, let subvalue = dependencyType.subValue {
-                                Toggle(isOn: .init(get: { enabledTypes.contains(where: { subvalue == $0 }) },
-                                                   set: { onUpdateDependencyType(subvalue, $0) })) {
-                                    Text(subtitle)
-                                }
-                            }
-                            Spacer()
                         }
                         Spacer()
-                    }.frame(width: 150)
+                    }
                 }
             }
 
