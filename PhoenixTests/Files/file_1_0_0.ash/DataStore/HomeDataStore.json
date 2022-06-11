@@ -1,0 +1,17 @@
+{
+  "dependencies" : [
+
+  ],
+  "modules" : {
+    "Contract" : "dynamic",
+    "Implementation" : "static",
+    "Mock" : "undefined"
+  },
+  "name" : {
+    "family" : "DataStore",
+    "given" : "Home"
+  },
+  "resources" : [
+
+  ]
+}

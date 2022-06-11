@@ -1,0 +1,17 @@
+{
+  "dependencies" : [
+
+  ],
+  "modules" : {
+    "Contract" : "undefined",
+    "Implementation" : "undefined",
+    "Mock" : "undefined"
+  },
+  "name" : {
+    "family" : "Provider",
+    "given" : "AppVersion"
+  },
+  "resources" : [
+
+  ]
+}

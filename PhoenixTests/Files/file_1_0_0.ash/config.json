@@ -11,6 +11,13 @@
       "hasTests" : true,
       "internalDependency" : "Contract",
       "name" : "Implementation"
+    },
+    {
+      "appendPackageName" : true,
+      "containerFolderName" : "Mocks",
+      "hasTests" : false,
+      "internalDependency" : "Contract",
+      "name" : "Mock"
     }
   ]
 }

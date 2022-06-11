@@ -20,10 +20,19 @@
 		3873E5A82804C509000BCB03 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A72804C509000BCB03 /* ContentView.swift */; };
 		3873E5AA2804C50A000BCB03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5A92804C50A000BCB03 /* Assets.xcassets */; };
 		3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5AC2804C50A000BCB03 /* Preview Assets.xcassets */; };
-		3873E5B92804C50A000BCB03 /* PhoenixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5B82804C50A000BCB03 /* PhoenixTests.swift */; };
 		3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3880FEE72842216800ED0110 /* ConfigurationView.swift */; };
 		388DA8A6281862630066086A /* CustomToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A5281862630066086A /* CustomToggle.swift */; };
 		388DA8A8281863750066086A /* CustomMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A7281863750066086A /* CustomMenu.swift */; };
+		38BCCC7628548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC7528548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift */; };
+		38BCCC7828548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC7728548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift */; };
+		38BCCC89285490E600E928CA /* AppVersionProviderContract in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC85285490E600E928CA /* AppVersionProviderContract */; };
+		38BCCC8A285490E600E928CA /* AppVersionProvider in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC87285490E600E928CA /* AppVersionProvider */; };
+		38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 38BCCC9128549BAE00E928CA /* AppVersionProvider */; };
+		38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC942854A0C000E928CA /* CompositionRoot.swift */; };
+		38BCCC982854AD4900E928CA /* Resolver in Frameworks */ = {isa = PBXBuildFile; productRef = 38BCCC972854AD4900E928CA /* Resolver */; };
+		38BCCC9B2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC9A2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift */; };
+		38BCCC9D2854B51700E928CA /* PhoenixDocumentParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC9C2854B51700E928CA /* PhoenixDocumentParsingTests.swift */; };
+		38BCCCA02854B7E300E928CA /* file_1_0_0.ash in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */; };
 		38C7D13B2808864700E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13A2808864700E2675B /* Package */; };
 		38C7D1492808B35300E2675B /* NewComponentPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D1482808B35300E2675B /* NewComponentPopover.swift */; };
 		38E0B2FA2815702E00B5992D /* ComponentDependenciesPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */; };
@@ -52,7 +61,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		38C7D139280884B000E2675B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
@@ -80,10 +89,17 @@
 		3873E5AE2804C50A000BCB03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Phoenix.entitlements; sourceTree = "<group>"; };
 		3873E5B42804C50A000BCB03 /* PhoenixTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3873E5B82804C50A000BCB03 /* PhoenixTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixTests.swift; sourceTree = "<group>"; };
 		3880FEE72842216800ED0110 /* ConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
 		388DA8A5281862630066086A /* CustomToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggle.swift; sourceTree = "<group>"; };
 		388DA8A7281863750066086A /* CustomMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMenu.swift; sourceTree = "<group>"; };
+		38BCCC7528548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentFileWrapperEncoder.swift; sourceTree = "<group>"; };
+		38BCCC7728548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentFileWrappersDecoder.swift; sourceTree = "<group>"; };
+		38BCCC85285490E600E928CA /* AppVersionProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProviderContract; sourceTree = "<group>"; };
+		38BCCC87285490E600E928CA /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
+		38BCCC942854A0C000E928CA /* CompositionRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionRoot.swift; sourceTree = "<group>"; };
+		38BCCC9A2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentFileWrappersDecoder_1_0_0.swift; sourceTree = "<group>"; };
+		38BCCC9C2854B51700E928CA /* PhoenixDocumentParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentParsingTests.swift; sourceTree = "<group>"; };
+		38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = file_1_0_0.ash; sourceTree = "<group>"; };
 		38C7D13428087FA800E2675B /* Package */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package; sourceTree = "<group>"; };
 		38C7D1482808B35300E2675B /* NewComponentPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewComponentPopover.swift; sourceTree = "<group>"; };
 		38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentDependenciesPopover.swift; sourceTree = "<group>"; };
@@ -104,6 +120,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38BCCC982854AD4900E928CA /* Resolver in Frameworks */,
+				38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */,
 				38C7D13B2808864700E2675B /* Package in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				3873E5A92804C50A000BCB03 /* Assets.xcassets */,
+				38BCCC932854A0BA00E928CA /* CompositionRoot */,
 				38E2513B28392CE1002FFA31 /* Data */,
 				38E0B2FB2815765E00B5992D /* DataStore */,
 				38C7D1452808AE8500E2675B /* Generator */,
@@ -149,6 +168,7 @@
 				3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */,
 				3873E5A32804C509000BCB03 /* PhoenixApp.swift */,
 				3873E5A52804C509000BCB03 /* PhoenixDocument.swift */,
+				38BCCC7928548FA200E928CA /* Coders */,
 				3873E5AB2804C50A000BCB03 /* Preview Content */,
 				38E2512A2837E163002FFA31 /* ViewModel.swift */,
 				38C7D144280888E800E2675B /* Views */,
@@ -167,7 +187,8 @@
 		3873E5B72804C50A000BCB03 /* PhoenixTests */ = {
 			isa = PBXGroup;
 			children = (
-				3873E5B82804C50A000BCB03 /* PhoenixTests.swift */,
+				38BCCC9E2854B7D800E928CA /* Files */,
+				38BCCC9C2854B51700E928CA /* PhoenixDocumentParsingTests.swift */,
 			);
 			path = PhoenixTests;
 			sourceTree = "<group>";
@@ -184,6 +205,8 @@
 		38BA7BB32804C58E00BE3B9F /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				38BCCC83285490E600E928CA /* Contracts */,
+				38BCCC86285490E600E928CA /* Providers */,
 				38BA7BB42804C59500BE3B9F /* Entities */,
 			);
 			path = Modules;
@@ -195,6 +218,64 @@
 				38C7D13428087FA800E2675B /* Package */,
 			);
 			path = Entities;
+			sourceTree = "<group>";
+		};
+		38BCCC7928548FA200E928CA /* Coders */ = {
+			isa = PBXGroup;
+			children = (
+				38BCCC992854B03A00E928CA /* VersionedDecoders */,
+				38BCCC7728548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift */,
+				38BCCC7528548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift */,
+			);
+			path = Coders;
+			sourceTree = "<group>";
+		};
+		38BCCC83285490E600E928CA /* Contracts */ = {
+			isa = PBXGroup;
+			children = (
+				38BCCC84285490E600E928CA /* Providers */,
+			);
+			path = Contracts;
+			sourceTree = "<group>";
+		};
+		38BCCC84285490E600E928CA /* Providers */ = {
+			isa = PBXGroup;
+			children = (
+				38BCCC85285490E600E928CA /* AppVersionProviderContract */,
+			);
+			path = Providers;
+			sourceTree = "<group>";
+		};
+		38BCCC86285490E600E928CA /* Providers */ = {
+			isa = PBXGroup;
+			children = (
+				38BCCC87285490E600E928CA /* AppVersionProvider */,
+			);
+			path = Providers;
+			sourceTree = "<group>";
+		};
+		38BCCC932854A0BA00E928CA /* CompositionRoot */ = {
+			isa = PBXGroup;
+			children = (
+				38BCCC942854A0C000E928CA /* CompositionRoot.swift */,
+			);
+			path = CompositionRoot;
+			sourceTree = "<group>";
+		};
+		38BCCC992854B03A00E928CA /* VersionedDecoders */ = {
+			isa = PBXGroup;
+			children = (
+				38BCCC9A2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift */,
+			);
+			path = VersionedDecoders;
+			sourceTree = "<group>";
+		};
+		38BCCC9E2854B7D800E928CA /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */,
+			);
+			path = Files;
 			sourceTree = "<group>";
 		};
 		38C7D135280884B000E2675B /* Frameworks */ = {
@@ -273,6 +354,8 @@
 			name = Phoenix;
 			packageProductDependencies = (
 				38C7D13A2808864700E2675B /* Package */,
+				38BCCC9128549BAE00E928CA /* AppVersionProvider */,
+				38BCCC972854AD4900E928CA /* Resolver */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -311,6 +394,7 @@
 					};
 					3873E5B32804C50A000BCB03 = {
 						CreatedOnToolsVersion = 13.3;
+						LastSwiftMigration = 1340;
 						TestTargetID = 3873E59F2804C509000BCB03;
 					};
 				};
@@ -325,6 +409,7 @@
 			);
 			mainGroup = 3873E5972804C509000BCB03;
 			packageReferences = (
+				38BCCC962854AD4900E928CA /* XCRemoteSwiftPackageReference "Resolver" */,
 			);
 			productRefGroup = 3873E5A12804C509000BCB03 /* Products */;
 			projectDirPath = "";
@@ -342,6 +427,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */,
+				38BCCC89285490E600E928CA /* AppVersionProviderContract in Resources */,
+				38BCCC8A285490E600E928CA /* AppVersionProvider in Resources */,
 				3873E5AA2804C50A000BCB03 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,6 +437,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38BCCCA02854B7E300E928CA /* file_1_0_0.ash in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,6 +451,7 @@
 				3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */,
 				38E0B2FD2815766E00B5992D /* PhoenixDocumentStore.swift in Sources */,
 				38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */,
+				38BCCC7828548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift in Sources */,
 				3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilyPopover.swift in Sources */,
 				38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */,
@@ -372,6 +461,8 @@
 				38E251332837EC73002FFA31 /* FilterView.swift in Sources */,
 				3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */,
 				3810D8DF280B4ADD006E7EE3 /* DependencyView.swift in Sources */,
+				38BCCC9B2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift in Sources */,
+				38BCCC7628548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift in Sources */,
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
 				38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */,
 				388DA8A6281862630066086A /* CustomToggle.swift in Sources */,
@@ -384,6 +475,7 @@
 				38E251312837E96A002FFA31 /* PopoverView.swift in Sources */,
 				3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */,
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
+				38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */,
 				3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */,
 				38E251352837F58A002FFA31 /* LazySubmitTextField.swift in Sources */,
 			);
@@ -393,7 +485,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3873E5B92804C50A000BCB03 /* PhoenixTests.swift in Sources */,
+				38BCCC9D2854B51700E928CA /* PhoenixDocumentParsingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -524,6 +616,7 @@
 		3873E5C92804C50A000BCB03 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -545,7 +638,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.Phoenix;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -555,6 +648,7 @@
 		3873E5CA2804C50A000BCB03 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -576,7 +670,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.Phoenix;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -587,18 +681,25 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = DWW2N9PN49;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.PhoenixTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Phoenix.app/Contents/MacOS/Phoenix";
+				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Debug;
 		};
@@ -606,18 +707,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = DWW2N9PN49;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.PhoenixTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Phoenix.app/Contents/MacOS/Phoenix";
+				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Release;
 		};
@@ -653,7 +760,27 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		38BCCC962854AD4900E928CA /* XCRemoteSwiftPackageReference "Resolver" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Resolver";
+			requirement = {
+				kind = exactVersion;
+				version = 1.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		38BCCC9128549BAE00E928CA /* AppVersionProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppVersionProvider;
+		};
+		38BCCC972854AD4900E928CA /* Resolver */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 38BCCC962854AD4900E928CA /* XCRemoteSwiftPackageReference "Resolver" */;
+			productName = Resolver;
+		};
 		38C7D13A2808864700E2675B /* Package */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Package;

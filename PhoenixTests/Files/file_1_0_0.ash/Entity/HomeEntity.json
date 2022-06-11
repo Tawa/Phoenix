@@ -1,0 +1,24 @@
+{
+  "dependencies" : [
+
+  ],
+  "modules" : {
+    "Implementation" : "dynamic"
+  },
+  "name" : {
+    "family" : "Entity",
+    "given" : "Home"
+  },
+  "resources" : [
+    {
+      "folderName" : "TestFiles",
+      "targets" : [
+        {
+          "isTests" : true,
+          "name" : "Implementation"
+        }
+      ],
+      "type" : "process"
+    }
+  ]
+}

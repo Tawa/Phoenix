@@ -1,0 +1,77 @@
+{
+  "dependencies" : [
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "DataStore",
+            "given" : "Home"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : true,
+              "name" : "Implementation"
+            },
+            "Mock",
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Contract"
+          ]
+        }
+      }
+    },
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "Home"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Contract"
+            },
+            "Implementation"
+          ]
+        }
+      }
+    },
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Support",
+            "given" : "Networking"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : true,
+              "name" : "Implementation"
+            },
+            "Mock",
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Contract"
+          ]
+        }
+      }
+    }
+  ],
+  "modules" : {
+    "Contract" : "dynamic",
+    "Implementation" : "static",
+    "Mock" : "undefined"
+  },
+  "name" : {
+    "family" : "Repository",
+    "given" : "Home"
+  },
+  "resources" : [
+
+  ]
+}
