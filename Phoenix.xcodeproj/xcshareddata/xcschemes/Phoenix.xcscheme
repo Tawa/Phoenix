@@ -39,16 +39,6 @@
                ReferencedContainer = "container:Phoenix.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3873E5BD2804C50A000BCB03"
-               BuildableName = "PhoenixUITests.xctest"
-               BlueprintName = "PhoenixUITests"
-               ReferencedContainer = "container:Phoenix.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
