@@ -7,7 +7,7 @@ struct ConfigurationView: View {
     let narrowColumnWidth: CGFloat = 100
     let onDismiss: () -> Void
 
-    @FocusState private var focusedName: String?
+    @FocusState private var focusedName: Int?
 
     var body: some View {
         VStack {
@@ -32,7 +32,7 @@ struct ConfigurationView: View {
                     HStack(spacing: 0) {
                         TextField("Name",
                                   text: $configuration.packageConfigurations[index].name)
-                        .focused($focusedName, equals: configuration.packageConfigurations[index].name)
+                        .focused($focusedName, equals: index)
                         .onChange(of: focusedName, perform: { newValue in
                             configuration.packageConfigurations.sort(by: { $0.name < $1.name })
                         })
