@@ -35,7 +35,7 @@ struct ComponentsListSection: Hashable, Identifiable {
 }
 
 struct ComponentsList: View {
-    @State private var filter: String = ""
+    @Binding var filter: String
     let sections: [ComponentsListSection]
 
     var body: some View {
@@ -47,10 +47,9 @@ struct ComponentsList: View {
                         .foregroundColor(.gray)
                 } else {
                     ForEach(sections) { section in
-                        let filteredRow = section.rows.filter { filter.isEmpty ? true : $0.name.lowercased().contains(filter.lowercased()) }
-                        if !filteredRow.isEmpty {
+                        if !section.rows.isEmpty {
                             Section {
-                                ForEach(filteredRow) { row in
+                                ForEach(section.rows) { row in
                                     ComponentListItem(
                                         name: row.name,
                                         isSelected: row.isSelected,
@@ -84,7 +83,7 @@ struct ComponentsList: View {
 struct ComponentsList_Previews: PreviewProvider {
     struct Preview: View {
         var body: some View {
-            ComponentsList(sections: [
+            ComponentsList(filter: .constant(""), sections: [
                 .init(name: "DataStore", rows: [
                     .init(name: "WordpressDataStore", isSelected: false, onSelect: {}, onDuplicate: {})
                 ],

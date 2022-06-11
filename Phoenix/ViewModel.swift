@@ -18,6 +18,9 @@ class ViewModel: ObservableObject {
     @Published var showingDependencyPopover: Bool = false
     @Published var fileErrorString: String? = nil
 
+    // MARK: - Filters
+    @Published var componentsListFilter: String = ""
+
     private var pathsCache: [URL: URL] = [:]
 
     func update(value: String) {

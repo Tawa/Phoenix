@@ -42,8 +42,9 @@ struct ContentView: View {
 
     // MARK: - Views
     func componentsList() -> some View {
-        ComponentsList(sections: store
-            .componentsFamilies
+        ComponentsList(
+            filter: $viewModel.componentsListFilter,
+            sections: filteredComponentsFamilies
             .map { componentsFamily in
                     .init(name: sectionTitle(forFamily: componentsFamily.family),
                           rows: componentsFamily.components.map { component in
@@ -53,7 +54,8 @@ struct ContentView: View {
                                   onDuplicate: { viewModel.onDuplicate(component: component) })
                     },
                           onSelect: { viewModel.selectedFamilyName = componentsFamily.family.name })
-            })
+            }
+        )
         .frame(minWidth: 250)
     }
 
@@ -252,6 +254,19 @@ struct ContentView: View {
     }
 
     // MARK: - Private
+
+    private var filteredComponentsFamilies: [ComponentsFamily] {
+        guard !viewModel.componentsListFilter.isEmpty else { return store.componentsFamilies }
+        return store.componentsFamilies
+            .map { componentsFamily in
+                ComponentsFamily(family: componentsFamily.family,
+                                 components: componentsFamily.components.filter {
+                    componentName($0, for: componentsFamily.family)
+                        .lowercased().contains(viewModel.componentsListFilter.lowercased())
+                })
+            }.filter { !$0.components.isEmpty }
+
+    }
     
     private func componentName(_ component: Component, for family: Family) -> String {
         family.ignoreSuffix == true ? component.name.given : component.name.given + component.name.family
@@ -354,7 +369,7 @@ struct ContentView: View {
     }
 
     private func onDownArrow() {
-        let allNames = store.document.wrappedValue.families.flatMap(\.components).map(\.name)
+        let allNames = filteredComponentsFamilies.flatMap(\.components).map(\.name)
         if let selectedComponentName = viewModel.selectedComponentName,
            let index = allNames.firstIndex(of: selectedComponentName),
            index < allNames.count - 1 {
@@ -365,7 +380,7 @@ struct ContentView: View {
     }
 
     private func onUpArrow() {
-        let allNames = store.document.wrappedValue.families.flatMap(\.components).map(\.name)
+        let allNames = filteredComponentsFamilies.flatMap(\.components).map(\.name)
         if let selectedComponentName = viewModel.selectedComponentName,
            let index = allNames.firstIndex(of: selectedComponentName),
            index > 0 {
