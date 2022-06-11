@@ -18,6 +18,8 @@ class ViewModel: ObservableObject {
     @Published var showingDependencyPopover: Bool = false
     @Published var fileErrorString: String? = nil
 
+    private var pathsCache: [URL: URL] = [:]
+
     func update(value: String) {
         print("Value: \(value)")
     }
@@ -76,9 +78,34 @@ class ViewModel: ObservableObject {
         }
 
         let packagesGenerator = PackageGenerator()
+        guard let folderURL = getPath(for: fileURL) else { return }
         for packageWithPath in packagesWithPath {
-            let url = fileURL.deletingLastPathComponent().appendingPathComponent(packageWithPath.path, isDirectory: true)
-            try? packagesGenerator.generate(package: packageWithPath.package, at: url)
+            let url = folderURL.appendingPathComponent(packageWithPath.path, isDirectory: true)
+            do {
+                try packagesGenerator.generate(package: packageWithPath.package, at: url)
+            } catch {
+                print(error)
+            }
         }
+    }
+
+    private func openFolderSelection() -> URL? {
+        let openPanel = NSOpenPanel()
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = true
+        openPanel.canChooseFiles = false
+        openPanel.canCreateDirectories = true
+        openPanel.runModal()
+        return openPanel.url
+    }
+
+    private func getPath(for fileURL: URL) -> URL? {
+        if let cache = pathsCache[fileURL] {
+            return cache
+        }
+
+        guard let newURL = openFolderSelection() else { return nil }
+        pathsCache[fileURL] = newURL
+        return newURL
     }
 }
