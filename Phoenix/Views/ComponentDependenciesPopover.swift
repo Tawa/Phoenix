@@ -33,17 +33,11 @@ struct ComponentDependenciesPopover: View {
             HSplitView {
                 VStack(alignment: .leading) {
                     FilterView(filter: $filter,
+                               onSubmit: performSubmit,
                                onExit: onDismiss)
                     List {
                         Text("Components:")
                             .font(.largeTitle)
-                        let filteredSections = sections
-                            .map { item -> ComponentDependenciesListSection in
-                                if filter.isEmpty { return item }
-                                var section = item
-                                section.rows.removeAll(where: { !$0.name.lowercased().contains(filter.lowercased()) })
-                                return section
-                        }.filter { section in !section.rows.isEmpty }
                         ForEach(filteredSections) { section in
                             Section {
                                 ForEach(section.rows) { row in
@@ -74,5 +68,21 @@ struct ComponentDependenciesPopover: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial)
         .onExitCommand(perform: onDismiss)
+    }
+
+    private var filteredSections: [ComponentDependenciesListSection] {
+        sections
+            .map { item -> ComponentDependenciesListSection in
+                if filter.isEmpty { return item }
+                var section = item
+                section.rows.removeAll(where: { !$0.name.lowercased().contains(filter.lowercased()) })
+                return section
+            }.filter { section in !section.rows.isEmpty }
+    }
+
+    private func performSubmit() {
+        let rows = filteredSections.flatMap(\.rows)
+        guard rows.count == 1 else { return }
+        rows.first?.onSelect()
     }
 }

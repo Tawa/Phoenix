@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FilterView: View {
     @Binding var filter: String
+    var onSubmit: (() -> Void)? = nil
     var onExit: (() -> Void)? = nil
 
     var body: some View {
@@ -15,6 +16,9 @@ struct FilterView: View {
                     }
                 })
                 .font(.title)
+                .onSubmit {
+                    onSubmit?()
+                }
             if !filter.isEmpty {
                 Button(action: { filter = "" }, label: {
                     Image(systemName: "clear.fill")

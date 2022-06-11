@@ -8,6 +8,7 @@ struct NewComponentPopover: View {
 
     let onSubmit: (String, String) throws -> Void
     let onDismiss: () -> Void
+    let familyNameSuggestion: (String) -> String?
     @State private var name: String = ""
     @State private var familyName: String = ""
     @State private var popoverViewModel: PopoverViewModel? = nil
@@ -22,11 +23,23 @@ struct NewComponentPopover: View {
                     .onSubmit {
                         focusField = .family
                     }
+                    .textFieldStyle(.plain)
 
-                TextField("Family Name", text: $familyName)
-                    .focused($focusField, equals: .family)
-                    .font(.largeTitle)
-                    .onSubmit(onSubmitAction)
+                ZStack {
+                    HStack {
+                        Text(familyNameSuggestion(familyName) ?? "")
+                            .opacity(0)
+                        Spacer()
+                    }
+                    TextField("Family Name", text: $familyName)
+                        .focused($focusField, equals: .family)
+                        .textFieldStyle(.plain)
+                        .onSubmit(onSubmitAction)
+                        .onChange(of: focusField) { newValue in
+                            guard newValue == .given else { return }
+//                            familyNameSuggestion(familyName).map { familyName = $0 }
+                        }
+                }.font(.largeTitle)
 
                 Spacer().frame(height: 30)
                 HStack {
@@ -70,6 +83,7 @@ struct NewComponentPopover: View {
 struct NewComponentPopover_Previews: PreviewProvider {
     static var previews: some View {
         NewComponentPopover(onSubmit: { _, _ in },
-                            onDismiss: {})
+                            onDismiss: {},
+                            familyNameSuggestion: { $0 })
     }
 }

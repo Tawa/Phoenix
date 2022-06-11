@@ -119,6 +119,11 @@ struct ContentView: View {
             viewModel.showingNewComponentPopup = nil
         }, onDismiss: {
             viewModel.showingNewComponentPopup = nil
+        }, familyNameSuggestion: { familyName in
+            guard !familyName.isEmpty else { return nil }
+            return store.componentsFamilies.first { componentFamily in
+                componentFamily.family.name.lowercased().hasPrefix(familyName.lowercased())
+            }?.family.name
         })
     }
 
