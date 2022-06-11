@@ -59,6 +59,13 @@ class ViewModel: ObservableObject {
         document.families = componentsFamilies
     }
 
+    func onUpArrow() {
+    }
+
+    func onDownArrow() {
+
+    }
+
     func onGenerate(document: PhoenixDocument, withFileURL fileURL: URL?) {
         guard let fileURL = fileURL else {
             fileErrorString = "File must be saved before packages can be generated."

@@ -10,6 +10,6 @@ struct PhoenixApp: App {
                     fileURL: file.fileURL,
                     document: file.$document
                 ))
-        }
+        }.windowToolbarStyle(.expanded)
     }
 }

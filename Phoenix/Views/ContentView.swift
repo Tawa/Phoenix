@@ -36,19 +36,7 @@ struct ContentView: View {
                 viewModel.showingConfigurationPopup = false
             }.frame(minHeight: 300)
         }.toolbar {
-            //            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
-            Button(action: viewModel.onConfigurationButton) {
-                Image(systemName: "wrench.and.screwdriver")
-                Text("Configuration")
-            }.keyboardShortcut(",", modifiers: [.command])
-            Button(action: viewModel.onAddButton) {
-                Image(systemName: "plus.circle.fill")
-                Text("New Component")
-            }.keyboardShortcut("A", modifiers: [.command, .shift])
-            Button(action: { viewModel.onGenerate(document: store.document.wrappedValue, withFileURL: store.fileURL) }) {
-                Image(systemName: "shippingbox.fill")
-                Text("Generate")
-            }.keyboardShortcut(.init("R"), modifiers: .command)
+            toolbarViews()
         }
     }
 
@@ -234,6 +222,35 @@ struct ContentView: View {
         }
     }
 
+    @ViewBuilder
+    private func toolbarViews() -> some View {
+        //            Button(action: viewModel.onAddAll, label: { Text("Add everything in the universe") })
+        ZStack {
+            Button(action: onUpArrow, label: {})
+                .opacity(0)
+                .keyboardShortcut(.upArrow, modifiers: [])
+            Button(action: onDownArrow, label: {})
+                .opacity(0)
+                .keyboardShortcut(.downArrow, modifiers: [])
+
+            HStack {
+                Button(action: viewModel.onConfigurationButton) {
+                    Image(systemName: "wrench.and.screwdriver")
+                    Text("Configuration")
+                }.keyboardShortcut(",", modifiers: [.command])
+                Spacer()
+                Button(action: viewModel.onAddButton) {
+                    Image(systemName: "plus.circle.fill")
+                    Text("New Component")
+                }.keyboardShortcut("A", modifiers: [.command, .shift])
+                Button(action: { viewModel.onGenerate(document: store.document.wrappedValue, withFileURL: store.fileURL) }) {
+                    Image(systemName: "shippingbox.fill")
+                    Text("Generate")
+                }.keyboardShortcut(.init("R"), modifiers: .command)
+            }
+        }.frame(maxWidth: .infinity)
+    }
+
     // MARK: - Private
     
     private func componentName(_ component: Component, for family: Family) -> String {
@@ -333,6 +350,28 @@ struct ContentView: View {
                                     subtitle: packageConfiguration.hasTests ? "Tests" : nil,
                                     value: PackageTargetType(name: packageConfiguration.name, isTests: false),
                                     subValue: packageConfiguration.hasTests ? PackageTargetType(name: packageConfiguration.name, isTests: true) : nil)
+        }
+    }
+
+    private func onDownArrow() {
+        let allNames = store.document.wrappedValue.families.flatMap(\.components).map(\.name)
+        if let selectedComponentName = viewModel.selectedComponentName,
+           let index = allNames.firstIndex(of: selectedComponentName),
+           index < allNames.count - 1 {
+            viewModel.selectedComponentName = allNames[index+1]
+        } else {
+            viewModel.selectedComponentName = allNames.first
+        }
+    }
+
+    private func onUpArrow() {
+        let allNames = store.document.wrappedValue.families.flatMap(\.components).map(\.name)
+        if let selectedComponentName = viewModel.selectedComponentName,
+           let index = allNames.firstIndex(of: selectedComponentName),
+           index > 0 {
+            viewModel.selectedComponentName = allNames[index-1]
+        } else {
+            viewModel.selectedComponentName = allNames.last
         }
     }
 }
