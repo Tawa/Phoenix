@@ -14,99 +14,99 @@ class PackagePathProviderTestCase: XCTestCase {
         // When
         let path = sut.path(for: componentName,
                             of: family,
-                            type: .contract,
-                            relativeToType: .contract)
+                            packageConfiguration: .contract,
+                            relativeToConfiguration: .contract)
 
         // Then
-        XCTAssertEqual(path.full, "../../../Contracts/PackageFolderName/PackageName")
+        XCTAssertEqual(path, "../../../Contracts/PackageFolderName/PackageName")
     }
 
     func testContractRelativeToImplementation() {
         // When
         let path = sut.path(for: componentName,
                             of: family,
-                            type: .contract,
-                            relativeToType: .implementation)
+                            packageConfiguration: .contract,
+                            relativeToConfiguration: .implementation)
 
         // Then
-        XCTAssertEqual(path.full, "../../Contracts/PackageFolderName/PackageName")
+        XCTAssertEqual(path, "../../Contracts/PackageFolderName/PackageName")
     }
 
     func testContractRelativeToMock() {
         // When
         let path = sut.path(for: componentName,
                             of: family,
-                            type: .contract,
-                            relativeToType: .mock)
+                            packageConfiguration: .contract,
+                            relativeToConfiguration: .mock)
 
         // Then
-        XCTAssertEqual(path.full, "../../../Contracts/PackageFolderName/PackageName")
+        XCTAssertEqual(path, "../../../Contracts/PackageFolderName/PackageName")
     }
 
     func testImplementationRelativeToContract() {
         // When
         let path = sut.path(for: componentName,
                             of: family,
-                            type: .implementation,
-                            relativeToType: .contract)
+                            packageConfiguration: .implementation,
+                            relativeToConfiguration: .contract)
 
         // Then
-        XCTAssertEqual(path.full, "../../../PackageFolderName/PackageName")
+        XCTAssertEqual(path, "../../../PackageFolderName/PackageName")
     }
 
     func testImplementationRelativeToImplementation() {
         // When
         let path = sut.path(for: componentName,
                             of: family,
-                            type: .implementation,
-                            relativeToType: .implementation)
+                            packageConfiguration: .implementation,
+                            relativeToConfiguration: .implementation)
 
         // Then
-        XCTAssertEqual(path.full, "../../PackageFolderName/PackageName")
+        XCTAssertEqual(path, "../../PackageFolderName/PackageName")
     }
 
     func testImplementationRelativeToMock() {
         // When
         let path = sut.path(for: componentName,
                             of: family,
-                            type: .implementation,
-                            relativeToType: .mock)
+                            packageConfiguration: .implementation,
+                            relativeToConfiguration: .mock)
 
         // Then
-        XCTAssertEqual(path.full, "../../../PackageFolderName/PackageName")
+        XCTAssertEqual(path, "../../../PackageFolderName/PackageName")
     }
 
     func testMockRelativeToContract() {
         // When
         let path = sut.path(for: componentName,
                             of: family,
-                            type: .mock,
-                            relativeToType: .contract)
+                            packageConfiguration: .mock,
+                            relativeToConfiguration: .contract)
 
         // Then
-        XCTAssertEqual(path.full, "../../../Mocks/PackageFolderName/PackageName")
+        XCTAssertEqual(path, "../../../Mocks/PackageFolderName/PackageName")
     }
 
     func testMockRelativeToImplementation() {
         // When
         let path = sut.path(for: componentName,
                             of: family,
-                            type: .mock,
-                            relativeToType: .implementation)
+                            packageConfiguration: .mock,
+                            relativeToConfiguration: .implementation)
 
         // Then
-        XCTAssertEqual(path.full, "../../Mocks/PackageFolderName/PackageName")
+        XCTAssertEqual(path, "../../Mocks/PackageFolderName/PackageName")
     }
 
     func testMockRelativeToMock() {
         // When
         let path = sut.path(for: componentName,
                             of: family,
-                            type: .mock,
-                            relativeToType: .mock)
+                            packageConfiguration: .mock,
+                            relativeToConfiguration: .mock)
 
         // Then
-        XCTAssertEqual(path.full, "../../../Mocks/PackageFolderName/PackageName")
+        XCTAssertEqual(path, "../../../Mocks/PackageFolderName/PackageName")
     }
 
 }

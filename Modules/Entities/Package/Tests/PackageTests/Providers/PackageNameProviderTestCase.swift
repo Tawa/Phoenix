@@ -13,7 +13,9 @@ class PackageNameProviderTestCase: XCTestCase {
                             folder: "DataStores")
 
         // When
-        let packageName = sut.packageName(forType: .contract, name: name, of: family)
+        let packageName = sut.packageName(forComponentName: name,
+                                          of: family,
+                                          packageConfiguration: .contract)
 
         // Then
         XCTAssertEqual(packageName, "WordpressDataStoreContract")
@@ -27,7 +29,9 @@ class PackageNameProviderTestCase: XCTestCase {
                             folder: "DataStores")
 
         // When
-        let packageName = sut.packageName(forType: .contract, name: name, of: family)
+        let packageName = sut.packageName(forComponentName: name,
+                                          of: family,
+                                          packageConfiguration: .contract)
 
         // Then
         XCTAssertEqual(packageName, "WordpressContract")
@@ -41,7 +45,9 @@ class PackageNameProviderTestCase: XCTestCase {
                             folder: "DataStores")
 
         // When
-        let packageName = sut.packageName(forType: .implementation, name: name, of: family)
+        let packageName = sut.packageName(forComponentName: name,
+                                          of: family,
+                                          packageConfiguration: .implementation)
 
         // Then
         XCTAssertEqual(packageName, "WordpressDataStore")
@@ -55,7 +61,9 @@ class PackageNameProviderTestCase: XCTestCase {
                             folder: "DataStores")
 
         // When
-        let packageName = sut.packageName(forType: .implementation, name: name, of: family)
+        let packageName = sut.packageName(forComponentName: name,
+                                          of: family,
+                                          packageConfiguration: .implementation)
 
         // Then
         XCTAssertEqual(packageName, "Wordpress")
@@ -69,7 +77,9 @@ class PackageNameProviderTestCase: XCTestCase {
                             folder: "DataStores")
 
         // When
-        let packageName = sut.packageName(forType: .mock, name: name, of: family)
+        let packageName = sut.packageName(forComponentName: name,
+                                          of: family,
+                                          packageConfiguration: .mock)
 
         // Then
         XCTAssertEqual(packageName, "WordpressDataStoreMock")
@@ -83,7 +93,9 @@ class PackageNameProviderTestCase: XCTestCase {
                             folder: "DataStores")
 
         // When
-        let packageName = sut.packageName(forType: .mock, name: name, of: family)
+        let packageName = sut.packageName(forComponentName: name,
+                                          of: family,
+                                          packageConfiguration: .mock)
 
         // Then
         XCTAssertEqual(packageName, "WordpressMock")

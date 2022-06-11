@@ -3,7 +3,7 @@
 struct PackageNameProviderMock: PackageNameProviding {
     var value: String
 
-    func packageName(forType type: ModuleType, name: Name, of family: Family) -> String {
+    func packageName(forComponentName componentName: Name, of family: Family, packageConfiguration: PackageConfiguration) -> String {
         value
     }
 }
