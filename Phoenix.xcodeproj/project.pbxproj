@@ -29,6 +29,8 @@
 		38BCCC8A285490E600E928CA /* AppVersionProvider in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC87285490E600E928CA /* AppVersionProvider */; };
 		38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 38BCCC9128549BAE00E928CA /* AppVersionProvider */; };
 		38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC942854A0C000E928CA /* CompositionRoot.swift */; };
+		38BCCC982854AD4900E928CA /* Resolver in Frameworks */ = {isa = PBXBuildFile; productRef = 38BCCC972854AD4900E928CA /* Resolver */; };
+		38BCCC9B2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC9A2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift */; };
 		38C7D13B2808864700E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13A2808864700E2675B /* Package */; };
 		38C7D1492808B35300E2675B /* NewComponentPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D1482808B35300E2675B /* NewComponentPopover.swift */; };
 		38E0B2FA2815702E00B5992D /* ComponentDependenciesPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */; };
@@ -93,6 +95,7 @@
 		38BCCC85285490E600E928CA /* AppVersionProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProviderContract; sourceTree = "<group>"; };
 		38BCCC87285490E600E928CA /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		38BCCC942854A0C000E928CA /* CompositionRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionRoot.swift; sourceTree = "<group>"; };
+		38BCCC9A2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentFileWrappersDecoder_1_0_0.swift; sourceTree = "<group>"; };
 		38C7D13428087FA800E2675B /* Package */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package; sourceTree = "<group>"; };
 		38C7D1482808B35300E2675B /* NewComponentPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewComponentPopover.swift; sourceTree = "<group>"; };
 		38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentDependenciesPopover.swift; sourceTree = "<group>"; };
@@ -113,6 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38BCCC982854AD4900E928CA /* Resolver in Frameworks */,
 				38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */,
 				38C7D13B2808864700E2675B /* Package in Frameworks */,
 			);
@@ -213,6 +217,7 @@
 		38BCCC7928548FA200E928CA /* Coders */ = {
 			isa = PBXGroup;
 			children = (
+				38BCCC992854B03A00E928CA /* VersionedDecoders */,
 				38BCCC7728548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift */,
 				38BCCC7528548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift */,
 			);
@@ -249,6 +254,14 @@
 				38BCCC942854A0C000E928CA /* CompositionRoot.swift */,
 			);
 			path = CompositionRoot;
+			sourceTree = "<group>";
+		};
+		38BCCC992854B03A00E928CA /* VersionedDecoders */ = {
+			isa = PBXGroup;
+			children = (
+				38BCCC9A2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift */,
+			);
+			path = VersionedDecoders;
 			sourceTree = "<group>";
 		};
 		38C7D135280884B000E2675B /* Frameworks */ = {
@@ -328,6 +341,7 @@
 			packageProductDependencies = (
 				38C7D13A2808864700E2675B /* Package */,
 				38BCCC9128549BAE00E928CA /* AppVersionProvider */,
+				38BCCC972854AD4900E928CA /* Resolver */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -380,6 +394,7 @@
 			);
 			mainGroup = 3873E5972804C509000BCB03;
 			packageReferences = (
+				38BCCC962854AD4900E928CA /* XCRemoteSwiftPackageReference "Resolver" */,
 			);
 			productRefGroup = 3873E5A12804C509000BCB03 /* Products */;
 			projectDirPath = "";
@@ -430,6 +445,7 @@
 				38E251332837EC73002FFA31 /* FilterView.swift in Sources */,
 				3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */,
 				3810D8DF280B4ADD006E7EE3 /* DependencyView.swift in Sources */,
+				38BCCC9B2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift in Sources */,
 				38BCCC7628548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift in Sources */,
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
 				38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */,
@@ -714,10 +730,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		38BCCC962854AD4900E928CA /* XCRemoteSwiftPackageReference "Resolver" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Resolver";
+			requirement = {
+				kind = exactVersion;
+				version = 1.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		38BCCC9128549BAE00E928CA /* AppVersionProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppVersionProvider;
+		};
+		38BCCC972854AD4900E928CA /* Resolver */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 38BCCC962854AD4900E928CA /* XCRemoteSwiftPackageReference "Resolver" */;
+			productName = Resolver;
 		};
 		38C7D13A2808864700E2675B /* Package */ = {
 			isa = XCSwiftPackageProductDependency;

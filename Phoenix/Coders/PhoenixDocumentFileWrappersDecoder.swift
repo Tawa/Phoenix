@@ -1,33 +1,38 @@
 import Package
 import Foundation
+import AppVersionProviderContract
+import Resolver
 
-struct PhoenixDocumentFileWrappersDecoder {
+protocol PhoenixDocumentFileWrappersDecoderProtocol {
+    func phoenixDocument(from fileWrapper: [String: FileWrapper]) throws -> PhoenixDocument
+}
+
+enum PhoenixDocumentConstants {
+    static let appVersionFileName: String = "appversion"
+    static let jsonFileExtension: String = ".json"
+    static let configurationFileName: String = "config" + jsonFileExtension
+    static let familyFileName: String = "family" + jsonFileExtension
+}
+
+enum PhoenixDocumentError: Error {
+    case versionNotFound
+    case versionUnsupported
+}
+
+struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDecoderProtocol {
+    @Injected private var appVersionStringParser: AppVersionStringParserProtocol
+
     func phoenixDocument(from fileWrapper: [String: FileWrapper]) throws -> PhoenixDocument {
-        let jsonDecoder = JSONDecoder()
-        let familyFolderWrappers = fileWrapper.values.filter(\.isDirectory)
-        var componentsFamilies = [ComponentsFamily]()
-        for familyFolderWrapper in familyFolderWrappers {
-            guard
-                let familyFileWrapper = familyFolderWrapper.fileWrappers?["family.json"],
-                let familyData = familyFileWrapper.regularFileContents,
-                let componentsWrappers = familyFolderWrapper.fileWrappers?.filter({ $0.value != familyFileWrapper })
-                    .filter({ $0.key.hasSuffix(".json") }).map(\.value)
-            else { continue }
-            let family = try jsonDecoder.decode(Family.self, from: familyData)
-            let components = try componentsWrappers.compactMap(\.regularFileContents)
-                .map { try jsonDecoder.decode(Component.self, from: $0) }
-                .sorted(by: { $0.name < $1.name })
+        guard let configurationFileWrapper = fileWrapper.values.first(where: { $0.preferredFilename == PhoenixDocumentConstants.appVersionFileName }),
+              let appVersionUTF8Data = configurationFileWrapper.regularFileContents,
+              let appVersionString = String(data: appVersionUTF8Data, encoding: .utf8),
+              let appVersion = appVersionStringParser.appVersion(from: appVersionString)
+        else { throw PhoenixDocumentError.versionNotFound }
 
-            guard !components.isEmpty else { continue }
-            componentsFamilies.append(.init(family: family, components: components))
+        if appVersion == "1.0.0" {
+            return try PhoenixDocumentFileWrappersDecoder_1_0_0().phoenixDocument(from: fileWrapper)
         }
 
-        let configurationFileWrapper = fileWrapper.values.filter{ !$0.isDirectory }.first
-        let projectConfiguration: ProjectConfiguration = try configurationFileWrapper?.regularFileContents
-            .map({ try jsonDecoder.decode(ProjectConfiguration.self, from: $0) }) ?? .default
-
-        componentsFamilies.sort(by: { $0.family.name < $1.family.name })
-
-        return .init(families: componentsFamilies, projectConfiguration: projectConfiguration)
+        throw PhoenixDocumentError.versionUnsupported
     }
 }
