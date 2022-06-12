@@ -4,6 +4,12 @@ public protocol AppVersionProtocol {
     var hotfix: Int { get }
 }
 
+public extension AppVersionProtocol {
+    var stringValue: String {
+        [major, minor, hotfix].map(String.init).joined(separator: ".")
+    }
+}
+
 public func ==(lhs: AppVersionProtocol, rhs: String) -> Bool {
-    return [lhs.major, lhs.minor, lhs.hotfix].map(String.init).joined(separator: ".") == rhs
+    return lhs.stringValue == rhs
 }

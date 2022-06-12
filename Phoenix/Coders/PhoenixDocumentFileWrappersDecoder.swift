@@ -29,7 +29,7 @@ struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDecoderPro
               let appVersion = appVersionStringParser.appVersion(from: appVersionString)
         else { throw PhoenixDocumentError.versionNotFound }
 
-        if appVersion == "1.0.0" {
+        if appVersion.stringValue.hasPrefix("1.") {
             return try PhoenixDocumentFileWrappersDecoder_1_0_0().phoenixDocument(from: fileWrapper)
         }
 
