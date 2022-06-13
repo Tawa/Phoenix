@@ -1,6 +1,7 @@
 import Package
 import Foundation
 import PhoenixDocument
+import DocumentCoderContract
 
 struct PhoenixDocumentFileWrappersDecoder_1_0_0: PhoenixDocumentFileWrappersDecoderProtocol {
     func phoenixDocument(from fileWrapper: [String : FileWrapper]) throws -> PhoenixDocument {
