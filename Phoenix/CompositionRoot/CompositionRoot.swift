@@ -1,7 +1,8 @@
 import Foundation
 import AppVersionProviderContract
 import AppVersionProvider
-
+import DocumentCoderContract
+import DocumentCoder
 import Resolver
 
 extension Bundle: CurrentAppVersionStringProviderProtocol {
@@ -24,5 +25,17 @@ extension Resolver: ResolverRegistering {
             CurrentAppVersionProvider(appVersionStringProvider: resolve(),
                                       appVersionStringParser: resolve())
         }.implements(CurrentAppVersionProviderProtocol.self)
+
+        register { resolver in
+            PhoenixDocumentFileWrappersDecoder(
+                appVersionStringParser: resolver.resolve()
+            )
+        }.implements(PhoenixDocumentFileWrappersDecoderProtocol.self)
+
+        register { resolver in
+            PhoenixDocumentFileWrapperEncoder(
+                currentApp: resolver.resolve()
+            )
+        }.implements(PhoenixDocumentFileWrapperEncoderProtocol.self)
     }
 }

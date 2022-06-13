@@ -1,12 +1,16 @@
 import Foundation
-import Resolver
 import AppVersionProviderContract
 import PhoenixDocument
+import DocumentCoderContract
 
-struct PhoenixDocumentFileWrapperEncoder {
-    @Injected private var currentApp: CurrentAppVersionStringProviderProtocol
+public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncoderProtocol {
+    private let currentApp: CurrentAppVersionStringProviderProtocol
 
-    func fileWrapper(for document: PhoenixDocument) throws -> FileWrapper {
+    public init(currentApp: CurrentAppVersionStringProviderProtocol) {
+        self.currentApp = currentApp
+    }
+
+   public func fileWrapper(for document: PhoenixDocument) throws -> FileWrapper {
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = [.sortedKeys, .prettyPrinted]
 

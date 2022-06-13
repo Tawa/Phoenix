@@ -16,22 +16,22 @@
 		3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3853D1FF2839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift */; };
 		3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */; };
 		3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A32804C509000BCB03 /* PhoenixApp.swift */; };
-		3873E5A62804C509000BCB03 /* PhoenixDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A52804C509000BCB03 /* PhoenixDocument.swift */; };
+		3873E5A62804C509000BCB03 /* PhoenixDocument+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A52804C509000BCB03 /* PhoenixDocument+Extensions.swift */; };
 		3873E5A82804C509000BCB03 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A72804C509000BCB03 /* ContentView.swift */; };
 		3873E5AA2804C50A000BCB03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5A92804C50A000BCB03 /* Assets.xcassets */; };
 		3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5AC2804C50A000BCB03 /* Preview Assets.xcassets */; };
 		3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3880FEE72842216800ED0110 /* ConfigurationView.swift */; };
 		388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */ = {isa = PBXBuildFile; productRef = 388B77F02857D2990038D4F4 /* PhoenixDocument */; };
+		388B77F42857D46C0038D4F4 /* DocumentCoderContract in Resources */ = {isa = PBXBuildFile; fileRef = 388B77F32857D46C0038D4F4 /* DocumentCoderContract */; };
+		388B77F72857D4730038D4F4 /* DocumentCoder in Resources */ = {isa = PBXBuildFile; fileRef = 388B77F62857D4730038D4F4 /* DocumentCoder */; };
+		388B77F92857D4CE0038D4F4 /* DocumentCoder in Frameworks */ = {isa = PBXBuildFile; productRef = 388B77F82857D4CE0038D4F4 /* DocumentCoder */; };
 		388DA8A6281862630066086A /* CustomToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A5281862630066086A /* CustomToggle.swift */; };
 		388DA8A8281863750066086A /* CustomMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A7281863750066086A /* CustomMenu.swift */; };
-		38BCCC7628548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC7528548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift */; };
-		38BCCC7828548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC7728548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift */; };
 		38BCCC89285490E600E928CA /* AppVersionProviderContract in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC85285490E600E928CA /* AppVersionProviderContract */; };
 		38BCCC8A285490E600E928CA /* AppVersionProvider in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC87285490E600E928CA /* AppVersionProvider */; };
 		38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 38BCCC9128549BAE00E928CA /* AppVersionProvider */; };
 		38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC942854A0C000E928CA /* CompositionRoot.swift */; };
 		38BCCC982854AD4900E928CA /* Resolver in Frameworks */ = {isa = PBXBuildFile; productRef = 38BCCC972854AD4900E928CA /* Resolver */; };
-		38BCCC9B2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC9A2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift */; };
 		38BCCC9D2854B51700E928CA /* PhoenixDocumentParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC9C2854B51700E928CA /* PhoenixDocumentParsingTests.swift */; };
 		38BCCCA02854B7E300E928CA /* file_1_0_0.ash in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */; };
 		38C7D13B2808864700E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13A2808864700E2675B /* Package */; };
@@ -83,7 +83,7 @@
 		3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencyFormView.swift; sourceTree = "<group>"; };
 		3873E5A02804C509000BCB03 /* Phoenix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Phoenix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3873E5A32804C509000BCB03 /* PhoenixApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixApp.swift; sourceTree = "<group>"; };
-		3873E5A52804C509000BCB03 /* PhoenixDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocument.swift; sourceTree = "<group>"; };
+		3873E5A52804C509000BCB03 /* PhoenixDocument+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhoenixDocument+Extensions.swift"; sourceTree = "<group>"; };
 		3873E5A72804C509000BCB03 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3873E5A92804C50A000BCB03 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3873E5AC2804C50A000BCB03 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -92,14 +92,13 @@
 		3873E5B42804C50A000BCB03 /* PhoenixTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3880FEE72842216800ED0110 /* ConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
 		388B77EF2857D2360038D4F4 /* PhoenixDocument */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PhoenixDocument; sourceTree = "<group>"; };
+		388B77F32857D46C0038D4F4 /* DocumentCoderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoderContract; sourceTree = "<group>"; };
+		388B77F62857D4730038D4F4 /* DocumentCoder */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoder; sourceTree = "<group>"; };
 		388DA8A5281862630066086A /* CustomToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggle.swift; sourceTree = "<group>"; };
 		388DA8A7281863750066086A /* CustomMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMenu.swift; sourceTree = "<group>"; };
-		38BCCC7528548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentFileWrapperEncoder.swift; sourceTree = "<group>"; };
-		38BCCC7728548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentFileWrappersDecoder.swift; sourceTree = "<group>"; };
 		38BCCC85285490E600E928CA /* AppVersionProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProviderContract; sourceTree = "<group>"; };
 		38BCCC87285490E600E928CA /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		38BCCC942854A0C000E928CA /* CompositionRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionRoot.swift; sourceTree = "<group>"; };
-		38BCCC9A2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentFileWrappersDecoder_1_0_0.swift; sourceTree = "<group>"; };
 		38BCCC9C2854B51700E928CA /* PhoenixDocumentParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentParsingTests.swift; sourceTree = "<group>"; };
 		38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = file_1_0_0.ash; sourceTree = "<group>"; };
 		38C7D13428087FA800E2675B /* Package */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package; sourceTree = "<group>"; };
@@ -122,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				388B77F92857D4CE0038D4F4 /* DocumentCoder in Frameworks */,
 				38BCCC982854AD4900E928CA /* Resolver in Frameworks */,
 				388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */,
 				38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */,
@@ -170,8 +170,7 @@
 				3873E5AE2804C50A000BCB03 /* Info.plist */,
 				3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */,
 				3873E5A32804C509000BCB03 /* PhoenixApp.swift */,
-				3873E5A52804C509000BCB03 /* PhoenixDocument.swift */,
-				38BCCC7928548FA200E928CA /* Coders */,
+				3873E5A52804C509000BCB03 /* PhoenixDocument+Extensions.swift */,
 				3873E5AB2804C50A000BCB03 /* Preview Content */,
 				38E2512A2837E163002FFA31 /* ViewModel.swift */,
 				38C7D144280888E800E2675B /* Views */,
@@ -196,6 +195,22 @@
 			path = PhoenixTests;
 			sourceTree = "<group>";
 		};
+		388B77F22857D46C0038D4F4 /* Coders */ = {
+			isa = PBXGroup;
+			children = (
+				388B77F32857D46C0038D4F4 /* DocumentCoderContract */,
+			);
+			path = Coders;
+			sourceTree = "<group>";
+		};
+		388B77F52857D4730038D4F4 /* Coders */ = {
+			isa = PBXGroup;
+			children = (
+				388B77F62857D4730038D4F4 /* DocumentCoder */,
+			);
+			path = Coders;
+			sourceTree = "<group>";
+		};
 		388DA8A4281862420066086A /* Reusable */ = {
 			isa = PBXGroup;
 			children = (
@@ -208,6 +223,7 @@
 		38BA7BB32804C58E00BE3B9F /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				388B77F52857D4730038D4F4 /* Coders */,
 				38BCCC83285490E600E928CA /* Contracts */,
 				38BCCC86285490E600E928CA /* Providers */,
 				38BA7BB42804C59500BE3B9F /* Entities */,
@@ -224,19 +240,10 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
-		38BCCC7928548FA200E928CA /* Coders */ = {
-			isa = PBXGroup;
-			children = (
-				38BCCC992854B03A00E928CA /* VersionedDecoders */,
-				38BCCC7728548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift */,
-				38BCCC7528548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift */,
-			);
-			path = Coders;
-			sourceTree = "<group>";
-		};
 		38BCCC83285490E600E928CA /* Contracts */ = {
 			isa = PBXGroup;
 			children = (
+				388B77F22857D46C0038D4F4 /* Coders */,
 				38BCCC84285490E600E928CA /* Providers */,
 			);
 			path = Contracts;
@@ -264,14 +271,6 @@
 				38BCCC942854A0C000E928CA /* CompositionRoot.swift */,
 			);
 			path = CompositionRoot;
-			sourceTree = "<group>";
-		};
-		38BCCC992854B03A00E928CA /* VersionedDecoders */ = {
-			isa = PBXGroup;
-			children = (
-				38BCCC9A2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift */,
-			);
-			path = VersionedDecoders;
 			sourceTree = "<group>";
 		};
 		38BCCC9E2854B7D800E928CA /* Files */ = {
@@ -361,6 +360,7 @@
 				38BCCC9128549BAE00E928CA /* AppVersionProvider */,
 				38BCCC972854AD4900E928CA /* Resolver */,
 				388B77F02857D2990038D4F4 /* PhoenixDocument */,
+				388B77F82857D4CE0038D4F4 /* DocumentCoder */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -431,6 +431,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				388B77F42857D46C0038D4F4 /* DocumentCoderContract in Resources */,
+				388B77F72857D4730038D4F4 /* DocumentCoder in Resources */,
 				3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */,
 				38BCCC89285490E600E928CA /* AppVersionProviderContract in Resources */,
 				38BCCC8A285490E600E928CA /* AppVersionProvider in Resources */,
@@ -456,18 +458,15 @@
 				3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */,
 				38E0B2FD2815766E00B5992D /* PhoenixDocumentStore.swift in Sources */,
 				38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */,
-				38BCCC7828548DBE00E928CA /* PhoenixDocumentFileWrappersDecoder.swift in Sources */,
 				3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilyPopover.swift in Sources */,
 				38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */,
 				388DA8A8281863750066086A /* CustomMenu.swift in Sources */,
 				3810D8CF28099B82006E7EE3 /* ComponentListItem.swift in Sources */,
-				3873E5A62804C509000BCB03 /* PhoenixDocument.swift in Sources */,
+				3873E5A62804C509000BCB03 /* PhoenixDocument+Extensions.swift in Sources */,
 				38E251332837EC73002FFA31 /* FilterView.swift in Sources */,
 				3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */,
 				3810D8DF280B4ADD006E7EE3 /* DependencyView.swift in Sources */,
-				38BCCC9B2854B05A00E928CA /* PhoenixDocumentFileWrappersDecoder_1_0_0.swift in Sources */,
-				38BCCC7628548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift in Sources */,
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
 				38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */,
 				388DA8A6281862630066086A /* CustomToggle.swift in Sources */,
@@ -780,6 +779,10 @@
 		388B77F02857D2990038D4F4 /* PhoenixDocument */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PhoenixDocument;
+		};
+		388B77F82857D4CE0038D4F4 /* DocumentCoder */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DocumentCoder;
 		};
 		38BCCC9128549BAE00E928CA /* AppVersionProvider */ = {
 			isa = XCSwiftPackageProductDependency;

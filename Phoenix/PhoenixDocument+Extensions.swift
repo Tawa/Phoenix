@@ -2,6 +2,8 @@ import Package
 import SwiftUI
 import UniformTypeIdentifiers
 import PhoenixDocument
+import DocumentCoderContract
+import Resolver
 
 extension UTType {
     static var ash: UTType {
@@ -14,7 +16,8 @@ extension PhoenixDocument: FileDocument {
 
     public init(configuration: ReadConfiguration) throws {
         if configuration.file.isDirectory, let fileWrapper = configuration.file.fileWrappers {
-            self = try PhoenixDocumentFileWrappersDecoder().phoenixDocument(from: fileWrapper)
+            @Injected var phoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDecoderProtocol
+            self = try phoenixDocumentFileWrappersDecoder.phoenixDocument(from: fileWrapper)
         } else {
             guard let data = configuration.file.regularFileContents
             else {
@@ -25,6 +28,7 @@ extension PhoenixDocument: FileDocument {
     }
     
     public func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        try PhoenixDocumentFileWrapperEncoder().fileWrapper(for: self)
+        @Injected var phoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncoderProtocol
+        return try phoenixDocumentFileWrapperEncoder.fileWrapper(for: self)
     }
 }

@@ -1,0 +1,67 @@
+{
+  "dependencies" : [
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Provider",
+            "given" : "AppVersion"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Contract"
+          ]
+        }
+      }
+    },
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "Package"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Implementation"
+          ]
+        }
+      }
+    },
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "PhoenixDocument"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Contract"
+            },
+            "Implementation"
+          ]
+        }
+      }
+    }
+  ],
+  "macOSVersion" : "v12",
+  "modules" : {
+    "Contract" : "undefined",
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Coder",
+    "given" : "Document"
+  },
+  "resources" : [
+
+  ]
+}
