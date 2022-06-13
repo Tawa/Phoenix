@@ -1,4 +1,5 @@
 import Package
+import PhoenixDocument
 import SwiftUI
 
 class PhoenixDocumentStore: ObservableObject {

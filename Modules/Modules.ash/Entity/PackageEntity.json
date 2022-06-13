@@ -1,0 +1,16 @@
+{
+  "dependencies" : [
+
+  ],
+  "macOSVersion" : "v12",
+  "modules" : {
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Entity",
+    "given" : "Package"
+  },
+  "resources" : [
+
+  ]
+}

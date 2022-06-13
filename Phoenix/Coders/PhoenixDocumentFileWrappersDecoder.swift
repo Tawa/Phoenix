@@ -2,6 +2,7 @@ import Package
 import Foundation
 import AppVersionProviderContract
 import Resolver
+import PhoenixDocument
 
 protocol PhoenixDocumentFileWrappersDecoderProtocol {
     func phoenixDocument(from fileWrapper: [String: FileWrapper]) throws -> PhoenixDocument

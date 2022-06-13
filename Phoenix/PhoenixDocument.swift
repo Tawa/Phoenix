@@ -1,6 +1,7 @@
 import Package
 import SwiftUI
 import UniformTypeIdentifiers
+import PhoenixDocument
 
 extension UTType {
     static var ash: UTType {
@@ -8,19 +9,10 @@ extension UTType {
     }
 }
 
-struct PhoenixDocument: FileDocument, Codable {
-    var families: [ComponentsFamily]
-    var projectConfiguration: ProjectConfiguration
+extension PhoenixDocument: FileDocument {
+    public static var readableContentTypes: [UTType] { [.ash] }
 
-    init(families: [ComponentsFamily] = [],
-         projectConfiguration: ProjectConfiguration = .default) {
-        self.families = families
-        self.projectConfiguration = projectConfiguration
-    }
-
-    static var readableContentTypes: [UTType] { [.ash] }
-
-    init(configuration: ReadConfiguration) throws {
+    public init(configuration: ReadConfiguration) throws {
         if configuration.file.isDirectory, let fileWrapper = configuration.file.fileWrappers {
             self = try PhoenixDocumentFileWrappersDecoder().phoenixDocument(from: fileWrapper)
         } else {
@@ -32,7 +24,7 @@ struct PhoenixDocument: FileDocument, Codable {
         }
     }
     
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+    public func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
         try PhoenixDocumentFileWrapperEncoder().fileWrapper(for: self)
     }
 }

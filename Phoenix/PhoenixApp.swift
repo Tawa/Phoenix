@@ -1,5 +1,6 @@
 import Package
 import SwiftUI
+import PhoenixDocument
 
 @main
 struct PhoenixApp: App {

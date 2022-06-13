@@ -21,6 +21,7 @@
 		3873E5AA2804C50A000BCB03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5A92804C50A000BCB03 /* Assets.xcassets */; };
 		3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3873E5AC2804C50A000BCB03 /* Preview Assets.xcassets */; };
 		3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3880FEE72842216800ED0110 /* ConfigurationView.swift */; };
+		388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */ = {isa = PBXBuildFile; productRef = 388B77F02857D2990038D4F4 /* PhoenixDocument */; };
 		388DA8A6281862630066086A /* CustomToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A5281862630066086A /* CustomToggle.swift */; };
 		388DA8A8281863750066086A /* CustomMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388DA8A7281863750066086A /* CustomMenu.swift */; };
 		38BCCC7628548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC7528548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift */; };
@@ -90,6 +91,7 @@
 		3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Phoenix.entitlements; sourceTree = "<group>"; };
 		3873E5B42804C50A000BCB03 /* PhoenixTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3880FEE72842216800ED0110 /* ConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
+		388B77EF2857D2360038D4F4 /* PhoenixDocument */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PhoenixDocument; sourceTree = "<group>"; };
 		388DA8A5281862630066086A /* CustomToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggle.swift; sourceTree = "<group>"; };
 		388DA8A7281863750066086A /* CustomMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMenu.swift; sourceTree = "<group>"; };
 		38BCCC7528548CD500E928CA /* PhoenixDocumentFileWrapperEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentFileWrapperEncoder.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				38BCCC982854AD4900E928CA /* Resolver in Frameworks */,
+				388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */,
 				38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */,
 				38C7D13B2808864700E2675B /* Package in Frameworks */,
 			);
@@ -216,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				38C7D13428087FA800E2675B /* Package */,
+				388B77EF2857D2360038D4F4 /* PhoenixDocument */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -356,6 +360,7 @@
 				38C7D13A2808864700E2675B /* Package */,
 				38BCCC9128549BAE00E928CA /* AppVersionProvider */,
 				38BCCC972854AD4900E928CA /* Resolver */,
+				388B77F02857D2990038D4F4 /* PhoenixDocument */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -772,6 +777,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		388B77F02857D2990038D4F4 /* PhoenixDocument */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PhoenixDocument;
+		};
 		38BCCC9128549BAE00E928CA /* AppVersionProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppVersionProvider;

@@ -1,0 +1,32 @@
+{
+  "dependencies" : [
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "Package"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Implementation"
+          ]
+        }
+      }
+    }
+  ],
+  "macOSVersion" : "v12",
+  "modules" : {
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Entity",
+    "given" : "PhoenixDocument"
+  },
+  "resources" : [
+
+  ]
+}

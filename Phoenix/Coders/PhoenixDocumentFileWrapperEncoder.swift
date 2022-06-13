@@ -1,6 +1,7 @@
 import Foundation
 import Resolver
 import AppVersionProviderContract
+import PhoenixDocument
 
 struct PhoenixDocumentFileWrapperEncoder {
     @Injected private var currentApp: CurrentAppVersionStringProviderProtocol

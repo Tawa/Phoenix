@@ -1,5 +1,6 @@
 import Package
 import SwiftUI
+import PhoenixDocument
 
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }
