@@ -10,7 +10,7 @@ public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncod
         self.currentApp = currentApp
     }
 
-   public func fileWrapper(for document: PhoenixDocument) throws -> FileWrapper {
+    public func fileWrapper(for document: PhoenixDocument) throws -> FileWrapper {
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = [.sortedKeys, .prettyPrinted]
 

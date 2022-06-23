@@ -244,6 +244,7 @@ class PhoenixDocumentStore: ObservableObject {
             let typeIndex = dependency.targetTypes.firstIndex(of: type)
             if value && typeIndex == nil {
                 dependency.targetTypes.append(type)
+                dependency.targetTypes.sort()
             } else if !value, let typeIndex = typeIndex {
                 dependency.targetTypes.remove(at: typeIndex)
             }
