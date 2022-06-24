@@ -47,12 +47,12 @@ let package = Package(
     products: [
         .library(
             name: "HomeService",
-            targets: ["HomeService"]),
+            targets: ["HomeService"])
     ],
     dependencies: [
         .package(path: "../../Contracts/Repositories/HomeRepositoryContract"),
         .package(path: "../../Contracts/Services/HomeServiceContract"),
-        .package(path: "../../Support/DI"),
+        .package(path: "../../Support/DI")
     ],
     targets: [
         .target(
@@ -60,15 +60,15 @@ let package = Package(
             dependencies: [
                 "HomeRepositoryContract",
                 "HomeServiceContract",
-                "DI",
+                "DI"
             ]
         ),
         .testTarget(
             name: "HomeServiceTests",
             dependencies: [
-                "HomeService",
+                "HomeService"
             ]
-        ),
+        )
     ]
 )
 

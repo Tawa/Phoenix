@@ -30,24 +30,18 @@ let package = Package(
             value += "    ],\n"
         }
         value += "    products: [\n"
-        for product in package.products.sorted() {
-            value += productString(product)
-        }
+        value += package.products.sorted().map(productString(_:)).joined(separator: ",\n")
         value += "\n    ],\n"
 
         if !package.dependencies.isEmpty {
             value += "    dependencies: [\n"
-            for dependency in package.dependencies.sorted() {
-                value += packageDependencyString(dependency)
-            }
+            value += package.dependencies.sorted().map(packageDependencyString(_:)).joined(separator: ",\n") + "\n"
             value += "    ],\n    targets: [\n"
         } else {
             value += "    targets: [\n"
         }
 
-        for target in package.targets.sorted() {
-            value += targetString(target)
-        }
+        value += package.targets.sorted().map(targetString(_:)).joined(separator: ",\n") + "\n"
         value += "    ]\n)\n"
 
         return value
@@ -70,16 +64,16 @@ let package = Package(
         case .undefined:
             break
         }
-        value += "            targets: [\"\(library.name)\"]),"
+        value += "            targets: [\"\(library.name)\"])"
         return value
     }
     
     private func packageDependencyString(_ dependency: Dependency) -> String {
         switch dependency {
         case .module(let path, _):
-            return "        .package(path: \"\(path)\"),\n"
+            return "        .package(path: \"\(path)\")"
         case .external(let url, _, let description):
-            return "        .package(url: \"\(url)\", \(externalDependencyDescriptionString(description))),\n"
+            return "        .package(url: \"\(url)\", \(externalDependencyDescriptionString(description)))"
         }
     }
 
@@ -95,13 +89,13 @@ let package = Package(
     private func targetDependencyString(_ dependency: Dependency) -> String {
         switch dependency {
         case .module(_, let name):
-            return "                \"\(name)\",\n"
+            return "                \"\(name)\""
         case .external(_, let name, _):
             switch name {
             case let .name(value):
-                return "                \"\(value)\",\n"
+                return "                \"\(value)\""
             case let.product(name, package):
-                return "                .product(name: \"\(name)\", package: \"\(package)\"),\n"
+                return "                .product(name: \"\(name)\", package: \"\(package)\")"
             }
         }
     }
@@ -117,9 +111,7 @@ let package = Package(
 
         if !target.dependencies.isEmpty {
             value += ",\n            dependencies: [\n"
-            for dependency in target.dependencies.sorted() {
-                value += targetDependencyString(dependency)
-            }
+            value += target.dependencies.sorted().map(targetDependencyString(_:)).joined(separator: ",\n") + "\n"
             value += "            ]"
         }
 
@@ -131,7 +123,7 @@ let package = Package(
             value += "            ]"
         }
 
-        value += "\n        ),\n"
+        value += "\n        )"
         return value
     }
 
