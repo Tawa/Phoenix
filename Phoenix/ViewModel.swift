@@ -100,8 +100,9 @@ class ViewModel: ObservableObject {
         }
     }
 
-    private func openFolderSelection() -> URL? {
+    private func openFolderSelection(at fileURL: URL?) -> URL? {
         let openPanel = NSOpenPanel()
+        openPanel.directoryURL = fileURL?.deletingLastPathComponent()
         openPanel.allowsMultipleSelection = false
         openPanel.canChooseDirectories = true
         openPanel.canChooseFiles = false
@@ -115,7 +116,7 @@ class ViewModel: ObservableObject {
             return cache
         }
 
-        guard let newURL = openFolderSelection() else { return nil }
+        guard let newURL = openFolderSelection(at: fileURL) else { return nil }
         pathsCache[fileURL] = newURL
         return newURL
     }

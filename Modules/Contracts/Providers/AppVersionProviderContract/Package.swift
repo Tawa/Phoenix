@@ -7,11 +7,11 @@ let package = Package(
     products: [
         .library(
             name: "AppVersionProviderContract",
-            targets: ["AppVersionProviderContract"]),
+            targets: ["AppVersionProviderContract"])
     ],
     targets: [
         .target(
             name: "AppVersionProviderContract"
-        ),
+        )
     ]
 )

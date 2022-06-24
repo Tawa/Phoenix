@@ -10,23 +10,23 @@ let package = Package(
     products: [
         .library(
             name: "PhoenixDocument",
-            targets: ["PhoenixDocument"]),
+            targets: ["PhoenixDocument"])
     ],
     dependencies: [
-        .package(path: "../../Entities/Package"),
+        .package(path: "../../Entities/Package")
     ],
     targets: [
         .target(
             name: "PhoenixDocument",
             dependencies: [
-                "Package",
+                "Package"
             ]
         ),
         .testTarget(
             name: "PhoenixDocumentTests",
             dependencies: [
-                "PhoenixDocument",
+                "PhoenixDocument"
             ]
-        ),
+        )
     ]
 )

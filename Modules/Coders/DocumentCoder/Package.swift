@@ -10,12 +10,12 @@ let package = Package(
     products: [
         .library(
             name: "DocumentCoder",
-            targets: ["DocumentCoder"]),
+            targets: ["DocumentCoder"])
     ],
     dependencies: [
         .package(path: "../../Contracts/Coders/DocumentCoderContract"),
         .package(path: "../../Contracts/Providers/AppVersionProviderContract"),
-        .package(path: "../../Entities/Package"),
+        .package(path: "../../Entities/Package")
     ],
     targets: [
         .target(
@@ -23,14 +23,14 @@ let package = Package(
             dependencies: [
                 "DocumentCoderContract",
                 "AppVersionProviderContract",
-                "Package",
+                "Package"
             ]
         ),
         .testTarget(
             name: "DocumentCoderTests",
             dependencies: [
-                "DocumentCoder",
+                "DocumentCoder"
             ]
-        ),
+        )
     ]
 )

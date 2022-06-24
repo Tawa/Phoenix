@@ -10,7 +10,7 @@ let package = Package(
     products: [
         .library(
             name: "Package",
-            targets: ["Package"]),
+            targets: ["Package"])
     ],
     targets: [
         .target(
@@ -19,8 +19,8 @@ let package = Package(
         .testTarget(
             name: "PackageTests",
             dependencies: [
-                "Package",
+                "Package"
             ]
-        ),
+        )
     ]
 )

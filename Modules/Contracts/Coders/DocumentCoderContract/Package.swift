@@ -10,17 +10,17 @@ let package = Package(
     products: [
         .library(
             name: "DocumentCoderContract",
-            targets: ["DocumentCoderContract"]),
+            targets: ["DocumentCoderContract"])
     ],
     dependencies: [
-        .package(path: "../../../Entities/PhoenixDocument"),
+        .package(path: "../../../Entities/PhoenixDocument")
     ],
     targets: [
         .target(
             name: "DocumentCoderContract",
             dependencies: [
-                "PhoenixDocument",
+                "PhoenixDocument"
             ]
-        ),
+        )
     ]
 )

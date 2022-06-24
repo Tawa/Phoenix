@@ -7,23 +7,23 @@ let package = Package(
     products: [
         .library(
             name: "AppVersionProvider",
-            targets: ["AppVersionProvider"]),
+            targets: ["AppVersionProvider"])
     ],
     dependencies: [
-        .package(path: "../../Contracts/Providers/AppVersionProviderContract"),
+        .package(path: "../../Contracts/Providers/AppVersionProviderContract")
     ],
     targets: [
         .target(
             name: "AppVersionProvider",
             dependencies: [
-                "AppVersionProviderContract",
+                "AppVersionProviderContract"
             ]
         ),
         .testTarget(
             name: "AppVersionProviderTests",
             dependencies: [
-                "AppVersionProvider",
+                "AppVersionProvider"
             ]
-        ),
+        )
     ]
 )

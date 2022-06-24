@@ -1,0 +1,17 @@
+{
+  "dependencies" : [
+
+  ],
+  "macOSVersion" : "v12",
+  "modules" : {
+    "Contract" : "undefined",
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "View",
+    "given" : "DependencyGraph"
+  },
+  "resources" : [
+
+  ]
+}
