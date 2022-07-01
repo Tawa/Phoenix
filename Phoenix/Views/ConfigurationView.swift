@@ -12,10 +12,18 @@ struct ConfigurationView: View {
     var body: some View {
         VStack {
             ScrollView(.vertical, showsIndicators: true) {
+                Text("Project Configuration")
+                    .font(.largeTitle)
+                Divider()
+                HStack {
+                    Text("Swift Version")
+                    TextField("default: \(ProjectConfiguration.default.swiftVersion)", text: $configuration.swiftVersion)
+                }.font(.title)
+                Divider()
                 HStack(spacing: 0) {
                     Text("Name")
                         .font(.title)
-                        .frame(width: columnWidth)
+                        .frame(minWidth: columnWidth)
                     Text("Folder")
                         .font(.title)
                         .frame(width: columnWidth)
@@ -26,7 +34,6 @@ struct ConfigurationView: View {
                     Text("Internal Dependency")
                         .font(.title)
                         .frame(width: columnWidth)
-                    Spacer()
                 }
                 ForEach(0..<configuration.packageConfigurations.count, id: \.self) { index in
                     HStack(spacing: 0) {
@@ -37,7 +44,7 @@ struct ConfigurationView: View {
                             configuration.packageConfigurations.sort(by: { $0.name < $1.name })
                         })
                         .font(.title)
-                        .frame(width: columnWidth)
+                        .frame(minWidth: columnWidth)
                         TextField("Folder Name",
                                   text: .init(get: { configuration.packageConfigurations[index].containerFolderName ?? "" },
                                               set: { configuration.packageConfigurations[index].containerFolderName = $0.isEmpty ? nil : $0 }))
@@ -56,7 +63,6 @@ struct ConfigurationView: View {
                             Image(systemName: "trash")
                                 .padding()
                         }.padding(.horizontal)
-                        Spacer()
                     }
                 }
             }

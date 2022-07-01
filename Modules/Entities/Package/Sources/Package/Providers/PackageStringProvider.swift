@@ -10,7 +10,7 @@ public struct PackageStringProvider: PackageStringProviding {
     
     public func string(for package: Package) -> String {
         var value: String = """
-// swift-tools-version:5.6
+// swift-tools-version:\(package.swiftVersion)
 
 import PackageDescription
 
@@ -20,13 +20,14 @@ let package = Package(
 
         if package.iOSVersion != nil || package.macOSVersion != nil {
             value += "    platforms: [\n"
+            var versions: [String] = []
             if let iOSVersion = package.iOSVersion {
-                value += "        \(iOSPlatformString(iOSVersion)),\n"
+                versions.append("        \(iOSPlatformString(iOSVersion))")
             }
             if let macOSVersion = package.macOSVersion {
-                value += "        \(macOSPlatformString(macOSVersion)),\n"
+                versions.append("        \(macOSPlatformString(macOSVersion))")
             }
-
+            value += versions.joined(separator: ",\n") + "\n"
             value += "    ],\n"
         }
         value += "    products: [\n"

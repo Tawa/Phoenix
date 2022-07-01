@@ -15,7 +15,7 @@ public protocol ComponentExtracting {
 public struct ComponentExtractor: ComponentExtracting {
     let packageExtractor: PackageExtracting
 
-    public init() {
+    public init(swiftVersion: String) {
         let defaultFolderNameProvider = FamilyFolderNameProvider()
         let packageNameProvider = PackageNameProvider()
         let packageFolderNameProvider = PackageFolderNameProvider(defaultFolderNameProvider: defaultFolderNameProvider)
@@ -23,7 +23,8 @@ public struct ComponentExtractor: ComponentExtracting {
                                                       packageNameProvider: packageNameProvider)
         self.packageExtractor = PackageExtractor(packageNameProvider: packageNameProvider,
                                                  packageFolderNameProvider: packageFolderNameProvider,
-                                                 packagePathProvider: packagePathProvider)
+                                                 packagePathProvider: packagePathProvider,
+                                                 swiftVersion: swiftVersion)
     }
 
     init(packageExtractor: PackageExtracting) {

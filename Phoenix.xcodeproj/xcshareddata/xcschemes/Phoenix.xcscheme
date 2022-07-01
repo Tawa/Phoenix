@@ -39,6 +39,56 @@
                ReferencedContainer = "container:Phoenix.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AppVersionProviderTests"
+               BuildableName = "AppVersionProviderTests"
+               BlueprintName = "AppVersionProviderTests"
+               ReferencedContainer = "container:Modules/Providers/AppVersionProvider">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DependencyGraphViewTests"
+               BuildableName = "DependencyGraphViewTests"
+               BlueprintName = "DependencyGraphViewTests"
+               ReferencedContainer = "container:Modules/Views/DependencyGraphView">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DocumentCoderTests"
+               BuildableName = "DocumentCoderTests"
+               BlueprintName = "DocumentCoderTests"
+               ReferencedContainer = "container:Modules/Coders/DocumentCoder">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "PackageTests"
+               BuildableName = "PackageTests"
+               BlueprintName = "PackageTests"
+               ReferencedContainer = "container:Modules/Entities/Package">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "PhoenixDocumentTests"
+               BuildableName = "PhoenixDocumentTests"
+               BlueprintName = "PhoenixDocumentTests"
+               ReferencedContainer = "container:Modules/Entities/PhoenixDocument">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

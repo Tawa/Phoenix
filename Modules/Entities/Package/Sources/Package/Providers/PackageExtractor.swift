@@ -19,13 +19,16 @@ struct PackageExtractor: PackageExtracting {
     private let packageNameProvider: PackageNameProviding
     private let packageFolderNameProvider: PackageFolderNameProviding
     private let packagePathProvider: PackagePathProviding
+    private let swiftVersion: String
 
     init(packageNameProvider: PackageNameProviding,
          packageFolderNameProvider: PackageFolderNameProviding,
-         packagePathProvider: PackagePathProviding) {
+         packagePathProvider: PackagePathProviding,
+         swiftVersion: String) {
         self.packageNameProvider = packageNameProvider
         self.packageFolderNameProvider = packageFolderNameProvider
         self.packagePathProvider = packagePathProvider
+        self.swiftVersion = swiftVersion
     }
 
 
@@ -129,7 +132,8 @@ struct PackageExtractor: PackageExtracting {
                                                                        type: component.modules[packageConfiguration.name] ?? .undefined,
                                                                        targets: [packageName]))],
                                     dependencies: dependencies.uniqued(),
-                                    targets: targets),
+                                    targets: targets,
+                                    swiftVersion: swiftVersion),
                      path: packagePathProvider.path(for: component.name,
                                                     of: family,
                                                     packageConfiguration: packageConfiguration))

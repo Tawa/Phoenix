@@ -29,7 +29,8 @@ class PackageStringProviderTestCase: XCTestCase {
                                        dependencies: [ .module(path: "", name: "HomeService") ],
                                        isTest: true,
                                       resources: [])
-                              ])
+                              ],
+                              swiftVersion: "5.7")
 
         let sut = PackageStringProvider()
 
@@ -38,7 +39,7 @@ class PackageStringProviderTestCase: XCTestCase {
 
         // Then
         XCTAssertEqual(packageString, """
-// swift-tools-version:5.6
+// swift-tools-version:5.7
 
 import PackageDescription
 

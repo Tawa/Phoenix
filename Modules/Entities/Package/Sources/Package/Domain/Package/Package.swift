@@ -5,4 +5,5 @@ public struct Package: Codable, Hashable {
     public let products: [Product]
     public let dependencies: [Dependency]
     public let targets: [Target]
+    public let swiftVersion: String
 }
