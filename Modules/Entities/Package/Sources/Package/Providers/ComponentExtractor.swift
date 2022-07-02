@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PackageWithPath {
+public struct PackageWithPath: Equatable {
     public let package: Package
     public let path: String
 }

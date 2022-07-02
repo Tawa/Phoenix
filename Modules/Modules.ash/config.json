@@ -12,5 +12,6 @@
       "internalDependency" : "Contract",
       "name" : "Implementation"
     }
-  ]
+  ],
+  "swiftVersion" : "5.6"
 }
