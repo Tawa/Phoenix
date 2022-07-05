@@ -10,7 +10,7 @@ public struct PackageStringProvider: PackageStringProviding {
     
     public func string(for package: Package) -> String {
         var value: String = """
-// swift-tools-version:\(package.swiftVersion)
+// swift-tools-version: \(package.swiftVersion)
 
 import PackageDescription
 
