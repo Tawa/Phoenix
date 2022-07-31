@@ -39,7 +39,7 @@ class PackageStringProviderTestCase: XCTestCase {
 
         // Then
         XCTAssertEqual(packageString, """
-// swift-tools-version:5.7
+// swift-tools-version: 5.7
 
 import PackageDescription
 

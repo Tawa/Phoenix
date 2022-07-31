@@ -33,7 +33,7 @@ struct PackagePathProvider: PackagePathProviding {
         }
 
         path += packageFolderNameProvider.folderName(for: name, of: family) + "/"
-        path += packageNameProvider.packageName(forComponentName: name, of: family, packageConfiguration: packageConfiguration) + "/"
+        path += packageNameProvider.packageName(forComponentName: name, of: family, packageConfiguration: packageConfiguration)
 
         return path
     }
