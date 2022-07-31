@@ -22,24 +22,23 @@ where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
             ForEach($values, id: \.self) { value in
                 VStack(alignment: .leading) {
                     HStack {
+                        Button(action: {
+                            onRemoveValue(value.id)
+                        }) {
+                            Text("Remove")
+                        }
                         CustomMenu(title: String(describing: value.menuOption.wrappedValue.rawValue),
                                    data: Array(MenuOption.allCases),
                                    onSelection: { value.wrappedValue.menuOption = $0 },
                                    hasRemove: false,
                                    onRemove: {})
                         .frame(width: 150)
-                        TextField("Folder Name", text: Binding(get: { value.value.wrappedValue }, set: { textValues[value.id] = $0 }))
+                        TextField("Folder Name", text: Binding(get: { textValues[value.id] ?? "" },
+                                                               set: { textValues[value.id] = $0 }))
                             .font(.largeTitle)
-                            .frame(width: 150)
                             .foregroundColor(value.wrappedValue.value == textValues[value.id] ? nil : .red)
                             .onSubmit { value.wrappedValue.value = textValues[value.id] ?? "" }
-                        Button(action: {
-                            onRemoveValue(value.id)
-                        }) {
-                            Text("Remove")
-                        }
                     }
-
                     ForEach(allTargetTypes) { targetType in
                         HStack {
                             CustomToggle(title: targetType.title,
@@ -55,6 +54,7 @@ where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
                             Spacer()
                         }
                     }
+                    Divider()
                 }
             }
             HStack {

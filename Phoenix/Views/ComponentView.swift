@@ -33,7 +33,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
             VStack(alignment: .leading) {
                 HStack {
                     Text(title)
-                        .font(.largeTitle)
+                        .font(.largeTitle.bold())
                         .multilineTextAlignment(.leading)
                     Spacer()
                     Button(role: .destructive, action: onRemove) {
@@ -70,7 +70,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                 } header: {
                     HStack {
                         Text("Dependencies")
-                            .font(.largeTitle)
+                            .font(.largeTitle.bold())
                         Button(action: onShowDependencyPopover) { Image(systemName: "plus") }
                     }
                 }
@@ -84,7 +84,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                         onNewValue: onAddResourceWithName)
                 } header: {
                     Text("Resources")
-                        .font(.largeTitle)
+                        .font(.largeTitle.bold())
                 }
                 Divider()
             }
