@@ -46,7 +46,7 @@ where TargetType: Identifiable, SelectionType: Hashable {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text(title)
-                    .font(.title)
+                    .font(.largeTitle.bold())
                 Button(action: onSelection) { Text("Jump to") }
                 Button(action: onRemove) { Text("Remove") }
             }

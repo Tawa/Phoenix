@@ -24,7 +24,7 @@ where DependencyType: Identifiable,
         VStack(alignment: .leading) {
             HStack {
                 Text(name)
-                    .font(.largeTitle)
+                    .font(.largeTitle.bold())
                 Button(action: onRemove) { Text("Remove") }
                 Spacer()
             }
