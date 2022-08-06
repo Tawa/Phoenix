@@ -15,6 +15,7 @@
 		381855762819CACD00BF6696 /* DynamicTextFieldList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381855752819CACD00BF6696 /* DynamicTextFieldList.swift */; };
 		3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3853D1FF2839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift */; };
 		3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */; };
+		386DD8BF289E9C0A00E800B9 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = 386DD8BE289E9C0A00E800B9 /* Factory */; };
 		3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A32804C509000BCB03 /* PhoenixApp.swift */; };
 		3873E5A62804C509000BCB03 /* PhoenixDocument+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A52804C509000BCB03 /* PhoenixDocument+Extensions.swift */; };
 		3873E5A82804C509000BCB03 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873E5A72804C509000BCB03 /* ContentView.swift */; };
@@ -31,7 +32,6 @@
 		38BCCC8A285490E600E928CA /* AppVersionProvider in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC87285490E600E928CA /* AppVersionProvider */; };
 		38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 38BCCC9128549BAE00E928CA /* AppVersionProvider */; };
 		38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC942854A0C000E928CA /* CompositionRoot.swift */; };
-		38BCCC982854AD4900E928CA /* Resolver in Frameworks */ = {isa = PBXBuildFile; productRef = 38BCCC972854AD4900E928CA /* Resolver */; };
 		38BCCC9D2854B51700E928CA /* PhoenixDocumentParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC9C2854B51700E928CA /* PhoenixDocumentParsingTests.swift */; };
 		38BCCCA02854B7E300E928CA /* file_1_0_0.ash in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */; };
 		38C7D13B2808864700E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13A2808864700E2675B /* Package */; };
@@ -123,8 +123,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				388B77F92857D4CE0038D4F4 /* DocumentCoder in Frameworks */,
-				38BCCC982854AD4900E928CA /* Resolver in Frameworks */,
 				388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */,
+				386DD8BF289E9C0A00E800B9 /* Factory in Frameworks */,
 				38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */,
 				38C7D13B2808864700E2675B /* Package in Frameworks */,
 			);
@@ -368,9 +368,9 @@
 			packageProductDependencies = (
 				38C7D13A2808864700E2675B /* Package */,
 				38BCCC9128549BAE00E928CA /* AppVersionProvider */,
-				38BCCC972854AD4900E928CA /* Resolver */,
 				388B77F02857D2990038D4F4 /* PhoenixDocument */,
 				388B77F82857D4CE0038D4F4 /* DocumentCoder */,
+				386DD8BE289E9C0A00E800B9 /* Factory */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -424,7 +424,7 @@
 			);
 			mainGroup = 3873E5972804C509000BCB03;
 			packageReferences = (
-				38BCCC962854AD4900E928CA /* XCRemoteSwiftPackageReference "Resolver" */,
+				386DD8BD289E9C0A00E800B9 /* XCRemoteSwiftPackageReference "Factory" */,
 			);
 			productRefGroup = 3873E5A12804C509000BCB03 /* Products */;
 			projectDirPath = "";
@@ -655,7 +655,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -689,7 +689,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -787,17 +787,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		38BCCC962854AD4900E928CA /* XCRemoteSwiftPackageReference "Resolver" */ = {
+		386DD8BD289E9C0A00E800B9 /* XCRemoteSwiftPackageReference "Factory" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/hmlongco/Resolver";
+			repositoryURL = "https://github.com/hmlongco/Factory";
 			requirement = {
-				kind = exactVersion;
-				version = 1.5.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		386DD8BE289E9C0A00E800B9 /* Factory */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 386DD8BD289E9C0A00E800B9 /* XCRemoteSwiftPackageReference "Factory" */;
+			productName = Factory;
+		};
 		388B77F02857D2990038D4F4 /* PhoenixDocument */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PhoenixDocument;
@@ -809,11 +814,6 @@
 		38BCCC9128549BAE00E928CA /* AppVersionProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppVersionProvider;
-		};
-		38BCCC972854AD4900E928CA /* Resolver */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 38BCCC962854AD4900E928CA /* XCRemoteSwiftPackageReference "Resolver" */;
-			productName = Resolver;
 		};
 		38C7D13A2808864700E2675B /* Package */ = {
 			isa = XCSwiftPackageProductDependency;

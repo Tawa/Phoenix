@@ -4,10 +4,10 @@ import PhoenixDocument
 import DocumentCoderContract
 
 public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncoderProtocol {
-    private let currentApp: CurrentAppVersionStringProviderProtocol
+    private let currentAppVersionStringProvider: CurrentAppVersionStringProviderProtocol
 
-    public init(currentApp: CurrentAppVersionStringProviderProtocol) {
-        self.currentApp = currentApp
+    public init(currentAppVersionStringProvider: CurrentAppVersionStringProviderProtocol) {
+        self.currentAppVersionStringProvider = currentAppVersionStringProvider
     }
 
     public func fileWrapper(for document: PhoenixDocument) throws -> FileWrapper {
@@ -16,7 +16,7 @@ public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncod
 
         let mainFolderWrapper = FileWrapper(directoryWithFileWrappers: [:])
 
-        if let appVersionString = currentApp.currentAppVersionString(),
+        if let appVersionString = currentAppVersionStringProvider.currentAppVersionString(),
            let data = appVersionString.data(using: .utf8) {
             let appVersionFileWrapper = FileWrapper(regularFileWithContents: data)
             appVersionFileWrapper.preferredFilename = PhoenixDocumentConstants.appVersionFileName

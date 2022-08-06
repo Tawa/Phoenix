@@ -84,6 +84,8 @@ let package = Package(
             return "from: \"\(value)\""
         case .branch(let name):
             return "branch: \"\(name)\""
+        case .exact(let value):
+            return "exact: \"\(value)\""
         }
     }
     
