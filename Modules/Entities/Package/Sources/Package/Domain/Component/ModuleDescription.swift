@@ -18,6 +18,7 @@ public enum ExternalDependencyVersion: Codable, Hashable, Identifiable {
 
     case from(version: String)
     case branch(name: String)
+    case exact(version: String)
 
     public var title: String {
         switch self {
@@ -25,12 +26,14 @@ public enum ExternalDependencyVersion: Codable, Hashable, Identifiable {
             return "from"
         case .branch:
             return "branch"
+        case .exact:
+            return "exact"
         }
     }
 
     public var stringValue: String {
         switch self {
-        case let .from(version):
+        case let .from(version), let .exact(version):
             return version
         case let .branch(name):
             return name

@@ -262,6 +262,8 @@ class PhoenixDocumentStore: ObservableObject {
                 dependency.version = .from(version: stringValue)
             case .branch:
                 dependency.version = .branch(name: stringValue)
+            case .exact:
+                dependency.version = .exact(version: stringValue)
             }
         }
     }

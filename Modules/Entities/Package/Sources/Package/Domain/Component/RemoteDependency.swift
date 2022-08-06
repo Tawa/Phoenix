@@ -6,14 +6,7 @@ public struct RemoteDependency: Codable, Hashable, Identifiable {
     public var version: ExternalDependencyVersion
     public var targetTypes: [PackageTargetType] = []
 
-    public var versionText: String {
-        switch version {
-        case .from(let version):
-            return version
-        case .branch(let name):
-            return name
-        }
-    }
+    public var versionText: String { version.stringValue }
 
     public init(url: String,
                 name: ExternalDependencyName,

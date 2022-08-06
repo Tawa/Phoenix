@@ -155,6 +155,8 @@ struct ContentView: View {
                     version = .from(version: remoteDependency.versionValue)
                 case .branch:
                     version = .branch(name: remoteDependency.versionValue)
+                case .exact:
+                    version = .exact(version: remoteDependency.versionValue)
                 }
                 store.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
                                                                                                             name: name,
@@ -193,6 +195,7 @@ struct ContentView: View {
             urlString: dependency.url,
             allVersionsTypes: [
                 .init(title: "branch", value: ExternalDependencyVersion.branch(name: "main")),
+                .init(title: "exact", value: ExternalDependencyVersion.exact(version: "1.0.0")),
                 .init(title: "from", value: ExternalDependencyVersion.from(version: "1.0.0"))
             ],
             onSubmitVersionType: { updateVersion(for: dependency, version: $0) },
@@ -317,7 +320,7 @@ struct ContentView: View {
 
     private func versionPlaceholder(for dependency: RemoteDependency) -> String {
         switch dependency.version {
-        case .from:
+        case .from, .exact:
             return "1.0.0"
         case .branch:
             return "main"

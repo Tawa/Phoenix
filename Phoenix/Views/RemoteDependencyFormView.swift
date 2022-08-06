@@ -19,6 +19,7 @@ enum VersionType: Identifiable, CaseIterable, Hashable {
     var id: Int { hashValue }
     case from
     case branch
+    case exact
 
     var title: String {
         switch self {
@@ -26,12 +27,14 @@ enum VersionType: Identifiable, CaseIterable, Hashable {
             return "from"
         case .branch:
             return "branch"
+        case .exact:
+            return "exact"
         }
     }
 
     var placeholder: String {
         switch self {
-        case .from:
+        case .from, .exact:
             return "1.0.0"
         case .branch:
             return "main"
