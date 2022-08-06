@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "resolver",
+      "identity" : "factory",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/hmlongco/Resolver",
+      "location" : "https://github.com/hmlongco/Factory",
       "state" : {
-        "revision" : "97de0b0320036607564af4a60025b48f8d041221",
-        "version" : "1.5.0"
+        "revision" : "8557426f3286e20b631ecdac8115242f888656e0",
+        "version" : "1.2.8"
       }
     }
   ],
