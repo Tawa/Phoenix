@@ -35,7 +35,13 @@ struct ContentView: View {
             ConfigurationView(configuration: store.document.projectConfiguration) {
                 viewModel.showingConfigurationPopup = false
             }.frame(minHeight: 300)
-        }.toolbar {
+        }
+        .alert(item: $viewModel.alertState, content: { alertState in
+            Alert(title: Text("Error"),
+                  message: Text(alertState.title),
+                  dismissButton: .default(Text("Ok")))
+        })
+        .toolbar {
             toolbarViews()
         }
     }
@@ -45,16 +51,16 @@ struct ContentView: View {
         ComponentsList(
             filter: $viewModel.componentsListFilter,
             sections: filteredComponentsFamilies
-            .map { componentsFamily in
-                    .init(name: sectionTitle(forFamily: componentsFamily.family),
-                          rows: componentsFamily.components.map { component in
-                            .init(name: componentName(component, for: componentsFamily.family),
-                                  isSelected: viewModel.selectedComponentName == component.name,
-                                  onSelect: { viewModel.selectedComponentName = component.name },
-                                  onDuplicate: { viewModel.onDuplicate(component: component) })
-                    },
-                          onSelect: { viewModel.selectedFamilyName = componentsFamily.family.name })
-            }
+                .map { componentsFamily in
+                        .init(name: sectionTitle(forFamily: componentsFamily.family),
+                              rows: componentsFamily.components.map { component in
+                                .init(name: componentName(component, for: componentsFamily.family),
+                                      isSelected: viewModel.selectedComponentName == component.name,
+                                      onSelect: { viewModel.selectedComponentName = component.name },
+                                      onDuplicate: { viewModel.onDuplicate(component: component) })
+                        },
+                              onSelect: { viewModel.selectedFamilyName = componentsFamily.family.name })
+                }
         )
         .frame(minWidth: 250)
     }

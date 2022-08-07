@@ -8,6 +8,18 @@ enum ComponentPopupState: Hashable, Identifiable {
     case template(Component)
 }
 
+enum AlertState: Hashable, Identifiable {
+    var id: Int { hashValue }
+    case errorString(String)
+
+    var title: String {
+        switch self {
+        case let .errorString(value):
+            return value
+        }
+    }
+}
+
 class ViewModel: ObservableObject {
     // MARK: - Selection
     @Published var selectedComponentName: Name? = nil
@@ -17,7 +29,7 @@ class ViewModel: ObservableObject {
     @Published var showingConfigurationPopup: Bool = false
     @Published var showingNewComponentPopup: ComponentPopupState? = nil
     @Published var showingDependencyPopover: Bool = false
-    @Published var fileErrorString: String? = nil
+    @Published var alertState: AlertState? = nil
 
     // MARK: - Filters
     @Published var componentsListFilter: String = ""
@@ -72,7 +84,7 @@ class ViewModel: ObservableObject {
 
     func onGenerate(document: PhoenixDocument, withFileURL fileURL: URL?) {
         guard let fileURL = fileURL else {
-            fileErrorString = "File must be saved before packages can be generated."
+            alertState = .errorString("File must be saved before packages can be generated.")
             return
         }
 
