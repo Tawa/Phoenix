@@ -4,6 +4,7 @@ import AppVersionProvider
 import DocumentCoderContract
 import DocumentCoder
 import Factory
+import Package
 
 extension Container {
     static let currentAppVersionStringProvider = Factory { Bundle.main as CurrentAppVersionStringProviderProtocol }
@@ -25,6 +26,17 @@ extension Container {
         PhoenixDocumentFileWrapperEncoder(
             currentAppVersionStringProvider: Container.currentAppVersionStringProvider()
         ) as PhoenixDocumentFileWrapperEncoderProtocol
+    }
+    
+    static let packageGenerator = Factory {
+        PackageGenerator() as PackageGeneratorProtocol
+    }
+    
+    static let demoAppGenerator = Factory {
+        DemoAppGenerator(
+            packageNameProvider: PackageNameProvider(),
+            fileManager: .default
+        ) as DemoAppGeneratorProtocol
     }
 }
 

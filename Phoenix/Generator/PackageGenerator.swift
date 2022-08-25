@@ -1,7 +1,11 @@
 import Foundation
 import Package
 
-struct PackageGenerator {
+protocol PackageGeneratorProtocol {
+    func generate(package: Package, at url: URL) throws
+}
+
+struct PackageGenerator: PackageGeneratorProtocol {
     private let fileManager = FileManager.default
     private let packageStringProvider = PackageStringProvider()
 

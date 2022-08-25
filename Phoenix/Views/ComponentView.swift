@@ -21,6 +21,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let onModuleTypeSwitchedOff: (ModuleType) -> Void
     let moduleTypeTitle: (ModuleType) -> String
     let onSelectionOfLibraryTypeForModuleType: (LibraryType?, ModuleType) -> Void
+    let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
     let allTargetTypes: [IdentifiableWithSubtype<TargetType>]
     let onRemoveResourceWithId: (String) -> Void
@@ -35,6 +36,10 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                     Text(title)
                         .font(.largeTitle.bold())
                         .multilineTextAlignment(.leading)
+                    Button(action: onGenerateDemoAppProject) {
+                        Image("demo")
+                            .frame(width: 40)
+                    }.help("Generate Demo App Xcode Project")
                     Spacer()
                     Button(role: .destructive, action: onRemove) {
                         Image(systemName: "trash")

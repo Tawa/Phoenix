@@ -47,6 +47,8 @@
 		38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */; };
 		38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */; };
 		38F73EB7280DC0DB00D6A85D /* PackageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */; };
+		B2A5358D28B804C1002AF707 /* DemoAppGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A5358C28B804C1002AF707 /* DemoAppGenerator.swift */; };
+		B2A5359328B80CD6002AF707 /* Modules.ash in Resources */ = {isa = PBXBuildFile; fileRef = B2A5359228B80CD6002AF707 /* Modules.ash */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +117,10 @@
 		38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableWithSubtype.swift; sourceTree = "<group>"; };
 		38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableWithTitle.swift; sourceTree = "<group>"; };
 		38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageGenerator.swift; sourceTree = "<group>"; };
+		B2A5358C28B804C1002AF707 /* DemoAppGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAppGenerator.swift; sourceTree = "<group>"; };
+		B2A5359228B80CD6002AF707 /* Modules.ash */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Modules.ash; sourceTree = "<group>"; };
+		B2A5359428B80D38002AF707 /* RelativeURLProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProvider; sourceTree = "<group>"; };
+		B2A5359528B80D46002AF707 /* RelativeURLProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProviderContract; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,11 +230,12 @@
 		38BA7BB32804C58E00BE3B9F /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				38BDE16428665DAB00275947 /* Views */,
 				388B77F52857D4730038D4F4 /* Coders */,
 				38BCCC83285490E600E928CA /* Contracts */,
-				38BCCC86285490E600E928CA /* Providers */,
 				38BA7BB42804C59500BE3B9F /* Entities */,
+				B2A5359228B80CD6002AF707 /* Modules.ash */,
+				38BCCC86285490E600E928CA /* Providers */,
+				38BDE16428665DAB00275947 /* Views */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -255,6 +262,7 @@
 			isa = PBXGroup;
 			children = (
 				38BCCC85285490E600E928CA /* AppVersionProviderContract */,
+				B2A5359528B80D46002AF707 /* RelativeURLProviderContract */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -263,6 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				38BCCC87285490E600E928CA /* AppVersionProvider */,
+				B2A5359428B80D38002AF707 /* RelativeURLProvider */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -326,6 +335,7 @@
 			isa = PBXGroup;
 			children = (
 				38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */,
+				B2A5358C28B804C1002AF707 /* DemoAppGenerator.swift */,
 			);
 			path = Generator;
 			sourceTree = "<group>";
@@ -443,6 +453,7 @@
 			files = (
 				388B77F42857D46C0038D4F4 /* DocumentCoderContract in Resources */,
 				388B77F72857D4730038D4F4 /* DocumentCoder in Resources */,
+				B2A5359328B80CD6002AF707 /* Modules.ash in Resources */,
 				3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */,
 				38BCCC89285490E600E928CA /* AppVersionProviderContract in Resources */,
 				38BCCC8A285490E600E928CA /* AppVersionProvider in Resources */,
@@ -491,6 +502,7 @@
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
 				38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */,
 				3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */,
+				B2A5358D28B804C1002AF707 /* DemoAppGenerator.swift in Sources */,
 				38E251352837F58A002FFA31 /* LazySubmitTextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
