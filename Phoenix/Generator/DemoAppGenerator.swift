@@ -28,8 +28,12 @@ struct DemoAppGenerator: DemoAppGeneratorProtocol {
             .appendingPathComponent("\(name)DemoApp.xcodeproj")
         
         try fileManager.createDirectory(at: finalURL,
-                                        withIntermediateDirectories: true,
-                                        attributes: nil)
+                                        withIntermediateDirectories: true)
+        
+        let pbxProbjectFileURL = finalURL
+            .appendingPathComponent("project.pbxproj")
+        fileManager.createFile(atPath: pbxProbjectFileURL.path,
+                               contents: pbxProjectContent(forComponent: component).data(using: .utf8))
         
         let diffURL = URL(fileURLWithPath: url.path, isDirectory: true, relativeTo: relativeURL)
         print(diffURL)
