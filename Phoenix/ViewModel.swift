@@ -2,6 +2,7 @@ import Factory
 import Package
 import PhoenixDocument
 import SwiftUI
+import DemoAppGeneratorContract
 
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }

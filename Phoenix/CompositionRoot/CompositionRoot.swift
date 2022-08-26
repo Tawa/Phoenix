@@ -1,6 +1,8 @@
 import Foundation
 import AppVersionProviderContract
 import AppVersionProvider
+import DemoAppGeneratorContract
+import DemoAppGenerator
 import DocumentCoderContract
 import DocumentCoder
 import Factory
@@ -35,7 +37,7 @@ extension Container {
     static let demoAppGenerator = Factory {
         DemoAppGenerator(
             packageNameProvider: PackageNameProvider(),
-            fileManager: .default
+            fileManager: FileManager.default
         ) as DemoAppGeneratorProtocol
     }
 }

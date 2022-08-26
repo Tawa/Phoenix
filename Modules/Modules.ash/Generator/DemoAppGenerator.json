@@ -1,0 +1,38 @@
+{
+  "dependencies" : [
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "Package"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Contract"
+            },
+            "Implementation",
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Implementation"
+          ]
+        }
+      }
+    }
+  ],
+  "macOSVersion" : "v12",
+  "modules" : {
+    "Contract" : "undefined",
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Generator",
+    "given" : "DemoApp"
+  },
+  "resources" : [
+
+  ]
+}

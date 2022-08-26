@@ -47,7 +47,9 @@
 		38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */; };
 		38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */; };
 		38F73EB7280DC0DB00D6A85D /* PackageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */; };
-		B2A5358D28B804C1002AF707 /* DemoAppGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A5358C28B804C1002AF707 /* DemoAppGenerator.swift */; };
+		B22AFDA328B9506000C471A4 /* DemoAppGeneratorContract in Resources */ = {isa = PBXBuildFile; fileRef = B22AFDA228B9506000C471A4 /* DemoAppGeneratorContract */; };
+		B22AFDA628B9507500C471A4 /* DemoAppGenerator in Resources */ = {isa = PBXBuildFile; fileRef = B22AFDA528B9507500C471A4 /* DemoAppGenerator */; };
+		B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B22AFDA728B9528400C471A4 /* DemoAppGenerator */; };
 		B2A5359328B80CD6002AF707 /* Modules.ash in Resources */ = {isa = PBXBuildFile; fileRef = B2A5359228B80CD6002AF707 /* Modules.ash */; };
 /* End PBXBuildFile section */
 
@@ -117,7 +119,8 @@
 		38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableWithSubtype.swift; sourceTree = "<group>"; };
 		38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableWithTitle.swift; sourceTree = "<group>"; };
 		38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageGenerator.swift; sourceTree = "<group>"; };
-		B2A5358C28B804C1002AF707 /* DemoAppGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAppGenerator.swift; sourceTree = "<group>"; };
+		B22AFDA228B9506000C471A4 /* DemoAppGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGeneratorContract; sourceTree = "<group>"; };
+		B22AFDA528B9507500C471A4 /* DemoAppGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGenerator; sourceTree = "<group>"; };
 		B2A5359228B80CD6002AF707 /* Modules.ash */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Modules.ash; sourceTree = "<group>"; };
 		B2A5359428B80D38002AF707 /* RelativeURLProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProvider; sourceTree = "<group>"; };
 		B2A5359528B80D46002AF707 /* RelativeURLProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProviderContract; sourceTree = "<group>"; };
@@ -133,6 +136,7 @@
 				386DD8BF289E9C0A00E800B9 /* Factory in Frameworks */,
 				38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */,
 				38C7D13B2808864700E2675B /* Package in Frameworks */,
+				B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +237,7 @@
 				388B77F52857D4730038D4F4 /* Coders */,
 				38BCCC83285490E600E928CA /* Contracts */,
 				38BA7BB42804C59500BE3B9F /* Entities */,
+				B22AFDA428B9507500C471A4 /* Generators */,
 				B2A5359228B80CD6002AF707 /* Modules.ash */,
 				38BCCC86285490E600E928CA /* Providers */,
 				38BDE16428665DAB00275947 /* Views */,
@@ -253,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				388B77F22857D46C0038D4F4 /* Coders */,
+				B22AFDA128B9506000C471A4 /* Generators */,
 				38BCCC84285490E600E928CA /* Providers */,
 			);
 			path = Contracts;
@@ -335,7 +341,6 @@
 			isa = PBXGroup;
 			children = (
 				38F73EB6280DC0DB00D6A85D /* PackageGenerator.swift */,
-				B2A5358C28B804C1002AF707 /* DemoAppGenerator.swift */,
 			);
 			path = Generator;
 			sourceTree = "<group>";
@@ -356,6 +361,22 @@
 				38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		B22AFDA128B9506000C471A4 /* Generators */ = {
+			isa = PBXGroup;
+			children = (
+				B22AFDA228B9506000C471A4 /* DemoAppGeneratorContract */,
+			);
+			path = Generators;
+			sourceTree = "<group>";
+		};
+		B22AFDA428B9507500C471A4 /* Generators */ = {
+			isa = PBXGroup;
+			children = (
+				B22AFDA528B9507500C471A4 /* DemoAppGenerator */,
+			);
+			path = Generators;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -381,6 +402,7 @@
 				388B77F02857D2990038D4F4 /* PhoenixDocument */,
 				388B77F82857D4CE0038D4F4 /* DocumentCoder */,
 				386DD8BE289E9C0A00E800B9 /* Factory */,
+				B22AFDA728B9528400C471A4 /* DemoAppGenerator */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -453,7 +475,9 @@
 			files = (
 				388B77F42857D46C0038D4F4 /* DocumentCoderContract in Resources */,
 				388B77F72857D4730038D4F4 /* DocumentCoder in Resources */,
+				B22AFDA628B9507500C471A4 /* DemoAppGenerator in Resources */,
 				B2A5359328B80CD6002AF707 /* Modules.ash in Resources */,
+				B22AFDA328B9506000C471A4 /* DemoAppGeneratorContract in Resources */,
 				3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */,
 				38BCCC89285490E600E928CA /* AppVersionProviderContract in Resources */,
 				38BCCC8A285490E600E928CA /* AppVersionProvider in Resources */,
@@ -502,7 +526,6 @@
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
 				38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */,
 				3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */,
-				B2A5358D28B804C1002AF707 /* DemoAppGenerator.swift in Sources */,
 				38E251352837F58A002FFA31 /* LazySubmitTextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -830,6 +853,10 @@
 		38C7D13A2808864700E2675B /* Package */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Package;
+		};
+		B22AFDA728B9528400C471A4 /* DemoAppGenerator */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DemoAppGenerator;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

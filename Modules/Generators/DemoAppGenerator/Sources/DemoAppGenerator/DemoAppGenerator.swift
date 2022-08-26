@@ -1,27 +1,21 @@
-import Foundation
+import DemoAppGeneratorContract
 import Package
+import Foundation
 
-protocol DemoAppGeneratorProtocol {
-    func generateDemoApp(forComponent component: Component,
-                         of family: Family,
-                         at url: URL,
-                         relativeURL: URL) throws
-}
-
-struct DemoAppGenerator: DemoAppGeneratorProtocol {
+public struct DemoAppGenerator: DemoAppGeneratorProtocol {
     private let fileManager: FileManager
     private let packageNameProvider: PackageNameProviding
     
-    init(packageNameProvider: PackageNameProviding,
-         fileManager: FileManager = .default) {
+    public init(packageNameProvider: PackageNameProviding,
+                fileManager: FileManager = .default) {
         self.packageNameProvider = packageNameProvider
         self.fileManager = fileManager
     }
-
-    func generateDemoApp(forComponent component: Component,
-                         of family: Family,
-                         at url: URL,
-                         relativeURL: URL) throws {
+    
+    public func generateDemoApp(forComponent component: Component,
+                                of family: Family,
+                                at url: URL,
+                                relativeURL: URL) throws {
         let name = packageNameProvider.packageName(forComponentName: component.name, of: family, packageConfiguration: .init(name: "", appendPackageName: false, hasTests: false))
         let finalURL = url
             .appendingPathComponent("\(name)DemoApp")
