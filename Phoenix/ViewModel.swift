@@ -3,6 +3,7 @@ import Package
 import PhoenixDocument
 import SwiftUI
 import DemoAppGeneratorContract
+import PackageGeneratorContract
 
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }
@@ -102,7 +103,7 @@ class ViewModel: ObservableObject {
             }
         }
         
-        let packagesGenerator = PackageGenerator()
+        let packagesGenerator: PackageGeneratorProtocol = Container.packageGenerator()
         guard let folderURL = getPath(for: fileURL) else { return }
         for packageWithPath in packagesWithPath {
             let url = folderURL.appendingPathComponent(packageWithPath.path, isDirectory: true)

@@ -1,5 +1,6 @@
 import DemoAppGeneratorContract
 import Package
+import PackageGeneratorContract
 import Foundation
 import RelativeURLProviderContract
 

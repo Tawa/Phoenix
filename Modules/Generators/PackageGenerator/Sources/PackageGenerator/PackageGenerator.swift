@@ -1,15 +1,19 @@
-import Foundation
 import Package
+import PackageGeneratorContract
+import PackageStringProviderContract
+import Foundation
 
-protocol PackageGeneratorProtocol {
-    func generate(package: Package, at url: URL) throws
-}
+public struct PackageGenerator: PackageGeneratorProtocol {
+    let fileManager: FileManager
+    let packageStringProvider: PackageStringProviding
 
-struct PackageGenerator: PackageGeneratorProtocol {
-    private let fileManager = FileManager.default
-    private let packageStringProvider = PackageStringProvider()
-
-    func generate(package: Package, at url: URL) throws {
+    public init(fileManager: FileManager,
+                packageStringProvider: PackageStringProviding) {
+        self.fileManager = fileManager
+        self.packageStringProvider = packageStringProvider
+    }
+    
+    public func generate(package: Package, at url: URL) throws {
         try createPackageFolderIfNecessary(at: url)
 
         try package.targets.forEach { target in
@@ -123,3 +127,4 @@ A description of this package.
                                attributes: nil)
     }
 }
+

@@ -1,6 +1,5 @@
-public protocol PackageStringProviding {
-    func string(for package: Package) -> String
-}
+import Package
+import PackageStringProviderContract
 
 public struct PackageStringProvider: PackageStringProviding {
     

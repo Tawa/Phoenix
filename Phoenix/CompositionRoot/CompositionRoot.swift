@@ -7,6 +7,10 @@ import DocumentCoder
 import Factory
 import Foundation
 import Package
+import PackageGeneratorContract
+import PackageGenerator
+import PackageStringProviderContract
+import PackageStringProvider
 import RelativeURLProviderContract
 import RelativeURLProvider
 
@@ -33,15 +37,22 @@ extension Container {
     }
     
     static let packageGenerator = Factory {
-        PackageGenerator() as PackageGeneratorProtocol
+        PackageGenerator(
+            fileManager: .default,
+            packageStringProvider: Container.packageStringProvider()
+        ) as PackageGeneratorProtocol
     }
     
     static let demoAppGenerator = Factory {
         DemoAppGenerator(
             packageNameProvider: PackageNameProvider(),
             relativeURLProvider: RelativeURLProvider(),
-            fileManager: FileManager.default
+            fileManager: .default
         ) as DemoAppGeneratorProtocol
+    }
+    
+    static let packageStringProvider = Factory {
+        PackageStringProvider() as PackageStringProviding
     }
 }
 

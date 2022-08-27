@@ -3,38 +3,33 @@
 import PackageDescription
 
 let package = Package(
-    name: "DemoAppGenerator",
+    name: "PackageGenerator",
     platforms: [
         .macOS(.v12)
     ],
     products: [
         .library(
-            name: "DemoAppGenerator",
-            targets: ["DemoAppGenerator"])
+            name: "PackageGenerator",
+            targets: ["PackageGenerator"])
     ],
     dependencies: [
-        .package(path: "../../Contracts/Generators/DemoAppGeneratorContract"),
         .package(path: "../../Contracts/Generators/PackageGeneratorContract"),
-        .package(path: "../../Contracts/Providers/RelativeURLProviderContract"),
+        .package(path: "../../Contracts/Providers/PackageStringProviderContract"),
         .package(path: "../../Entities/Package")
     ],
     targets: [
         .target(
-            name: "DemoAppGenerator",
+            name: "PackageGenerator",
             dependencies: [
-                "DemoAppGeneratorContract",
                 "PackageGeneratorContract",
-                "RelativeURLProviderContract",
+                "PackageStringProviderContract",
                 "Package"
-            ],
-            resources: [
-                .copy("Templates"),
             ]
         ),
         .testTarget(
-            name: "DemoAppGeneratorTests",
+            name: "PackageGeneratorTests",
             dependencies: [
-                "DemoAppGenerator"
+                "PackageGenerator"
             ]
         )
     ]
