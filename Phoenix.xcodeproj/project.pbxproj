@@ -50,6 +50,7 @@
 		B22AFDA328B9506000C471A4 /* DemoAppGeneratorContract in Resources */ = {isa = PBXBuildFile; fileRef = B22AFDA228B9506000C471A4 /* DemoAppGeneratorContract */; };
 		B22AFDA628B9507500C471A4 /* DemoAppGenerator in Resources */ = {isa = PBXBuildFile; fileRef = B22AFDA528B9507500C471A4 /* DemoAppGenerator */; };
 		B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B22AFDA728B9528400C471A4 /* DemoAppGenerator */; };
+		B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B266B0B428BA8BF900778F3A /* RelativeURLProvider */; };
 		B2A5359328B80CD6002AF707 /* Modules.ash in Resources */ = {isa = PBXBuildFile; fileRef = B2A5359228B80CD6002AF707 /* Modules.ash */; };
 /* End PBXBuildFile section */
 
@@ -133,6 +134,7 @@
 			files = (
 				388B77F92857D4CE0038D4F4 /* DocumentCoder in Frameworks */,
 				388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */,
+				B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */,
 				386DD8BF289E9C0A00E800B9 /* Factory in Frameworks */,
 				38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */,
 				38C7D13B2808864700E2675B /* Package in Frameworks */,
@@ -403,6 +405,7 @@
 				388B77F82857D4CE0038D4F4 /* DocumentCoder */,
 				386DD8BE289E9C0A00E800B9 /* Factory */,
 				B22AFDA728B9528400C471A4 /* DemoAppGenerator */,
+				B266B0B428BA8BF900778F3A /* RelativeURLProvider */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -857,6 +860,10 @@
 		B22AFDA728B9528400C471A4 /* DemoAppGenerator */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DemoAppGenerator;
+		};
+		B266B0B428BA8BF900778F3A /* RelativeURLProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RelativeURLProvider;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

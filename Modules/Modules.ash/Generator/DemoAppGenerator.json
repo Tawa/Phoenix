@@ -21,6 +21,23 @@
           ]
         }
       }
+    },
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Provider",
+            "given" : "RelativeURL"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Contract"
+          ]
+        }
+      }
     }
   ],
   "macOSVersion" : "v12",
@@ -33,6 +50,15 @@
     "given" : "DemoApp"
   },
   "resources" : [
-
+    {
+      "folderName" : "Resources",
+      "targets" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        }
+      ],
+      "type" : "copy"
+    }
   ]
 }

@@ -14,6 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../../Contracts/Generators/DemoAppGeneratorContract"),
+        .package(path: "../../Contracts/Providers/RelativeURLProviderContract"),
         .package(path: "../../Entities/Package")
     ],
     targets: [
@@ -21,7 +22,11 @@ let package = Package(
             name: "DemoAppGenerator",
             dependencies: [
                 "DemoAppGeneratorContract",
+                "RelativeURLProviderContract",
                 "Package"
+            ],
+            resources: [
+                .copy("Templates"),
             ]
         ),
         .testTarget(
