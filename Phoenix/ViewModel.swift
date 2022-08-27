@@ -136,6 +136,8 @@ class ViewModel: ObservableObject {
             try demoAppGenerator.generateDemoApp(
                 forComponent: component,
                 of: family,
+                families: document.families,
+                projectConfiguration: document.projectConfiguration,
                 at: url,
                 relativeURL: ashFileURL)
         } catch {
