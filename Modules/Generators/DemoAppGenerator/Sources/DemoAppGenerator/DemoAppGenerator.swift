@@ -149,7 +149,7 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
                         projectConfiguration: projectConfiguration,
                         dependenciesDictionary: &dependenciesDictionary,
                         modulesRelativePath: modulesRelativePath)
-        return Array(dependenciesDictionary.values)
+        return Array(dependenciesDictionary.values).sorted()
     }
     
     func addDependencies(forComponent component: Component,
@@ -174,6 +174,23 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
             let resultPath = ["../..", modulesRelativePath, path].joined(separator: "/")
             
             dependenciesDictionary[name] = .module(path: resultPath, name: name)
+            
+            for dependency in component.dependencies {
+                switch dependency {
+                case .local(let componentDependency):
+                    if let newComponent = families.first(where: {
+                        $0.family.name == componentDependency.name.family
+                    })?.components.first(where: { $0.name == componentDependency.name }) {
+                        addDependencies(forComponent: newComponent,
+                                        families: families,
+                                        projectConfiguration: projectConfiguration,
+                                        dependenciesDictionary: &dependenciesDictionary,
+                                        modulesRelativePath: modulesRelativePath)
+                    }
+                default:
+                    break
+                }
+            }
         }
     }
     
