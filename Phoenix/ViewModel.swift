@@ -4,6 +4,7 @@ import PhoenixDocument
 import SwiftUI
 import DemoAppGeneratorContract
 import PackageGeneratorContract
+import ComponentPackagesProviderContract
 
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }
@@ -90,8 +91,7 @@ class ViewModel: ObservableObject {
             alertState = .errorString("File must be saved before packages can be generated.")
             return
         }
-        
-        let componentExtractor = ComponentExtractor(swiftVersion: document.projectConfiguration.swiftVersion)
+        let componentExtractor = Container.componentPackagesProvider(document.projectConfiguration.swiftVersion)
         let allFamilies: [Family] = document.families.map { $0.family }
         let packagesWithPath: [PackageWithPath] = document.families.flatMap { componentFamily -> [PackageWithPath] in
             let family = componentFamily.family

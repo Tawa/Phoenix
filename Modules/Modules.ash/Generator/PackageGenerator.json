@@ -40,7 +40,6 @@
       }
     }
   ],
-  "macOSVersion" : "v12",
   "modules" : {
     "Contract" : "undefined",
     "Implementation" : "undefined"

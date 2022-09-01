@@ -3,26 +3,28 @@
 import PackageDescription
 
 let package = Package(
-    name: "PhoenixDocument",
+    name: "PackagePathProvider",
     products: [
         .library(
-            name: "PhoenixDocument",
-            targets: ["PhoenixDocument"])
+            name: "PackagePathProvider",
+            targets: ["PackagePathProvider"])
     ],
     dependencies: [
+        .package(path: "../../Contracts/Providers/PackagePathProviderContract"),
         .package(path: "../../Entities/Package")
     ],
     targets: [
         .target(
-            name: "PhoenixDocument",
+            name: "PackagePathProvider",
             dependencies: [
+                "PackagePathProviderContract",
                 "Package"
             ]
         ),
         .testTarget(
-            name: "PhoenixDocumentTests",
+            name: "PackagePathProviderTests",
             dependencies: [
-                "PhoenixDocument"
+                "PackagePathProvider"
             ]
         )
     ]

@@ -51,6 +51,8 @@
 		B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B22AFDA728B9528400C471A4 /* DemoAppGenerator */; };
 		B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B266B0B428BA8BF900778F3A /* RelativeURLProvider */; };
 		B2A5359328B80CD6002AF707 /* Modules.ash in Resources */ = {isa = PBXBuildFile; fileRef = B2A5359228B80CD6002AF707 /* Modules.ash */; };
+		B2BDAE5A28C11AF00036FA9D /* ComponentPackagesProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2BDAE5928C11AF00036FA9D /* ComponentPackagesProvider */; };
+		B2BDAE5C28C11D4F0036FA9D /* PackagePathProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2BDAE5B28C11D4F0036FA9D /* PackagePathProvider */; };
 		B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5928BAC12200848D93 /* PackageGenerator */; };
 		B2CC2B5C28BAC21900848D93 /* PackageStringProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5B28BAC21900848D93 /* PackageStringProvider */; };
 /* End PBXBuildFile section */
@@ -124,11 +126,15 @@
 		B22AFDA528B9507500C471A4 /* DemoAppGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGenerator; sourceTree = "<group>"; };
 		B266B0B728BABF4600778F3A /* PackageGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageGenerator; sourceTree = "<group>"; };
 		B266B0B828BABF6000778F3A /* PackageGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageGeneratorContract; sourceTree = "<group>"; };
+		B289460628BBA2B4002DB018 /* ComponentPackagesProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ComponentPackagesProviderContract; sourceTree = "<group>"; };
 		B29DBFF328BAC0DF00E4A1BD /* PackageStringProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageStringProvider; sourceTree = "<group>"; };
 		B29DBFF428BAC0EC00E4A1BD /* PackageStringProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageStringProviderContract; sourceTree = "<group>"; };
 		B2A5359228B80CD6002AF707 /* Modules.ash */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Modules.ash; sourceTree = "<group>"; };
 		B2A5359428B80D38002AF707 /* RelativeURLProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProvider; sourceTree = "<group>"; };
 		B2A5359528B80D46002AF707 /* RelativeURLProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProviderContract; sourceTree = "<group>"; };
+		B2BDAE5828C118570036FA9D /* ComponentPackagesProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ComponentPackagesProvider; sourceTree = "<group>"; };
+		B2CC2B5D28BB983D00848D93 /* PackagePathProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackagePathProviderContract; sourceTree = "<group>"; };
+		B2CC2B5E28BB984B00848D93 /* PackagePathProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackagePathProvider; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +144,8 @@
 			files = (
 				388B77F92857D4CE0038D4F4 /* DocumentCoder in Frameworks */,
 				388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */,
+				B2BDAE5A28C11AF00036FA9D /* ComponentPackagesProvider in Frameworks */,
+				B2BDAE5C28C11D4F0036FA9D /* PackagePathProvider in Frameworks */,
 				B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */,
 				B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */,
 				386DD8BF289E9C0A00E800B9 /* Factory in Frameworks */,
@@ -275,6 +283,8 @@
 			isa = PBXGroup;
 			children = (
 				38BCCC85285490E600E928CA /* AppVersionProviderContract */,
+				B289460628BBA2B4002DB018 /* ComponentPackagesProviderContract */,
+				B2CC2B5D28BB983D00848D93 /* PackagePathProviderContract */,
 				B29DBFF428BAC0EC00E4A1BD /* PackageStringProviderContract */,
 				B2A5359528B80D46002AF707 /* RelativeURLProviderContract */,
 			);
@@ -285,6 +295,8 @@
 			isa = PBXGroup;
 			children = (
 				38BCCC87285490E600E928CA /* AppVersionProvider */,
+				B2BDAE5828C118570036FA9D /* ComponentPackagesProvider */,
+				B2CC2B5E28BB984B00848D93 /* PackagePathProvider */,
 				B29DBFF328BAC0DF00E4A1BD /* PackageStringProvider */,
 				B2A5359428B80D38002AF707 /* RelativeURLProvider */,
 			);
@@ -409,6 +421,8 @@
 				B266B0B428BA8BF900778F3A /* RelativeURLProvider */,
 				B2CC2B5928BAC12200848D93 /* PackageGenerator */,
 				B2CC2B5B28BAC21900848D93 /* PackageStringProvider */,
+				B2BDAE5928C11AF00036FA9D /* ComponentPackagesProvider */,
+				B2BDAE5B28C11D4F0036FA9D /* PackagePathProvider */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -866,6 +880,14 @@
 		B266B0B428BA8BF900778F3A /* RelativeURLProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RelativeURLProvider;
+		};
+		B2BDAE5928C11AF00036FA9D /* ComponentPackagesProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ComponentPackagesProvider;
+		};
+		B2BDAE5B28C11D4F0036FA9D /* PackagePathProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PackagePathProvider;
 		};
 		B2CC2B5928BAC12200848D93 /* PackageGenerator */ = {
 			isa = XCSwiftPackageProductDependency;

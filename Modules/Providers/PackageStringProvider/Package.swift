@@ -4,9 +4,6 @@ import PackageDescription
 
 let package = Package(
     name: "PackageStringProvider",
-    platforms: [
-        .macOS(.v12)
-    ],
     products: [
         .library(
             name: "PackageStringProvider",

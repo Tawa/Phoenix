@@ -4,9 +4,6 @@ import PackageDescription
 
 let package = Package(
     name: "DemoAppGenerator",
-    platforms: [
-        .macOS(.v12)
-    ],
     products: [
         .library(
             name: "DemoAppGenerator",
@@ -15,6 +12,7 @@ let package = Package(
     dependencies: [
         .package(path: "../../Contracts/Generators/DemoAppGeneratorContract"),
         .package(path: "../../Contracts/Generators/PackageGeneratorContract"),
+        .package(path: "../../Contracts/Providers/PackagePathProviderContract"),
         .package(path: "../../Contracts/Providers/RelativeURLProviderContract"),
         .package(path: "../../Entities/Package")
     ],
@@ -24,6 +22,7 @@ let package = Package(
             dependencies: [
                 "DemoAppGeneratorContract",
                 "PackageGeneratorContract",
+                "PackagePathProviderContract",
                 "RelativeURLProviderContract",
                 "Package"
             ],

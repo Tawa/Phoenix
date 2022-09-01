@@ -3,18 +3,18 @@
 import PackageDescription
 
 let package = Package(
-    name: "DemoAppGeneratorContract",
+    name: "PackagePathProviderContract",
     products: [
         .library(
-            name: "DemoAppGeneratorContract",
-            targets: ["DemoAppGeneratorContract"])
+            name: "PackagePathProviderContract",
+            targets: ["PackagePathProviderContract"])
     ],
     dependencies: [
         .package(path: "../../../Entities/Package")
     ],
     targets: [
         .target(
-            name: "DemoAppGeneratorContract",
+            name: "PackagePathProviderContract",
             dependencies: [
                 "Package"
             ]

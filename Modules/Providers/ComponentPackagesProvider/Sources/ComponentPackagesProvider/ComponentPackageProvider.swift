@@ -1,4 +1,6 @@
-import Foundation
+import Package
+import ComponentPackagesProviderContract
+import PackagePathProviderContract
 
 extension Sequence where Element: Hashable {
     func uniqued() -> [Element] {
@@ -7,32 +9,24 @@ extension Sequence where Element: Hashable {
     }
 }
 
-protocol PackageExtracting {
-    func package(for component: Component,
-                 of family: Family,
-                 allFamilies: [Family],
-                 packageConfiguration: PackageConfiguration,
-                 projectConfiguration: ProjectConfiguration) -> PackageWithPath
-}
-
-struct PackageExtractor: PackageExtracting {
+public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
     private let packageNameProvider: PackageNameProviding
     private let packageFolderNameProvider: PackageFolderNameProviding
     private let packagePathProvider: PackagePathProviding
     private let swiftVersion: String
-
-    init(packageNameProvider: PackageNameProviding,
-         packageFolderNameProvider: PackageFolderNameProviding,
-         packagePathProvider: PackagePathProviding,
-         swiftVersion: String) {
+    
+    public init(packageNameProvider: PackageNameProviding,
+                packageFolderNameProvider: PackageFolderNameProviding,
+                packagePathProvider: PackagePathProviding,
+                swiftVersion: String) {
         self.packageNameProvider = packageNameProvider
         self.packageFolderNameProvider = packageFolderNameProvider
         self.packagePathProvider = packagePathProvider
         self.swiftVersion = swiftVersion
     }
-
-
-    func package(for component: Component,
+    
+    
+    public func package(for component: Component,
                  of family: Family,
                  allFamilies: [Family],
                  packageConfiguration: PackageConfiguration,
@@ -40,7 +34,7 @@ struct PackageExtractor: PackageExtracting {
         let packageName = packageNameProvider.packageName(forComponentName: component.name,
                                                           of: family,
                                                           packageConfiguration: packageConfiguration)
-
+        
         let packageTargetType = PackageTargetType(name: packageConfiguration.name, isTests: false)
         var dependencies: [Dependency] = []
         var implementationDependencies: [Dependency] = component.dependencies.sorted().compactMap { dependencyType -> Dependency? in
@@ -78,7 +72,7 @@ struct PackageExtractor: PackageExtracting {
                                                               packageConfiguration: internalDependencyConfiguration)),
                 at: 0)
         }
-
+        
         var targets: [Target] = [
             Target(name: packageName,
                    dependencies: implementationDependencies,
@@ -87,7 +81,7 @@ struct PackageExtractor: PackageExtracting {
                 .map { TargetResources(folderName: $0.folderName,
                                        resourcesType: $0.type) })
         ]
-
+        
         dependencies = implementationDependencies
         if packageConfiguration.hasTests {
             let packageTestsTargetType = PackageTargetType(name: packageConfiguration.name, isTests: true)
@@ -124,7 +118,7 @@ struct PackageExtractor: PackageExtracting {
             )
             dependencies += testsDependencies
         }
-
+        
         return .init(package: .init(name: packageName,
                                     iOSVersion: component.iOSVersion,
                                     macOSVersion: component.macOSVersion,

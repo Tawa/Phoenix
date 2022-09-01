@@ -4,9 +4,6 @@ import PackageDescription
 
 let package = Package(
     name: "DocumentCoder",
-    platforms: [
-        .macOS(.v12)
-    ],
     products: [
         .library(
             name: "DocumentCoder",

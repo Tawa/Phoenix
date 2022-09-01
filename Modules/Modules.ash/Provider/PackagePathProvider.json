@@ -29,7 +29,7 @@
   },
   "name" : {
     "family" : "Provider",
-    "given" : "PackageString"
+    "given" : "PackagePath"
   },
   "resources" : [
 

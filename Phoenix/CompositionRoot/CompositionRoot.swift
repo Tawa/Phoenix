@@ -1,5 +1,7 @@
 import AppVersionProviderContract
 import AppVersionProvider
+import ComponentPackagesProviderContract
+import ComponentPackagesProvider
 import DemoAppGeneratorContract
 import DemoAppGenerator
 import DocumentCoderContract
@@ -9,6 +11,8 @@ import Foundation
 import Package
 import PackageGeneratorContract
 import PackageGenerator
+import PackagePathProviderContract
+import PackagePathProvider
 import PackageStringProviderContract
 import PackageStringProvider
 import RelativeURLProviderContract
@@ -52,8 +56,44 @@ extension Container {
         ) as DemoAppGeneratorProtocol
     }
     
+    static let familyFolderNameProvider = Factory {
+        FamilyFolderNameProvider() as FamilyFolderNameProviding
+    }
+    
+    static let packageNameProvider = Factory {
+        PackageNameProvider() as PackageNameProviding
+    }
+    
     static let packageStringProvider = Factory {
         PackageStringProvider() as PackageStringProviding
+    }
+    
+    static let packageFolderNameProvider = Factory {
+        PackageFolderNameProvider(
+            defaultFolderNameProvider: Container.familyFolderNameProvider()
+        ) as PackageFolderNameProviding
+    }
+    
+    static let packagePathProvider = Factory {
+        PackagePathProvider(
+            packageFolderNameProvider: Container.packageFolderNameProvider(),
+            packageNameProvider: Container.packageNameProvider()
+        ) as PackagePathProviding
+    }
+    
+    static let componentPackageProvider = ParameterFactory { (params: String) in
+        ComponentPackageProvider(
+            packageNameProvider: Container.packageNameProvider(),
+            packageFolderNameProvider: Container.packageFolderNameProvider(),
+            packagePathProvider: Container.packagePathProvider(),
+            swiftVersion: params
+        ) as ComponentPackageProviderProtocol
+    }
+    
+    static let componentPackagesProvider = ParameterFactory { (params: String) in
+        ComponentPackagesProvider(
+            componentPackageProvider: Container.componentPackageProvider(params)
+        ) as ComponentPackagesProviderProtocol
     }
 }
 

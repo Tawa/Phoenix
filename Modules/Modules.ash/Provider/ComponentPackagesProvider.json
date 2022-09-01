@@ -21,6 +21,23 @@
           ]
         }
       }
+    },
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Provider",
+            "given" : "PackagePath"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Contract"
+          ]
+        }
+      }
     }
   ],
   "modules" : {
@@ -29,7 +46,7 @@
   },
   "name" : {
     "family" : "Provider",
-    "given" : "PackageString"
+    "given" : "ComponentPackages"
   },
   "resources" : [
 

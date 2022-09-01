@@ -86,6 +86,10 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
             .appendingPathComponent("\(name)DemoApp")
             .appendingPathComponent(dependenciesPackageName)
         
+        let componentDependencies: [Dependency] = getAllDependencies(forComponent: component,
+                                                                     families: families,
+                                                                     projectConfiguration: projectConfiguration)
+        
         let dependencies: [Dependency] = [
             .module(path: "../../../../HelloFresh/Modules/Features/ActionSheetFeature",
                     name: "ActionSheetFeature"),
@@ -118,6 +122,46 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
         try packageGenerator.generate(package: package, at: resultURL)
     }
     
+    func getAllDependencies(forComponent component: Component,
+                            families: [ComponentsFamily],
+                            projectConfiguration: ProjectConfiguration) -> [Dependency] {
+        var dependenciesDictionary: [String: Dependency] = [:]
+        addDependencies(forComponent: component,
+                        families: families,
+                        projectConfiguration: projectConfiguration,
+                        dependenciesDictionary: &dependenciesDictionary)
+        return Array(dependenciesDictionary.values)
+        //        component.dependencies.map { dependencyType in
+        //           switch dependencyType {
+        //           case let .local(dependency):
+        //               return .module(path: packagePathProvider,
+        //                              name: packageNameProvider.packageName(forComponentName: dependency.name,
+        //                                                                    of: <#T##Family#>,
+        //                                                                    packageConfiguration: dependency.targetTypes))
+        //           case let .remote(dependency):
+        //               return .external(url: dependency.url,
+        //                                name: dependency.name,
+        //                                description: dependency.version)
+        //           }
+        //        }
+    }
+    
+    func addDependencies(forComponent component: Component,
+                         families: [ComponentsFamily],
+                         projectConfiguration: ProjectConfiguration,
+                         dependenciesDictionary: inout [String: Dependency]) {
+        guard let family = families.first(where: { $0.family.name == component.name.family })?.family
+        else { return }
+        component.modules.forEach { (key: String, value: LibraryType) in
+            guard let packageConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == key })
+            else { return }
+            let name = self.packageNameProvider.packageName(forComponentName: component.name,
+                                                            of: family,
+                                                            packageConfiguration: packageConfiguration)
+            guard dependenciesDictionary[name] == nil
+            else { return }
+        }
+    }
     
     func pbxProjectContent(forComponent component: Component, named name: String) -> String? {
         guard
@@ -171,7 +215,7 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
             .replacingOccurrences(of: packagesGroupContentKey, with: packagesGroupContentValue)
             .replacingOccurrences(of: packagesReferencesContentKey, with: packagesReferencesContentValue)
             .replacingOccurrences(of: frameworksContentKey, with: frameworksContentValue)
-
+        
         return result
     }
     
