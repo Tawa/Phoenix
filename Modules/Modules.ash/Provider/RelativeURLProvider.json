@@ -1,0 +1,16 @@
+{
+  "dependencies" : [
+
+  ],
+  "modules" : {
+    "Contract" : "undefined",
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Provider",
+    "given" : "RelativeURL"
+  },
+  "resources" : [
+
+  ]
+}

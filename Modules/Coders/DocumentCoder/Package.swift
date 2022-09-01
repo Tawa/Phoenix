@@ -1,12 +1,9 @@
-// swift-tools-version:5.6
+// swift-tools-version: 5.6
 
 import PackageDescription
 
 let package = Package(
     name: "DocumentCoder",
-    platforms: [
-        .macOS(.v12)
-    ],
     products: [
         .library(
             name: "DocumentCoder",

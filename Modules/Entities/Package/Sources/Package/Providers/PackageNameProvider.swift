@@ -1,10 +1,14 @@
-public protocol PackageNameProviding {
+public protocol PackageNameProviderProtocol {
     func packageName(forComponentName componentName: Name,
                      of family: Family,
                      packageConfiguration: PackageConfiguration) -> String
 }
 
-public struct PackageNameProvider: PackageNameProviding {
+public struct PackageNameProvider: PackageNameProviderProtocol {
+    public init() {
+        
+    }
+    
     public func packageName(forComponentName componentName: Name, of family: Family, packageConfiguration: PackageConfiguration) -> String {
         var name = componentName.given
 

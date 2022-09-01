@@ -12,7 +12,11 @@ public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncod
 
     public func fileWrapper(for document: PhoenixDocument) throws -> FileWrapper {
         let jsonEncoder = JSONEncoder()
-        jsonEncoder.outputFormatting = [.sortedKeys, .prettyPrinted]
+        if #available(macOS 10.13, *) {
+            jsonEncoder.outputFormatting = [.sortedKeys, .prettyPrinted]
+        } else {
+            jsonEncoder.outputFormatting = [.prettyPrinted]
+        }
 
         let mainFolderWrapper = FileWrapper(directoryWithFileWrappers: [:])
 

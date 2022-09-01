@@ -4,7 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var viewModel: ViewModel = .init()
     @EnvironmentObject private var store: PhoenixDocumentStore
-    private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
+    private let familyFolderNameProvider: FamilyFolderNameProviderProtocol = FamilyFolderNameProvider()
 
     var body: some View {
         HSplitView {
@@ -88,6 +88,7 @@ struct ContentView: View {
             onModuleTypeSwitchedOff: { store.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
             moduleTypeTitle: { component.modules[$0]?.rawValue ?? "undefined" },
             onSelectionOfLibraryTypeForModuleType: { store.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
+            onGenerateDemoAppProject: { viewModel.onGenerateDemoProject(for: component, from: store.document.wrappedValue, ashFileURL: store.fileURL) },
             onRemove: {
                 guard let name = viewModel.selectedComponentName else { return }
                 store.removeComponent(withName: name)
