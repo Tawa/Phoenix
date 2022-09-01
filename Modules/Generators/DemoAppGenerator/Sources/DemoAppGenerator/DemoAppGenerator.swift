@@ -1,21 +1,25 @@
 import DemoAppGeneratorContract
 import Package
 import PackageGeneratorContract
+import PackagePathProviderContract
 import Foundation
 import RelativeURLProviderContract
 
 public struct DemoAppGenerator: DemoAppGeneratorProtocol {
-    private let packageNameProvider: PackageNameProviding
     private let packageGenerator: PackageGeneratorProtocol
+    private let packageNameProvider: PackageNameProviding
+    private let packagePathProvider: PackagePathProviding
     private let relativeURLProvider: RelativeURLProviding
     private let fileManager: FileManager
     
-    public init(packageNameProvider: PackageNameProviding,
-                packageGenerator: PackageGeneratorProtocol,
+    public init(packageGenerator: PackageGeneratorProtocol,
+                packageNameProvider: PackageNameProviding,
+                packagePathProvider: PackagePathProviding,
                 relativeURLProvider: RelativeURLProviding,
                 fileManager: FileManager = .default) {
-        self.packageNameProvider = packageNameProvider
         self.packageGenerator = packageGenerator
+        self.packageNameProvider = packageNameProvider
+        self.packagePathProvider = packagePathProvider
         self.relativeURLProvider = relativeURLProvider
         self.fileManager = fileManager
     }
@@ -36,6 +40,28 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
             resultURL = resultURL.deletingLastPathComponent()
         }
         
+        let modulesRelativePath = relativeURLProvider.path(for: url, relativeURL: relativeURL)
+
+        let dependencies: [Dependency] = getAllDependencies(forComponent: component,
+                                                            families: families,
+                                                            projectConfiguration: projectConfiguration,
+                                                            modulesRelativePath: modulesRelativePath)
+        
+//        let dependencies: [Dependency] = [
+//            .module(path: "../../../../HelloFresh/Modules/Features/ActionSheetFeature",
+//                    name: "ActionSheetFeature"),
+//            .module(path: "../../../../HelloFresh/Modules/Contracts/Features/ActionSheetFeatureContract",
+//                    name: "ActionSheetFeatureContract"),
+//            .module(path: "../../../../HelloFresh/Modules/Support/HFNavigator",
+//                    name: "HFNavigator"),
+//            .module(path: "../../../../HelloFresh/Modules/Contracts/Support/HFNavigatorContract",
+//                    name: "HFNavigatorContract"),
+//            .module(path: "../../../../HelloFresh/Modules/Mocks/Support/HFNavigatorMock",
+//                    name: "HFNavigatorMock"),
+//            .module(path: "../../../../HelloFresh/Modules/Support/HxD", name: "HxD")
+//        ]
+
+        
         try copyProjectFilesIfNecessary(named: name, url: resultURL)
         try generateXcodeProj(named: name, url: resultURL)
         try generateDependenciesPackage(named: name,
@@ -43,8 +69,12 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
                                         of: family,
                                         families: families,
                                         projectConfiguration: projectConfiguration,
+                                        dependencies: dependencies,
                                         at: resultURL)
-        try generatePBXProjectFile(forComponent: component, named: name, url: resultURL)
+        try generatePBXProjectFile(forComponent: component,
+                                   named: name,
+                                   dependencies: dependencies,
+                                   url: resultURL)
     }
     
     func generateXcodeProj(
@@ -62,9 +92,12 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
     func generatePBXProjectFile(
         forComponent component: Component,
         named name: String,
+        dependencies: [Dependency],
         url: URL) throws
     {
-        guard let pbxString = pbxProjectContent(forComponent: component, named: name)
+        guard let pbxString = pbxProjectContent(forComponent: component,
+                                                named: name,
+                                                dependencies: dependencies)
         else { return }
         
         let finalURL = url
@@ -80,30 +113,14 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
                                      of family: Family,
                                      families: [ComponentsFamily],
                                      projectConfiguration: ProjectConfiguration,
+                                     dependencies: [Dependency],
                                      at url: URL) throws {
         let dependenciesPackageName: String = "Dependencies"
         let resultURL = url
             .appendingPathComponent("\(name)DemoApp")
             .appendingPathComponent(dependenciesPackageName)
-        
-        let componentDependencies: [Dependency] = getAllDependencies(forComponent: component,
-                                                                     families: families,
-                                                                     projectConfiguration: projectConfiguration)
-        
-        let dependencies: [Dependency] = [
-            .module(path: "../../../../HelloFresh/Modules/Features/ActionSheetFeature",
-                    name: "ActionSheetFeature"),
-            .module(path: "../../../../HelloFresh/Modules/Contracts/Features/ActionSheetFeatureContract",
-                    name: "ActionSheetFeatureContract"),
-            .module(path: "../../../../HelloFresh/Modules/Support/HFNavigator",
-                    name: "HFNavigator"),
-            .module(path: "../../../../HelloFresh/Modules/Contracts/Support/HFNavigatorContract",
-                    name: "HFNavigatorContract"),
-            .module(path: "../../../../HelloFresh/Modules/Mocks/Support/HFNavigatorMock",
-                    name: "HFNavigatorMock"),
-            .module(path: "../../../../HelloFresh/Modules/Support/HxD", name: "HxD")
-        ]
-        let package = Package(name: name,
+
+        let package = Package(name: dependenciesPackageName,
                               iOSVersion: .v15,
                               macOSVersion: .v12,
                               products: [
@@ -124,32 +141,22 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
     
     func getAllDependencies(forComponent component: Component,
                             families: [ComponentsFamily],
-                            projectConfiguration: ProjectConfiguration) -> [Dependency] {
+                            projectConfiguration: ProjectConfiguration,
+                            modulesRelativePath: String) -> [Dependency] {
         var dependenciesDictionary: [String: Dependency] = [:]
         addDependencies(forComponent: component,
                         families: families,
                         projectConfiguration: projectConfiguration,
-                        dependenciesDictionary: &dependenciesDictionary)
+                        dependenciesDictionary: &dependenciesDictionary,
+                        modulesRelativePath: modulesRelativePath)
         return Array(dependenciesDictionary.values)
-        //        component.dependencies.map { dependencyType in
-        //           switch dependencyType {
-        //           case let .local(dependency):
-        //               return .module(path: packagePathProvider,
-        //                              name: packageNameProvider.packageName(forComponentName: dependency.name,
-        //                                                                    of: <#T##Family#>,
-        //                                                                    packageConfiguration: dependency.targetTypes))
-        //           case let .remote(dependency):
-        //               return .external(url: dependency.url,
-        //                                name: dependency.name,
-        //                                description: dependency.version)
-        //           }
-        //        }
     }
     
     func addDependencies(forComponent component: Component,
                          families: [ComponentsFamily],
                          projectConfiguration: ProjectConfiguration,
-                         dependenciesDictionary: inout [String: Dependency]) {
+                         dependenciesDictionary: inout [String: Dependency],
+                         modulesRelativePath: String) {
         guard let family = families.first(where: { $0.family.name == component.name.family })?.family
         else { return }
         component.modules.forEach { (key: String, value: LibraryType) in
@@ -160,10 +167,19 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
                                                             packageConfiguration: packageConfiguration)
             guard dependenciesDictionary[name] == nil
             else { return }
+            
+            let path = self.packagePathProvider.path(for: component.name,
+                                                     of: family,
+                                                     packageConfiguration: packageConfiguration)
+            let resultPath = ["../..", modulesRelativePath, path].joined(separator: "/")
+            
+            dependenciesDictionary[name] = .module(path: resultPath, name: name)
         }
     }
     
-    func pbxProjectContent(forComponent component: Component, named name: String) -> String? {
+    func pbxProjectContent(forComponent component: Component,
+                           named name: String,
+                           dependencies: [Dependency]) -> String? {
         guard
             let resourcesPath = Bundle.module.resourcePath,
             let data = fileManager.contents(atPath: resourcesPath + "/Templates/pbxprojecttemplate"),
@@ -173,19 +189,6 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
         let packageNameKey: String = "[[PACKAGE_NAME]]"
         let packageNameValue: String = name
         
-        let dependencies: [Dependency] = [
-            .module(path: "../../../../HelloFresh/Modules/Features/ActionSheetFeature",
-                    name: "ActionSheetFeature"),
-            .module(path: "../../../../HelloFresh/Modules/Contracts/Features/ActionSheetFeatureContract",
-                    name: "ActionSheetFeatureContract"),
-            .module(path: "../../../../HelloFresh/Modules/Support/HFNavigator",
-                    name: "HFNavigator"),
-            .module(path: "../../../../HelloFresh/Modules/Contracts/Support/HFNavigatorContract",
-                    name: "HFNavigatorContract"),
-            .module(path: "../../../../HelloFresh/Modules/Mocks/Support/HFNavigatorMock",
-                    name: "HFNavigatorMock"),
-            .module(path: "../../../../HelloFresh/Modules/Support/HxD", name: "HxD")
-        ]
         var current: Int = 0
         let dependenciesMap: [(id: String, name: String, path: String)] = dependencies.compactMap { dependency -> (id: String, name: String, path: String)? in
             switch dependency {
