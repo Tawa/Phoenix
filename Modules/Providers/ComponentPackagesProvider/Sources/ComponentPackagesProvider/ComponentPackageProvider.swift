@@ -10,14 +10,14 @@ extension Sequence where Element: Hashable {
 }
 
 public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
-    private let packageNameProvider: PackageNameProviding
-    private let packageFolderNameProvider: PackageFolderNameProviding
-    private let packagePathProvider: PackagePathProviding
+    private let packageNameProvider: PackageNameProviderProtocol
+    private let packageFolderNameProvider: PackageFolderNameProviderProtocol
+    private let packagePathProvider: PackagePathProviderProtocol
     private let swiftVersion: String
     
-    public init(packageNameProvider: PackageNameProviding,
-                packageFolderNameProvider: PackageFolderNameProviding,
-                packagePathProvider: PackagePathProviding,
+    public init(packageNameProvider: PackageNameProviderProtocol,
+                packageFolderNameProvider: PackageFolderNameProviderProtocol,
+                packagePathProvider: PackagePathProviderProtocol,
                 swiftVersion: String) {
         self.packageNameProvider = packageNameProvider
         self.packageFolderNameProvider = packageFolderNameProvider

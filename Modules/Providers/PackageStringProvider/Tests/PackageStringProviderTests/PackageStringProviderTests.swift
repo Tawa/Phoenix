@@ -1,11 +1,79 @@
 import XCTest
+import Package
 @testable import PackageStringProvider
 
 final class PackageStringProviderTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(PackageStringProvider().text, "Hello, World!")
+    
+    func testPackage() {
+        // Given
+        let package = Package(name: "HomeService",
+                              iOSVersion: nil,
+                              macOSVersion: nil,
+                              products: [
+                                .library(Library(name: "HomeService", type: .undefined, targets: ["HomeService"]))
+                              ],
+                              dependencies: [
+                                .module(path: "../../Contracts/Services/HomeServiceContract", name: "HomeServiceContract"),
+                                .module(path: "../../Contracts/Repositories/HomeRepositoryContract", name: "HomeRepositoryContract"),
+                                .module(path: "../../Support/DI", name: "DI")
+                              ],
+                              targets: [
+                                Target(name: "HomeService",
+                                       dependencies: [
+                                        .module(path: "../../Contracts/Services/HomeServiceContract", name: "HomeServiceContract"),
+                                        .module(path: "../../Contracts/Repositories/HomeRepositoryContract", name: "HomeRepositoryContract"),
+                                        .module(path: "../../Support/DI", name: "DI")
+                                       ],
+                                       isTest: false,
+                                      resources: []),
+                                Target(name: "HomeServiceTests",
+                                       dependencies: [ .module(path: "", name: "HomeService") ],
+                                       isTest: true,
+                                      resources: [])
+                              ],
+                              swiftVersion: "5.7")
+
+        let sut = PackageStringProvider()
+
+        // When
+        let packageString = sut.string(for: package)
+
+        // Then
+        XCTAssertEqual(packageString, """
+// swift-tools-version: 5.7
+
+import PackageDescription
+
+let package = Package(
+    name: "HomeService",
+    products: [
+        .library(
+            name: "HomeService",
+            targets: ["HomeService"])
+    ],
+    dependencies: [
+        .package(path: "../../Contracts/Repositories/HomeRepositoryContract"),
+        .package(path: "../../Contracts/Services/HomeServiceContract"),
+        .package(path: "../../Support/DI")
+    ],
+    targets: [
+        .target(
+            name: "HomeService",
+            dependencies: [
+                "HomeRepositoryContract",
+                "HomeServiceContract",
+                "DI"
+            ]
+        ),
+        .testTarget(
+            name: "HomeServiceTests",
+            dependencies: [
+                "HomeService"
+            ]
+        )
+    ]
+)
+
+""")
     }
 }

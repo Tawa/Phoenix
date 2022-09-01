@@ -1,6 +1,6 @@
 import Package
 
-public protocol PackagePathProviding {
+public protocol PackagePathProviderProtocol {
     func path(for name: Name,
               of family: Family,
               packageConfiguration: PackageConfiguration) -> String

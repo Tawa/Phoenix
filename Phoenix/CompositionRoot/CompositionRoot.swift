@@ -58,28 +58,28 @@ extension Container {
     }
     
     static let familyFolderNameProvider = Factory {
-        FamilyFolderNameProvider() as FamilyFolderNameProviding
+        FamilyFolderNameProvider() as FamilyFolderNameProviderProtocol
     }
     
     static let packageNameProvider = Factory {
-        PackageNameProvider() as PackageNameProviding
+        PackageNameProvider() as PackageNameProviderProtocol
     }
     
     static let packageStringProvider = Factory {
-        PackageStringProvider() as PackageStringProviding
+        PackageStringProvider() as PackageStringProviderProtocol
     }
     
     static let packageFolderNameProvider = Factory {
         PackageFolderNameProvider(
             defaultFolderNameProvider: Container.familyFolderNameProvider()
-        ) as PackageFolderNameProviding
+        ) as PackageFolderNameProviderProtocol
     }
     
     static let packagePathProvider = Factory {
         PackagePathProvider(
             packageFolderNameProvider: Container.packageFolderNameProvider(),
             packageNameProvider: Container.packageNameProvider()
-        ) as PackagePathProviding
+        ) as PackagePathProviderProtocol
     }
     
     static let componentPackageProvider = ParameterFactory { (params: String) in

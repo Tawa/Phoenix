@@ -5,10 +5,10 @@ import Foundation
 
 public struct PackageGenerator: PackageGeneratorProtocol {
     let fileManager: FileManager
-    let packageStringProvider: PackageStringProviding
+    let packageStringProvider: PackageStringProviderProtocol
 
     public init(fileManager: FileManager,
-                packageStringProvider: PackageStringProviding) {
+                packageStringProvider: PackageStringProviderProtocol) {
         self.fileManager = fileManager
         self.packageStringProvider = packageStringProvider
     }

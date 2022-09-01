@@ -4,7 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var viewModel: ViewModel = .init()
     @EnvironmentObject private var store: PhoenixDocumentStore
-    private let familyFolderNameProvider: FamilyFolderNameProviding = FamilyFolderNameProvider()
+    private let familyFolderNameProvider: FamilyFolderNameProviderProtocol = FamilyFolderNameProvider()
 
     var body: some View {
         HSplitView {

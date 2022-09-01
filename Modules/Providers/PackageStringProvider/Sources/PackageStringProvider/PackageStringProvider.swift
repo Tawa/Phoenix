@@ -1,7 +1,7 @@
 import Package
 import PackageStringProviderContract
 
-public struct PackageStringProvider: PackageStringProviding {
+public struct PackageStringProvider: PackageStringProviderProtocol {
     
     public init() {
         

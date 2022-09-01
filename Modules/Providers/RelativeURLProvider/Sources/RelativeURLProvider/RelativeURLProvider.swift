@@ -8,7 +8,7 @@ extension String {
     }
 }
 
-public struct RelativeURLProvider: RelativeURLProviding {
+public struct RelativeURLProvider: RelativeURLProviderProtocol {
     public init() {
         
     }

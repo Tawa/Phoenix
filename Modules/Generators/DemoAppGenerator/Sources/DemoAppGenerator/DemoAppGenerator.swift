@@ -7,15 +7,15 @@ import RelativeURLProviderContract
 
 public struct DemoAppGenerator: DemoAppGeneratorProtocol {
     private let packageGenerator: PackageGeneratorProtocol
-    private let packageNameProvider: PackageNameProviding
-    private let packagePathProvider: PackagePathProviding
-    private let relativeURLProvider: RelativeURLProviding
+    private let packageNameProvider: PackageNameProviderProtocol
+    private let packagePathProvider: PackagePathProviderProtocol
+    private let relativeURLProvider: RelativeURLProviderProtocol
     private let fileManager: FileManager
     
     public init(packageGenerator: PackageGeneratorProtocol,
-                packageNameProvider: PackageNameProviding,
-                packagePathProvider: PackagePathProviding,
-                relativeURLProvider: RelativeURLProviding,
+                packageNameProvider: PackageNameProviderProtocol,
+                packagePathProvider: PackagePathProviderProtocol,
+                relativeURLProvider: RelativeURLProviderProtocol,
                 fileManager: FileManager = .default) {
         self.packageGenerator = packageGenerator
         self.packageNameProvider = packageNameProvider

@@ -1,11 +1,11 @@
 import Package
 import PackagePathProviderContract
 
-public struct PackagePathProvider: PackagePathProviding {
-    private let packageFolderNameProvider: PackageFolderNameProviding
-    private let packageNameProvider: PackageNameProviding
+public struct PackagePathProvider: PackagePathProviderProtocol {
+    private let packageFolderNameProvider: PackageFolderNameProviderProtocol
+    private let packageNameProvider: PackageNameProviderProtocol
     
-    public init(packageFolderNameProvider: PackageFolderNameProviding, packageNameProvider: PackageNameProviding) {
+    public init(packageFolderNameProvider: PackageFolderNameProviderProtocol, packageNameProvider: PackageNameProviderProtocol) {
         self.packageFolderNameProvider = packageFolderNameProvider
         self.packageNameProvider = packageNameProvider
     }

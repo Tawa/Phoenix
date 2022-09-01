@@ -1,11 +1,11 @@
-public protocol PackageFolderNameProviding {
+public protocol PackageFolderNameProviderProtocol {
     func folderName(for name: Name, of family: Family) -> String
 }
 
-public struct PackageFolderNameProvider: PackageFolderNameProviding {
-    public let defaultFolderNameProvider: FamilyFolderNameProviding
+public struct PackageFolderNameProvider: PackageFolderNameProviderProtocol {
+    public let defaultFolderNameProvider: FamilyFolderNameProviderProtocol
 
-    public init(defaultFolderNameProvider: FamilyFolderNameProviding) {
+    public init(defaultFolderNameProvider: FamilyFolderNameProviderProtocol) {
         self.defaultFolderNameProvider = defaultFolderNameProvider
     }
 

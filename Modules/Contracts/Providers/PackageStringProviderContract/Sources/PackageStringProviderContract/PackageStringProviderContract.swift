@@ -1,5 +1,5 @@
 import Package
 
-public protocol PackageStringProviding {
+public protocol PackageStringProviderProtocol {
     func string(for package: Package) -> String
 }

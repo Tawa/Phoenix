@@ -1,6 +1,6 @@
 @testable import Package
 
-struct PackageNameProviderMock: PackageNameProviding {
+struct PackageNameProviderMock: PackageNameProviderProtocol {
     var value: String
 
     func packageName(forComponentName componentName: Name, of family: Family, packageConfiguration: PackageConfiguration) -> String {

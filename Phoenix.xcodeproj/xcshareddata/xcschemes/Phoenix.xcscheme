@@ -89,6 +89,26 @@
                ReferencedContainer = "container:Modules/Entities/PhoenixDocument">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "PackageStringProviderTests"
+               BuildableName = "PackageStringProviderTests"
+               BlueprintName = "PackageStringProviderTests"
+               ReferencedContainer = "container:Modules/Providers/PackageStringProvider">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "PackagePathProviderTests"
+               BuildableName = "PackagePathProviderTests"
+               BlueprintName = "PackagePathProviderTests"
+               ReferencedContainer = "container:Modules/Providers/PackagePathProvider">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

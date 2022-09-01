@@ -1,8 +1,8 @@
-public protocol FamilyFolderNameProviding {
+public protocol FamilyFolderNameProviderProtocol {
     func folderName(forFamily familyName: String) -> String
 }
 
-public struct FamilyFolderNameProvider: FamilyFolderNameProviding {
+public struct FamilyFolderNameProvider: FamilyFolderNameProviderProtocol {
     public init() {
 
     }
