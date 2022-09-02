@@ -40,28 +40,6 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
             resultURL = resultURL.deletingLastPathComponent()
         }
         
-        let modulesRelativePath = relativeURLProvider.path(for: url, relativeURL: relativeURL)
-
-        let dependencies: [Dependency] = getAllDependencies(forComponent: component,
-                                                            families: families,
-                                                            projectConfiguration: projectConfiguration,
-                                                            modulesRelativePath: modulesRelativePath)
-        
-//        let dependencies: [Dependency] = [
-//            .module(path: "../../../../HelloFresh/Modules/Features/ActionSheetFeature",
-//                    name: "ActionSheetFeature"),
-//            .module(path: "../../../../HelloFresh/Modules/Contracts/Features/ActionSheetFeatureContract",
-//                    name: "ActionSheetFeatureContract"),
-//            .module(path: "../../../../HelloFresh/Modules/Support/HFNavigator",
-//                    name: "HFNavigator"),
-//            .module(path: "../../../../HelloFresh/Modules/Contracts/Support/HFNavigatorContract",
-//                    name: "HFNavigatorContract"),
-//            .module(path: "../../../../HelloFresh/Modules/Mocks/Support/HFNavigatorMock",
-//                    name: "HFNavigatorMock"),
-//            .module(path: "../../../../HelloFresh/Modules/Support/HxD", name: "HxD")
-//        ]
-
-        
         try copyProjectFilesIfNecessary(named: name, url: resultURL)
         try generateXcodeProj(named: name, url: resultURL)
         try generateDependenciesPackage(named: name,
@@ -69,12 +47,14 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
                                         of: family,
                                         families: families,
                                         projectConfiguration: projectConfiguration,
-                                        dependencies: dependencies,
-                                        at: resultURL)
+                                        at: resultURL,
+                                        relativeURL: relativeURL)
         try generatePBXProjectFile(forComponent: component,
                                    named: name,
-                                   dependencies: dependencies,
-                                   url: resultURL)
+                                   families: families,
+                                   projectConfiguration: projectConfiguration,
+                                   url: resultURL,
+                                   relativeURL: relativeURL)
     }
     
     func generateXcodeProj(
@@ -92,18 +72,26 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
     func generatePBXProjectFile(
         forComponent component: Component,
         named name: String,
-        dependencies: [Dependency],
-        url: URL) throws
+        families: [ComponentsFamily],
+        projectConfiguration: ProjectConfiguration,
+        url: URL,
+        relativeURL: URL) throws
     {
-        guard let pbxString = pbxProjectContent(forComponent: component,
-                                                named: name,
-                                                dependencies: dependencies)
-        else { return }
-        
         let finalURL = url
             .appendingPathComponent("\(name)DemoApp")
             .appendingPathComponent("\(name)DemoApp.xcodeproj")
             .appendingPathComponent("project.pbxproj")
+
+        let modulesRelativePath = relativeURLProvider.path(for: finalURL.deletingLastPathComponent(), relativeURL: relativeURL)
+        let dependencies: [Dependency] = getAllDependencies(forComponent: component,
+                                                            families: families,
+                                                            projectConfiguration: projectConfiguration,
+                                                            modulesRelativePath: modulesRelativePath)
+
+        guard let pbxString = pbxProjectContent(forComponent: component,
+                                                named: name,
+                                                dependencies: dependencies)
+        else { return }
         
         try pbxString.data(using: .utf8)?.write(to: finalURL)
     }
@@ -113,12 +101,18 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
                                      of family: Family,
                                      families: [ComponentsFamily],
                                      projectConfiguration: ProjectConfiguration,
-                                     dependencies: [Dependency],
-                                     at url: URL) throws {
+                                     at url: URL,
+                                     relativeURL: URL) throws {
         let dependenciesPackageName: String = "Dependencies"
         let resultURL = url
             .appendingPathComponent("\(name)DemoApp")
             .appendingPathComponent(dependenciesPackageName)
+        
+        let modulesRelativePath = relativeURLProvider.path(for: resultURL, relativeURL: relativeURL)
+        let dependencies: [Dependency] = getAllDependencies(forComponent: component,
+                                                            families: families,
+                                                            projectConfiguration: projectConfiguration,
+                                                            modulesRelativePath: modulesRelativePath)
 
         let package = Package(name: dependenciesPackageName,
                               iOSVersion: .v15,
@@ -171,7 +165,7 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
             let path = self.packagePathProvider.path(for: component.name,
                                                      of: family,
                                                      packageConfiguration: packageConfiguration)
-            let resultPath = ["../..", modulesRelativePath, path].joined(separator: "/")
+            let resultPath = [modulesRelativePath, path].joined(separator: "/")
             
             dependenciesDictionary[name] = .module(path: resultPath, name: name)
             
