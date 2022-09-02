@@ -259,6 +259,10 @@ struct ContentView: View {
                     Image(systemName: "shippingbox.fill")
                     Text("Generate")
                 }.keyboardShortcut(.init("R"), modifiers: .command)
+                Button(action: { viewModel.onSyncPBXProj(for: store.document.wrappedValue, ashFileURL: store.fileURL) }) {
+                    Image(systemName: "arrow.clockwise")
+                    Text("Sync Xcode Project")
+                }.keyboardShortcut(.init("R"), modifiers: [.command, .shift])
             }
         }.frame(maxWidth: .infinity)
     }

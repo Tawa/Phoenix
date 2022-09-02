@@ -55,6 +55,9 @@
 		B2BDAE5C28C11D4F0036FA9D /* PackagePathProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2BDAE5B28C11D4F0036FA9D /* PackagePathProvider */; };
 		B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5928BAC12200848D93 /* PackageGenerator */; };
 		B2CC2B5C28BAC21900848D93 /* PackageStringProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5B28BAC21900848D93 /* PackageStringProvider */; };
+		B2F5B85028C142BF00282672 /* PBXProjectSyncerContract in Resources */ = {isa = PBXBuildFile; fileRef = B2F5B84F28C142BF00282672 /* PBXProjectSyncerContract */; };
+		B2F5B85328C142D900282672 /* PBXProjectSyncer in Resources */ = {isa = PBXBuildFile; fileRef = B2F5B85228C142D900282672 /* PBXProjectSyncer */; };
+		B2F5B85528C143A600282672 /* PBXProjectSyncer in Frameworks */ = {isa = PBXBuildFile; productRef = B2F5B85428C143A600282672 /* PBXProjectSyncer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -135,6 +138,8 @@
 		B2BDAE5828C118570036FA9D /* ComponentPackagesProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ComponentPackagesProvider; sourceTree = "<group>"; };
 		B2CC2B5D28BB983D00848D93 /* PackagePathProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackagePathProviderContract; sourceTree = "<group>"; };
 		B2CC2B5E28BB984B00848D93 /* PackagePathProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackagePathProvider; sourceTree = "<group>"; };
+		B2F5B84F28C142BF00282672 /* PBXProjectSyncerContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PBXProjectSyncerContract; sourceTree = "<group>"; };
+		B2F5B85228C142D900282672 /* PBXProjectSyncer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PBXProjectSyncer; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				388B77F92857D4CE0038D4F4 /* DocumentCoder in Frameworks */,
+				B2F5B85528C143A600282672 /* PBXProjectSyncer in Frameworks */,
 				388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */,
 				B2BDAE5A28C11AF00036FA9D /* ComponentPackagesProvider in Frameworks */,
 				B2BDAE5C28C11D4F0036FA9D /* PackagePathProvider in Frameworks */,
@@ -166,6 +172,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07FFE245D188023276EF6C67 /* PhoenixTestGroup */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = PhoenixTestGroup;
+			path = PhoenixTestGroup;
+			sourceTree = "<group>";
+		};
 		3873E5972804C509000BCB03 = {
 			isa = PBXGroup;
 			children = (
@@ -255,6 +269,7 @@
 				B22AFDA428B9507500C471A4 /* Generators */,
 				B2A5359228B80CD6002AF707 /* Modules.ash */,
 				38BCCC86285490E600E928CA /* Providers */,
+				B2F5B85128C142D900282672 /* Syncers */,
 				38BDE16428665DAB00275947 /* Views */,
 			);
 			path = Modules;
@@ -275,6 +290,7 @@
 				388B77F22857D46C0038D4F4 /* Coders */,
 				B22AFDA128B9506000C471A4 /* Generators */,
 				38BCCC84285490E600E928CA /* Providers */,
+				B2F5B84E28C142BF00282672 /* Syncers */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -376,6 +392,14 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		3DBE74E709CA2155F0ED52DC /* PhoenixTestGroup */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = PhoenixTestGroup;
+			path = PhoenixTestGroup;
+			sourceTree = "<group>";
+		};
 		B22AFDA128B9506000C471A4 /* Generators */ = {
 			isa = PBXGroup;
 			children = (
@@ -392,6 +416,22 @@
 				B22AFDA528B9507500C471A4 /* DemoAppGenerator */,
 			);
 			path = Generators;
+			sourceTree = "<group>";
+		};
+		B2F5B84E28C142BF00282672 /* Syncers */ = {
+			isa = PBXGroup;
+			children = (
+				B2F5B84F28C142BF00282672 /* PBXProjectSyncerContract */,
+			);
+			path = Syncers;
+			sourceTree = "<group>";
+		};
+		B2F5B85128C142D900282672 /* Syncers */ = {
+			isa = PBXGroup;
+			children = (
+				B2F5B85228C142D900282672 /* PBXProjectSyncer */,
+			);
+			path = Syncers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -423,6 +463,7 @@
 				B2CC2B5B28BAC21900848D93 /* PackageStringProvider */,
 				B2BDAE5928C11AF00036FA9D /* ComponentPackagesProvider */,
 				B2BDAE5B28C11D4F0036FA9D /* PackagePathProvider */,
+				B2F5B85428C143A600282672 /* PBXProjectSyncer */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -500,8 +541,10 @@
 				B22AFDA328B9506000C471A4 /* DemoAppGeneratorContract in Resources */,
 				3873E5AD2804C50A000BCB03 /* Preview Assets.xcassets in Resources */,
 				38BCCC89285490E600E928CA /* AppVersionProviderContract in Resources */,
+				B2F5B85328C142D900282672 /* PBXProjectSyncer in Resources */,
 				38BCCC8A285490E600E928CA /* AppVersionProvider in Resources */,
 				3873E5AA2804C50A000BCB03 /* Assets.xcassets in Resources */,
+				B2F5B85028C142BF00282672 /* PBXProjectSyncerContract in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -896,6 +939,10 @@
 		B2CC2B5B28BAC21900848D93 /* PackageStringProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PackageStringProvider;
+		};
+		B2F5B85428C143A600282672 /* PBXProjectSyncer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PBXProjectSyncer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

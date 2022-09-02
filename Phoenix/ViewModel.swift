@@ -5,6 +5,8 @@ import SwiftUI
 import DemoAppGeneratorContract
 import PackageGeneratorContract
 import ComponentPackagesProviderContract
+import PBXProjectSyncerContract
+import UniformTypeIdentifiers
 
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }
@@ -145,13 +147,33 @@ class ViewModel: ObservableObject {
         }
     }
     
-    private func openFolderSelection(at fileURL: URL?) -> URL? {
+    func onSyncPBXProj(for document: PhoenixDocument, ashFileURL: URL?) {
+        guard let ashFileURL = ashFileURL else {
+            alertState = .errorString("File must be saved before packages can be generated.")
+            return
+        }
+        
+        guard
+            let xcodeProj = openFolderSelection(at: ashFileURL, fileExtensions: ["xcodeproj"])
+        else { return }
+        
+        let syncer = Container.pbxProjSyncer()
+        do {
+            try syncer.sync(document: document, at: ashFileURL, withProjectAt: xcodeProj)
+        } catch {
+            alertState = .errorString(error.localizedDescription)
+        }
+    }
+    
+    private func openFolderSelection(at fileURL: URL?, fileExtensions: [String]? = nil) -> URL? {
         let openPanel = NSOpenPanel()
         openPanel.directoryURL = fileURL?.deletingLastPathComponent()
         openPanel.allowsMultipleSelection = false
         openPanel.canChooseDirectories = true
-        openPanel.canChooseFiles = false
+        openPanel.canChooseFiles = true
         openPanel.canCreateDirectories = true
+        openPanel.allowedContentTypes = []
+        
         openPanel.runModal()
         return openPanel.url
     }
