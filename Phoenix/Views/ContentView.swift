@@ -31,7 +31,11 @@ struct ContentView: View {
                         Spacer()
                     }.frame(minWidth: 750)
                 }
-            }.sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
+            }.alert(item: $viewModel.alertState, content: { alertState in
+                Alert(title: Text("Error"),
+                      message: Text(alertState.title),
+                      dismissButton: .default(Text("Ok")))
+            }).sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
                 newComponentPopover(state: state)
             }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
                 familyPopover(family: family)
@@ -45,19 +49,17 @@ struct ContentView: View {
                    content: {
                 GeneratePopoverView(
                     viewModel: GeneratePopoverViewModel(
-                        modulesPath: "path/to/modules",
-                        xcodeProjectPath: "path/to/Project.xcodeproj",
-                        onOpenModulesFolder: {},
-                        onOpenXcodeProject: {},
-                        onGenerate: { viewModel.onGenerate(document: store.document.wrappedValue, withFileURL: store.fileURL) },
+                        modulesPath: viewModel.modulesFolderURL?.path ?? "path/to/modules",
+                        xcodeProjectPath: viewModel.xcodeProjectURL?.path ?? "path/to/Project.xcodeproj",
+                        onOpenModulesFolder: viewModel.onOpenModulesFolder,
+                        onOpenXcodeProject: viewModel.onOpenXcodeProject,
+                        onGenerate: { viewModel.onGenerate(document: store.document.wrappedValue) },
                         onDismiss: viewModel.onDismissGeneratePopover)
                 )
             })
-            .alert(item: $viewModel.alertState, content: { alertState in
-                Alert(title: Text("Error"),
-                      message: Text(alertState.title),
-                      dismissButton: .default(Text("Ok")))
-            })
+        }
+        .onAppear {
+            viewModel.dataStore = store
         }
     }
     
@@ -270,12 +272,14 @@ struct ContentView: View {
                 }.keyboardShortcut("A", modifiers: [.command, .shift])
 
                 Spacer()
-
-                Button(action: viewModel.onGeneratePopoverButton) {
+                
+                Button(action: {
+                    viewModel.onGeneratePopoverButton(fileURL: store.fileURL)
+                }, label: {
                     Image(systemName: "shippingbox.fill")
                     Text("Generate")
-                }.keyboardShortcut(.init("R"), modifiers: .command)
-                Button(action: viewModel.onGeneratePopoverButton) {
+                }).keyboardShortcut(.init("R"), modifiers: .command)
+                Button(action: {}) {
                     Image(systemName: "play")
                 }
                 .disabled(true)

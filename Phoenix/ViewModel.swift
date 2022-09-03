@@ -26,6 +26,10 @@ enum AlertState: Hashable, Identifiable {
     }
 }
 
+protocol ViewModelDataStore: AnyObject {
+    var fileURL: URL? { get }
+}
+
 class ViewModel: ObservableObject {
     // MARK: - Selection
     @Published var selectedComponentName: Name? = nil
@@ -37,9 +41,18 @@ class ViewModel: ObservableObject {
     @Published var showingDependencyPopover: Bool = false
     @Published var alertState: AlertState? = nil
     @Published var showingGeneratePopover: Bool = false
+    @Published var modulesFolderURL: URL? = nil {
+        didSet { print("modulesFolderURL didSet: \(modulesFolderURL)") }
+    }
+    @Published var xcodeProjectURL: URL? = nil {
+        didSet { print("xcodeProjectURL didSet: \(xcodeProjectURL)") }
+    }
     
     // MARK: - Filters
     @Published var componentsListFilter: String = ""
+    
+    weak var dataStore: ViewModelDataStore?
+    private var fileURL: URL? { dataStore?.fileURL }
     
     private var pathsCache: [URL: URL] = [:]
     
@@ -89,7 +102,35 @@ class ViewModel: ObservableObject {
         
     }
     
-    func onGeneratePopoverButton() {
+    private func getAccessToURL(file: Bool, completion: (URL) -> Void) {
+        guard let fileURL = fileURL else {
+            alertState = .errorString("File must be saved before packages can be generated.")
+            return
+        }
+        if let url = openFolderSelection(at: fileURL, chooseFiles: file) {
+            completion(url)
+        }
+    }
+    
+    func onOpenModulesFolder() {
+        getAccessToURL(file: false) { url in
+            self.modulesFolderURL = url
+        }
+    }
+    
+    func onOpenXcodeProject() {
+        getAccessToURL(file: true) { url in
+            self.xcodeProjectURL = url
+        }
+    }
+    
+    func onGeneratePopoverButton(fileURL: URL?) {
+        if
+            modulesFolderURL == nil,
+            let fileURL = fileURL,
+            FileManager.default.isDeletableFile(atPath: fileURL.path) {
+            modulesFolderURL = fileURL
+        }
         showingGeneratePopover = true
     }
     
@@ -97,15 +138,16 @@ class ViewModel: ObservableObject {
         showingGeneratePopover = false
     }
     
-    func onGeneratePopoverGenerate(document: PhoenixDocument, withFileURL fileURL: URL?) {
-        onGenerate(document: document, withFileURL: fileURL)
+    func onGeneratePopoverGenerate(document: PhoenixDocument) {
+        onGenerate(document: document)
     }
     
-    func onGenerate(document: PhoenixDocument, withFileURL fileURL: URL?) {
-        guard let fileURL = fileURL else {
-            alertState = .errorString("File must be saved before packages can be generated.")
+    func onGenerate(document: PhoenixDocument) {
+        guard let fileURL = modulesFolderURL else {
+            alertState = .errorString("Could not find path for modules folder.")
             return
         }
+        showingGeneratePopover = false
         let componentExtractor = Container.componentPackagesProvider(document.projectConfiguration.swiftVersion)
         let allFamilies: [Family] = document.families.map { $0.family }
         let packagesWithPath: [PackageWithPath] = document.families.flatMap { componentFamily -> [PackageWithPath] in
@@ -119,14 +161,20 @@ class ViewModel: ObservableObject {
         }
         
         let packagesGenerator: PackageGeneratorProtocol = Container.packageGenerator()
-        guard let folderURL = getPath(for: fileURL) else { return }
+        let folderURL = fileURL
         for packageWithPath in packagesWithPath {
             let url = folderURL.appendingPathComponent(packageWithPath.path, isDirectory: true)
             do {
                 try packagesGenerator.generate(package: packageWithPath.package, at: url)
             } catch {
-                print(error)
+                alertState = .errorString(error.localizedDescription)
             }
+        }
+        
+        if let xcodeProjectURL = xcodeProjectURL {
+            onSyncPBXProj(for: document, ashFileURL: xcodeProjectURL)
+        } else {
+            alertState = .errorString("Xcode Project not set")
         }
     }
     
@@ -135,9 +183,9 @@ class ViewModel: ObservableObject {
             alertState = .errorString("File must be saved before packages can be generated.")
             return
         }
-
+        
         guard
-            let url = openFolderSelection(at: nil)
+            let url = openFolderSelection(at: nil, chooseFiles: true)
         else { return }
         let allFamilies: [Family] = document.families.map { $0.family }
         guard let family = allFamilies.first(where: { $0.name == component.name.family })
@@ -167,7 +215,7 @@ class ViewModel: ObservableObject {
         }
         
         guard
-            let xcodeProj = openFolderSelection(at: ashFileURL, fileExtensions: ["xcodeproj"])
+            let xcodeProj = openFolderSelection(at: ashFileURL, chooseFiles: true)
         else { return }
         
         let syncer = Container.pbxProjSyncer()
@@ -178,26 +226,16 @@ class ViewModel: ObservableObject {
         }
     }
     
-    private func openFolderSelection(at fileURL: URL?, fileExtensions: [String]? = nil) -> URL? {
+    private func openFolderSelection(at fileURL: URL?, chooseFiles: Bool) -> URL? {
         let openPanel = NSOpenPanel()
         openPanel.directoryURL = fileURL?.deletingLastPathComponent()
         openPanel.allowsMultipleSelection = false
-        openPanel.canChooseDirectories = true
-        openPanel.canChooseFiles = true
+        openPanel.canChooseDirectories = !chooseFiles
+        openPanel.canChooseFiles = chooseFiles
         openPanel.canCreateDirectories = true
         openPanel.allowedContentTypes = []
         
         openPanel.runModal()
         return openPanel.url
-    }
-    
-    private func getPath(for fileURL: URL) -> URL? {
-        if let cache = pathsCache[fileURL] {
-            return cache
-        }
-        
-        guard let newURL = openFolderSelection(at: fileURL) else { return nil }
-        pathsCache[fileURL] = newURL
-        return newURL
     }
 }

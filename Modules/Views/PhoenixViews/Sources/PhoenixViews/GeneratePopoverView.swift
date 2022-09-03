@@ -52,7 +52,7 @@ public struct GeneratePopoverView: View {
             
             VStack(alignment: .leading) {
                 HStack {
-                    Button(action: viewModel.onOpenModulesFolder, label: {
+                    Button(action: viewModel.onOpenXcodeProject, label: {
                         Image(systemName: "wrench.and.screwdriver")
                     }).help("Open Xcode Project")
                     Text("Xcode Project")
