@@ -8,8 +8,9 @@ struct ContentView: View {
     private let familyFolderNameProvider: FamilyFolderNameProviderProtocol = FamilyFolderNameProvider()
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             toolbarViews()
+            Divider()
             HSplitView {
                 componentsList()
                 
@@ -39,7 +40,9 @@ struct ContentView: View {
                     viewModel.showingConfigurationPopup = false
                 }.frame(minHeight: 300)
             }
-            .sheet(isPresented: $viewModel.generatePopover, content: {
+            .sheet(isPresented: $viewModel.showingGeneratePopover,
+                   onDismiss: viewModel.onDismissGeneratePopover,
+                   content: {
                 GeneratePopoverView(
                     viewModel: GeneratePopoverViewModel(
                         modulesPath: "path/to/modules",
@@ -265,15 +268,22 @@ struct ContentView: View {
                     Image(systemName: "plus.circle.fill")
                     Text("New Component")
                 }.keyboardShortcut("A", modifiers: [.command, .shift])
+
+                Spacer()
+
                 Button(action: viewModel.onGeneratePopoverButton) {
                     Image(systemName: "shippingbox.fill")
                     Text("Generate")
                 }.keyboardShortcut(.init("R"), modifiers: .command)
                 Button(action: viewModel.onGeneratePopoverButton) {
                     Image(systemName: "play")
-                }.keyboardShortcut(.init("R"), modifiers: [.command, .shift])
+                }
+                .disabled(true)
+                .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
             }
-        }.padding()
+        }
+        .padding()
+        .background(Color.white.opacity(0.1))
     }
     
     // MARK: - Private
