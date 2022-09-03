@@ -112,7 +112,6 @@
 		38BCCC942854A0C000E928CA /* CompositionRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionRoot.swift; sourceTree = "<group>"; };
 		38BCCC9C2854B51700E928CA /* PhoenixDocumentParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentParsingTests.swift; sourceTree = "<group>"; };
 		38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = file_1_0_0.ash; sourceTree = "<group>"; };
-		38BDE16528665DBF00275947 /* DependencyGraphView */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DependencyGraphView; sourceTree = "<group>"; };
 		38C7D13428087FA800E2675B /* Package */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package; sourceTree = "<group>"; };
 		38C7D1482808B35300E2675B /* NewComponentPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewComponentPopover.swift; sourceTree = "<group>"; };
 		38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentDependenciesPopover.swift; sourceTree = "<group>"; };
@@ -172,14 +171,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		07FFE245D188023276EF6C67 /* PhoenixTestGroup */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = PhoenixTestGroup;
-			path = PhoenixTestGroup;
-			sourceTree = "<group>";
-		};
 		3873E5972804C509000BCB03 = {
 			isa = PBXGroup;
 			children = (
@@ -270,7 +261,6 @@
 				B2A5359228B80CD6002AF707 /* Modules.ash */,
 				38BCCC86285490E600E928CA /* Providers */,
 				B2F5B85128C142D900282672 /* Syncers */,
-				38BDE16428665DAB00275947 /* Views */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -335,14 +325,6 @@
 			path = Files;
 			sourceTree = "<group>";
 		};
-		38BDE16428665DAB00275947 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				38BDE16528665DBF00275947 /* DependencyGraphView */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		38C7D135280884B000E2675B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -390,14 +372,6 @@
 				38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */,
 			);
 			path = Data;
-			sourceTree = "<group>";
-		};
-		3DBE74E709CA2155F0ED52DC /* PhoenixTestGroup */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = PhoenixTestGroup;
-			path = PhoenixTestGroup;
 			sourceTree = "<group>";
 		};
 		B22AFDA128B9506000C471A4 /* Generators */ = {

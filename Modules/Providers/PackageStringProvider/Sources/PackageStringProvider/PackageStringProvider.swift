@@ -134,9 +134,6 @@ let package = Package(
     }
 
     private func macOSPlatformString(_ macOSVersion: MacOSVersion) -> String {
-        switch macOSVersion {
-        case .v12:
-            return ".macOS(.v12)"
-        }
+        ".macOS(.\(macOSVersion))"
     }
 }
