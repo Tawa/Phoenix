@@ -42,16 +42,49 @@ class ViewModel: ObservableObject {
     @Published var alertState: AlertState? = nil
     @Published var showingGeneratePopover: Bool = false
     @Published var modulesFolderURL: URL? = nil {
-        didSet { print("modulesFolderURL didSet: \(modulesFolderURL)") }
+        didSet {
+            if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
+                modulesFolderURLCache[fileURL.path] = modulesFolderURL.path
+            }
+        }
     }
     @Published var xcodeProjectURL: URL? = nil {
-        didSet { print("xcodeProjectURL didSet: \(xcodeProjectURL)") }
+        didSet {
+            if let fileURL = fileURL, let xcodeProjectURL = xcodeProjectURL {
+                xcodeProjectURLCache[fileURL.path] = xcodeProjectURL.path
+            }
+        }
     }
     
+    private var modulesFolderURLCache: [String: String] {
+        get {
+            UserDefaults.standard.object(forKey: "modulesFolderURLCache") as? [String: String] ?? [String: String]()
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "modulesFolderURLCache")
+        }
+    }
+
+    private var xcodeProjectURLCache: [String: String] {
+        get {
+            UserDefaults.standard.object(forKey: "xcodeProjectURLCache") as? [String: String] ?? [String: String]()
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "xcodeProjectURLCache")
+        }
+    }
+
     // MARK: - Filters
     @Published var componentsListFilter: String = ""
     
-    weak var dataStore: ViewModelDataStore?
+    weak var dataStore: ViewModelDataStore? {
+        didSet {
+            if let fileURL = dataStore?.fileURL {
+//                modulesFolderURL = modulesFolderURLCache[fileURL.path].flatMap { URL(string: $0) }
+//                xcodeProjectURL = xcodeProjectURLCache[fileURL.path].flatMap { URL(string: $0) }
+            }
+        }
+    }
     private var fileURL: URL? { dataStore?.fileURL }
     
     private var pathsCache: [URL: URL] = [:]
@@ -172,7 +205,7 @@ class ViewModel: ObservableObject {
         }
         
         if let xcodeProjectURL = xcodeProjectURL {
-            onSyncPBXProj(for: document, ashFileURL: xcodeProjectURL)
+            onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL)
         } else {
             alertState = .errorString("Xcode Project not set")
         }
@@ -208,19 +241,15 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func onSyncPBXProj(for document: PhoenixDocument, ashFileURL: URL?) {
-        guard let ashFileURL = ashFileURL else {
+    func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL) {
+        guard let ashFileURL = fileURL else {
             alertState = .errorString("File must be saved before packages can be generated.")
             return
         }
         
-        guard
-            let xcodeProj = openFolderSelection(at: ashFileURL, chooseFiles: true)
-        else { return }
-        
         let syncer = Container.pbxProjSyncer()
         do {
-            try syncer.sync(document: document, at: ashFileURL, withProjectAt: xcodeProj)
+            try syncer.sync(document: document, at: ashFileURL, withProjectAt: xcodeFileURL)
         } catch {
             alertState = .errorString(error.localizedDescription)
         }

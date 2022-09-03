@@ -4,6 +4,9 @@ public struct GeneratePopoverViewModel {
     let modulesPath: String
     let xcodeProjectPath: String
     
+    let hasModulesPath: Bool
+    let hasXcodeProjectPath: Bool
+    
     let onOpenModulesFolder: () -> Void
     let onOpenXcodeProject: () -> Void
     
@@ -13,6 +16,8 @@ public struct GeneratePopoverViewModel {
     public init(
         modulesPath: String,
         xcodeProjectPath: String,
+        hasModulesPath: Bool,
+        hasXcodeProjectPath: Bool,
         onOpenModulesFolder: @escaping () -> Void,
         onOpenXcodeProject: @escaping () -> Void,
         onGenerate: @escaping () -> Void,
@@ -20,6 +25,8 @@ public struct GeneratePopoverViewModel {
     ) {
         self.modulesPath = modulesPath
         self.xcodeProjectPath = xcodeProjectPath
+        self.hasModulesPath = hasModulesPath
+        self.hasXcodeProjectPath = hasXcodeProjectPath
         self.onOpenModulesFolder = onOpenModulesFolder
         self.onOpenXcodeProject = onOpenXcodeProject
         self.onGenerate = onGenerate
@@ -45,7 +52,7 @@ public struct GeneratePopoverView: View {
                 }
                 HStack {
                     Text(viewModel.modulesPath)
-                        .opacity(0.8)
+                        .opacity(viewModel.hasModulesPath ? 1 : 0.2)
                     Spacer()
                 }
             }
@@ -59,7 +66,7 @@ public struct GeneratePopoverView: View {
                 }
                 HStack {
                     Text(viewModel.xcodeProjectPath)
-                        .opacity(0.8)
+                        .opacity(viewModel.hasXcodeProjectPath ? 1 : 0.2)
                     Spacer()
                 }
             }
@@ -87,6 +94,8 @@ struct GeneratePopoverView_Previews: PreviewProvider {
             viewModel: GeneratePopoverViewModel(
                 modulesPath: "path/to/modules",
                 xcodeProjectPath: "path/to/Project.xcodeproj",
+                hasModulesPath: true,
+                hasXcodeProjectPath: false,
                 onOpenModulesFolder: {},
                 onOpenXcodeProject: {},
                 onGenerate: {},

@@ -51,6 +51,8 @@ struct ContentView: View {
                     viewModel: GeneratePopoverViewModel(
                         modulesPath: viewModel.modulesFolderURL?.path ?? "path/to/modules",
                         xcodeProjectPath: viewModel.xcodeProjectURL?.path ?? "path/to/Project.xcodeproj",
+                        hasModulesPath: viewModel.modulesFolderURL != nil,
+                        hasXcodeProjectPath: viewModel.xcodeProjectURL != nil,
                         onOpenModulesFolder: viewModel.onOpenModulesFolder,
                         onOpenXcodeProject: viewModel.onOpenXcodeProject,
                         onGenerate: { viewModel.onGenerate(document: store.document.wrappedValue) },
@@ -279,10 +281,10 @@ struct ContentView: View {
                     Image(systemName: "shippingbox.fill")
                     Text("Generate")
                 }).keyboardShortcut(.init("R"), modifiers: .command)
-                Button(action: {}) {
+                Button(action: { viewModel.onGenerate(document: store.document.wrappedValue) }) {
                     Image(systemName: "play")
                 }
-                .disabled(true)
+                .disabled(viewModel.modulesFolderURL == nil || viewModel.xcodeProjectURL == nil)
                 .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
             }
         }
