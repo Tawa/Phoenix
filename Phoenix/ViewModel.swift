@@ -218,7 +218,7 @@ class ViewModel: ObservableObject {
         }
         
         guard
-            let url = openFolderSelection(at: nil, chooseFiles: true)
+            let url = openFolderSelection(at: nil, chooseFiles: false)
         else { return }
         let allFamilies: [Family] = document.families.map { $0.family }
         guard let family = allFamilies.first(where: { $0.name == component.name.family })
