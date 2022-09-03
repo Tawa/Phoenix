@@ -1,0 +1,16 @@
+{
+  "dependencies" : [
+
+  ],
+  "macOSVersion" : "v12",
+  "modules" : {
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Views",
+    "given" : "Phoenix"
+  },
+  "resources" : [
+
+  ]
+}

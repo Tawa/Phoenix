@@ -36,6 +36,7 @@ class ViewModel: ObservableObject {
     @Published var showingNewComponentPopup: ComponentPopupState? = nil
     @Published var showingDependencyPopover: Bool = false
     @Published var alertState: AlertState? = nil
+    @Published var generatePopover: Bool = false
     
     // MARK: - Filters
     @Published var componentsListFilter: String = ""
@@ -86,6 +87,18 @@ class ViewModel: ObservableObject {
     
     func onDownArrow() {
         
+    }
+    
+    func onGeneratePopoverButton() {
+        generatePopover = true
+    }
+    
+    func onDismissGeneratePopover() {
+        generatePopover = false
+    }
+    
+    func onGeneratePopoverGenerate(document: PhoenixDocument, withFileURL fileURL: URL?) {
+        onGenerate(document: document, withFileURL: fileURL)
     }
     
     func onGenerate(document: PhoenixDocument, withFileURL fileURL: URL?) {
