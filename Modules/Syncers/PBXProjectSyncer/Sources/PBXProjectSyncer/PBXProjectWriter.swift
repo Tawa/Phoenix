@@ -39,26 +39,27 @@ public struct PBXProjectWriter: PBXProjectWriterProtocol {
         let xcodeproj = try XcodeProj(path: sourceRoot)
         let pbxproj = xcodeproj.pbxproj
         if let rootGroup = try pbxproj.rootGroup() {
-            try add(group: group, toGroup: rootGroup, sourceRoot: sourceRoot)
+            try add(group: group, toGroup: rootGroup)
         }
-        try xcodeproj.write(path: sourceRoot)
+        try pbxproj.write(
+            path: Path(xcodeProjectURL.appendingPathComponent("project.pbxproj").path),
+            override: true
+        )
     }
     
-    func add(group: Group, toGroup: PBXGroup, sourceRoot: Path) throws {
+    func add(group: Group, toGroup: PBXGroup) throws {
         guard let newGroup = try getGroup(named: group.name, fromGroup: toGroup)
         else { return }
         
         for child in group.children {
             try add(group: child,
-                    toGroup: newGroup,
-                    sourceRoot: sourceRoot)
+                    toGroup: newGroup)
         }
         
         for package in group.packages {
-            let fileReference = try newGroup.addFile(at: Path(package.path),
-                                                     sourceRoot: Path(),
-                                                     validatePresence: false)
-            fileReference.lastKnownFileType = "wrapper"
+            try newGroup.addFile(at: Path(package.path),
+                                 sourceRoot: Path(),
+                                 validatePresence: false)
         }
     }
     
