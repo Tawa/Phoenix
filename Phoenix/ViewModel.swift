@@ -80,8 +80,14 @@ class ViewModel: ObservableObject {
     weak var dataStore: ViewModelDataStore? {
         didSet {
             if let fileURL = dataStore?.fileURL {
-//                modulesFolderURL = modulesFolderURLCache[fileURL.path].flatMap { URL(string: $0) }
-//                xcodeProjectURL = xcodeProjectURLCache[fileURL.path].flatMap { URL(string: $0) }
+                modulesFolderURL = modulesFolderURLCache[fileURL.path].flatMap {
+                    guard (try? FileManager.default.contentsOfDirectory(atPath: $0)) != nil else { return nil }
+                    return URL(string: $0)
+                }
+                xcodeProjectURL = xcodeProjectURLCache[fileURL.path].flatMap {
+                    guard (try? FileManager.default.contentsOfDirectory(atPath: $0)) != nil else { return nil }
+                    return URL(string: $0)
+                }
             }
         }
     }
@@ -147,7 +153,11 @@ class ViewModel: ObservableObject {
     
     func onOpenModulesFolder() {
         getAccessToURL(file: false) { url in
-            self.modulesFolderURL = url
+            if url.lastPathComponent.hasSuffix(".ash") {
+                self.modulesFolderURL = url.deletingLastPathComponent()
+            } else {
+                self.modulesFolderURL = url
+            }
         }
     }
     
