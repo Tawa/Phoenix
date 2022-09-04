@@ -35,6 +35,7 @@ public struct GeneratePopoverViewModel {
 }
 
 public struct GeneratePopoverView: View {
+    @State private var enableGenerate: Bool = false
     let viewModel: GeneratePopoverViewModel
     
     public init(viewModel: GeneratePopoverViewModel) {
@@ -71,10 +72,13 @@ public struct GeneratePopoverView: View {
                 }
             }
             
+//            Toggle("I don't have uncommited change.", isOn: $enableGenerate)
+//                .foregroundColor(enableGenerate ? nil : .red)
+            
             HStack {
                 Button(action: viewModel.onGenerate) {
                     Text("Generate")
-                }
+                }.disabled(!viewModel.hasModulesPath)
                 Button(action: viewModel.onDismiss) {
                     Text("Cancel")
                 }
