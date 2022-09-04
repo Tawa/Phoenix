@@ -17,7 +17,7 @@ public struct PackagePathProvider: PackagePathProviderProtocol {
             path += containerFolder + "/"
         }
         
-        path += packageFolderNameProvider.folderName(for: name, of: family) + "/"
+        path += packageFolderNameProvider.folderName(for: family) + "/"
         path += packageNameProvider.packageName(forComponentName: name, of: family, packageConfiguration: packageConfiguration)
         
         return path
@@ -38,7 +38,7 @@ public struct PackagePathProvider: PackagePathProviderProtocol {
             path += containerFolder + "/"
         }
         
-        path += packageFolderNameProvider.folderName(for: name, of: family) + "/"
+        path += packageFolderNameProvider.folderName(for: family) + "/"
         path += packageNameProvider.packageName(forComponentName: name, of: family, packageConfiguration: packageConfiguration)
         
         return path

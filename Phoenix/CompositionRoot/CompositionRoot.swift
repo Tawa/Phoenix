@@ -100,7 +100,12 @@ extension Container {
     }
     
     static let pbxProjSyncer = Factory {
-        PBXProjectSyncer() as PBXProjectSyncerProtocol
+        PBXProjectSyncer(
+            packageFolderNameProvider: Container.packageFolderNameProvider(),
+            packageNameProvider: Container.packageNameProvider(),
+            packagePathProvider: Container.packagePathProvider(),
+            projectWriter: PBXProjectWriter()
+        ) as PBXProjectSyncerProtocol
     }
 }
 
