@@ -45,7 +45,8 @@ public struct PBXProjectWriter: PBXProjectWriterProtocol {
     }
     
     func add(group: Group, toGroup: PBXGroup, sourceRoot: Path) throws {
-        let newGroup = try getGroup(named: group.name, fromGroup: toGroup)
+        guard let newGroup = try getGroup(named: group.name, fromGroup: toGroup)
+        else { return }
         
         for child in group.children {
             try add(group: child,
@@ -61,7 +62,8 @@ public struct PBXProjectWriter: PBXProjectWriterProtocol {
         }
     }
     
-    func getGroup(named name: String, fromGroup group: PBXGroup) throws -> PBXGroup {
-        return try group.group(named: name) ?? group.addGroup(named: name).first!
+    func getGroup(named name: String, fromGroup group: PBXGroup) throws -> PBXGroup? {
+        let children: [PBXGroup] = group.children.compactMap { $0 as? PBXGroup }
+        return try children.first(where: { $0.path == name }) ?? group.addGroup(named: name).first
     }
 }
