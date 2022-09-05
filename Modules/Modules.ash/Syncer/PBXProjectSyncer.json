@@ -1,0 +1,82 @@
+{
+  "dependencies" : [
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "Package"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Contract"
+            },
+            "Implementation",
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Implementation"
+          ]
+        }
+      }
+    },
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "PhoenixDocument"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Contract"
+            },
+            "Implementation",
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Implementation"
+          ]
+        }
+      }
+    },
+    {
+      "remote" : {
+        "_0" : {
+          "name" : {
+            "name" : {
+              "_0" : "XcodeProj"
+            }
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            }
+          ],
+          "url" : "https:\/\/github.com\/tuist\/XcodeProj.git",
+          "version" : {
+            "from" : {
+              "version" : "8.8.0"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "modules" : {
+    "Contract" : "undefined",
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Syncer",
+    "given" : "PBXProject"
+  },
+  "resources" : [
+
+  ]
+}

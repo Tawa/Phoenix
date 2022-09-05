@@ -1,5 +1,5 @@
 public protocol PackageFolderNameProviderProtocol {
-    func folderName(for name: Name, of family: Family) -> String
+    func folderName(for family: Family) -> String
 }
 
 public struct PackageFolderNameProvider: PackageFolderNameProviderProtocol {
@@ -9,7 +9,7 @@ public struct PackageFolderNameProvider: PackageFolderNameProviderProtocol {
         self.defaultFolderNameProvider = defaultFolderNameProvider
     }
 
-    public func folderName(for name: Name, of family: Family) -> String {
+    public func folderName(for family: Family) -> String {
         family.folder ?? defaultFolderNameProvider.folderName(forFamily: family.name)
     }
 }

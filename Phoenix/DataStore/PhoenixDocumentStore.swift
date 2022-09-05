@@ -2,7 +2,7 @@ import Package
 import PhoenixDocument
 import SwiftUI
 
-class PhoenixDocumentStore: ObservableObject {
+class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
     let fileURL: URL?
     private(set) var document: Binding<PhoenixDocument>
     

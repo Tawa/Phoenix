@@ -12,7 +12,6 @@ final class RelativeURLProviderTests: XCTestCase {
 
         // When
         let path = sut.path(for: folderURL, relativeURL: relativeURL)
-        print(path)
         // Then
         XCTAssertEqual(path, "../../HelloFresh/Modules")
      }

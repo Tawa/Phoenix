@@ -3,23 +3,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "DependencyGraphView",
+    name: "PhoenixViews",
     platforms: [
         .macOS(.v12)
     ],
     products: [
         .library(
-            name: "DependencyGraphView",
-            targets: ["DependencyGraphView"])
+            name: "PhoenixViews",
+            targets: ["PhoenixViews"])
     ],
     targets: [
         .target(
-            name: "DependencyGraphView"
+            name: "PhoenixViews"
         ),
         .testTarget(
-            name: "DependencyGraphViewTests",
+            name: "PhoenixViewsTests",
             dependencies: [
-                "DependencyGraphView"
+                "PhoenixViews"
             ]
         )
     ]
