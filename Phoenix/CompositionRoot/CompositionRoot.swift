@@ -15,10 +15,12 @@ import PackagePathProviderContract
 import PackagePathProvider
 import PackageStringProviderContract
 import PackageStringProvider
-import RelativeURLProviderContract
-import RelativeURLProvider
 import PBXProjectSyncerContract
 import PBXProjectSyncer
+import ProjectGeneratorContract
+import ProjectGenerator
+import RelativeURLProviderContract
+import RelativeURLProvider
 
 extension Container {
     static let currentAppVersionStringProvider = Factory { Bundle.main as CurrentAppVersionStringProviderProtocol }
@@ -106,6 +108,16 @@ extension Container {
             packagePathProvider: Container.packagePathProvider(),
             projectWriter: PBXProjectWriter()
         ) as PBXProjectSyncerProtocol
+    }
+    
+    static let projectGenerator = ParameterFactory { (params: String) in
+        ProjectGenerator(
+            componentPackagesProvider: Container.componentPackagesProvider(
+                params
+            ),
+            packageGenerator: Container.packageGenerator(),
+            pbxProjectSyncer: Container.pbxProjSyncer()
+        ) as ProjectGeneratorProtocol
     }
 }
 

@@ -1,11 +1,12 @@
+import ComponentPackagesProviderContract
+import DemoAppGeneratorContract
 import Factory
 import Package
-import PhoenixDocument
-import SwiftUI
-import DemoAppGeneratorContract
 import PackageGeneratorContract
-import ComponentPackagesProviderContract
 import PBXProjectSyncerContract
+import PhoenixDocument
+import ProjectGeneratorContract
+import SwiftUI
 import UniformTypeIdentifiers
 
 enum ComponentPopupState: Hashable, Identifiable {
@@ -191,27 +192,13 @@ class ViewModel: ObservableObject {
             return
         }
         showingGeneratePopover = false
-        let componentExtractor = Container.componentPackagesProvider(document.projectConfiguration.swiftVersion)
-        let allFamilies: [Family] = document.families.map { $0.family }
-        let packagesWithPath: [PackageWithPath] = document.families.flatMap { componentFamily -> [PackageWithPath] in
-            let family = componentFamily.family
-            return componentFamily.components.flatMap { (component: Component) -> [PackageWithPath] in
-                componentExtractor.packages(for: component,
-                                            of: family,
-                                            allFamilies: allFamilies,
-                                            projectConfiguration: document.projectConfiguration)
-            }
-        }
-        
-        let packagesGenerator: PackageGeneratorProtocol = Container.packageGenerator()
-        let folderURL = fileURL
-        for packageWithPath in packagesWithPath {
-            let url = folderURL.appendingPathComponent(packageWithPath.path, isDirectory: true)
-            do {
-                try packagesGenerator.generate(package: packageWithPath.package, at: url)
-            } catch {
-                alertState = .errorString(error.localizedDescription)
-            }
+        let projectGenerator = Container.projectGenerator(
+            document.projectConfiguration.swiftVersion
+        )
+        do {
+            try projectGenerator.generate(document: document, folderURL: fileURL)
+        } catch {
+            alertState = .errorString("Error generator project: \(error)")
         }
         
         if let xcodeProjectURL = xcodeProjectURL {
