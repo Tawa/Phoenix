@@ -53,8 +53,10 @@ struct ContentView: View {
                         xcodeProjectPath: viewModel.xcodeProjectURL?.path ?? "path/to/Project.xcodeproj",
                         hasModulesPath: viewModel.modulesFolderURL != nil,
                         hasXcodeProjectPath: viewModel.xcodeProjectURL != nil,
+                        isSkipXcodeProjectOn: viewModel.skipXcodeProject,
                         onOpenModulesFolder: viewModel.onOpenModulesFolder,
                         onOpenXcodeProject: viewModel.onOpenXcodeProject,
+                        onSkipXcodeProject: viewModel.onSkipXcodeProject,
                         onGenerate: { viewModel.onGenerate(document: store.document.wrappedValue) },
                         onDismiss: viewModel.onDismissGeneratePopover)
                 )

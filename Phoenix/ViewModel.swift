@@ -56,6 +56,7 @@ class ViewModel: ObservableObject {
             }
         }
     }
+    @Published var skipXcodeProject: Bool = false
     
     private var modulesFolderURLCache: [String: String] {
         get {
@@ -168,6 +169,10 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func onSkipXcodeProject(_ skip: Bool) {
+        skipXcodeProject = skip
+    }
+    
     func onGeneratePopoverButton(fileURL: URL?) {
         if
             modulesFolderURL == nil,
@@ -201,10 +206,14 @@ class ViewModel: ObservableObject {
             alertState = .errorString("Error generator project: \(error)")
         }
         
+        guard !skipXcodeProject else { return }
+        generateXcodeProject(for: document)
+    }
+    
+    private func generateXcodeProject(for document: PhoenixDocument) {
+        guard !skipXcodeProject else { return }
         if let xcodeProjectURL = xcodeProjectURL {
             onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL)
-        } else {
-            alertState = .errorString("Xcode Project not set")
         }
     }
     
