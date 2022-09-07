@@ -6,9 +6,9 @@ struct ConfigurationView: View {
     let columnWidth: CGFloat = 200
     let narrowColumnWidth: CGFloat = 100
     let onDismiss: () -> Void
-
+    
     @FocusState private var focusedName: Int?
-
+    
     var body: some View {
         VStack {
             ScrollView(.vertical, showsIndicators: true) {
@@ -18,6 +18,14 @@ struct ConfigurationView: View {
                 HStack {
                     Text("Swift Version")
                     TextField("default: \(ProjectConfiguration.default.swiftVersion)", text: $configuration.swiftVersion)
+                }.font(.title)
+                HStack {
+                    Text("Demo Apps Default Organization Identifier")
+                    TextField("com.myorganization.demoapp", text: Binding(get: {
+                        configuration.defaultOrganizationIdentifier ?? ""
+                    }, set: { newValue in
+                        configuration.defaultOrganizationIdentifier = newValue.isEmpty ? nil : newValue
+                    }))
                 }.font(.title)
                 Divider()
                 HStack(spacing: 0) {
@@ -78,11 +86,11 @@ struct ConfigurationView: View {
         }
         .onExitCommand(perform: onDismiss)
     }
-
+    
     private func removePackageConfiguration(at index: Int) {
         configuration.packageConfigurations.remove(at: index)
     }
-
+    
     private func onAddNew() {
         configuration.packageConfigurations.append(.init(name: "Name",
                                                          containerFolderName: nil,
