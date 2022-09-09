@@ -8,6 +8,7 @@ import PhoenixDocument
 import ProjectGeneratorContract
 import SwiftUI
 import UniformTypeIdentifiers
+import DemoAppFeature
 
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }
@@ -42,6 +43,7 @@ class ViewModel: ObservableObject {
     @Published var showingDependencyPopover: Bool = false
     @Published var alertState: AlertState? = nil
     @Published var showingGeneratePopover: Bool = false
+    @Published var demoAppFeatureData: DemoAppFeatureData? = nil
     @Published var modulesFolderURL: URL? = nil {
         didSet {
             if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
@@ -222,29 +224,36 @@ class ViewModel: ObservableObject {
             alertState = .errorString("File must be saved before packages can be generated.")
             return
         }
-        
-        guard
-            let url = openFolderSelection(at: nil, chooseFiles: false)
-        else { return }
-        let allFamilies: [Family] = document.families.map { $0.family }
-        guard let family = allFamilies.first(where: { $0.name == component.name.family })
-        else {
-            alertState = .errorString("Error getting Component Family.")
-            return
-        }
-        
-        let demoAppGenerator: DemoAppGeneratorProtocol = Container.demoAppGenerator()
-        do {
-            try demoAppGenerator.generateDemoApp(
-                forComponent: component,
-                of: family,
-                families: document.families,
-                projectConfiguration: document.projectConfiguration,
-                at: url,
-                relativeURL: ashFileURL)
-        } catch {
-            print("Error: \(error)")
-        }
+        demoAppFeatureData = .init(
+            component: component,
+            document: document,
+            ashFileURL: ashFileURL,
+            onDismiss: { [weak self] in
+                self?.demoAppFeatureData = nil
+            })
+//
+//        guard
+//            let url = openFolderSelection(at: nil, chooseFiles: false)
+//        else { return }
+//        let allFamilies: [Family] = document.families.map { $0.family }
+//        guard let family = allFamilies.first(where: { $0.name == component.name.family })
+//        else {
+//            alertState = .errorString("Error getting Component Family.")
+//            return
+//        }
+//
+//        let demoAppGenerator: DemoAppGeneratorProtocol = Container.demoAppGenerator()
+//        do {
+//            try demoAppGenerator.generateDemoApp(
+//                forComponent: component,
+//                of: family,
+//                families: document.families,
+//                projectConfiguration: document.projectConfiguration,
+//                at: url,
+//                relativeURL: ashFileURL)
+//        } catch {
+//            print("Error: \(error)")
+//        }
     }
     
     func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL) {
