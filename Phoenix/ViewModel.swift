@@ -1,12 +1,14 @@
+import ComponentPackagesProviderContract
+import DemoAppGeneratorContract
 import Factory
 import Package
-import PhoenixDocument
-import SwiftUI
-import DemoAppGeneratorContract
 import PackageGeneratorContract
-import ComponentPackagesProviderContract
 import PBXProjectSyncerContract
+import PhoenixDocument
+import ProjectGeneratorContract
+import SwiftUI
 import UniformTypeIdentifiers
+import DemoAppFeature
 
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }
@@ -41,6 +43,7 @@ class ViewModel: ObservableObject {
     @Published var showingDependencyPopover: Bool = false
     @Published var alertState: AlertState? = nil
     @Published var showingGeneratePopover: Bool = false
+    @Published var demoAppFeatureData: DemoAppFeatureInput? = nil
     @Published var modulesFolderURL: URL? = nil {
         didSet {
             if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
@@ -55,6 +58,7 @@ class ViewModel: ObservableObject {
             }
         }
     }
+    @Published var skipXcodeProject: Bool = false
     
     private var modulesFolderURLCache: [String: String] {
         get {
@@ -110,37 +114,7 @@ class ViewModel: ObservableObject {
     func onDuplicate(component: Component) {
         showingNewComponentPopup = .template(component)
     }
-    
-    func onAddAll(document: inout PhoenixDocument) {
-        var componentsFamilies = document.families
-        for familyIndex in 0..<10 {
-            let familyName = "Family\(familyIndex)"
-            var family = ComponentsFamily(family: Family(name: familyName,
-                                                         ignoreSuffix: false,
-                                                         folder: nil),
-                                          components: [])
-            for componentIndex in 0..<20 {
-                family.components.append(Component(name: Name(given: "Component\(componentIndex)", family: familyName),
-                                                   iOSVersion: nil,
-                                                   macOSVersion: nil,
-                                                   modules: document.projectConfiguration.packageConfigurations.reduce(into: [String: LibraryType](), { partialResult, packageConfiguration in
-                    partialResult[packageConfiguration.name] = .undefined
-                }),
-                                                   dependencies: [],
-                                                   resources: []))
-            }
-            componentsFamilies.append(family)
-        }
-        document.families = componentsFamilies
-    }
-    
-    func onUpArrow() {
-    }
-    
-    func onDownArrow() {
         
-    }
-    
     private func getAccessToURL(file: Bool, completion: (URL) -> Void) {
         guard let fileURL = fileURL else {
             alertState = .errorString("File must be saved before packages can be generated.")
@@ -167,6 +141,10 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func onSkipXcodeProject(_ skip: Bool) {
+        skipXcodeProject = skip
+    }
+    
     func onGeneratePopoverButton(fileURL: URL?) {
         if
             modulesFolderURL == nil,
@@ -191,33 +169,23 @@ class ViewModel: ObservableObject {
             return
         }
         showingGeneratePopover = false
-        let componentExtractor = Container.componentPackagesProvider(document.projectConfiguration.swiftVersion)
-        let allFamilies: [Family] = document.families.map { $0.family }
-        let packagesWithPath: [PackageWithPath] = document.families.flatMap { componentFamily -> [PackageWithPath] in
-            let family = componentFamily.family
-            return componentFamily.components.flatMap { (component: Component) -> [PackageWithPath] in
-                componentExtractor.packages(for: component,
-                                            of: family,
-                                            allFamilies: allFamilies,
-                                            projectConfiguration: document.projectConfiguration)
-            }
+        let projectGenerator = Container.projectGenerator(
+            document.projectConfiguration.swiftVersion
+        )
+        do {
+            try projectGenerator.generate(document: document, folderURL: fileURL)
+        } catch {
+            alertState = .errorString("Error generator project: \(error)")
         }
         
-        let packagesGenerator: PackageGeneratorProtocol = Container.packageGenerator()
-        let folderURL = fileURL
-        for packageWithPath in packagesWithPath {
-            let url = folderURL.appendingPathComponent(packageWithPath.path, isDirectory: true)
-            do {
-                try packagesGenerator.generate(package: packageWithPath.package, at: url)
-            } catch {
-                alertState = .errorString(error.localizedDescription)
-            }
-        }
-        
+        guard !skipXcodeProject else { return }
+        generateXcodeProject(for: document)
+    }
+    
+    private func generateXcodeProject(for document: PhoenixDocument) {
+        guard !skipXcodeProject else { return }
         if let xcodeProjectURL = xcodeProjectURL {
             onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL)
-        } else {
-            alertState = .errorString("Xcode Project not set")
         }
     }
     
@@ -226,29 +194,13 @@ class ViewModel: ObservableObject {
             alertState = .errorString("File must be saved before packages can be generated.")
             return
         }
-        
-        guard
-            let url = openFolderSelection(at: nil, chooseFiles: false)
-        else { return }
-        let allFamilies: [Family] = document.families.map { $0.family }
-        guard let family = allFamilies.first(where: { $0.name == component.name.family })
-        else {
-            alertState = .errorString("Error getting Component Family.")
-            return
-        }
-        
-        let demoAppGenerator: DemoAppGeneratorProtocol = Container.demoAppGenerator()
-        do {
-            try demoAppGenerator.generateDemoApp(
-                forComponent: component,
-                of: family,
-                families: document.families,
-                projectConfiguration: document.projectConfiguration,
-                at: url,
-                relativeURL: ashFileURL)
-        } catch {
-            print("Error: \(error)")
-        }
+        demoAppFeatureData = .init(
+            component: component,
+            document: document,
+            ashFileURL: ashFileURL,
+            onDismiss: { [weak self] in
+                self?.demoAppFeatureData = nil
+            })
     }
     
     func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL) {

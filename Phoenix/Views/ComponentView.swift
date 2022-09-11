@@ -37,9 +37,9 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                         .font(.largeTitle.bold())
                         .multilineTextAlignment(.leading)
                     Spacer()
-                    Button(action: onGenerateDemoAppProject) {
-                        Text("Generate Demo App")
-                    }.help("Generate Demo App Xcode Project")
+//                    Button(action: onGenerateDemoAppProject) {
+//                        Text("Generate Demo App")
+//                    }.help("Generate Demo App Xcode Project")
                     Button(role: .destructive, action: onRemove) {
                         Image(systemName: "trash")
                     }.help("Remove")

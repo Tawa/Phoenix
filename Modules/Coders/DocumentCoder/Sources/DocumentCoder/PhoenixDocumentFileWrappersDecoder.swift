@@ -10,9 +10,18 @@ enum PhoenixDocumentConstants {
     static let familyFileName: String = "family" + jsonFileExtension
 }
 
-enum PhoenixDocumentError: Error {
+enum PhoenixDocumentError: LocalizedError {
     case versionNotFound
     case versionUnsupported
+    
+    var errorDescription: String? {
+        switch self {
+        case .versionNotFound:
+            return "File Version Not Found"
+        case .versionUnsupported:
+            return "File Version Unsupposed, please update Phoenix to read this file."
+        }
+    }
 }
 
 public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDecoderProtocol {
@@ -31,6 +40,8 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
 
         if appVersion.stringValue.hasPrefix("1.") {
             return try PhoenixDocumentFileWrappersDecoder_1_0_0().phoenixDocument(from: fileWrapper)
+        } else if appVersion.stringValue.hasPrefix("2.") {
+            return try PhoenixDocumentFileWrappersDecoder_2_0_0().phoenixDocument(from: fileWrapper)
         }
 
         throw PhoenixDocumentError.versionUnsupported

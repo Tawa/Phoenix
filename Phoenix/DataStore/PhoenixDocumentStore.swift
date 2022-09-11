@@ -30,10 +30,7 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
     func component(withName name: Name, containsDependencyWithName dependencyName: Name) -> Bool {
         var value: Bool = false
         getComponent(withName: name) { component in
-            value = component.dependencies.contains { componentDependencyType in
-                guard case let .local(componentDependency) = componentDependencyType else { return false }
-                return componentDependency.name == dependencyName
-            }
+            value = component.localDependencies.contains { $0.name == dependencyName }
         }
         return value
     }

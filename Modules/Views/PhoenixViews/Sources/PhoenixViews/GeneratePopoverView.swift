@@ -6,9 +6,11 @@ public struct GeneratePopoverViewModel {
     
     let hasModulesPath: Bool
     let hasXcodeProjectPath: Bool
-    
+    let isSkipXcodeProjectOn: Bool
+
     let onOpenModulesFolder: () -> Void
     let onOpenXcodeProject: () -> Void
+    let onSkipXcodeProject: (Bool) -> Void
     
     let onGenerate: () -> Void
     let onDismiss: () -> Void
@@ -18,8 +20,10 @@ public struct GeneratePopoverViewModel {
         xcodeProjectPath: String,
         hasModulesPath: Bool,
         hasXcodeProjectPath: Bool,
+        isSkipXcodeProjectOn: Bool,
         onOpenModulesFolder: @escaping () -> Void,
         onOpenXcodeProject: @escaping () -> Void,
+        onSkipXcodeProject: @escaping (Bool) -> Void,
         onGenerate: @escaping () -> Void,
         onDismiss: @escaping () -> Void
     ) {
@@ -27,15 +31,16 @@ public struct GeneratePopoverViewModel {
         self.xcodeProjectPath = xcodeProjectPath
         self.hasModulesPath = hasModulesPath
         self.hasXcodeProjectPath = hasXcodeProjectPath
+        self.isSkipXcodeProjectOn = isSkipXcodeProjectOn
         self.onOpenModulesFolder = onOpenModulesFolder
         self.onOpenXcodeProject = onOpenXcodeProject
+        self.onSkipXcodeProject = onSkipXcodeProject
         self.onGenerate = onGenerate
         self.onDismiss = onDismiss
     }
 }
 
 public struct GeneratePopoverView: View {
-    @State private var enableGenerate: Bool = false
     let viewModel: GeneratePopoverViewModel
     
     public init(viewModel: GeneratePopoverViewModel) {
@@ -64,21 +69,23 @@ public struct GeneratePopoverView: View {
                         Image(systemName: "wrench.and.screwdriver")
                     }).help("Open Xcode Project")
                     Text("Xcode Project")
+                    Toggle("Skip this step", isOn: Binding(get: {
+                        viewModel.isSkipXcodeProjectOn
+                    }, set: { newValue in
+                        self.viewModel.onSkipXcodeProject(newValue)
+                    }))
                 }
                 HStack {
                     Text(viewModel.xcodeProjectPath)
-                        .opacity(viewModel.hasXcodeProjectPath ? 1 : 0.2)
+                        .opacity(xcodeProjectPathOpaticy)
                     Spacer()
                 }
             }
-            
-//            Toggle("I don't have uncommited change.", isOn: $enableGenerate)
-//                .foregroundColor(enableGenerate ? nil : .red)
-            
+                        
             HStack {
                 Button(action: viewModel.onGenerate) {
                     Text("Generate")
-                }.disabled(!viewModel.hasModulesPath)
+                }.disabled(!isGenerateEnabled)
                 Button(action: viewModel.onDismiss) {
                     Text("Cancel")
                 }
@@ -90,6 +97,20 @@ public struct GeneratePopoverView: View {
         .onExitCommand(perform: viewModel.onDismiss)
         .frame(minWidth: 500)
     }
+    
+    private var isGenerateEnabled: Bool {
+        guard viewModel.hasModulesPath else { return false }
+        if viewModel.hasXcodeProjectPath { return true }
+        guard viewModel.isSkipXcodeProjectOn else { return false }
+        return true
+    }
+    
+    private var xcodeProjectPathOpaticy: Double {
+        if viewModel.isSkipXcodeProjectOn {
+            return 0.2
+        }
+        return viewModel.hasXcodeProjectPath ? 1 : 0.2
+    }
 }
 
 struct GeneratePopoverView_Previews: PreviewProvider {
@@ -100,8 +121,10 @@ struct GeneratePopoverView_Previews: PreviewProvider {
                 xcodeProjectPath: "path/to/Project.xcodeproj",
                 hasModulesPath: true,
                 hasXcodeProjectPath: false,
+                isSkipXcodeProjectOn: false,
                 onOpenModulesFolder: {},
                 onOpenXcodeProject: {},
+                onSkipXcodeProject: { _ in },
                 onGenerate: {},
                 onDismiss: {}
             )

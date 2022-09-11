@@ -1,6 +1,10 @@
 import Package
 import PhoenixViews
 import SwiftUI
+import Factory
+import DemoAppFeature
+import PhoenixDocument
+
 
 struct ContentView: View {
     @StateObject private var viewModel: ViewModel = .init()
@@ -44,6 +48,9 @@ struct ContentView: View {
                     viewModel.showingConfigurationPopup = false
                 }.frame(minHeight: 300)
             }
+            .sheet(item: $viewModel.demoAppFeatureData, content: { data in
+                Container.demoAppFeatureView(data)
+            })
             .sheet(isPresented: $viewModel.showingGeneratePopover,
                    onDismiss: viewModel.onDismissGeneratePopover,
                    content: {
@@ -53,8 +60,10 @@ struct ContentView: View {
                         xcodeProjectPath: viewModel.xcodeProjectURL?.path ?? "path/to/Project.xcodeproj",
                         hasModulesPath: viewModel.modulesFolderURL != nil,
                         hasXcodeProjectPath: viewModel.xcodeProjectURL != nil,
+                        isSkipXcodeProjectOn: viewModel.skipXcodeProject,
                         onOpenModulesFolder: viewModel.onOpenModulesFolder,
                         onOpenXcodeProject: viewModel.onOpenXcodeProject,
+                        onSkipXcodeProject: viewModel.onSkipXcodeProject,
                         onGenerate: { viewModel.onGenerate(document: store.document.wrappedValue) },
                         onDismiss: viewModel.onDismissGeneratePopover)
                 )
@@ -64,7 +73,7 @@ struct ContentView: View {
             viewModel.dataStore = store
         }
     }
-    
+        
     // MARK: - Views
     func componentsList() -> some View {
         ComponentsList(
