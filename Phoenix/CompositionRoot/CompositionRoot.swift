@@ -21,6 +21,7 @@ import ProjectGeneratorContract
 import ProjectGenerator
 import RelativeURLProviderContract
 import RelativeURLProvider
+import DemoAppFeature
 
 extension Container {
     static let currentAppVersionStringProvider = Factory { Bundle.main as CurrentAppVersionStringProviderProtocol }
@@ -118,6 +119,10 @@ extension Container {
             packageGenerator: Container.packageGenerator(),
             pbxProjectSyncer: Container.pbxProjSyncer()
         ) as ProjectGeneratorProtocol
+    }
+    
+    static let demoAppNameProvider = Factory {
+        DemoAppNameProvider() as DemoAppNameProviderProtocol
     }
 }
 

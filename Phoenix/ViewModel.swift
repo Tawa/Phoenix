@@ -43,7 +43,7 @@ class ViewModel: ObservableObject {
     @Published var showingDependencyPopover: Bool = false
     @Published var alertState: AlertState? = nil
     @Published var showingGeneratePopover: Bool = false
-    @Published var demoAppFeatureData: DemoAppFeatureData? = nil
+    @Published var demoAppFeatureData: DemoAppFeatureInput? = nil
     @Published var modulesFolderURL: URL? = nil {
         didSet {
             if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
@@ -114,37 +114,7 @@ class ViewModel: ObservableObject {
     func onDuplicate(component: Component) {
         showingNewComponentPopup = .template(component)
     }
-    
-    func onAddAll(document: inout PhoenixDocument) {
-        var componentsFamilies = document.families
-        for familyIndex in 0..<10 {
-            let familyName = "Family\(familyIndex)"
-            var family = ComponentsFamily(family: Family(name: familyName,
-                                                         ignoreSuffix: false,
-                                                         folder: nil),
-                                          components: [])
-            for componentIndex in 0..<20 {
-                family.components.append(Component(name: Name(given: "Component\(componentIndex)", family: familyName),
-                                                   iOSVersion: nil,
-                                                   macOSVersion: nil,
-                                                   modules: document.projectConfiguration.packageConfigurations.reduce(into: [String: LibraryType](), { partialResult, packageConfiguration in
-                    partialResult[packageConfiguration.name] = .undefined
-                }),
-                                                   dependencies: [],
-                                                   resources: []))
-            }
-            componentsFamilies.append(family)
-        }
-        document.families = componentsFamilies
-    }
-    
-    func onUpArrow() {
-    }
-    
-    func onDownArrow() {
         
-    }
-    
     private func getAccessToURL(file: Bool, completion: (URL) -> Void) {
         guard let fileURL = fileURL else {
             alertState = .errorString("File must be saved before packages can be generated.")
@@ -231,29 +201,6 @@ class ViewModel: ObservableObject {
             onDismiss: { [weak self] in
                 self?.demoAppFeatureData = nil
             })
-//
-//        guard
-//            let url = openFolderSelection(at: nil, chooseFiles: false)
-//        else { return }
-//        let allFamilies: [Family] = document.families.map { $0.family }
-//        guard let family = allFamilies.first(where: { $0.name == component.name.family })
-//        else {
-//            alertState = .errorString("Error getting Component Family.")
-//            return
-//        }
-//
-//        let demoAppGenerator: DemoAppGeneratorProtocol = Container.demoAppGenerator()
-//        do {
-//            try demoAppGenerator.generateDemoApp(
-//                forComponent: component,
-//                of: family,
-//                families: document.families,
-//                projectConfiguration: document.projectConfiguration,
-//                at: url,
-//                relativeURL: ashFileURL)
-//        } catch {
-//            print("Error: \(error)")
-//        }
     }
     
     func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL) {

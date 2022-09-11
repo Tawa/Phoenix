@@ -2,14 +2,7 @@ import Package
 import SwiftUI
 import PhoenixDocument
 
-public struct DemoAppDependency: Identifiable {
-    public var id = UUID().uuidString
-    
-    let title: String
-    let isSelected: Bool
-}
-
-public struct DemoAppFeatureData: Identifiable {
+public struct DemoAppFeatureInput: Identifiable {
     public let id: String = UUID().uuidString
     let component: Component
     let document: PhoenixDocument
@@ -29,42 +22,33 @@ public struct DemoAppFeatureData: Identifiable {
     }
     
 }
-
-extension DemoAppFeatureView {
-    public struct Dependency {
-        public init() {
-            
-        }
-    }
-}
-
-struct DemoAppInteractor {
-    let cancelAction: () -> Void
-    
-    
-    func onGenerate() {
-        
-    }
-    
-    func onCancel() {
-        cancelAction()
-    }
-}
-
 public struct DemoAppFeatureView: View {
-    let data: DemoAppFeatureData
+    @ObservedObject private var viewModel: DemoAppFeatureViewModel
     let dependency: Dependency
-    let interactor: DemoAppInteractor
-    @State private var organizationIdentifier: String = ""
+    let interactor: DemoAppFeatureInteractor
 
-    public init(data: DemoAppFeatureData,
+    public init(data: DemoAppFeatureInput,
                 dependency: Dependency) {
-        self.data = data
         self.dependency = dependency
         
-        interactor = DemoAppInteractor(
+        let viewModel = DemoAppFeatureViewModel(
+            title: dependency.demoAppNameProvider.demoAppName(
+                for: data.component,
+                family: data.document.families.first(where: { $0.family.name == data.component.name.family })?.family ?? .init(name: "")
+            ),
+            organizationIdentifier: data.document.projectConfiguration.defaultOrganizationIdentifier ?? ""
+        )
+        
+        let presenter = DemoAppFeaturePresenter(viewModel: viewModel)
+        
+        interactor = DemoAppFeatureInteractor(
+            component: data.component,
+            document: data.document,
+            presenter: presenter,
             cancelAction: data.onDismiss
         )
+        
+        self.viewModel = viewModel
     }
     
     public var body: some View {
@@ -74,25 +58,26 @@ public struct DemoAppFeatureView: View {
                     Text("Include Components:")
                         .font(.title)
                 }.padding()
-                ScrollView {
-//                    ForEach(viewModel.dependencies) { dependency in
-//                        HStack {
-//                            Toggle(dependency.title, isOn: .constant(dependency.isSelected))
-//                            Spacer()
-//                        }
-//                    }
+                ZStack {
+                    DemoAppDependencyList(dependencies: viewModel.dependencies)
+                    if viewModel.isListLoading {
+                        ProgressView()
+                    }
                 }
                 .padding()
+                .frame(minWidth: 400)
                 .background(Color.gray.opacity(0.1))
                 .padding([.leading, .bottom, .trailing])
             }
             VStack(alignment: .leading, spacing: 0) {
-                Text("\(data.component.name.full)DemoApp")
+                Text(viewModel.title)
                     .font(.title.bold())
                     .padding([.top, .bottom])
                 Text("Organization Identifier")
+                    .font(.title)
                     .padding(2)
-//                TextField("default: \(viewModel.defaultOrganizationIdentifier)", text: $organizationIdentifier)
+                TextField("i,e: com.myorganization.demo", text: $viewModel.organizationIdentifier)
+                    .font(.title)
                 Spacer()
                 HStack {
                     Spacer()
@@ -104,6 +89,21 @@ public struct DemoAppFeatureView: View {
                     }
                 }.padding()
             }.padding(.trailing)
-        }.frame(minWidth: 1000, minHeight: 600)
+        }
+        .frame(minWidth: 1000, minHeight: 600)
+        .onAppear(perform: interactor.onAppear)
+        .onExitCommand(perform: interactor.onCancel)
+    }
+}
+
+extension DemoAppFeatureView {
+    public struct Dependency {
+        let demoAppNameProvider: DemoAppNameProviderProtocol
+        
+        public init(
+            demoAppNameProvider: DemoAppNameProviderProtocol
+        ) {
+            self.demoAppNameProvider = demoAppNameProvider
+        }
     }
 }

@@ -19,14 +19,14 @@ struct ConfigurationView: View {
                     Text("Swift Version")
                     TextField("default: \(ProjectConfiguration.default.swiftVersion)", text: $configuration.swiftVersion)
                 }.font(.title)
-                HStack {
-                    Text("Demo Apps Default Organization Identifier")
-                    TextField("com.myorganization.demoapp", text: Binding(get: {
-                        configuration.defaultOrganizationIdentifier ?? ""
-                    }, set: { newValue in
-                        configuration.defaultOrganizationIdentifier = newValue.isEmpty ? nil : newValue
-                    }))
-                }.font(.title)
+//                HStack {
+//                    Text("Demo Apps Default Organization Identifier")
+//                    TextField("com.myorganization.demoapp", text: Binding(get: {
+//                        configuration.defaultOrganizationIdentifier ?? ""
+//                    }, set: { newValue in
+//                        configuration.defaultOrganizationIdentifier = newValue.isEmpty ? nil : newValue
+//                    }))
+//                }.font(.title)
                 Divider()
                 HStack(spacing: 0) {
                     Text("Name")

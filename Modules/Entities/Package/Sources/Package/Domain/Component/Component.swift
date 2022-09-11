@@ -7,6 +7,14 @@ public struct Component: Codable, Hashable, Identifiable {
     public var modules: [String: LibraryType]
     public var dependencies: [ComponentDependencyType]
     public var resources: [ComponentResources]
+    
+    public var localDependencies: [ComponentDependency] {
+        dependencies.compactMap { componentDependencyType in
+            guard case let .local(dependency) = componentDependencyType
+            else { return nil }
+            return dependency
+        }
+    }
 
     public init(name: Name,
                 iOSVersion: IOSVersion?,
