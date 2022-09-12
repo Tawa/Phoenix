@@ -61,7 +61,7 @@ public struct GeneratePopoverView: View {
                         .opacity(viewModel.hasModulesPath ? 1 : 0.2)
                     Spacer()
                 }
-            }
+            }.onTapGesture(perform: viewModel.onOpenModulesFolder)
             
             VStack(alignment: .leading) {
                 HStack {
@@ -80,7 +80,7 @@ public struct GeneratePopoverView: View {
                         .opacity(xcodeProjectPathOpaticy)
                     Spacer()
                 }
-            }
+            }.onTapGesture(perform: viewModel.onOpenXcodeProject)
                         
             HStack {
                 Button(action: viewModel.onGenerate) {
