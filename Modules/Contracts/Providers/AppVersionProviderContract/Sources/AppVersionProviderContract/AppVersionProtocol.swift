@@ -9,7 +9,3 @@ public extension AppVersionProtocol {
         [major, minor, hotfix].map(String.init).joined(separator: ".")
     }
 }
-
-public func ==(lhs: AppVersionProtocol, rhs: String) -> Bool {
-    return lhs.stringValue == rhs
-}

@@ -124,6 +124,10 @@ extension Container {
     static let demoAppNameProvider = Factory {
         DemoAppNameProvider() as DemoAppNameProviderProtocol
     }
+    
+    static let appVersionUpdateProvider = Factory {
+        AppVersionUpdateProvider() as AppVersionUpdateProviderProtocol
+    }
 }
 
 extension Bundle: CurrentAppVersionStringProviderProtocol {
