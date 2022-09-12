@@ -1,4 +1,7 @@
+import AppVersionProviderContract
+import Combine
 import ComponentPackagesProviderContract
+import DemoAppFeature
 import DemoAppGeneratorContract
 import Factory
 import Package
@@ -8,7 +11,6 @@ import PhoenixDocument
 import ProjectGeneratorContract
 import SwiftUI
 import UniformTypeIdentifiers
-import DemoAppFeature
 
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }
@@ -36,6 +38,10 @@ class ViewModel: ObservableObject {
     // MARK: - Selection
     @Published var selectedComponentName: Name? = nil
     @Published var selectedFamilyName: String? = nil
+    
+    // MARK: - Update Button
+    private var appUpdateVersionInfoSub: AnyCancellable? = nil
+    @Published var appUpdateVersionInfo: AppVersionInfo? = nil
     
     // MARK: - Popovers
     @Published var showingConfigurationPopup: Bool = false
@@ -228,5 +234,20 @@ class ViewModel: ObservableObject {
         
         openPanel.runModal()
         return openPanel.url
+    }
+    
+    func checkForUpdate() {
+        let appVersionUpdateProvider = Container.appVersionUpdateProvider()
+        
+        appUpdateVersionInfoSub = appVersionUpdateProvider
+            .appVersionsPublisher()
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                
+            } receiveValue: { appVersionInfos in
+                withAnimation {
+                    self.appUpdateVersionInfo = appVersionInfos.first
+                }
+            }
     }
 }

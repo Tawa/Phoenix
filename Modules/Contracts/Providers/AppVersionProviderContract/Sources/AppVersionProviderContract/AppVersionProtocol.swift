@@ -8,8 +8,10 @@ public extension AppVersionProtocol {
     var stringValue: String {
         [major, minor, hotfix].map(String.init).joined(separator: ".")
     }
-}
-
-public func ==(lhs: AppVersionProtocol, rhs: String) -> Bool {
-    return lhs.stringValue == rhs
+    
+    func isOlderThan(version: AppVersionProtocol) -> Bool {
+        major < version.major ||
+        (major == version.major && minor < version.minor) ||
+        (major == version.major && minor == version.minor && hotfix < version.hotfix)
+    }
 }

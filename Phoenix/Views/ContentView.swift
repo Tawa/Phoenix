@@ -71,6 +71,7 @@ struct ContentView: View {
         }
         .onAppear {
             viewModel.dataStore = store
+            viewModel.checkForUpdate()
         }
     }
         
@@ -264,41 +265,65 @@ struct ContentView: View {
     
     @ViewBuilder
     private func toolbarViews() -> some View {
-        ZStack {
-            Button(action: onUpArrow, label: {})
-                .opacity(0)
-                .keyboardShortcut(.upArrow, modifiers: [])
-            Button(action: onDownArrow, label: {})
-                .opacity(0)
-                .keyboardShortcut(.downArrow, modifiers: [])
-            
-            HStack {
-                Button(action: viewModel.onConfigurationButton) {
-                    Image(systemName: "wrench.and.screwdriver")
-                    Text("Configuration")
-                }.keyboardShortcut(",", modifiers: [.command])
-                Button(action: viewModel.onAddButton) {
-                    Image(systemName: "plus.circle.fill")
-                    Text("New Component")
-                }.keyboardShortcut("A", modifiers: [.command, .shift])
-
-                Spacer()
-                
-                Button(action: {
-                    viewModel.onGeneratePopoverButton(fileURL: store.fileURL)
-                }, label: {
-                    Image(systemName: "shippingbox.fill")
-                    Text("Generate")
-                }).keyboardShortcut(.init("R"), modifiers: .command)
-                Button(action: { viewModel.onGenerate(document: store.document.wrappedValue) }) {
-                    Image(systemName: "play")
+        VStack(alignment: .leading) {
+            if let appUpdateVersion = viewModel.appUpdateVersionInfo {
+                VStack(alignment: .leading) {
+                    Text("Update v\(appUpdateVersion.version) is available.")
+                        .font(.title)
+                    Text("Release Notes: \(appUpdateVersion.releaseNotes)")
+                        .lineLimit(nil)
+                        .multilineTextAlignment(.leading)
+                    HStack {
+                        Link(destination: URL(
+                            string: "https://apps.apple.com/us/app/phoenix-app/id1626793172")!
+                        ) {
+                            Text("Open App Store")
+                        }
+                        Button("Dismiss") {
+                            withAnimation {
+                                viewModel.appUpdateVersionInfo = nil
+                            }
+                        }.buttonStyle(.plain)
+                    }
                 }
-                .disabled(viewModel.modulesFolderURL == nil || viewModel.xcodeProjectURL == nil)
-                .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
+                .padding()
             }
-        }
-        .padding()
+            ZStack {
+                Button(action: onUpArrow, label: {})
+                    .opacity(0)
+                    .keyboardShortcut(.upArrow, modifiers: [])
+                Button(action: onDownArrow, label: {})
+                    .opacity(0)
+                    .keyboardShortcut(.downArrow, modifiers: [])
+                
+                HStack {
+                    Button(action: viewModel.onConfigurationButton) {
+                        Image(systemName: "wrench.and.screwdriver")
+                        Text("Configuration")
+                    }.keyboardShortcut(",", modifiers: [.command])
+                    Button(action: viewModel.onAddButton) {
+                        Image(systemName: "plus.circle.fill")
+                        Text("New Component")
+                    }.keyboardShortcut("A", modifiers: [.command, .shift])
+
+                    Spacer()
+                    
+                    Button(action: {
+                        viewModel.onGeneratePopoverButton(fileURL: store.fileURL)
+                    }, label: {
+                        Image(systemName: "shippingbox.fill")
+                        Text("Generate")
+                    }).keyboardShortcut(.init("R"), modifiers: .command)
+                    Button(action: { viewModel.onGenerate(document: store.document.wrappedValue) }) {
+                        Image(systemName: "play")
+                    }
+                    .disabled(viewModel.modulesFolderURL == nil || viewModel.xcodeProjectURL == nil)
+                    .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
+                }
+            }
+            .padding()
         .background(Color.white.opacity(0.1))
+        }
     }
     
     // MARK: - Private
