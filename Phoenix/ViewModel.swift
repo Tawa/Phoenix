@@ -105,14 +105,23 @@ class ViewModel: ObservableObject {
     
     private var pathsCache: [URL: URL] = [:]
     
+    let projectGenerator: ProjectGeneratorProtocol
+    let familyFolderNameProvider: FamilyFolderNameProviderProtocol
+    
     // MARK: - Initialiser
-    init() {
+    init(
+        projectGenerator: ProjectGeneratorProtocol,
+        familyFolderNameProvider: FamilyFolderNameProviderProtocol
+    ) {
+        self.projectGenerator = projectGenerator
+        self.familyFolderNameProvider = familyFolderNameProvider
     }
     
-    func update(value: String) {
-        print("Value: \(value)")
+    // MARK: - FamilyFolderNameProvider
+    func folderName(forFamily family: String) -> String {
+        familyFolderNameProvider.folderName(forFamily: family)
     }
-    
+        
     func onConfigurationButton() {
         showingConfigurationPopup = true
     }
@@ -179,9 +188,7 @@ class ViewModel: ObservableObject {
             return
         }
         showingGeneratePopover = false
-        let projectGenerator = Container.projectGenerator(
-            document.projectConfiguration.swiftVersion
-        )
+        let projectGenerator = Container.projectGenerator()
         do {
             try projectGenerator.generate(document: document, folderURL: fileURL)
         } catch {

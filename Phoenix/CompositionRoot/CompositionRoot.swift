@@ -110,7 +110,7 @@ extension Container {
         ) as PBXProjectSyncerProtocol
     }
     
-    static let projectGenerator = ParameterFactory { (params: String) in
+    static let projectGenerator = Factory {
         ProjectGenerator(
             componentPackagesProvider: Container.componentPackagesProvider(),
             packageGenerator: Container.packageGenerator(),
