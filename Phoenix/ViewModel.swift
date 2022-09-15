@@ -124,14 +124,20 @@ class ViewModel: ObservableObject {
     func onDuplicate(component: Component) {
         showingNewComponentPopup = .template(component)
     }
-        
-    private func getAccessToURL(file: Bool, completion: (URL) -> Void) {
+    
+    private func getFileURL(_ completion: @escaping (URL) -> Void) {
         guard let fileURL = fileURL else {
             alertState = .errorString("File must be saved before packages can be generated.")
             return
         }
-        if let url = openFolderSelection(at: fileURL, chooseFiles: file) {
-            completion(url)
+        completion(fileURL)
+    }
+    
+    private func getAccessToURL(file: Bool, completion: @escaping (URL) -> Void) {
+        getFileURL { fileURL in
+            if let url = self.openFolderSelection(at: fileURL, chooseFiles: file) {
+                completion(url)
+            }
         }
     }
     
@@ -182,7 +188,7 @@ class ViewModel: ObservableObject {
         do {
             try projectGenerator.generate(document: document, folderURL: fileURL)
         } catch {
-            alertState = .errorString("Error generator project: \(error)")
+            alertState = .errorString("Error generating project: \(error)")
         }
         
         guard !skipXcodeProject else { return }
@@ -197,29 +203,24 @@ class ViewModel: ObservableObject {
     }
     
     func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, ashFileURL: URL?) {
-        guard let ashFileURL = ashFileURL else {
-            alertState = .errorString("File must be saved before packages can be generated.")
-            return
+        getFileURL { fileURL in
+            self.demoAppFeatureData = .init(
+                component: component,
+                document: document,
+                ashFileURL: fileURL,
+                onDismiss: { [weak self] in
+                    self?.demoAppFeatureData = nil
+                })
         }
-        demoAppFeatureData = .init(
-            component: component,
-            document: document,
-            ashFileURL: ashFileURL,
-            onDismiss: { [weak self] in
-                self?.demoAppFeatureData = nil
-            })
     }
     
     func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL) {
-        guard let ashFileURL = fileURL else {
-            alertState = .errorString("File must be saved before packages can be generated.")
-            return
-        }
-        
-        do {
-            try pbxProjSyncer.sync(document: document, at: ashFileURL, withProjectAt: xcodeFileURL)
-        } catch {
-            alertState = .errorString(error.localizedDescription)
+        getFileURL { fileURL in
+            do {
+                try self.pbxProjSyncer.sync(document: document, at: fileURL, withProjectAt: xcodeFileURL)
+            } catch {
+                self.alertState = .errorString(error.localizedDescription)
+            }
         }
     }
     
