@@ -10,6 +10,7 @@ let package = Package(
             targets: ["PBXProjectSyncer"])
     ],
     dependencies: [
+        .package(path: "../../Contracts/Providers/PackagePathProviderContract"),
         .package(path: "../../Contracts/Syncers/PBXProjectSyncerContract"),
         .package(path: "../../Entities/Package"),
         .package(path: "../../Entities/PhoenixDocument"),
@@ -19,6 +20,7 @@ let package = Package(
         .target(
             name: "PBXProjectSyncer",
             dependencies: [
+                "PackagePathProviderContract",
                 "PBXProjectSyncerContract",
                 "Package",
                 "PhoenixDocument",

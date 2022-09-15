@@ -117,8 +117,7 @@ extension Container {
     static let projectGenerator = Factory {
         ProjectGenerator(
             componentPackagesProvider: Container.componentPackagesProvider(),
-            packageGenerator: Container.packageGenerator(),
-            pbxProjectSyncer: Container.pbxProjSyncer()
+            packageGenerator: Container.packageGenerator()
         ) as ProjectGeneratorProtocol
     }
     
