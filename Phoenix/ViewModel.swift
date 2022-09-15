@@ -196,10 +196,8 @@ class ViewModel: ObservableObject {
     }
     
     private func generateXcodeProject(for document: PhoenixDocument) {
-        guard !skipXcodeProject else { return }
-        if let xcodeProjectURL = xcodeProjectURL {
-            onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL)
-        }
+        guard let xcodeProjectURL = xcodeProjectURL else { return }
+        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL)
     }
     
     func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, ashFileURL: URL?) {

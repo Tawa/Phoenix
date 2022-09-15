@@ -106,8 +106,12 @@ extension Container {
             packageFolderNameProvider: Container.packageFolderNameProvider(),
             packageNameProvider: Container.packageNameProvider(),
             packagePathProvider: Container.packagePathProvider(),
-            projectWriter: PBXProjectWriter()
+            projectWriter: Container.pbxProjectWriter()
         ) as PBXProjectSyncerProtocol
+    }
+    
+    static let pbxProjectWriter = Factory {
+        PBXProjectWriter() as PBXProjectWriterProtocol
     }
     
     static let projectGenerator = Factory {
