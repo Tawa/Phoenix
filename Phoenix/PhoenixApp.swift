@@ -9,8 +9,9 @@ struct PhoenixApp: App {
         DocumentGroup(newDocument: PhoenixDocument()) { file in
             ContentView(
                 viewModel: ViewModel(
-                    projectGenerator: Container.projectGenerator(),
-                    familyFolderNameProvider: Container.familyFolderNameProvider()
+                    familyFolderNameProvider: Container.familyFolderNameProvider(),
+                    filesURLDataStore: Container.filesURLDataStore(),
+                    projectGenerator: Container.projectGenerator()
                 )
             )
                 .environmentObject(PhoenixDocumentStore(

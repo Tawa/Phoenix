@@ -53,36 +53,18 @@ class ViewModel: ObservableObject {
     @Published var modulesFolderURL: URL? = nil {
         didSet {
             if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
-                modulesFolderURLCache[fileURL.path] = modulesFolderURL.path
+                filesURLDataStore.set(modulesFolderURL: modulesFolderURL, forFileURL: fileURL)
             }
         }
     }
     @Published var xcodeProjectURL: URL? = nil {
         didSet {
             if let fileURL = fileURL, let xcodeProjectURL = xcodeProjectURL {
-                xcodeProjectURLCache[fileURL.path] = xcodeProjectURL.path
+                filesURLDataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
             }
         }
     }
     @Published var skipXcodeProject: Bool = false
-    
-    private var modulesFolderURLCache: [String: String] {
-        get {
-            UserDefaults.standard.object(forKey: "modulesFolderURLCache") as? [String: String] ?? [String: String]()
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "modulesFolderURLCache")
-        }
-    }
-
-    private var xcodeProjectURLCache: [String: String] {
-        get {
-            UserDefaults.standard.object(forKey: "xcodeProjectURLCache") as? [String: String] ?? [String: String]()
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "xcodeProjectURLCache")
-        }
-    }
 
     // MARK: - Filters
     @Published var componentsListFilter: String = ""
@@ -90,13 +72,13 @@ class ViewModel: ObservableObject {
     weak var dataStore: ViewModelDataStore? {
         didSet {
             if let fileURL = dataStore?.fileURL {
-                modulesFolderURL = modulesFolderURLCache[fileURL.path].flatMap {
-                    guard (try? FileManager.default.contentsOfDirectory(atPath: $0)) != nil else { return nil }
-                    return URL(string: $0)
+                modulesFolderURL = filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).flatMap { url in
+                    guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
+                    return url
                 }
-                xcodeProjectURL = xcodeProjectURLCache[fileURL.path].flatMap {
-                    guard (try? FileManager.default.contentsOfDirectory(atPath: $0)) != nil else { return nil }
-                    return URL(string: $0)
+                xcodeProjectURL = filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL).flatMap { url in
+                    guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
+                    return url
                 }
             }
         }
@@ -105,16 +87,19 @@ class ViewModel: ObservableObject {
     
     private var pathsCache: [URL: URL] = [:]
     
-    let projectGenerator: ProjectGeneratorProtocol
     let familyFolderNameProvider: FamilyFolderNameProviderProtocol
+    let filesURLDataStore: FilesURLDataStoreProtocol
+    let projectGenerator: ProjectGeneratorProtocol
     
     // MARK: - Initialiser
     init(
-        projectGenerator: ProjectGeneratorProtocol,
-        familyFolderNameProvider: FamilyFolderNameProviderProtocol
+        familyFolderNameProvider: FamilyFolderNameProviderProtocol,
+        filesURLDataStore: FilesURLDataStoreProtocol,
+        projectGenerator: ProjectGeneratorProtocol
     ) {
-        self.projectGenerator = projectGenerator
         self.familyFolderNameProvider = familyFolderNameProvider
+        self.filesURLDataStore = filesURLDataStore
+        self.projectGenerator = projectGenerator
     }
     
     // MARK: - FamilyFolderNameProvider

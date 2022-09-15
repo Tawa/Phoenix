@@ -125,6 +125,12 @@ extension Container {
     static let appVersionUpdateProvider = Factory {
         AppVersionUpdateProvider() as AppVersionUpdateProviderProtocol
     }
+    
+    static let filesURLDataStore = Factory {
+        FilesURLDataStore(
+            dictionaryCache: UserDefaults.standard
+        ) as FilesURLDataStoreProtocol
+    }
 }
 
 extension Bundle: CurrentAppVersionStringProviderProtocol {
