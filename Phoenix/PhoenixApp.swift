@@ -9,6 +9,8 @@ struct PhoenixApp: App {
         DocumentGroup(newDocument: PhoenixDocument()) { file in
             ContentView(
                 viewModel: ViewModel(
+                    appVersionUpdateProvider: Container.appVersionUpdateProvider(),
+                    pbxProjSyncer: Container.pbxProjSyncer(),
                     familyFolderNameProvider: Container.familyFolderNameProvider(),
                     filesURLDataStore: Container.filesURLDataStore(),
                     projectGenerator: Container.projectGenerator()

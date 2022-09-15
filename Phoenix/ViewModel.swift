@@ -3,7 +3,6 @@ import Combine
 import ComponentPackagesProviderContract
 import DemoAppFeature
 import DemoAppGeneratorContract
-import Factory
 import Package
 import PackageGeneratorContract
 import PBXProjectSyncerContract
@@ -87,16 +86,23 @@ class ViewModel: ObservableObject {
     
     private var pathsCache: [URL: URL] = [:]
     
+    let appVersionUpdateProvider: AppVersionUpdateProviderProtocol
+    let pbxProjSyncer: PBXProjectSyncerProtocol
     let familyFolderNameProvider: FamilyFolderNameProviderProtocol
     let filesURLDataStore: FilesURLDataStoreProtocol
     let projectGenerator: ProjectGeneratorProtocol
     
+    
     // MARK: - Initialiser
     init(
+        appVersionUpdateProvider: AppVersionUpdateProviderProtocol,
+        pbxProjSyncer: PBXProjectSyncerProtocol,
         familyFolderNameProvider: FamilyFolderNameProviderProtocol,
         filesURLDataStore: FilesURLDataStoreProtocol,
         projectGenerator: ProjectGeneratorProtocol
     ) {
+        self.appVersionUpdateProvider = appVersionUpdateProvider
+        self.pbxProjSyncer = pbxProjSyncer
         self.familyFolderNameProvider = familyFolderNameProvider
         self.filesURLDataStore = filesURLDataStore
         self.projectGenerator = projectGenerator
@@ -173,7 +179,6 @@ class ViewModel: ObservableObject {
             return
         }
         showingGeneratePopover = false
-        let projectGenerator = Container.projectGenerator()
         do {
             try projectGenerator.generate(document: document, folderURL: fileURL)
         } catch {
@@ -211,9 +216,8 @@ class ViewModel: ObservableObject {
             return
         }
         
-        let syncer = Container.pbxProjSyncer()
         do {
-            try syncer.sync(document: document, at: ashFileURL, withProjectAt: xcodeFileURL)
+            try pbxProjSyncer.sync(document: document, at: ashFileURL, withProjectAt: xcodeFileURL)
         } catch {
             alertState = .errorString(error.localizedDescription)
         }
@@ -233,8 +237,6 @@ class ViewModel: ObservableObject {
     }
     
     func checkForUpdate() {
-        let appVersionUpdateProvider = Container.appVersionUpdateProvider()
-        
         appUpdateVersionInfoSub = appVersionUpdateProvider
             .appVersionsPublisher()
             .receive(on: DispatchQueue.main)
