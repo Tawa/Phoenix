@@ -87,18 +87,17 @@ extension Container {
         ) as PackagePathProviderProtocol
     }
     
-    static let componentPackageProvider = ParameterFactory { (params: String) in
+    static let componentPackageProvider = Factory {
         ComponentPackageProvider(
             packageNameProvider: Container.packageNameProvider(),
             packageFolderNameProvider: Container.packageFolderNameProvider(),
-            packagePathProvider: Container.packagePathProvider(),
-            swiftVersion: params
+            packagePathProvider: Container.packagePathProvider()
         ) as ComponentPackageProviderProtocol
     }
     
-    static let componentPackagesProvider = ParameterFactory { (params: String) in
+    static let componentPackagesProvider = Factory {
         ComponentPackagesProvider(
-            componentPackageProvider: Container.componentPackageProvider(params)
+            componentPackageProvider: Container.componentPackageProvider()
         ) as ComponentPackagesProviderProtocol
     }
     
@@ -113,9 +112,7 @@ extension Container {
     
     static let projectGenerator = ParameterFactory { (params: String) in
         ProjectGenerator(
-            componentPackagesProvider: Container.componentPackagesProvider(
-                params
-            ),
+            componentPackagesProvider: Container.componentPackagesProvider(),
             packageGenerator: Container.packageGenerator(),
             pbxProjectSyncer: Container.pbxProjSyncer()
         ) as ProjectGeneratorProtocol

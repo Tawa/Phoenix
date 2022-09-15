@@ -105,6 +105,10 @@ class ViewModel: ObservableObject {
     
     private var pathsCache: [URL: URL] = [:]
     
+    // MARK: - Initialiser
+    init() {
+    }
+    
     func update(value: String) {
         print("Value: \(value)")
     }
