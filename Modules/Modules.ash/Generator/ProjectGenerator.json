@@ -21,23 +21,6 @@
       "local" : {
         "_0" : {
           "name" : {
-            "family" : "Syncer",
-            "given" : "PBXProject"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Contract"
-          ]
-        }
-      }
-    },
-    {
-      "local" : {
-        "_0" : {
-          "name" : {
             "family" : "Generator",
             "given" : "Package"
           },

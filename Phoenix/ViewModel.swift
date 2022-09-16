@@ -3,7 +3,6 @@ import Combine
 import ComponentPackagesProviderContract
 import DemoAppFeature
 import DemoAppGeneratorContract
-import Factory
 import Package
 import PackageGeneratorContract
 import PBXProjectSyncerContract
@@ -53,36 +52,18 @@ class ViewModel: ObservableObject {
     @Published var modulesFolderURL: URL? = nil {
         didSet {
             if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
-                modulesFolderURLCache[fileURL.path] = modulesFolderURL.path
+                filesURLDataStore.set(modulesFolderURL: modulesFolderURL, forFileURL: fileURL)
             }
         }
     }
     @Published var xcodeProjectURL: URL? = nil {
         didSet {
             if let fileURL = fileURL, let xcodeProjectURL = xcodeProjectURL {
-                xcodeProjectURLCache[fileURL.path] = xcodeProjectURL.path
+                filesURLDataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
             }
         }
     }
     @Published var skipXcodeProject: Bool = false
-    
-    private var modulesFolderURLCache: [String: String] {
-        get {
-            UserDefaults.standard.object(forKey: "modulesFolderURLCache") as? [String: String] ?? [String: String]()
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "modulesFolderURLCache")
-        }
-    }
-
-    private var xcodeProjectURLCache: [String: String] {
-        get {
-            UserDefaults.standard.object(forKey: "xcodeProjectURLCache") as? [String: String] ?? [String: String]()
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "xcodeProjectURLCache")
-        }
-    }
 
     // MARK: - Filters
     @Published var componentsListFilter: String = ""
@@ -90,13 +71,13 @@ class ViewModel: ObservableObject {
     weak var dataStore: ViewModelDataStore? {
         didSet {
             if let fileURL = dataStore?.fileURL {
-                modulesFolderURL = modulesFolderURLCache[fileURL.path].flatMap {
-                    guard (try? FileManager.default.contentsOfDirectory(atPath: $0)) != nil else { return nil }
-                    return URL(string: $0)
+                modulesFolderURL = filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).flatMap { url in
+                    guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
+                    return url
                 }
-                xcodeProjectURL = xcodeProjectURLCache[fileURL.path].flatMap {
-                    guard (try? FileManager.default.contentsOfDirectory(atPath: $0)) != nil else { return nil }
-                    return URL(string: $0)
+                xcodeProjectURL = filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL).flatMap { url in
+                    guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
+                    return url
                 }
             }
         }
@@ -105,10 +86,33 @@ class ViewModel: ObservableObject {
     
     private var pathsCache: [URL: URL] = [:]
     
-    func update(value: String) {
-        print("Value: \(value)")
+    let appVersionUpdateProvider: AppVersionUpdateProviderProtocol
+    let pbxProjSyncer: PBXProjectSyncerProtocol
+    let familyFolderNameProvider: FamilyFolderNameProviderProtocol
+    let filesURLDataStore: FilesURLDataStoreProtocol
+    let projectGenerator: ProjectGeneratorProtocol
+    
+    
+    // MARK: - Initialiser
+    init(
+        appVersionUpdateProvider: AppVersionUpdateProviderProtocol,
+        pbxProjSyncer: PBXProjectSyncerProtocol,
+        familyFolderNameProvider: FamilyFolderNameProviderProtocol,
+        filesURLDataStore: FilesURLDataStoreProtocol,
+        projectGenerator: ProjectGeneratorProtocol
+    ) {
+        self.appVersionUpdateProvider = appVersionUpdateProvider
+        self.pbxProjSyncer = pbxProjSyncer
+        self.familyFolderNameProvider = familyFolderNameProvider
+        self.filesURLDataStore = filesURLDataStore
+        self.projectGenerator = projectGenerator
     }
     
+    // MARK: - FamilyFolderNameProvider
+    func folderName(forFamily family: String) -> String {
+        familyFolderNameProvider.folderName(forFamily: family)
+    }
+        
     func onConfigurationButton() {
         showingConfigurationPopup = true
     }
@@ -120,14 +124,20 @@ class ViewModel: ObservableObject {
     func onDuplicate(component: Component) {
         showingNewComponentPopup = .template(component)
     }
-        
-    private func getAccessToURL(file: Bool, completion: (URL) -> Void) {
+    
+    private func getFileURL(_ completion: @escaping (URL) -> Void) {
         guard let fileURL = fileURL else {
             alertState = .errorString("File must be saved before packages can be generated.")
             return
         }
-        if let url = openFolderSelection(at: fileURL, chooseFiles: file) {
-            completion(url)
+        completion(fileURL)
+    }
+    
+    private func getAccessToURL(file: Bool, completion: @escaping (URL) -> Void) {
+        getFileURL { fileURL in
+            if let url = self.openFolderSelection(at: fileURL, chooseFiles: file) {
+                completion(url)
+            }
         }
     }
     
@@ -175,13 +185,10 @@ class ViewModel: ObservableObject {
             return
         }
         showingGeneratePopover = false
-        let projectGenerator = Container.projectGenerator(
-            document.projectConfiguration.swiftVersion
-        )
         do {
             try projectGenerator.generate(document: document, folderURL: fileURL)
         } catch {
-            alertState = .errorString("Error generator project: \(error)")
+            alertState = .errorString("Error generating project: \(error)")
         }
         
         guard !skipXcodeProject else { return }
@@ -189,37 +196,29 @@ class ViewModel: ObservableObject {
     }
     
     private func generateXcodeProject(for document: PhoenixDocument) {
-        guard !skipXcodeProject else { return }
-        if let xcodeProjectURL = xcodeProjectURL {
-            onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL)
-        }
+        guard let xcodeProjectURL = xcodeProjectURL else { return }
+        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL)
     }
     
     func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, ashFileURL: URL?) {
-        guard let ashFileURL = ashFileURL else {
-            alertState = .errorString("File must be saved before packages can be generated.")
-            return
+        getFileURL { fileURL in
+            self.demoAppFeatureData = .init(
+                component: component,
+                document: document,
+                ashFileURL: fileURL,
+                onDismiss: { [weak self] in
+                    self?.demoAppFeatureData = nil
+                })
         }
-        demoAppFeatureData = .init(
-            component: component,
-            document: document,
-            ashFileURL: ashFileURL,
-            onDismiss: { [weak self] in
-                self?.demoAppFeatureData = nil
-            })
     }
     
     func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL) {
-        guard let ashFileURL = fileURL else {
-            alertState = .errorString("File must be saved before packages can be generated.")
-            return
-        }
-        
-        let syncer = Container.pbxProjSyncer()
-        do {
-            try syncer.sync(document: document, at: ashFileURL, withProjectAt: xcodeFileURL)
-        } catch {
-            alertState = .errorString(error.localizedDescription)
+        getFileURL { fileURL in
+            do {
+                try self.pbxProjSyncer.sync(document: document, at: fileURL, withProjectAt: xcodeFileURL)
+            } catch {
+                self.alertState = .errorString(error.localizedDescription)
+            }
         }
     }
     
@@ -237,8 +236,6 @@ class ViewModel: ObservableObject {
     }
     
     func checkForUpdate() {
-        let appVersionUpdateProvider = Container.appVersionUpdateProvider()
-        
         appUpdateVersionInfoSub = appVersionUpdateProvider
             .appVersionsPublisher()
             .receive(on: DispatchQueue.main)

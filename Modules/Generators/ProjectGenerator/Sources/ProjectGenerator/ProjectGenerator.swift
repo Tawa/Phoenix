@@ -2,23 +2,19 @@ import ComponentPackagesProviderContract
 import Foundation
 import Package
 import PackageGeneratorContract
-import PBXProjectSyncerContract
 import PhoenixDocument
 import ProjectGeneratorContract
 
 public struct ProjectGenerator: ProjectGeneratorProtocol {
     let componentPackagesProvider: ComponentPackagesProviderProtocol
     let packageGenerator: PackageGeneratorProtocol
-    let pbxProjectSyncer: PBXProjectSyncerProtocol
     
     public init(
         componentPackagesProvider: ComponentPackagesProviderProtocol,
-        packageGenerator: PackageGeneratorProtocol,
-        pbxProjectSyncer: PBXProjectSyncerProtocol
+        packageGenerator: PackageGeneratorProtocol
     ) {
         self.componentPackagesProvider = componentPackagesProvider
         self.packageGenerator = packageGenerator
-        self.pbxProjectSyncer = pbxProjectSyncer
     }
     
     public func generate(document: PhoenixDocument, folderURL: URL) throws {

@@ -30,8 +30,7 @@
       codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO"
-            useTestSelectionWhitelist = "NO">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3873E5B32804C50A000BCB03"
@@ -41,8 +40,7 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO"
-            useTestSelectionWhitelist = "NO">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AppVersionProviderTests"
@@ -52,19 +50,7 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO"
-            useTestSelectionWhitelist = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DependencyGraphViewTests"
-               BuildableName = "DependencyGraphViewTests"
-               BlueprintName = "DependencyGraphViewTests"
-               ReferencedContainer = "container:Modules/Views/DependencyGraphView">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            useTestSelectionWhitelist = "NO">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DocumentCoderTests"
@@ -74,8 +60,7 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO"
-            useTestSelectionWhitelist = "NO">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "PackageTests"
@@ -85,8 +70,7 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO"
-            useTestSelectionWhitelist = "NO">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "PhoenixDocumentTests"
@@ -96,8 +80,7 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO"
-            useTestSelectionWhitelist = "NO">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "PackageStringProviderTests"
@@ -107,14 +90,93 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO"
-            useTestSelectionWhitelist = "NO">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "PackagePathProviderTests"
                BuildableName = "PackagePathProviderTests"
                BlueprintName = "PackagePathProviderTests"
                ReferencedContainer = "container:Modules/Providers/PackagePathProvider">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ComponentPackagesProviderTests"
+               BuildableName = "ComponentPackagesProviderTests"
+               BlueprintName = "ComponentPackagesProviderTests"
+               ReferencedContainer = "container:Modules/Providers/ComponentPackagesProvider">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DemoAppFeatureTests"
+               BuildableName = "DemoAppFeatureTests"
+               BlueprintName = "DemoAppFeatureTests"
+               ReferencedContainer = "container:Modules/Features/DemoAppFeature">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DemoAppGeneratorTests"
+               BuildableName = "DemoAppGeneratorTests"
+               BlueprintName = "DemoAppGeneratorTests"
+               ReferencedContainer = "container:Modules/Generators/DemoAppGenerator">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "PackageGeneratorTests"
+               BuildableName = "PackageGeneratorTests"
+               BlueprintName = "PackageGeneratorTests"
+               ReferencedContainer = "container:Modules/Generators/PackageGenerator">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "PBXProjectSyncerTests"
+               BuildableName = "PBXProjectSyncerTests"
+               BlueprintName = "PBXProjectSyncerTests"
+               ReferencedContainer = "container:Modules/Syncers/PBXProjectSyncer">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "PhoenixViewsTests"
+               BuildableName = "PhoenixViewsTests"
+               BlueprintName = "PhoenixViewsTests"
+               ReferencedContainer = "container:Modules/Views/PhoenixViews">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ProjectGeneratorTests"
+               BuildableName = "ProjectGeneratorTests"
+               BlueprintName = "ProjectGeneratorTests"
+               ReferencedContainer = "container:Modules/Generators/ProjectGenerator">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RelativeURLProviderTests"
+               BuildableName = "RelativeURLProviderTests"
+               BlueprintName = "RelativeURLProviderTests"
+               ReferencedContainer = "container:Modules/Providers/RelativeURLProvider">
             </BuildableReference>
          </TestableReference>
       </Testables>

@@ -7,9 +7,12 @@ import PhoenixDocument
 
 
 struct ContentView: View {
-    @StateObject private var viewModel: ViewModel = .init()
+    @StateObject private var viewModel: ViewModel
     @EnvironmentObject private var store: PhoenixDocumentStore
-    private let familyFolderNameProvider: FamilyFolderNameProviderProtocol = FamilyFolderNameProvider()
+    
+    init(viewModel: ViewModel) {
+        self._viewModel = .init(wrappedValue: viewModel)
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -210,7 +213,7 @@ struct ContentView: View {
                              onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
                              folderName: family.folder ?? "",
                              onUpdateFolderName: { store.updateFamily(withName: family.name, folder: $0) },
-                             defaultFolderName: familyFolderNameProvider.folderName(forFamily: family.name),
+                             defaultFolderName: viewModel.folderName(forFamily: family.name),
                              componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
                              onDismiss: { viewModel.selectedFamilyName = nil })
     }
@@ -349,7 +352,7 @@ struct ContentView: View {
         if let folder = family.folder {
             return folder
         }
-        return familyFolderNameProvider.folderName(forFamily: family.name)
+        return viewModel.folderName(forFamily: family.name)
     }
     
     private func iOSPlatformMenuTitle(forComponent component: Component) -> String {

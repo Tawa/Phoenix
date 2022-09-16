@@ -87,18 +87,17 @@ extension Container {
         ) as PackagePathProviderProtocol
     }
     
-    static let componentPackageProvider = ParameterFactory { (params: String) in
+    static let componentPackageProvider = Factory {
         ComponentPackageProvider(
             packageNameProvider: Container.packageNameProvider(),
             packageFolderNameProvider: Container.packageFolderNameProvider(),
-            packagePathProvider: Container.packagePathProvider(),
-            swiftVersion: params
+            packagePathProvider: Container.packagePathProvider()
         ) as ComponentPackageProviderProtocol
     }
     
-    static let componentPackagesProvider = ParameterFactory { (params: String) in
+    static let componentPackagesProvider = Factory {
         ComponentPackagesProvider(
-            componentPackageProvider: Container.componentPackageProvider(params)
+            componentPackageProvider: Container.componentPackageProvider()
         ) as ComponentPackagesProviderProtocol
     }
     
@@ -107,17 +106,18 @@ extension Container {
             packageFolderNameProvider: Container.packageFolderNameProvider(),
             packageNameProvider: Container.packageNameProvider(),
             packagePathProvider: Container.packagePathProvider(),
-            projectWriter: PBXProjectWriter()
+            projectWriter: Container.pbxProjectWriter()
         ) as PBXProjectSyncerProtocol
     }
     
-    static let projectGenerator = ParameterFactory { (params: String) in
+    static let pbxProjectWriter = Factory {
+        PBXProjectWriter() as PBXProjectWriterProtocol
+    }
+    
+    static let projectGenerator = Factory {
         ProjectGenerator(
-            componentPackagesProvider: Container.componentPackagesProvider(
-                params
-            ),
-            packageGenerator: Container.packageGenerator(),
-            pbxProjectSyncer: Container.pbxProjSyncer()
+            componentPackagesProvider: Container.componentPackagesProvider(),
+            packageGenerator: Container.packageGenerator()
         ) as ProjectGeneratorProtocol
     }
     
@@ -127,6 +127,12 @@ extension Container {
     
     static let appVersionUpdateProvider = Factory {
         AppVersionUpdateProvider() as AppVersionUpdateProviderProtocol
+    }
+    
+    static let filesURLDataStore = Factory {
+        FilesURLDataStore(
+            dictionaryCache: UserDefaults.standard
+        ) as FilesURLDataStoreProtocol
     }
 }
 

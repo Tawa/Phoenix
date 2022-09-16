@@ -13,16 +13,13 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
     private let packageNameProvider: PackageNameProviderProtocol
     private let packageFolderNameProvider: PackageFolderNameProviderProtocol
     private let packagePathProvider: PackagePathProviderProtocol
-    private let swiftVersion: String
     
     public init(packageNameProvider: PackageNameProviderProtocol,
                 packageFolderNameProvider: PackageFolderNameProviderProtocol,
-                packagePathProvider: PackagePathProviderProtocol,
-                swiftVersion: String) {
+                packagePathProvider: PackagePathProviderProtocol) {
         self.packageNameProvider = packageNameProvider
         self.packageFolderNameProvider = packageFolderNameProvider
         self.packagePathProvider = packagePathProvider
-        self.swiftVersion = swiftVersion
     }
     
     
@@ -127,7 +124,7 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
                                                                        targets: [packageName]))],
                                     dependencies: dependencies.uniqued(),
                                     targets: targets,
-                                    swiftVersion: swiftVersion),
+                                    swiftVersion: projectConfiguration.swiftVersion),
                      path: packagePathProvider.path(for: component.name,
                                                     of: family,
                                                     packageConfiguration: packageConfiguration))

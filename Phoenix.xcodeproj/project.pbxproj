@@ -50,6 +50,7 @@
 		B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */; };
 		B2BDAE5A28C11AF00036FA9D /* ComponentPackagesProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2BDAE5928C11AF00036FA9D /* ComponentPackagesProvider */; };
 		B2BDAE5C28C11D4F0036FA9D /* PackagePathProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2BDAE5B28C11D4F0036FA9D /* PackagePathProvider */; };
+		B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */; };
 		B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5928BAC12200848D93 /* PackageGenerator */; };
 		B2CC2B5C28BAC21900848D93 /* PackageStringProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5B28BAC21900848D93 /* PackageStringProvider */; };
 		B2F5B85528C143A600282672 /* PBXProjectSyncer in Frameworks */ = {isa = PBXBuildFile; productRef = B2F5B85428C143A600282672 /* PBXProjectSyncer */; };
@@ -128,6 +129,7 @@
 		AE528C21567B3426E698A882 /* PackagePathProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackagePathProvider; sourceTree = "<group>"; };
 		B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+Features.swift"; sourceTree = "<group>"; };
 		B29EC6F98548003227E30886 /* PackagePathProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackagePathProviderContract; sourceTree = "<group>"; };
+		B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesURLDataStore.swift; sourceTree = "<group>"; };
 		B544253829AAED80892BA404 /* DemoAppFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppFeature; sourceTree = "<group>"; };
 		B69373C5137BBE5E65FBB739 /* ComponentPackagesProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ComponentPackagesProvider; sourceTree = "<group>"; };
 		B7248711AB2A2870AED7550A /* PhoenixViews */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PhoenixViews; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 				3873E5A52804C509000BCB03 /* PhoenixDocument+Extensions.swift */,
 				3873E5AB2804C50A000BCB03 /* Preview Content */,
 				38E2512A2837E163002FFA31 /* ViewModel.swift */,
+				B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */,
 				38C7D144280888E800E2675B /* Views */,
 			);
 			path = Phoenix;
@@ -588,6 +591,7 @@
 				B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
 				38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */,
+				B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesPopover.swift in Sources */,
 				38C7D1492808B35300E2675B /* NewComponentPopover.swift in Sources */,
 				38E251312837E96A002FFA31 /* PopoverView.swift in Sources */,
@@ -759,7 +763,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -793,7 +797,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
