@@ -10,15 +10,15 @@ let package = Package(
             targets: ["PBXProjectSyncerContract"])
     ],
     dependencies: [
-        .package(path: "../../../Entities/Package"),
-        .package(path: "../../../Entities/PhoenixDocument")
+        .package(path: "../../../Entities/PhoenixDocument"),
+        .package(path: "../../../Entities/SwiftPackage")
     ],
     targets: [
         .target(
             name: "PBXProjectSyncerContract",
             dependencies: [
-                "Package",
-                "PhoenixDocument"
+                "PhoenixDocument",
+                "SwiftPackage"
             ]
         )
     ]

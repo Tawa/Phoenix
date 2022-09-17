@@ -1,7 +1,7 @@
-import Package
-import Foundation
 import AppVersionProviderContract
+import Foundation
 import PhoenixDocument
+import SwiftPackage
 
 public protocol PhoenixDocumentFileWrappersDecoderProtocol {
     func phoenixDocument(from fileWrapper: [String: FileWrapper]) throws -> PhoenixDocument

@@ -1,12 +1,12 @@
 import XCTest
-import Package
+import SwiftPackage
 @testable import PackageStringProvider
 
 final class PackageStringProviderTests: XCTestCase {
     
     func testPackage() {
         // Given
-        let package = Package(name: "HomeService",
+        let package = SwiftPackage(name: "HomeService",
                               iOSVersion: nil,
                               macOSVersion: nil,
                               products: [

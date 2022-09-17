@@ -1,9 +1,9 @@
-import Package
-import PhoenixViews
-import SwiftUI
-import Factory
 import DemoAppFeature
+import Factory
 import PhoenixDocument
+import PhoenixViews
+import SwiftPackage
+import SwiftUI
 
 
 struct ContentView: View {

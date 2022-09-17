@@ -13,15 +13,15 @@ let package = Package(
             targets: ["DemoAppFeature"])
     ],
     dependencies: [
-        .package(path: "../../Entities/Package"),
-        .package(path: "../../Entities/PhoenixDocument")
+        .package(path: "../../Entities/PhoenixDocument"),
+        .package(path: "../../Entities/SwiftPackage")
     ],
     targets: [
         .target(
             name: "DemoAppFeature",
             dependencies: [
-                "Package",
-                "PhoenixDocument"
+                "PhoenixDocument",
+                "SwiftPackage"
             ]
         ),
         .testTarget(

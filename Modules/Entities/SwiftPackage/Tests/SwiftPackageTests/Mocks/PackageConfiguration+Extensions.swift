@@ -1,4 +1,4 @@
-import Package
+import SwiftPackage
 
 extension PackageConfiguration {
     static var contract: PackageConfiguration = .init(name: "Contract",

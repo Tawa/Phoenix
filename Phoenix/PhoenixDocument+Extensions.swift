@@ -1,9 +1,9 @@
-import Package
-import SwiftUI
 import UniformTypeIdentifiers
 import PhoenixDocument
 import DocumentCoderContract
 import Factory
+import SwiftPackage
+import SwiftUI
 
 extension UTType {
     static var ash: UTType {

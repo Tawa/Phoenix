@@ -1,5 +1,5 @@
 import ComponentPackagesProviderContract
-import Package
+import SwiftPackage
 
 public struct ComponentPackagesProvider: ComponentPackagesProviderProtocol {
     let componentPackageProvider: ComponentPackageProviderProtocol

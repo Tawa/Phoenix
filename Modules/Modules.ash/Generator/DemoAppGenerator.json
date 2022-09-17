@@ -4,28 +4,6 @@
       "local" : {
         "_0" : {
           "name" : {
-            "family" : "Entity",
-            "given" : "Package"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Contract"
-            },
-            "Implementation",
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Implementation"
-          ]
-        }
-      }
-    },
-    {
-      "local" : {
-        "_0" : {
-          "name" : {
             "family" : "Generator",
             "given" : "Package"
           },
@@ -69,6 +47,28 @@
               "name" : "Implementation"
             },
             "Contract"
+          ]
+        }
+      }
+    },
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "SwiftPackage"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Contract"
+            },
+            "Implementation",
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Implementation"
           ]
         }
       }

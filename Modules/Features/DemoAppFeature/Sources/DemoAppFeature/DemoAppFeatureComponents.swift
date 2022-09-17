@@ -1,5 +1,5 @@
-import Package
 import PhoenixDocument
+import SwiftPackage
 import SwiftUI
 
 public struct DemoAppDependencyTargetTypeSelection: Identifiable {

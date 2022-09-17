@@ -1,4 +1,4 @@
-public struct Package: Codable, Hashable {
+public struct SwiftPackage: Codable, Hashable {
     public let name: String
     public let iOSVersion: IOSVersion?
     public let macOSVersion: MacOSVersion?

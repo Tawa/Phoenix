@@ -1,5 +1,5 @@
-import Package
 import PackagePathProviderContract
+import SwiftPackage
 
 public struct PackagePathProvider: PackagePathProviderProtocol {
     private let packageFolderNameProvider: PackageFolderNameProviderProtocol

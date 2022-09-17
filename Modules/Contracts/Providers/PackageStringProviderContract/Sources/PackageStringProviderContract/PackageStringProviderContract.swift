@@ -1,5 +1,5 @@
-import Package
+import SwiftPackage
 
 public protocol PackageStringProviderProtocol {
-    func string(for package: Package) -> String
+    func string(for package: SwiftPackage) -> String
 }

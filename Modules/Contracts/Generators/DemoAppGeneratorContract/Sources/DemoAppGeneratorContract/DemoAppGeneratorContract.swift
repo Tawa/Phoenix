@@ -1,5 +1,5 @@
 import Foundation
-import Package
+import SwiftPackage
 
 public protocol DemoAppGeneratorProtocol {
     func generateDemoApp(forComponent component: Component,

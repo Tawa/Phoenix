@@ -3,20 +3,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "Package",
+    name: "SwiftPackage",
     products: [
         .library(
-            name: "Package",
-            targets: ["Package"])
+            name: "SwiftPackage",
+            targets: ["SwiftPackage"])
     ],
     targets: [
         .target(
-            name: "Package"
+            name: "SwiftPackage"
         ),
         .testTarget(
-            name: "PackageTests",
+            name: "SwiftPackageTests",
             dependencies: [
-                "Package"
+                "SwiftPackage"
             ]
         )
     ]

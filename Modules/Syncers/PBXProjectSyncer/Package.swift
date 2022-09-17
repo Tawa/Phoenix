@@ -12,8 +12,8 @@ let package = Package(
     dependencies: [
         .package(path: "../../Contracts/Providers/PackagePathProviderContract"),
         .package(path: "../../Contracts/Syncers/PBXProjectSyncerContract"),
-        .package(path: "../../Entities/Package"),
         .package(path: "../../Entities/PhoenixDocument"),
+        .package(path: "../../Entities/SwiftPackage"),
         .package(url: "https://github.com/tuist/XcodeProj.git", from: "8.8.0")
     ],
     targets: [
@@ -22,8 +22,8 @@ let package = Package(
             dependencies: [
                 "PackagePathProviderContract",
                 "PBXProjectSyncerContract",
-                "Package",
                 "PhoenixDocument",
+                "SwiftPackage",
                 "XcodeProj"
             ]
         ),

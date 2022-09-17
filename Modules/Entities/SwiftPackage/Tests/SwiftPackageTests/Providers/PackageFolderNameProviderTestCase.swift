@@ -1,4 +1,4 @@
-@testable import Package
+@testable import SwiftPackage
 import XCTest
 
 class PackageFolderNameProviderTestCase: XCTestCase {

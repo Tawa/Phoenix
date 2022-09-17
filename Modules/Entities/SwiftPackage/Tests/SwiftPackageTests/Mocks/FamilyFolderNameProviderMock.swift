@@ -1,4 +1,4 @@
-@testable import Package
+@testable import SwiftPackage
 
 struct FamilyFolderNameProviderMock: FamilyFolderNameProviderProtocol {
     var value: String

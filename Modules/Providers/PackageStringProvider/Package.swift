@@ -11,14 +11,14 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../../Contracts/Providers/PackageStringProviderContract"),
-        .package(path: "../../Entities/Package")
+        .package(path: "../../Entities/SwiftPackage")
     ],
     targets: [
         .target(
             name: "PackageStringProvider",
             dependencies: [
                 "PackageStringProviderContract",
-                "Package"
+                "SwiftPackage"
             ]
         ),
         .testTarget(

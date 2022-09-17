@@ -10,13 +10,13 @@ let package = Package(
             targets: ["DemoAppGeneratorContract"])
     ],
     dependencies: [
-        .package(path: "../../../Entities/Package")
+        .package(path: "../../../Entities/SwiftPackage")
     ],
     targets: [
         .target(
             name: "DemoAppGeneratorContract",
             dependencies: [
-                "Package"
+                "SwiftPackage"
             ]
         )
     ]

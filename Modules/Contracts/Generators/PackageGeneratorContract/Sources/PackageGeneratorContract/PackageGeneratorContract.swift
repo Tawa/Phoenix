@@ -1,6 +1,6 @@
-import Package
 import Foundation
+import SwiftPackage
 
 public protocol PackageGeneratorProtocol {
-    func generate(package: Package, at url: URL) throws
+    func generate(package: SwiftPackage, at url: URL) throws
 }
