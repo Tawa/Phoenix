@@ -1,4 +1,4 @@
-import Package
+import SwiftPackage
 
 public protocol PackagePathProviderProtocol {
     func path(for name: Name,

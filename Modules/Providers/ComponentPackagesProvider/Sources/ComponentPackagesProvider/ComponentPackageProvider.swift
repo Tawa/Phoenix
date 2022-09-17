@@ -1,6 +1,6 @@
-import Package
 import ComponentPackagesProviderContract
 import PackagePathProviderContract
+import SwiftPackage
 
 extension Sequence where Element: Hashable {
     func uniqued() -> [Element] {
@@ -10,15 +10,15 @@ extension Sequence where Element: Hashable {
 }
 
 public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
-    private let packageNameProvider: PackageNameProviderProtocol
     private let packageFolderNameProvider: PackageFolderNameProviderProtocol
+    private let packageNameProvider: PackageNameProviderProtocol
     private let packagePathProvider: PackagePathProviderProtocol
     
-    public init(packageNameProvider: PackageNameProviderProtocol,
-                packageFolderNameProvider: PackageFolderNameProviderProtocol,
+    public init(packageFolderNameProvider: PackageFolderNameProviderProtocol,
+                packageNameProvider: PackageNameProviderProtocol,
                 packagePathProvider: PackagePathProviderProtocol) {
-        self.packageNameProvider = packageNameProvider
         self.packageFolderNameProvider = packageFolderNameProvider
+        self.packageNameProvider = packageNameProvider
         self.packagePathProvider = packagePathProvider
     }
     

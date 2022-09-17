@@ -8,7 +8,6 @@ import DocumentCoderContract
 import DocumentCoder
 import Factory
 import Foundation
-import Package
 import PackageGeneratorContract
 import PackageGenerator
 import PackagePathProviderContract
@@ -22,6 +21,7 @@ import ProjectGenerator
 import RelativeURLProviderContract
 import RelativeURLProvider
 import DemoAppFeature
+import SwiftPackage
 
 extension Container {
     static let currentAppVersionStringProvider = Factory { Bundle.main as CurrentAppVersionStringProviderProtocol }
@@ -89,8 +89,8 @@ extension Container {
     
     static let componentPackageProvider = Factory {
         ComponentPackageProvider(
-            packageNameProvider: Container.packageNameProvider(),
             packageFolderNameProvider: Container.packageFolderNameProvider(),
+            packageNameProvider: Container.packageNameProvider(),
             packagePathProvider: Container.packagePathProvider()
         ) as ComponentPackageProviderProtocol
     }

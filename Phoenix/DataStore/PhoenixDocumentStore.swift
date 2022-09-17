@@ -1,6 +1,6 @@
-import Package
 import PhoenixDocument
 import SwiftUI
+import SwiftPackage
 
 class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
     let fileURL: URL?

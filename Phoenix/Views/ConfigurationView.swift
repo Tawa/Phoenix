@@ -1,5 +1,5 @@
+import SwiftPackage
 import SwiftUI
-import Package
 
 struct ConfigurationView: View {
     @Binding var configuration: ProjectConfiguration

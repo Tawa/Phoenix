@@ -12,7 +12,7 @@ let package = Package(
     dependencies: [
         .package(path: "../../Contracts/Providers/ComponentPackagesProviderContract"),
         .package(path: "../../Contracts/Providers/PackagePathProviderContract"),
-        .package(path: "../../Entities/Package")
+        .package(path: "../../Entities/SwiftPackage")
     ],
     targets: [
         .target(
@@ -20,7 +20,7 @@ let package = Package(
             dependencies: [
                 "ComponentPackagesProviderContract",
                 "PackagePathProviderContract",
-                "Package"
+                "SwiftPackage"
             ]
         ),
         .testTarget(

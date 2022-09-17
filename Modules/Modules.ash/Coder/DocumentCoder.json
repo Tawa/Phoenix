@@ -22,12 +22,12 @@
         "_0" : {
           "name" : {
             "family" : "Entity",
-            "given" : "Package"
+            "given" : "PhoenixDocument"
           },
           "targetTypes" : [
             {
               "isTests" : false,
-              "name" : "Implementation"
+              "name" : "Contract"
             },
             "Implementation"
           ]
@@ -39,12 +39,12 @@
         "_0" : {
           "name" : {
             "family" : "Entity",
-            "given" : "PhoenixDocument"
+            "given" : "SwiftPackage"
           },
           "targetTypes" : [
             {
               "isTests" : false,
-              "name" : "Contract"
+              "name" : "Implementation"
             },
             "Implementation"
           ]

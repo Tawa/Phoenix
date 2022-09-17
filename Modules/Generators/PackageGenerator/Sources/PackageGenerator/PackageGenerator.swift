@@ -1,7 +1,7 @@
-import Package
 import PackageGeneratorContract
 import PackageStringProviderContract
 import Foundation
+import SwiftPackage
 
 public struct PackageGenerator: PackageGeneratorProtocol {
     let fileManager: FileManager
@@ -13,7 +13,7 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         self.packageStringProvider = packageStringProvider
     }
     
-    public func generate(package: Package, at url: URL) throws {
+    public func generate(package: SwiftPackage, at url: URL) throws {
         try createPackageFolderIfNecessary(at: url)
 
         try package.targets.forEach { target in
@@ -99,7 +99,7 @@ final class \(name): XCTestCase {
                                attributes: nil)
     }
 
-    func createPackageFile(for package: Package, at url: URL) throws {
+    func createPackageFile(for package: SwiftPackage, at url: URL) throws {
         let content = packageStringProvider.string(for: package)
 
         let path = url.path.appending("/Package.swift")

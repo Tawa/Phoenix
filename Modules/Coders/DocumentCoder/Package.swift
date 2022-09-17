@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
         .package(path: "../../Contracts/Coders/DocumentCoderContract"),
         .package(path: "../../Contracts/Providers/AppVersionProviderContract"),
-        .package(path: "../../Entities/Package")
+        .package(path: "../../Entities/SwiftPackage")
     ],
     targets: [
         .target(
@@ -23,7 +23,7 @@ let package = Package(
             dependencies: [
                 "DocumentCoderContract",
                 "AppVersionProviderContract",
-                "Package"
+                "SwiftPackage"
             ]
         ),
         .testTarget(

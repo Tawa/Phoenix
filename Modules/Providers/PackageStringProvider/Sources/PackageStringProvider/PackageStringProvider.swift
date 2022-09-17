@@ -1,5 +1,5 @@
-import Package
 import PackageStringProviderContract
+import SwiftPackage
 
 public struct PackageStringProvider: PackageStringProviderProtocol {
     
@@ -7,7 +7,7 @@ public struct PackageStringProvider: PackageStringProviderProtocol {
         
     }
     
-    public func string(for package: Package) -> String {
+    public func string(for package: SwiftPackage) -> String {
         var value: String = """
 // swift-tools-version: \(package.swiftVersion)
 

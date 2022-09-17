@@ -1,9 +1,9 @@
 import DemoAppGeneratorContract
-import Package
 import PackageGeneratorContract
 import PackagePathProviderContract
 import Foundation
 import RelativeURLProviderContract
+import SwiftPackage
 
 public struct DemoAppGenerator: DemoAppGeneratorProtocol {
     private let packageGenerator: PackageGeneratorProtocol
@@ -114,7 +114,7 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
                                                             projectConfiguration: projectConfiguration,
                                                             modulesRelativePath: modulesRelativePath)
 
-        let package = Package(name: dependenciesPackageName,
+        let package = SwiftPackage(name: dependenciesPackageName,
                               iOSVersion: .v15,
                               macOSVersion: .v12,
                               products: [

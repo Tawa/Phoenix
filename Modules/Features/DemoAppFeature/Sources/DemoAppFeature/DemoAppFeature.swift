@@ -1,6 +1,6 @@
-import Package
-import SwiftUI
 import PhoenixDocument
+import SwiftPackage
+import SwiftUI
 
 public struct DemoAppFeatureInput: Identifiable {
     public let id: String = UUID().uuidString

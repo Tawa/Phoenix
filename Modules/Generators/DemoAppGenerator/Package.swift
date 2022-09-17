@@ -14,7 +14,7 @@ let package = Package(
         .package(path: "../../Contracts/Generators/PackageGeneratorContract"),
         .package(path: "../../Contracts/Providers/PackagePathProviderContract"),
         .package(path: "../../Contracts/Providers/RelativeURLProviderContract"),
-        .package(path: "../../Entities/Package")
+        .package(path: "../../Entities/SwiftPackage")
     ],
     targets: [
         .target(
@@ -24,7 +24,7 @@ let package = Package(
                 "PackageGeneratorContract",
                 "PackagePathProviderContract",
                 "RelativeURLProviderContract",
-                "Package"
+                "SwiftPackage"
             ],
             resources: [
                 .copy("Templates"),

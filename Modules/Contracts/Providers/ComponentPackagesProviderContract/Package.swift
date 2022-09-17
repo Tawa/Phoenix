@@ -10,13 +10,13 @@ let package = Package(
             targets: ["ComponentPackagesProviderContract"])
     ],
     dependencies: [
-        .package(path: "../../../Entities/Package")
+        .package(path: "../../../Entities/SwiftPackage")
     ],
     targets: [
         .target(
             name: "ComponentPackagesProviderContract",
             dependencies: [
-                "Package"
+                "SwiftPackage"
             ]
         )
     ]

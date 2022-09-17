@@ -1,7 +1,7 @@
-import Package
-import SwiftUI
-import PhoenixDocument
 import Factory
+import PhoenixDocument
+import SwiftPackage
+import SwiftUI
 
 @main
 struct PhoenixApp: App {

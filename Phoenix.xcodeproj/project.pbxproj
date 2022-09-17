@@ -30,7 +30,6 @@
 		38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC942854A0C000E928CA /* CompositionRoot.swift */; };
 		38BCCC9D2854B51700E928CA /* PhoenixDocumentParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BCCC9C2854B51700E928CA /* PhoenixDocumentParsingTests.swift */; };
 		38BCCCA02854B7E300E928CA /* file_1_0_0.ash in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */; };
-		38C7D13B2808864700E2675B /* Package in Frameworks */ = {isa = PBXBuildFile; productRef = 38C7D13A2808864700E2675B /* Package */; };
 		38C7D1492808B35300E2675B /* NewComponentPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D1482808B35300E2675B /* NewComponentPopover.swift */; };
 		38E0B2FA2815702E00B5992D /* ComponentDependenciesPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2F92815702E00B5992D /* ComponentDependenciesPopover.swift */; };
 		38E0B2FD2815766E00B5992D /* PhoenixDocumentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2FC2815766E00B5992D /* PhoenixDocumentStore.swift */; };
@@ -45,6 +44,7 @@
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
 		B224D9AC28C3CCA300997F80 /* PhoenixViews in Frameworks */ = {isa = PBXBuildFile; productRef = B224D9AB28C3CCA300997F80 /* PhoenixViews */; };
 		B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B22AFDA728B9528400C471A4 /* DemoAppGenerator */; };
+		B23F1A1028D64A4C00933FC4 /* SwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = B23F1A0F28D64A4C00933FC4 /* SwiftPackage */; };
 		B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B266B0B428BA8BF900778F3A /* RelativeURLProvider */; };
 		B291BD2328CA83A0000D2149 /* DemoAppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = B291BD2228CA83A0000D2149 /* DemoAppFeature */; };
 		B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */; };
@@ -80,7 +80,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		04DD34C76FFA3ED49147B04E /* Package */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Package; sourceTree = "<group>"; };
 		11412F894C62710EEE3CAAA9 /* DemoAppGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGenerator; sourceTree = "<group>"; };
 		1F90EE55889EB973A1F4A83A /* RelativeURLProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProviderContract; sourceTree = "<group>"; };
 		29DC1384DF456B933D03EBA9 /* AppVersionProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProviderContract; sourceTree = "<group>"; };
@@ -124,6 +123,7 @@
 		5669FA7E1C90B8D304C1121D /* ProjectGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectGenerator; sourceTree = "<group>"; };
 		56E271F2EFDE93C907701834 /* DocumentCoderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoderContract; sourceTree = "<group>"; };
 		75F2909D8CE5D60A75D05DD9 /* PBXProjectSyncer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PBXProjectSyncer; sourceTree = "<group>"; };
+		7630EE55C64753273E2BF13A /* SwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SwiftPackage; sourceTree = "<group>"; };
 		981295FCE3B52E97779A2186 /* DocumentCoder */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoder; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		AE528C21567B3426E698A882 /* PackagePathProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackagePathProvider; sourceTree = "<group>"; };
@@ -152,6 +152,7 @@
 				388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */,
 				B2BDAE5A28C11AF00036FA9D /* ComponentPackagesProvider in Frameworks */,
 				B2BDAE5C28C11D4F0036FA9D /* PackagePathProvider in Frameworks */,
+				B23F1A1028D64A4C00933FC4 /* SwiftPackage in Frameworks */,
 				B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */,
 				B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */,
 				386DD8BF289E9C0A00E800B9 /* Factory in Frameworks */,
@@ -160,7 +161,6 @@
 				B2CC2B5C28BAC21900848D93 /* PackageStringProvider in Frameworks */,
 				B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */,
 				38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */,
-				38C7D13B2808864700E2675B /* Package in Frameworks */,
 				B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -325,8 +325,8 @@
 		63CC22A165DCFB985567FF61 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				04DD34C76FFA3ED49147B04E /* Package */,
 				C195694B44FA2BCE8C9153F2 /* PhoenixDocument */,
+				7630EE55C64753273E2BF13A /* SwiftPackage */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -467,7 +467,6 @@
 			);
 			name = Phoenix;
 			packageProductDependencies = (
-				38C7D13A2808864700E2675B /* Package */,
 				38BCCC9128549BAE00E928CA /* AppVersionProvider */,
 				388B77F02857D2990038D4F4 /* PhoenixDocument */,
 				388B77F82857D4CE0038D4F4 /* DocumentCoder */,
@@ -482,6 +481,7 @@
 				B224D9AB28C3CCA300997F80 /* PhoenixViews */,
 				B213A90C28C7CA13005AFC91 /* ProjectGenerator */,
 				B291BD2228CA83A0000D2149 /* DemoAppFeature */,
+				B23F1A0F28D64A4C00933FC4 /* SwiftPackage */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -923,10 +923,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = AppVersionProvider;
 		};
-		38C7D13A2808864700E2675B /* Package */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Package;
-		};
 		B213A90C28C7CA13005AFC91 /* ProjectGenerator */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ProjectGenerator;
@@ -938,6 +934,10 @@
 		B22AFDA728B9528400C471A4 /* DemoAppGenerator */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DemoAppGenerator;
+		};
+		B23F1A0F28D64A4C00933FC4 /* SwiftPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftPackage;
 		};
 		B266B0B428BA8BF900778F3A /* RelativeURLProvider */ = {
 			isa = XCSwiftPackageProductDependency;

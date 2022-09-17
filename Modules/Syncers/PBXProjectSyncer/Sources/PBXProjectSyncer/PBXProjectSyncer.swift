@@ -2,7 +2,7 @@ import PBXProjectSyncerContract
 import Foundation
 import PhoenixDocument
 
-import Package
+import SwiftPackage
 
 import XcodeProj
 import PathKit

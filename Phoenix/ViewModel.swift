@@ -3,11 +3,11 @@ import Combine
 import ComponentPackagesProviderContract
 import DemoAppFeature
 import DemoAppGeneratorContract
-import Package
 import PackageGeneratorContract
 import PBXProjectSyncerContract
 import PhoenixDocument
 import ProjectGeneratorContract
+import SwiftPackage
 import SwiftUI
 import UniformTypeIdentifiers
 

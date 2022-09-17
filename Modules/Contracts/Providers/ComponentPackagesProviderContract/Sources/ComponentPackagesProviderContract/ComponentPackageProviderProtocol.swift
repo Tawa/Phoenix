@@ -1,4 +1,4 @@
-import Package
+import SwiftPackage
 
 public protocol ComponentPackageProviderProtocol {
     func package(for component: Component,

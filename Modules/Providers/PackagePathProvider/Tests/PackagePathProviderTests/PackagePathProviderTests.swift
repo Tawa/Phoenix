@@ -1,4 +1,4 @@
-import Package
+import SwiftPackage
 import XCTest
 @testable import PackagePathProvider
 

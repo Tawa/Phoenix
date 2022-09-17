@@ -1,9 +1,9 @@
 import ComponentPackagesProviderContract
 import Foundation
-import Package
 import PackageGeneratorContract
 import PhoenixDocument
 import ProjectGeneratorContract
+import SwiftPackage
 
 public struct ProjectGenerator: ProjectGeneratorProtocol {
     let componentPackagesProvider: ComponentPackagesProviderProtocol
