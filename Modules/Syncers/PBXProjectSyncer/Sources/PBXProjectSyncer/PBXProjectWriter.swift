@@ -14,11 +14,13 @@ class PackageDescription {
 
 public class Group {
     var name: String
+    var path: String
     var children: [Group]
     var packages: [PackageDescription]
 
-    internal init(name: String, children: [Group], packages: [PackageDescription]) {
+    internal init(name: String, path: String, children: [Group], packages: [PackageDescription]) {
         self.name = name
+        self.path = path
         self.children = children
         self.packages = packages
     }
@@ -48,7 +50,9 @@ public struct PBXProjectWriter: PBXProjectWriterProtocol {
     }
     
     func add(group: Group, toGroup: PBXGroup) throws {
-        guard let newGroup = try getGroup(named: group.name, fromGroup: toGroup)
+        guard let newGroup = try getGroup(named: group.name,
+                                          path: group.path,
+                                          fromGroup: toGroup)
         else { return }
         
         for child in group.children {
@@ -63,8 +67,15 @@ public struct PBXProjectWriter: PBXProjectWriterProtocol {
         }
     }
     
-    func getGroup(named name: String, fromGroup group: PBXGroup) throws -> PBXGroup? {
+    func getGroup(named name: String, path: String, fromGroup group: PBXGroup) throws -> PBXGroup? {
         let children: [PBXGroup] = group.children.compactMap { $0 as? PBXGroup }
-        return try children.first(where: { $0.path == name }) ?? group.addGroup(named: name).first
+        let newGroup = try children.first(where: { $0.path == name }) ?? group.addGroup(named: name).first
+        
+        if !path.isEmpty, name != path {
+            newGroup?.path = path
+            print("Adding Path: \(path) for \(name)")
+        }
+        
+        return newGroup
     }
 }

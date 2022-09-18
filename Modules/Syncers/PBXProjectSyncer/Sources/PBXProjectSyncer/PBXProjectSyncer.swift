@@ -1,6 +1,7 @@
 import PBXProjectSyncerContract
 import Foundation
 import PhoenixDocument
+import RelativeURLProviderContract
 
 import SwiftPackage
 
@@ -13,18 +14,20 @@ public struct PBXProjectSyncer: PBXProjectSyncerProtocol {
     let packageNameProvider: PackageNameProviderProtocol
     let packagePathProvider: PackagePathProviderProtocol
     let projectWriter: PBXProjectWriterProtocol
+    let relativeURLProvider: RelativeURLProviderProtocol
     
     public init(
         packageFolderNameProvider: PackageFolderNameProviderProtocol,
         packageNameProvider: PackageNameProviderProtocol,
         packagePathProvider: PackagePathProviderProtocol,
-        projectWriter: PBXProjectWriterProtocol)
-    {
-        self.packageFolderNameProvider = packageFolderNameProvider
-        self.packageNameProvider = packageNameProvider
-        self.packagePathProvider = packagePathProvider
-        self.projectWriter = projectWriter
-    }
+        projectWriter: PBXProjectWriterProtocol,
+        relativeURLProvider: RelativeURLProviderProtocol) {
+            self.packageFolderNameProvider = packageFolderNameProvider
+            self.packageNameProvider = packageNameProvider
+            self.packagePathProvider = packagePathProvider
+            self.projectWriter = projectWriter
+            self.relativeURLProvider = relativeURLProvider
+        }
     
     public func sync(document: PhoenixDocument,
                      at documentURL: URL,
@@ -48,13 +51,19 @@ public struct PBXProjectSyncer: PBXProjectSyncerProtocol {
             .flatMap { $0 }
             .sorted(by: { $0.path < $1.path })
         
-        let modulesGroup = group(for: allPackages, rootPath: documentURL.deletingLastPathComponent().lastPathComponent)
+        let rootURL = documentURL.deletingLastPathComponent()
+        let modulesPathComponent = rootURL.lastPathComponent
+        
+        let relativeURL = relativeURLProvider.path(for: xcodeProjectURL.deletingLastPathComponent(), relativeURL: rootURL)
+        let path = [relativeURL, modulesPathComponent].filter { !$0.isEmpty }.joined(separator: "/")
+        
+        let modulesGroup = group(for: allPackages, name: modulesPathComponent, path: path)
         try projectWriter.write(group: modulesGroup, xcodeProjectURL: xcodeProjectURL)
     }
     
-    func group(for packages: [PackageDescription], rootPath: String) -> Group {
-        let group = Group(name: rootPath, children: [], packages: [])
-        packages.forEach { add(package: $0, toGroup: group, rootPath: rootPath) }
+    func group(for packages: [PackageDescription], name: String, path: String) -> Group {
+        let group = Group(name: name, path: path, children: [], packages: [])
+        packages.forEach { add(package: $0, toGroup: group, rootPath: path) }
         return group
     }
     
@@ -75,7 +84,10 @@ public struct PBXProjectSyncer: PBXProjectSyncerProtocol {
             if let child = groupReference.children.first(where: { $0.name == firstPathComponent }) {
                 groupReference = child
             } else {
-                let newGroup = Group(name: firstPathComponent, children: [], packages: [])
+                let newGroup = Group(name: firstPathComponent,
+                                     path: "",
+                                     children: [],
+                                     packages: [])
                 groupReference.children.append(newGroup)
                 groupReference = newGroup
             }
@@ -83,13 +95,7 @@ public struct PBXProjectSyncer: PBXProjectSyncerProtocol {
         }
         return groupReference
     }
-    
-    func group(forComponentsFamily: ComponentsFamily, projectConfigmration: ProjectConfiguration) -> Group {
-        Group(name: packageFolderNameProvider.folderName(for: forComponentsFamily.family),
-              children: [],
-              packages: packages(forComponentsFamily: forComponentsFamily, projectConfigmration: projectConfigmration))
-    }
-    
+        
     func packages(forComponentsFamily: ComponentsFamily, projectConfigmration: ProjectConfiguration) -> [PackageDescription] {
         guard let packageConfiguration = projectConfigmration.packageConfigurations.first(where: { $0.containerFolderName == nil }) else { return [] }
         return forComponentsFamily.components.map { component in

@@ -57,7 +57,7 @@ extension Container {
             packageGenerator: Container.packageGenerator(),
             packageNameProvider: PackageNameProvider(),
             packagePathProvider: Container.packagePathProvider(),
-            relativeURLProvider: RelativeURLProvider(),
+            relativeURLProvider: Container.relativeURLProvider(),
             fileManager: .default
         ) as DemoAppGeneratorProtocol
     }
@@ -106,7 +106,8 @@ extension Container {
             packageFolderNameProvider: Container.packageFolderNameProvider(),
             packageNameProvider: Container.packageNameProvider(),
             packagePathProvider: Container.packagePathProvider(),
-            projectWriter: Container.pbxProjectWriter()
+            projectWriter: Container.pbxProjectWriter(),
+            relativeURLProvider: Container.relativeURLProvider()
         ) as PBXProjectSyncerProtocol
     }
     
@@ -133,6 +134,10 @@ extension Container {
         FilesURLDataStore(
             dictionaryCache: UserDefaults.standard
         ) as FilesURLDataStoreProtocol
+    }
+    
+    static let relativeURLProvider = Factory {
+        RelativeURLProvider() as RelativeURLProviderProtocol
     }
 }
 
