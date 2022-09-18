@@ -1,4 +1,5 @@
 {
+  "defaultOrganizationIdentifier" : "com.hellofresh.demoapp",
   "packageConfigurations" : [
     {
       "appendPackageName" : true,

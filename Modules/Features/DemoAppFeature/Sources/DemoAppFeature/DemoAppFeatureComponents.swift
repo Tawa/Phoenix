@@ -51,6 +51,7 @@ struct DemoAppFeaturePresenter {
 }
 
 struct DemoAppFeatureInteractor {
+    private let ashFileURL: URL
     private let component: Component
     private let document: PhoenixDocument
     private let presenter: DemoAppFeaturePresenter
@@ -58,12 +59,14 @@ struct DemoAppFeatureInteractor {
     private let cancelAction: () -> Void
     
     init(
+        ashFileURL: URL,
         component: Component,
         document: PhoenixDocument,
         presenter: DemoAppFeaturePresenter,
         demoAppGenerator: DemoAppGeneratorProtocol,
         cancelAction: @escaping () -> Void
     ) {
+        self.ashFileURL = ashFileURL
         self.component = component
         self.document = document
         self.presenter = presenter
@@ -72,24 +75,26 @@ struct DemoAppFeatureInteractor {
     }
     
     func onGenerate() {
-//        let allFamilies: [Family] = document.families.map { $0.family }
-//        guard let family = allFamilies.first(where: { $0.name == component.name.family })
-//        else {
-//            return
-//        }
-//
-//        let demoAppGenerator: DemoAppGeneratorProtocol = Container.demoAppGenerator()
-//        do {
-//            try demoAppGenerator.generateDemoApp(
-//                forComponent: component,
-//                of: family,
-//                families: document.families,
-//                projectConfiguration: document.projectConfiguration,
-//                at: url,
-//                relativeURL: ashFileURL)
-//        } catch {
-//            print("Error: \(error)")
-//        }
+        guard let url = openFolderSelection()
+        else { return }
+        generate(at: url)
+    }
+    
+    func generate(at url: URL) {
+        let allFamilies: [Family] = document.families.map { $0.family }
+        guard let family = allFamilies.first(where: { $0.name == component.name.family })
+        else { return }
+        do {
+            try demoAppGenerator.generateDemoApp(forComponent: component,
+                                                 of: family,
+                                                 families: document.families,
+                                                 projectConfiguration: document.projectConfiguration,
+                                                 at: url,
+                                                 relativeURL: ashFileURL)
+        } catch {
+            print("Error: \(error)")
+        }
+
     }
     
     func onAppear() {
@@ -110,4 +115,19 @@ struct DemoAppFeatureInteractor {
     func onCancel() {
         cancelAction()
     }
+    
+    // MARK: - Private
+    private func openFolderSelection() -> URL? {
+        let openPanel = NSOpenPanel()
+        openPanel.directoryURL = ashFileURL
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = true
+        openPanel.canChooseFiles = false
+        openPanel.canCreateDirectories = true
+        openPanel.allowedContentTypes = []
+        
+        openPanel.runModal()
+        return openPanel.url
+    }
+
 }

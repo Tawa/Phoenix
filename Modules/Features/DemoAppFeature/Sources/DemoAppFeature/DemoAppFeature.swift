@@ -43,6 +43,7 @@ public struct DemoAppFeatureView: View {
         let presenter = DemoAppFeaturePresenter(viewModel: viewModel)
         
         interactor = DemoAppFeatureInteractor(
+            ashFileURL: data.ashFileURL,
             component: data.component,
             document: data.document,
             presenter: presenter,
