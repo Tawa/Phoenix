@@ -1,4 +1,5 @@
 import Component
+import DemoAppGeneratorContract
 import PhoenixDocument
 import SwiftUI
 
@@ -45,6 +46,7 @@ public struct DemoAppFeatureView: View {
             component: data.component,
             document: data.document,
             presenter: presenter,
+            demoAppGenerator: dependency.demoAppGenerator,
             cancelAction: data.onDismiss
         )
         
@@ -97,11 +99,14 @@ public struct DemoAppFeatureView: View {
 
 extension DemoAppFeatureView {
     public struct Dependency {
+        let demoAppGenerator: DemoAppGeneratorProtocol
         let demoAppNameProvider: DemoAppNameProviderProtocol
         
         public init(
+            demoAppGenerator: DemoAppGeneratorProtocol,
             demoAppNameProvider: DemoAppNameProviderProtocol
         ) {
+            self.demoAppGenerator = demoAppGenerator
             self.demoAppNameProvider = demoAppNameProvider
         }
     }

@@ -6,6 +6,7 @@ extension Container {
         DemoAppFeatureView(
             data: data,
             dependency: .init(
+                demoAppGenerator: Container.demoAppGenerator(),
                 demoAppNameProvider: Container.demoAppNameProvider()
             )
         )

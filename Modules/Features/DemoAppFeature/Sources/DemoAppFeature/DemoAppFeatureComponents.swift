@@ -1,4 +1,5 @@
 import Component
+import DemoAppGeneratorContract
 import PhoenixDocument
 import SwiftPackage
 import SwiftUI
@@ -53,17 +54,20 @@ struct DemoAppFeatureInteractor {
     private let component: Component
     private let document: PhoenixDocument
     private let presenter: DemoAppFeaturePresenter
+    private let demoAppGenerator: DemoAppGeneratorProtocol
     private let cancelAction: () -> Void
     
     init(
         component: Component,
         document: PhoenixDocument,
         presenter: DemoAppFeaturePresenter,
+        demoAppGenerator: DemoAppGeneratorProtocol,
         cancelAction: @escaping () -> Void
     ) {
         self.component = component
         self.document = document
         self.presenter = presenter
+        self.demoAppGenerator = demoAppGenerator
         self.cancelAction = cancelAction
     }
     
