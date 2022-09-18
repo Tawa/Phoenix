@@ -117,11 +117,10 @@ let package = Package(
             value += "            ]"
         }
 
+        //"                .\(resource.resourcesType.rawValue)(\"\(resource.folderName)\")
         if !target.resources.isEmpty {
             value += ",\n            resources: [\n"
-            for resource in target.resources {
-                value += "                .\(resource.resourcesType.rawValue)(\"\(resource.folderName)\"),\n"
-            }
+            value += target.resources.map { "                .\($0.resourcesType.rawValue)(\"\($0.folderName)\")" }.joined(separator: ",\n") + "\n"
             value += "            ]"
         }
 
