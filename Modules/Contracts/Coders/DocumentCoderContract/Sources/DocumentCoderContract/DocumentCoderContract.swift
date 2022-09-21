@@ -1,4 +1,3 @@
-import AppVersionProviderContract
 import Foundation
 import PhoenixDocument
 import SwiftPackage

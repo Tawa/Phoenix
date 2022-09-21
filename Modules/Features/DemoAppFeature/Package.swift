@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.7
 
 import PackageDescription
 
@@ -13,15 +13,15 @@ let package = Package(
             targets: ["DemoAppFeature"])
     ],
     dependencies: [
-        .package(path: "../../Entities/PhoenixDocument"),
-        .package(path: "../../Entities/SwiftPackage")
+        .package(path: "../../Entities/Component"),
+        .package(path: "../../Entities/PhoenixDocument")
     ],
     targets: [
         .target(
             name: "DemoAppFeature",
             dependencies: [
-                "PhoenixDocument",
-                "SwiftPackage"
+                "Component",
+                "PhoenixDocument"
             ]
         ),
         .testTarget(

@@ -1,26 +1,24 @@
-import AppVersionProviderContract
 import AppVersionProvider
-import ComponentPackagesProviderContract
-import ComponentPackagesProvider
-import DemoAppGeneratorContract
+import AppVersionProviderContract
+import ComponentDetailsProvider
+import ComponentDetailsProviderContract
+import DemoAppFeature
 import DemoAppGenerator
-import DocumentCoderContract
+import DemoAppGeneratorContract
 import DocumentCoder
+import DocumentCoderContract
 import Factory
 import Foundation
-import PackageGeneratorContract
 import PackageGenerator
-import PackagePathProviderContract
-import PackagePathProvider
-import PackageStringProviderContract
+import PackageGeneratorContract
 import PackageStringProvider
-import PBXProjectSyncerContract
+import PackageStringProviderContract
 import PBXProjectSyncer
-import ProjectGeneratorContract
+import PBXProjectSyncerContract
 import ProjectGenerator
-import RelativeURLProviderContract
+import ProjectGeneratorContract
 import RelativeURLProvider
-import DemoAppFeature
+import RelativeURLProviderContract
 import SwiftPackage
 
 extension Container {
@@ -58,7 +56,7 @@ extension Container {
             packageNameProvider: PackageNameProvider(),
             packagePathProvider: Container.packagePathProvider(),
             relativeURLProvider: Container.relativeURLProvider(),
-            fileManager: .default
+            fileManager: FileManager.default
         ) as DemoAppGeneratorProtocol
     }
     

@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.7
 
 import PackageDescription
 
@@ -12,7 +12,7 @@ let package = Package(
     dependencies: [
         .package(path: "../../Contracts/Generators/PackageGeneratorContract"),
         .package(path: "../../Contracts/Generators/ProjectGeneratorContract"),
-        .package(path: "../../Contracts/Providers/ComponentPackagesProviderContract"),
+        .package(path: "../../Contracts/Providers/ComponentDetailsProviderContract"),
         .package(path: "../../Entities/PhoenixDocument")
     ],
     targets: [
@@ -21,7 +21,7 @@ let package = Package(
             dependencies: [
                 "PackageGeneratorContract",
                 "ProjectGeneratorContract",
-                "ComponentPackagesProviderContract",
+                "ComponentDetailsProviderContract",
                 "PhoenixDocument"
             ]
         ),

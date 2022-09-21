@@ -5,7 +5,7 @@
         "_0" : {
           "name" : {
             "family" : "Provider",
-            "given" : "PackagePath"
+            "given" : "ComponentDetails"
           },
           "targetTypes" : [
             {

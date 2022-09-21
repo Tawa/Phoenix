@@ -1,13 +1,11 @@
-import PBXProjectSyncerContract
+import Component
+import ComponentDetailsProviderContract
 import Foundation
+import PathKit
+import PBXProjectSyncerContract
 import PhoenixDocument
 import RelativeURLProviderContract
-
-import SwiftPackage
-
 import XcodeProj
-import PathKit
-import PackagePathProviderContract
 
 public struct PBXProjectSyncer: PBXProjectSyncerProtocol {
     let packageFolderNameProvider: PackageFolderNameProviderProtocol

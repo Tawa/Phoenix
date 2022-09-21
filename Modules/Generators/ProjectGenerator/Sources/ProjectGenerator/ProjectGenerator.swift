@@ -1,4 +1,5 @@
-import ComponentPackagesProviderContract
+import Component
+import ComponentDetailsProviderContract
 import Foundation
 import PackageGeneratorContract
 import PhoenixDocument

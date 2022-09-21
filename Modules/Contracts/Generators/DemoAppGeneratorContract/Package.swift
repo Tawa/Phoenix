@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.7
 
 import PackageDescription
 
@@ -10,13 +10,13 @@ let package = Package(
             targets: ["DemoAppGeneratorContract"])
     ],
     dependencies: [
-        .package(path: "../../../Entities/SwiftPackage")
+        .package(path: "../../../Entities/Component")
     ],
     targets: [
         .target(
             name: "DemoAppGeneratorContract",
             dependencies: [
-                "SwiftPackage"
+                "Component"
             ]
         )
     ]

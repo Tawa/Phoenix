@@ -1,6 +1,7 @@
+import Component
 import DemoAppGeneratorContract
 import PackageGeneratorContract
-import PackagePathProviderContract
+import ComponentDetailsProviderContract
 import Foundation
 import RelativeURLProviderContract
 import SwiftPackage
