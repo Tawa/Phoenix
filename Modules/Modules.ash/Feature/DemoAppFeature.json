@@ -5,7 +5,7 @@
         "_0" : {
           "name" : {
             "family" : "Entity",
-            "given" : "PhoenixDocument"
+            "given" : "Component"
           },
           "targetTypes" : [
             {
@@ -22,7 +22,7 @@
         "_0" : {
           "name" : {
             "family" : "Entity",
-            "given" : "SwiftPackage"
+            "given" : "PhoenixDocument"
           },
           "targetTypes" : [
             {

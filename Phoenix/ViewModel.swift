@@ -1,6 +1,7 @@
 import AppVersionProviderContract
 import Combine
-import ComponentPackagesProviderContract
+import Component
+import ComponentDetailsProviderContract
 import DemoAppFeature
 import DemoAppGeneratorContract
 import PackageGeneratorContract

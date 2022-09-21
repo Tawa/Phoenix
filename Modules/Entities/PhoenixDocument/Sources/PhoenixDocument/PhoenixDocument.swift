@@ -1,4 +1,4 @@
-import SwiftPackage
+import Component
 
 public struct PhoenixDocument: Codable {
     public var families: [ComponentsFamily]

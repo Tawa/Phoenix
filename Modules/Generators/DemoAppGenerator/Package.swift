@@ -12,9 +12,9 @@ let package = Package(
     dependencies: [
         .package(path: "../../Contracts/Generators/DemoAppGeneratorContract"),
         .package(path: "../../Contracts/Generators/PackageGeneratorContract"),
-        .package(path: "../../Contracts/Providers/PackagePathProviderContract"),
+        .package(path: "../../Contracts/Providers/ComponentDetailsProviderContract"),
         .package(path: "../../Contracts/Providers/RelativeURLProviderContract"),
-        .package(path: "../../Entities/SwiftPackage")
+        .package(path: "../../Entities/Component")
     ],
     targets: [
         .target(
@@ -22,12 +22,12 @@ let package = Package(
             dependencies: [
                 "DemoAppGeneratorContract",
                 "PackageGeneratorContract",
-                "PackagePathProviderContract",
+                "ComponentDetailsProviderContract",
                 "RelativeURLProviderContract",
-                "SwiftPackage"
+                "Component"
             ],
             resources: [
-                .copy("Templates"),
+                .copy("Templates")
             ]
         ),
         .testTarget(

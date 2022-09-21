@@ -1,4 +1,4 @@
-import SwiftPackage
+import Component
 
 public protocol DemoAppNameProviderProtocol {
     func demoAppName(for component: Component, family: Family) -> String

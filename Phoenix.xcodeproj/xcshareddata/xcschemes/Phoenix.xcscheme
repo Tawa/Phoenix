@@ -63,16 +63,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "PackageTests"
-               BuildableName = "PackageTests"
-               BlueprintName = "PackageTests"
-               ReferencedContainer = "container:Modules/Entities/Package">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "PhoenixDocumentTests"
                BuildableName = "PhoenixDocumentTests"
                BlueprintName = "PhoenixDocumentTests"
@@ -87,26 +77,6 @@
                BuildableName = "PackageStringProviderTests"
                BlueprintName = "PackageStringProviderTests"
                ReferencedContainer = "container:Modules/Providers/PackageStringProvider">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "PackagePathProviderTests"
-               BuildableName = "PackagePathProviderTests"
-               BlueprintName = "PackagePathProviderTests"
-               ReferencedContainer = "container:Modules/Providers/PackagePathProvider">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ComponentPackagesProviderTests"
-               BuildableName = "ComponentPackagesProviderTests"
-               BlueprintName = "ComponentPackagesProviderTests"
-               ReferencedContainer = "container:Modules/Providers/ComponentPackagesProvider">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -177,6 +147,36 @@
                BuildableName = "RelativeURLProviderTests"
                BlueprintName = "RelativeURLProviderTests"
                ReferencedContainer = "container:Modules/Providers/RelativeURLProvider">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SwiftPackageTests"
+               BuildableName = "SwiftPackageTests"
+               BlueprintName = "SwiftPackageTests"
+               ReferencedContainer = "container:Modules/Entities/SwiftPackage">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ComponentTests"
+               BuildableName = "ComponentTests"
+               BlueprintName = "ComponentTests"
+               ReferencedContainer = "container:Modules/Entities/Component">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ComponentDetailsProviderTests"
+               BuildableName = "ComponentDetailsProviderTests"
+               BlueprintName = "ComponentDetailsProviderTests"
+               ReferencedContainer = "container:Modules/Providers/ComponentDetailsProvider">
             </BuildableReference>
          </TestableReference>
       </Testables>

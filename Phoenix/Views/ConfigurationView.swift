@@ -1,4 +1,4 @@
-import SwiftPackage
+import Component
 import SwiftUI
 
 struct ConfigurationView: View {

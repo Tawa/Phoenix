@@ -1,10 +1,10 @@
+import Component
 import DemoAppFeature
 import Factory
 import PhoenixDocument
 import PhoenixViews
-import SwiftPackage
 import SwiftUI
-
+import SwiftPackage
 
 struct ContentView: View {
     @StateObject private var viewModel: ViewModel

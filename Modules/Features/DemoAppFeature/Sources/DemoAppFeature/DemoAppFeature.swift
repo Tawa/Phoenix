@@ -1,5 +1,5 @@
+import Component
 import PhoenixDocument
-import SwiftPackage
 import SwiftUI
 
 public struct DemoAppFeatureInput: Identifiable {

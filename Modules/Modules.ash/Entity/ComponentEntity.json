@@ -1,0 +1,31 @@
+{
+  "dependencies" : [
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Entity",
+            "given" : "SwiftPackage"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Implementation"
+          ]
+        }
+      }
+    }
+  ],
+  "modules" : {
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Entity",
+    "given" : "Component"
+  },
+  "resources" : [
+
+  ]
+}
