@@ -86,11 +86,10 @@ struct ConfigurationView: View {
                 }
                 Button(action: onDismiss) {
                     Text("Close")
-                }
+                }.keyboardShortcut(.cancelAction)
             }.padding()
         }
         .frame(minHeight: 500)
-        .onExitCommand(perform: onDismiss)
     }
     
     private func removePackageConfiguration(at index: Int) {

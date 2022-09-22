@@ -15,12 +15,11 @@ struct PopoverView: View {
                 .font(.largeTitle)
             Button(action: onOkayButton) {
                 Text("Ok")
-            }
+            }.keyboardShortcut(.defaultAction)
         }
         .frame(maxWidth:  .infinity, maxHeight: .infinity)
         .padding()
         .background(.ultraThinMaterial)
         .onSubmit(onOkayButton)
-        .onExitCommand(perform: onOkayButton)
     }
 }

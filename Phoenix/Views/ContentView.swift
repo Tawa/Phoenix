@@ -151,7 +151,7 @@ struct ContentView: View {
         }, familyNameSuggestion: { familyName in
             guard !familyName.isEmpty else { return nil }
             return store.componentsFamilies.first { componentFamily in
-                componentFamily.family.name.lowercased().hasPrefix(familyName.lowercased())
+                componentFamily.family.name.hasPrefix(familyName)
             }?.family.name
         })
     }
