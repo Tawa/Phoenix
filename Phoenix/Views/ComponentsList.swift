@@ -6,12 +6,12 @@ struct ComponentsListRow: Hashable, Identifiable {
     let isSelected: Bool
     let onSelect: () -> Void
     let onDuplicate: () -> Void
-
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(name)
         hasher.combine(isSelected)
     }
-
+    
     static func ==(lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }
@@ -19,16 +19,16 @@ struct ComponentsListRow: Hashable, Identifiable {
 
 struct ComponentsListSection: Hashable, Identifiable {
     var id: Int { hashValue }
-
+    
     let name: String
     let rows: [ComponentsListRow]
     let onSelect: () -> Void
-
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(name)
         hasher.combine(rows)
     }
-
+    
     static func ==(lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }
@@ -37,45 +37,47 @@ struct ComponentsListSection: Hashable, Identifiable {
 struct ComponentsList: View {
     @Binding var filter: String
     let sections: [ComponentsListSection]
-
+    
     var body: some View {
         VStack(alignment: .leading) {
             FilterView(filter: $filter)
             List {
-                if sections.isEmpty {
-                    Text("0 components")
-                        .foregroundColor(.gray)
-                } else {
-                    ForEach(sections) { section in
-                        if !section.rows.isEmpty {
-                            Section {
-                                ForEach(section.rows) { row in
-                                    ComponentListItem(
-                                        name: row.name,
-                                        isSelected: row.isSelected,
-                                        onSelect: row.onSelect,
-                                        onDuplicate: row.onDuplicate
-                                    )
-                                }
-                            } header: {
-                                HStack {
-                                    Text(section.name)
-                                        .font(.title.bold())
-                                    Button(action: section.onSelect,
-                                           label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
-                                    Spacer()
-                                }
-                                .padding(.vertical)
-                            }
-                            Divider()
-                        } else {
-                            EmptyView()
+                ForEach(sections.filter { !$0.rows.isEmpty }) { section in
+                    Section {
+                        ForEach(section.rows) { row in
+                            ComponentListItem(
+                                name: row.name,
+                                isSelected: row.isSelected,
+                                onSelect: row.onSelect,
+                                onDuplicate: row.onDuplicate
+                            )
                         }
+                    } header: {
+                        HStack {
+                            Text(section.name)
+                                .font(.title.bold())
+                            Button(action: section.onSelect,
+                                   label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
+                            Spacer()
+                        }
+                        .padding(.vertical)
                     }
+                    Divider()
                 }
+                Text(numberOfComponentsString)
+                    .foregroundColor(.gray)
             }
             .frame(minHeight: 200, maxHeight: .infinity)
             .listStyle(SidebarListStyle())
+        }
+    }
+    
+    private var numberOfComponentsString: String {
+        let totalRows = sections.flatMap(\.rows).count
+        if totalRows == 1 {
+            return "1 component"
+        } else {
+            return "\(totalRows) component"
         }
     }
 }
@@ -96,11 +98,11 @@ struct ComponentsList_Previews: PreviewProvider {
                     .init(name: "Networking", isSelected: false, onSelect: {}, onDuplicate: {})
                 ],
                       onSelect: {})
-
+                
             ])
         }
     }
-
+    
     static var previews: some View {
         Preview()
     }

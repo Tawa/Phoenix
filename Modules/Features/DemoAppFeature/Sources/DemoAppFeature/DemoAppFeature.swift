@@ -86,13 +86,12 @@ public struct DemoAppFeatureView: View {
                     }
                     Button(action: interactor.onCancel) {
                         Text("Cancel")
-                    }
+                    }.keyboardShortcut(.cancelAction)
                 }.padding()
             }.padding(.trailing)
         }
         .frame(minWidth: 1000, minHeight: 600)
         .onAppear(perform: interactor.onAppear)
-        .onExitCommand(perform: interactor.onCancel)
     }
 }
 

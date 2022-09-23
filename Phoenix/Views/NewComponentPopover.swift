@@ -20,15 +20,12 @@ struct NewComponentPopover: View {
                 TextField("Given Name", text: $name)
                     .focused($focusField, equals: .given)
                     .font(.largeTitle)
-                    .onSubmit {
-                        focusField = .family
-                    }
                     .textFieldStyle(.plain)
 
                 ZStack {
                     HStack {
                         Text(familyNameSuggestion(familyName) ?? "")
-                            .opacity(0)
+                            .opacity(0.5)
                         Spacer()
                     }
                     TextField("Family Name", text: $familyName)
@@ -36,8 +33,8 @@ struct NewComponentPopover: View {
                         .textFieldStyle(.plain)
                         .onSubmit(onSubmitAction)
                         .onChange(of: focusField) { newValue in
-                            guard newValue == .given else { return }
-//                            familyNameSuggestion(familyName).map { familyName = $0 }
+                            guard newValue != .family else { return }
+                            familyNameSuggestion(familyName).map { familyName = $0 }
                         }
                 }.font(.largeTitle)
 
@@ -45,19 +42,18 @@ struct NewComponentPopover: View {
                 HStack {
                     Button(action: onDismiss) {
                         Text("Cancel")
-                    }
+                    }.keyboardShortcut(.cancelAction)
                     Button(action: onSubmitAction) {
                         Text("Create")
-                    }
+                    }.keyboardShortcut(.defaultAction)
                 }
             }
-            .frame(width: 300)
+            .frame(minWidth: 300)
             .padding()
             .frame(maxWidth:  .infinity, maxHeight: .infinity)
             .background(.ultraThinMaterial)
             .onAppear { focusField = .given }
         }
-        .onExitCommand(perform: onDismiss)
         .sheet(item: $popoverViewModel) { viewModel in
             PopoverView(viewModel: viewModel) {
                 popoverViewModel = nil
@@ -66,6 +62,7 @@ struct NewComponentPopover: View {
     }
 
     private func onSubmitAction() {
+        familyNameSuggestion(familyName).map { familyName = $0 }
         focusField = nil
         do {
             try onSubmit(name, familyName)

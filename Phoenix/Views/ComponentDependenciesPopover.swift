@@ -33,8 +33,7 @@ struct ComponentDependenciesPopover: View {
             HSplitView {
                 VStack(alignment: .leading) {
                     FilterView(filter: $filter,
-                               onSubmit: performSubmit,
-                               onExit: onDismiss)
+                               onSubmit: performSubmit)
                     List {
                         Text("Components:")
                             .font(.largeTitle)
@@ -63,11 +62,11 @@ struct ComponentDependenciesPopover: View {
                 .padding()
             }
             Button(action: onDismiss) { Text("Cancel") }
-            .padding()
+                .keyboardShortcut(.cancelAction)
+                .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial)
-        .onExitCommand(perform: onDismiss)
     }
 
     private var filteredSections: [ComponentDependenciesListSection] {

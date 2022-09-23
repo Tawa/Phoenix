@@ -41,14 +41,13 @@ struct FamilyPopover: View {
                 }
                 Button(action: onDismiss) {
                     Text("Done")
-                }
+                }.keyboardShortcut(.cancelAction)
             }
             .frame(maxWidth: 600)
             .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial)
-        .onExitCommand(perform: onDismiss)
     }
 }
 

@@ -3,18 +3,10 @@ import SwiftUI
 struct FilterView: View {
     @Binding var filter: String
     var onSubmit: (() -> Void)? = nil
-    var onExit: (() -> Void)? = nil
 
     var body: some View {
         HStack {
             TextField("Filter", text: $filter)
-                .onExitCommand(perform: {
-                    if filter.isEmpty {
-                        onExit?()
-                    } else {
-                        filter = ""
-                    }
-                })
                 .font(.title)
                 .onSubmit {
                     onSubmit?()

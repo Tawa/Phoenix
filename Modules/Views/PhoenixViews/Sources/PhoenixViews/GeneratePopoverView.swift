@@ -86,15 +86,15 @@ public struct GeneratePopoverView: View {
                 Button(action: viewModel.onGenerate) {
                     Text("Generate")
                 }.disabled(!isGenerateEnabled)
+                    .keyboardShortcut(.defaultAction)
                 Button(action: viewModel.onDismiss) {
                     Text("Cancel")
-                }
+                }.keyboardShortcut(.cancelAction)
             }
             
             Spacer()
         }
         .padding()
-        .onExitCommand(perform: viewModel.onDismiss)
         .frame(minWidth: 500)
     }
     
