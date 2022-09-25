@@ -15,7 +15,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VSplitView {
             toolbarViews()
             Divider()
             HSplitView {
