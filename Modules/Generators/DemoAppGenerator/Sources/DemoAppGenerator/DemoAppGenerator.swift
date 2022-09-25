@@ -40,7 +40,9 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
         guard !fileManager.fileExists(atPath: destinationXcodeProjURL.path) else { return }
         try fileManager.createDirectory(at: destinationXcodeProjURL.deletingLastPathComponent(), withIntermediateDirectories: true)
         try fileManager.copyItem(at: sourceXcodeProjURL, to: destinationXcodeProjURL)
+        
         let destinationPBXProjFileURL = destinationXcodeProjURL.appendingPathComponent("project.pbxproj")
+        try fileManager.moveItem(at: destinationXcodeProjURL.appendingPathComponent("project"), to: destinationPBXProjFileURL)
 
         try replace(string: "MyFeatureDemo", with: "\(name)Demo", inFileAt: destinationPBXProjFileURL)
         try replace(string: "com.myorganisationidentifier.demo", with: "com.hellofresh.iosdemo", inFileAt: destinationPBXProjFileURL)
