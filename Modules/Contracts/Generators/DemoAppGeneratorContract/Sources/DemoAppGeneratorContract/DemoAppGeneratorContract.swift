@@ -1,11 +1,11 @@
 import Foundation
-import Component
+
+public protocol DemoAppOutputProtocol {
+    var folderURL: URL { get }
+    var xcodeProjURL: URL { get }
+}
 
 public protocol DemoAppGeneratorProtocol {
-    func generateDemoApp(forComponent component: Component,
-                         of family: Family,
-                         families: [ComponentsFamily],
-                         projectConfiguration: ProjectConfiguration,
-                         at url: URL,
-                         relativeURL: URL) throws
+    func generateDemoApp(named name: String,
+                         at url: URL) throws -> DemoAppOutputProtocol
 }

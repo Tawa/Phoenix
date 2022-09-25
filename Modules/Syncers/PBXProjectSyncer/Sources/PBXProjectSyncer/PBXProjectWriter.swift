@@ -73,7 +73,6 @@ public struct PBXProjectWriter: PBXProjectWriterProtocol {
         
         if !path.isEmpty, name != path {
             newGroup?.path = path
-            print("Adding Path: \(path) for \(name)")
         }
         if newGroup?.path == newGroup?.name {
             newGroup?.name = nil

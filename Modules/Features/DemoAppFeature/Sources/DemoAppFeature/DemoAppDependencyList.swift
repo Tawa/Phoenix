@@ -1,38 +1,64 @@
 import SwiftUI
 
+struct DemoAppDependencySubrow: Identifiable {
+    let id = UUID().uuidString
+    let title: String
+    let selected: Bool
+    let onToggleSelection: (Bool) -> Void
+}
+
+struct DemoAppDependencyRow: Identifiable {
+    let id = UUID().uuidString
+    let title: String
+    let subrows: [DemoAppDependencySubrow]
+}
+
+struct DemoAppDependencySection: Identifiable {
+    let id = UUID().uuidString
+
+    let title: String
+    let rows: [DemoAppDependencyRow]
+}
+
 struct DemoAppDependencyList: View {
-    let dependencies: [DemoAppDependencyViewModel]
+    let sections: [DemoAppDependencySection]
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                ForEach(dependencies) { dependency in
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(dependency.title)
+        List {
+            ForEach(sections) { section in
+                Section {
+                    ForEach(section.rows) { row in
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(row.title)
                                 .font(.title2.bold())
-                            Spacer()
+                            ForEach(row.subrows) { subrow in
+                                Toggle(subrow.title,
+                                       isOn: .init(get: { subrow.selected },
+                                                   set: { subrow.onToggleSelection($0) }))
+                            }
                         }
-                        ForEach(dependency.targetTypesSelected) { targetType in
-                            Toggle(targetType.targetType, isOn: .constant(targetType.isSelected))
-                        }
-                    }.padding()
+                    }
+                } header: {
+                    Text(section.title)
+                        .font(.largeTitle.bold())
                 }
+                Divider()
             }
         }
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct DemoAppDependencyList_Previews: PreviewProvider {
     static var previews: some View {
         DemoAppDependencyList(
-            dependencies: [
-                .init(title: "HomeRepository",
-                      targetTypesSelected: [
-                        .init(targetType: "Contract", isSelected: true),
-                        .init(targetType: "Implementation", isSelected: true),
-                        .init(targetType: "Mock", isSelected: true)
-                      ])
+            sections: [
+                .init(title: "Core", rows: [
+                    .init(title: "Repository", subrows: [
+                        .init(title: "Contract", selected: true, onToggleSelection: { _ in }),
+                        .init(title: "Implementation", selected: true, onToggleSelection: { _ in }),
+                        .init(title: "Mock", selected: true, onToggleSelection: { _ in }),
+                    ])
+                ])
             ]
         ).frame(width: 400)
     }

@@ -52,10 +52,6 @@ extension Container {
     
     static let demoAppGenerator = Factory {
         DemoAppGenerator(
-            packageGenerator: Container.packageGenerator(),
-            packageNameProvider: PackageNameProvider(),
-            packagePathProvider: Container.packagePathProvider(),
-            relativeURLProvider: Container.relativeURLProvider(),
             fileManager: FileManager.default
         ) as DemoAppGeneratorProtocol
     }

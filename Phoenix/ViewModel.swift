@@ -209,6 +209,9 @@ class ViewModel: ObservableObject {
                 ashFileURL: fileURL,
                 onDismiss: { [weak self] in
                     self?.demoAppFeatureData = nil
+                },
+                onError: { error in
+                    self.alertState = .errorString(error.localizedDescription)
                 })
         }
     }

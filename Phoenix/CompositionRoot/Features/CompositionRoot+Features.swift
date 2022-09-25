@@ -6,7 +6,11 @@ extension Container {
         DemoAppFeatureView(
             data: data,
             dependency: .init(
-                demoAppNameProvider: Container.demoAppNameProvider()
+                demoAppGenerator: Container.demoAppGenerator(),
+                demoAppNameProvider: Container.demoAppNameProvider(),
+                packageFolderNameProvider: Container.packageFolderNameProvider(),
+                packageNameProvider: Container.packageNameProvider(),
+                pbxProjectSyncer: Container.pbxProjSyncer()
             )
         )
     }

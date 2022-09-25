@@ -1,4 +1,7 @@
 import Component
+import ComponentDetailsProviderContract
+import DemoAppGeneratorContract
+import PBXProjectSyncerContract
 import PhoenixDocument
 import SwiftUI
 
@@ -8,17 +11,20 @@ public struct DemoAppFeatureInput: Identifiable {
     let document: PhoenixDocument
     let ashFileURL: URL
     let onDismiss: () -> Void
+    let onError: (Error) -> Void
     
     public init(
         component: Component,
         document: PhoenixDocument,
         ashFileURL: URL,
-        onDismiss: @escaping () -> Void
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
     ) {
         self.component = component
         self.document = document
         self.ashFileURL = ashFileURL
         self.onDismiss = onDismiss
+        self.onError = onError
     }
     
 }
@@ -26,7 +32,7 @@ public struct DemoAppFeatureView: View {
     @ObservedObject private var viewModel: DemoAppFeatureViewModel
     let dependency: Dependency
     let interactor: DemoAppFeatureInteractor
-
+    
     public init(data: DemoAppFeatureInput,
                 dependency: Dependency) {
         self.dependency = dependency
@@ -42,10 +48,16 @@ public struct DemoAppFeatureView: View {
         let presenter = DemoAppFeaturePresenter(viewModel: viewModel)
         
         interactor = DemoAppFeatureInteractor(
+            ashFileURL: data.ashFileURL,
             component: data.component,
             document: data.document,
+            packageFolderNameProvider: dependency.packageFolderNameProvider,
+            packageNameProvider: dependency.packageNameProvider,
+            pbxProjectSyncer: dependency.pbxProjectSyncer,
             presenter: presenter,
-            cancelAction: data.onDismiss
+            demoAppGenerator: dependency.demoAppGenerator,
+            cancelAction: data.onDismiss,
+            onError: data.onError
         )
         
         self.viewModel = viewModel
@@ -59,14 +71,14 @@ public struct DemoAppFeatureView: View {
                         .font(.title)
                 }.padding()
                 ZStack {
-                    DemoAppDependencyList(dependencies: viewModel.dependencies)
+                    Color.gray.opacity(0.1)
+                    componentsList
+                        .padding()
                     if viewModel.isListLoading {
                         ProgressView()
                     }
                 }
-                .padding()
                 .frame(minWidth: 400)
-                .background(Color.gray.opacity(0.1))
                 .padding([.leading, .bottom, .trailing])
             }
             VStack(alignment: .leading, spacing: 0) {
@@ -93,16 +105,32 @@ public struct DemoAppFeatureView: View {
         .frame(minWidth: 1000, minHeight: 600)
         .onAppear(perform: interactor.onAppear)
     }
+    
+    private var componentsList: some View {
+        DemoAppDependencyList(sections: viewModel.dependencySections)
+    }
 }
 
 extension DemoAppFeatureView {
     public struct Dependency {
+        let demoAppGenerator: DemoAppGeneratorProtocol
         let demoAppNameProvider: DemoAppNameProviderProtocol
+        let packageFolderNameProvider: PackageFolderNameProviderProtocol
+        let packageNameProvider: PackageNameProviderProtocol
+        let pbxProjectSyncer: PBXProjectSyncerProtocol
         
         public init(
-            demoAppNameProvider: DemoAppNameProviderProtocol
+            demoAppGenerator: DemoAppGeneratorProtocol,
+            demoAppNameProvider: DemoAppNameProviderProtocol,
+            packageFolderNameProvider: PackageFolderNameProviderProtocol,
+            packageNameProvider: PackageNameProviderProtocol,
+            pbxProjectSyncer: PBXProjectSyncerProtocol
         ) {
+            self.demoAppGenerator = demoAppGenerator
             self.demoAppNameProvider = demoAppNameProvider
+            self.packageFolderNameProvider = packageFolderNameProvider
+            self.packageNameProvider = packageNameProvider
+            self.pbxProjectSyncer = pbxProjectSyncer
         }
     }
 }
