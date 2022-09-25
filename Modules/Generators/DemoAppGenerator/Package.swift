@@ -10,21 +10,13 @@ let package = Package(
             targets: ["DemoAppGenerator"])
     ],
     dependencies: [
-        .package(path: "../../Contracts/Generators/DemoAppGeneratorContract"),
-        .package(path: "../../Contracts/Generators/PackageGeneratorContract"),
-        .package(path: "../../Contracts/Providers/ComponentDetailsProviderContract"),
-        .package(path: "../../Contracts/Providers/RelativeURLProviderContract"),
-        .package(path: "../../Entities/Component")
+        .package(path: "../../Contracts/Generators/DemoAppGeneratorContract")
     ],
     targets: [
         .target(
             name: "DemoAppGenerator",
             dependencies: [
-                "DemoAppGeneratorContract",
-                "PackageGeneratorContract",
-                "ComponentDetailsProviderContract",
-                "RelativeURLProviderContract",
-                "Component"
+                "DemoAppGeneratorContract"
             ],
             resources: [
                 .copy("Templates")

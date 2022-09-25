@@ -4,8 +4,8 @@
       "local" : {
         "_0" : {
           "name" : {
-            "family" : "Generator",
-            "given" : "DemoApp"
+            "family" : "Provider",
+            "given" : "ComponentDetails"
           },
           "targetTypes" : [
             {
@@ -30,6 +30,23 @@
               "name" : "Implementation"
             },
             "Implementation"
+          ]
+        }
+      }
+    },
+    {
+      "local" : {
+        "_0" : {
+          "name" : {
+            "family" : "Generator",
+            "given" : "DemoApp"
+          },
+          "targetTypes" : [
+            {
+              "isTests" : false,
+              "name" : "Implementation"
+            },
+            "Contract"
           ]
         }
       }

@@ -1,4 +1,5 @@
 import Component
+import ComponentDetailsProviderContract
 import DemoAppGeneratorContract
 import PhoenixDocument
 import SwiftUI
@@ -46,6 +47,7 @@ public struct DemoAppFeatureView: View {
             ashFileURL: data.ashFileURL,
             component: data.component,
             document: data.document,
+            packageNameProvider: dependency.packageNameProvider,
             presenter: presenter,
             demoAppGenerator: dependency.demoAppGenerator,
             cancelAction: data.onDismiss
@@ -102,13 +104,16 @@ extension DemoAppFeatureView {
     public struct Dependency {
         let demoAppGenerator: DemoAppGeneratorProtocol
         let demoAppNameProvider: DemoAppNameProviderProtocol
+        let packageNameProvider: PackageNameProviderProtocol
         
         public init(
             demoAppGenerator: DemoAppGeneratorProtocol,
-            demoAppNameProvider: DemoAppNameProviderProtocol
+            demoAppNameProvider: DemoAppNameProviderProtocol,
+            packageNameProvider: PackageNameProviderProtocol
         ) {
             self.demoAppGenerator = demoAppGenerator
             self.demoAppNameProvider = demoAppNameProvider
+            self.packageNameProvider = packageNameProvider
         }
     }
 }

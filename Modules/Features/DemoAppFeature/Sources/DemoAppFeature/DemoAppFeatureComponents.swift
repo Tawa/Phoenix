@@ -1,4 +1,5 @@
 import Component
+import ComponentDetailsProviderContract
 import DemoAppGeneratorContract
 import PhoenixDocument
 import SwiftPackage
@@ -53,24 +54,27 @@ struct DemoAppFeaturePresenter {
 struct DemoAppFeatureInteractor {
     private let ashFileURL: URL
     private let component: Component
-    private let document: PhoenixDocument
-    private let presenter: DemoAppFeaturePresenter
     private let demoAppGenerator: DemoAppGeneratorProtocol
+    private let document: PhoenixDocument
+    private let packageNameProvider: PackageNameProviderProtocol
+    private let presenter: DemoAppFeaturePresenter
     private let cancelAction: () -> Void
     
     init(
         ashFileURL: URL,
         component: Component,
         document: PhoenixDocument,
+        packageNameProvider: PackageNameProviderProtocol,
         presenter: DemoAppFeaturePresenter,
         demoAppGenerator: DemoAppGeneratorProtocol,
         cancelAction: @escaping () -> Void
     ) {
         self.ashFileURL = ashFileURL
         self.component = component
-        self.document = document
-        self.presenter = presenter
         self.demoAppGenerator = demoAppGenerator
+        self.document = document
+        self.packageNameProvider = packageNameProvider
+        self.presenter = presenter
         self.cancelAction = cancelAction
     }
     
@@ -85,12 +89,12 @@ struct DemoAppFeatureInteractor {
         guard let family = allFamilies.first(where: { $0.name == component.name.family })
         else { return }
         do {
-            try demoAppGenerator.generateDemoApp(forComponent: component,
-                                                 of: family,
-                                                 families: document.families,
-                                                 projectConfiguration: document.projectConfiguration,
-                                                 at: url,
-                                                 relativeURL: ashFileURL)
+            let name = packageNameProvider.packageName(forComponentName: component.name,
+                                                       of: family,
+                                                       packageConfiguration: PackageConfiguration(name: "", appendPackageName: false, hasTests: false))
+            
+            try demoAppGenerator.generateDemoApp(named: name,
+                                                 at: url)
         } catch {
             print("Error: \(error)")
         }

@@ -7,7 +7,8 @@ extension Container {
             data: data,
             dependency: .init(
                 demoAppGenerator: Container.demoAppGenerator(),
-                demoAppNameProvider: Container.demoAppNameProvider()
+                demoAppNameProvider: Container.demoAppNameProvider(),
+                packageNameProvider: Container.packageNameProvider()
             )
         )
     }

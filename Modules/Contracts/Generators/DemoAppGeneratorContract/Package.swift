@@ -9,15 +9,9 @@ let package = Package(
             name: "DemoAppGeneratorContract",
             targets: ["DemoAppGeneratorContract"])
     ],
-    dependencies: [
-        .package(path: "../../../Entities/Component")
-    ],
     targets: [
         .target(
-            name: "DemoAppGeneratorContract",
-            dependencies: [
-                "Component"
-            ]
+            name: "DemoAppGeneratorContract"
         )
     ]
 )
