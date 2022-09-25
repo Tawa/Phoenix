@@ -8,7 +8,8 @@ extension Container {
             dependency: .init(
                 demoAppGenerator: Container.demoAppGenerator(),
                 demoAppNameProvider: Container.demoAppNameProvider(),
-                packageNameProvider: Container.packageNameProvider()
+                packageNameProvider: Container.packageNameProvider(),
+                pbxProjectSyncer: Container.pbxProjSyncer()
             )
         )
     }

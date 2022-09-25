@@ -1,6 +1,7 @@
 import Component
 import ComponentDetailsProviderContract
 import DemoAppGeneratorContract
+import PBXProjectSyncerContract
 import PhoenixDocument
 import SwiftPackage
 import SwiftUI
@@ -57,6 +58,7 @@ struct DemoAppFeatureInteractor {
     private let demoAppGenerator: DemoAppGeneratorProtocol
     private let document: PhoenixDocument
     private let packageNameProvider: PackageNameProviderProtocol
+    private let pbxProjectSyncer: PBXProjectSyncerProtocol
     private let presenter: DemoAppFeaturePresenter
     private let cancelAction: () -> Void
     
@@ -65,6 +67,7 @@ struct DemoAppFeatureInteractor {
         component: Component,
         document: PhoenixDocument,
         packageNameProvider: PackageNameProviderProtocol,
+        pbxProjectSyncer: PBXProjectSyncerProtocol,
         presenter: DemoAppFeaturePresenter,
         demoAppGenerator: DemoAppGeneratorProtocol,
         cancelAction: @escaping () -> Void
@@ -74,6 +77,7 @@ struct DemoAppFeatureInteractor {
         self.demoAppGenerator = demoAppGenerator
         self.document = document
         self.packageNameProvider = packageNameProvider
+        self.pbxProjectSyncer = pbxProjectSyncer
         self.presenter = presenter
         self.cancelAction = cancelAction
     }
@@ -89,12 +93,19 @@ struct DemoAppFeatureInteractor {
         guard let family = allFamilies.first(where: { $0.name == component.name.family })
         else { return }
         do {
-            let name = packageNameProvider.packageName(forComponentName: component.name,
-                                                       of: family,
-                                                       packageConfiguration: PackageConfiguration(name: "", appendPackageName: false, hasTests: false))
+            let name = packageNameProvider.packageName(
+                forComponentName: component.name,
+                of: family,
+                packageConfiguration: PackageConfiguration(name: "", appendPackageName: false, hasTests: false)
+            ) + "Demo"
             
-            try demoAppGenerator.generateDemoApp(named: name,
-                                                 at: url)
+            let result = try demoAppGenerator.generateDemoApp(named: name,
+                                                                 at: url)
+            print("Generated at: \(result)")
+            
+            try pbxProjectSyncer.sync(document: document,
+                                      at: ashFileURL,
+                                      withProjectAt: result.xcodeProjURL)
         } catch {
             print("Error: \(error)")
         }

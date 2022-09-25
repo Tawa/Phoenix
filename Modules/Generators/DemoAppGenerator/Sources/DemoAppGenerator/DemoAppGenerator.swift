@@ -6,6 +6,11 @@ enum DemoAppGeneratorError: Error {
     case couldNotGenerateData
 }
 
+struct DemoAppOutput: DemoAppOutputProtocol {
+    var folderURL: URL
+    var xcodeProjURL: URL
+}
+
 public struct DemoAppGenerator: DemoAppGeneratorProtocol {
     private let fileManager: FileManager
     
@@ -14,16 +19,19 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
     }
     
     public func generateDemoApp(named name: String,
-                                at url: URL) throws {
+                                at url: URL) throws -> DemoAppOutputProtocol {
         var resultURL = url
-        if !fileManager.fileExists(atPath: resultURL.appendingPathComponent("\(name)Demo.xcodeproj").path) {
-            resultURL = resultURL.appendingPathComponent("\(name)Demo")
+        if !fileManager.fileExists(atPath: resultURL.appendingPathComponent("\(name).xcodeproj").path) {
+            resultURL = resultURL.appendingPathComponent(name)
         }
         
         try createEmptyXcodeProjectIfNecessary(named: name, url: resultURL)
         try createSourceFolderIfNecessary(named: name, url: resultURL)
         try createUnitTestsFolderIfNecessary(named: name, url: resultURL)
         try createUITestsFolderIfNecessary(named: name, url: resultURL)
+        
+        return DemoAppOutput(folderURL: resultURL,
+                             xcodeProjURL: resultURL.appendingPathComponent("\(name).xcodeproj"))
     }
 
     // MARK: Copying Functions
@@ -35,7 +43,7 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
         let resourcesTemplateFolderURL = resourcesURL.appendingPathComponent("Templates")
         
         let sourceXcodeProjURL = resourcesTemplateFolderURL.appendingPathComponent("MyFeatureDemoXcodeProj")
-        let destinationXcodeProjURL = url.appendingPathComponent("\(name)Demo.xcodeproj")
+        let destinationXcodeProjURL = url.appendingPathComponent("\(name).xcodeproj")
         
         guard !fileManager.fileExists(atPath: destinationXcodeProjURL.path) else { return }
         try fileManager.createDirectory(at: destinationXcodeProjURL.deletingLastPathComponent(), withIntermediateDirectories: true)
@@ -44,7 +52,7 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
         let destinationPBXProjFileURL = destinationXcodeProjURL.appendingPathComponent("project.pbxproj")
         try fileManager.moveItem(at: destinationXcodeProjURL.appendingPathComponent("project"), to: destinationPBXProjFileURL)
 
-        try replace(string: "MyFeatureDemo", with: "\(name)Demo", inFileAt: destinationPBXProjFileURL)
+        try replace(string: "MyFeatureDemo", with: name, inFileAt: destinationPBXProjFileURL)
         try replace(string: "com.myorganisationidentifier.demo", with: "com.hellofresh.iosdemo", inFileAt: destinationPBXProjFileURL)
     }
     
@@ -56,17 +64,17 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
         let sourceTemplateFolderURL = resourcesURL.appendingPathComponent("Templates")
             .appendingPathComponent("MyFeatureDemo")
         
-        let destinationFolderURL = url.appendingPathComponent("\(name)Demo")
+        let destinationFolderURL = url.appendingPathComponent(name)
         
         guard !fileManager.fileExists(atPath: destinationFolderURL.path) else { return }
         try fileManager.copyItem(at: sourceTemplateFolderURL, to: destinationFolderURL)
         
         try fileManager.moveItem(at: destinationFolderURL.appendingPathComponent("MyFeatureDemo.entitlements"),
-                                 to: destinationFolderURL.appendingPathComponent("\(name)Demo.entitlements"))
+                                 to: destinationFolderURL.appendingPathComponent("\(name).entitlements"))
         
         try fileManager.moveItem(at: destinationFolderURL.appendingPathComponent("MyFeatureDemoApp.swift"),
-                                 to: destinationFolderURL.appendingPathComponent("\(name)DemoApp.swift"))
-        try replace(string: "MyFeatureDemo", with: "\(name)Demo", inFileAt: destinationFolderURL.appendingPathComponent("\(name)DemoApp.swift"))
+                                 to: destinationFolderURL.appendingPathComponent("\(name)App.swift"))
+        try replace(string: "MyFeatureDemo", with: name, inFileAt: destinationFolderURL.appendingPathComponent("\(name)App.swift"))
     }
     
     func createUnitTestsFolderIfNecessary(named name: String, url: URL) throws {
@@ -77,14 +85,14 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
         let sourceTemplateFolderURL = resourcesURL.appendingPathComponent("Templates")
             .appendingPathComponent("MyFeatureDemoTests")
         
-        let destinationFolderURL = url.appendingPathComponent("\(name)DemoTests")
+        let destinationFolderURL = url.appendingPathComponent("\(name)Tests")
         
         guard !fileManager.fileExists(atPath: destinationFolderURL.path) else { return }
         try fileManager.copyItem(at: sourceTemplateFolderURL, to: destinationFolderURL)
 
         try fileManager.moveItem(at: destinationFolderURL.appendingPathComponent("MyFeatureDemoTests.swift"),
-                                 to: destinationFolderURL.appendingPathComponent("\(name)DemoTests.swift"))
-        try replace(string: "MyFeatureDemo", with: "\(name)Demo", inFileAt: destinationFolderURL.appendingPathComponent("\(name)DemoTests.swift"))
+                                 to: destinationFolderURL.appendingPathComponent("\(name)Tests.swift"))
+        try replace(string: "MyFeatureDemo", with: name, inFileAt: destinationFolderURL.appendingPathComponent("\(name)Tests.swift"))
     }
     
     func createUITestsFolderIfNecessary(named name: String, url: URL) throws {
@@ -95,14 +103,14 @@ public struct DemoAppGenerator: DemoAppGeneratorProtocol {
         let sourceTemplateFolderURL = resourcesURL.appendingPathComponent("Templates")
             .appendingPathComponent("MyFeatureDemoUITests")
         
-        let destinationFolderURL = url.appendingPathComponent("\(name)DemoUITests")
+        let destinationFolderURL = url.appendingPathComponent("\(name)UITests")
         
         guard !fileManager.fileExists(atPath: destinationFolderURL.path) else { return }
         try fileManager.copyItem(at: sourceTemplateFolderURL, to: destinationFolderURL)
 
         try fileManager.moveItem(at: destinationFolderURL.appendingPathComponent("MyFeatureDemoUITests.swift"),
-                                 to: destinationFolderURL.appendingPathComponent("\(name)DemoUITests.swift"))
-        try replace(string: "MyFeatureDemo", with: "\(name)Demo", inFileAt: destinationFolderURL.appendingPathComponent("\(name)DemoUITests.swift"))
+                                 to: destinationFolderURL.appendingPathComponent("\(name)UITests.swift"))
+        try replace(string: "MyFeatureDemo", with: name, inFileAt: destinationFolderURL.appendingPathComponent("\(name)UITests.swift"))
     }
     
     // MARK: - Private

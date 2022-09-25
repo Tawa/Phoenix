@@ -1,6 +1,7 @@
 import Component
 import ComponentDetailsProviderContract
 import DemoAppGeneratorContract
+import PBXProjectSyncerContract
 import PhoenixDocument
 import SwiftUI
 
@@ -48,6 +49,7 @@ public struct DemoAppFeatureView: View {
             component: data.component,
             document: data.document,
             packageNameProvider: dependency.packageNameProvider,
+            pbxProjectSyncer: dependency.pbxProjectSyncer,
             presenter: presenter,
             demoAppGenerator: dependency.demoAppGenerator,
             cancelAction: data.onDismiss
@@ -105,15 +107,18 @@ extension DemoAppFeatureView {
         let demoAppGenerator: DemoAppGeneratorProtocol
         let demoAppNameProvider: DemoAppNameProviderProtocol
         let packageNameProvider: PackageNameProviderProtocol
+        let pbxProjectSyncer: PBXProjectSyncerProtocol
         
         public init(
             demoAppGenerator: DemoAppGeneratorProtocol,
             demoAppNameProvider: DemoAppNameProviderProtocol,
-            packageNameProvider: PackageNameProviderProtocol
+            packageNameProvider: PackageNameProviderProtocol,
+            pbxProjectSyncer: PBXProjectSyncerProtocol
         ) {
             self.demoAppGenerator = demoAppGenerator
             self.demoAppNameProvider = demoAppNameProvider
             self.packageNameProvider = packageNameProvider
+            self.pbxProjectSyncer = pbxProjectSyncer
         }
     }
 }

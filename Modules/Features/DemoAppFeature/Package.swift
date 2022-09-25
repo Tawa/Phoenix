@@ -15,6 +15,7 @@ let package = Package(
     dependencies: [
         .package(path: "../../Contracts/Generators/DemoAppGeneratorContract"),
         .package(path: "../../Contracts/Providers/ComponentDetailsProviderContract"),
+        .package(path: "../../Contracts/Syncers/PBXProjectSyncerContract"),
         .package(path: "../../Entities/Component"),
         .package(path: "../../Entities/PhoenixDocument")
     ],
@@ -24,6 +25,7 @@ let package = Package(
             dependencies: [
                 "DemoAppGeneratorContract",
                 "ComponentDetailsProviderContract",
+                "PBXProjectSyncerContract",
                 "Component",
                 "PhoenixDocument"
             ]
