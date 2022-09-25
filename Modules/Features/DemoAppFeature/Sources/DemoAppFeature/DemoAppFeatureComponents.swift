@@ -115,7 +115,7 @@ class DemoAppFeatureInteractor {
         generate(at: url)
     }
     
-    func generate(at url: URL) {
+    private func generate(at url: URL) {
         let allFamilies: [Family] = document.families.map { $0.family }
         guard let family = allFamilies.first(where: { $0.name == component.name.family })
         else { return }
@@ -129,13 +129,40 @@ class DemoAppFeatureInteractor {
             let result = try demoAppGenerator.generateDemoApp(named: name,
                                                                  at: url)
             
-            try pbxProjectSyncer.sync(document: document,
+            try pbxProjectSyncer.sync(document: getResultDocument(),
                                       at: ashFileURL,
                                       withProjectAt: result.xcodeProjURL)
         } catch {
             onError(error)
         }
 
+    }
+    
+    private func getResultDocument() -> PhoenixDocument {
+        var document = document
+        document.families = document.families.compactMap { componentsFamily in
+            let components = componentsFamily.components.compactMap { component -> Component? in
+                let modules = component.modules.reduce(into: [String: LibraryType](), {
+                    let dependencySelection = DemoAppDependencySelection(
+                        title: packageNameProvider.packageName(
+                            forComponentName: component.name,
+                            of: componentsFamily.family,
+                            packageConfiguration: .init(name: "", appendPackageName: false, hasTests: false)),
+                        targetType: $1.key)
+                    guard selections.contains(dependencySelection) else { return }
+                    $0[$1.key] = $1.value
+                })
+                guard !modules.isEmpty else { return nil }
+                var component = component
+                component.modules = modules
+                return component
+            }
+            guard !components.isEmpty else { return nil }
+            var componentsFamily = componentsFamily
+            componentsFamily.components = components
+            return componentsFamily
+        }
+        return document
     }
     
     private func add(dependencyNamed name: Name, toSelection selections: inout Set<DemoAppDependencySelection>) {
