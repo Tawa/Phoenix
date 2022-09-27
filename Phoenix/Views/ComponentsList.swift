@@ -36,11 +36,13 @@ struct ComponentsListSection: Hashable, Identifiable {
 
 struct ComponentsList: View {
     @Binding var filter: String
+    @Binding var filterType: FilterType?
+
     let sections: [ComponentsListSection]
     
     var body: some View {
         VStack(alignment: .leading) {
-            FilterView(filter: $filter)
+            FilterView(filter: $filter, filterType: $filterType)
             List {
                 ForEach(sections.filter { !$0.rows.isEmpty }) { section in
                     Section {
@@ -67,6 +69,7 @@ struct ComponentsList: View {
                 Text(numberOfComponentsString)
                     .foregroundColor(.gray)
             }
+            .searchable(text: $filter)
             .frame(minHeight: 200, maxHeight: .infinity)
             .listStyle(SidebarListStyle())
         }
@@ -85,7 +88,7 @@ struct ComponentsList: View {
 struct ComponentsList_Previews: PreviewProvider {
     struct Preview: View {
         var body: some View {
-            ComponentsList(filter: .constant(""), sections: [
+            ComponentsList(filter: .constant(""), filterType: .constant(.text), sections: [
                 .init(name: "DataStore", rows: [
                     .init(name: "WordpressDataStore", isSelected: false, onSelect: {}, onDuplicate: {})
                 ],

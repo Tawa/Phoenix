@@ -11,6 +11,15 @@ public enum ComponentDependencyType: Codable, Hashable, Identifiable, Comparable
     case local(ComponentDependency)
     case remote(RemoteDependency)
 
+    public var rawValue: String{
+        switch self{
+        case .local(let componentDependency):
+            return componentDependency.name.given + componentDependency.name.family
+        case .remote(let remoteDependency):
+            return remoteDependency.name.name
+        }
+    }
+    
     public static func <(lhs: ComponentDependencyType, rhs: ComponentDependencyType) -> Bool {
         switch (lhs, rhs) {
         case (.local(let lhsValue), .local(let rhsValue)):

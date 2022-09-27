@@ -68,7 +68,8 @@ class ViewModel: ObservableObject {
 
     // MARK: - Filters
     @Published var componentsListFilter: String = ""
-    
+    @Published var filterType: FilterType? = .text
+
     weak var dataStore: ViewModelDataStore? {
         didSet {
             if let fileURL = dataStore?.fileURL {

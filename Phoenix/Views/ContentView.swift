@@ -82,6 +82,7 @@ struct ContentView: View {
     func componentsList() -> some View {
         ComponentsList(
             filter: $viewModel.componentsListFilter,
+            filterType: $viewModel.filterType,
             sections: filteredComponentsFamilies
                 .map { componentsFamily in
                         .init(name: sectionTitle(forFamily: componentsFamily.family),
@@ -333,17 +334,33 @@ struct ContentView: View {
     
     private var filteredComponentsFamilies: [ComponentsFamily] {
         guard !viewModel.componentsListFilter.isEmpty else { return store.componentsFamilies }
-        return store.componentsFamilies
-            .map { componentsFamily in
-                ComponentsFamily(family: componentsFamily.family,
-                                 components: componentsFamily.components.filter {
-                    componentName($0, for: componentsFamily.family)
-                        .lowercased().contains(viewModel.componentsListFilter.lowercased())
-                })
-            }.filter { !$0.components.isEmpty }
+        let filterValue = viewModel.componentsListFilter.lowercased()
+        switch viewModel.filterType{
+        case .usageHierarchy:
+            return store.componentsFamilies
+                .map {
+                  ComponentsFamily(
+                    family: $0.family,
+                    components: $0.components.filter {
+                      !$0.dependencies.filter { $0.rawValue.lowercased().contains(filterValue) }.isEmpty
+                     }
+                   )
+                }
+        default:
+            return store.componentsFamilies
+                .map { componentsFamily in
+                    ComponentsFamily(family: componentsFamily.family,
+                                     components: componentsFamily.components.filter {
+                        componentName($0, for: componentsFamily.family)
+                         .lowercased().contains(filterValue)
+                    })
+                }.filter { !$0.components.isEmpty }
+        }
+      
         
     }
     
+ 
     private func componentName(_ component: Component, for family: Family) -> String {
         family.ignoreSuffix == true ? component.name.given : component.name.given + component.name.family
     }

@@ -1,7 +1,19 @@
 import SwiftUI
 
+enum FilterType{
+    case usageHierarchy
+    case text
+    var rawValue: String {
+        switch self{
+        case .usageHierarchy: return "Usage Hierarchy"
+        case .text: return "Text"
+        }
+    }
+}
+
 struct FilterView: View {
     @Binding var filter: String
+    @Binding var filterType: FilterType?
     var onSubmit: (() -> Void)? = nil
     
     private let cornerRadius = 4.0
@@ -56,15 +68,17 @@ struct FilterView: View {
         HStack {
             Menu {
                 Button {
+                    filterType = .text
                 } label: {
                     Text("Text")
                 }
                 Button {
+                    filterType = .usageHierarchy
                 } label: {
                     Text("Usage Hierarchy")
                 }
             } label: {
-                Text("Text")
+                Text(filterType?.rawValue ?? "")
             }
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
@@ -76,8 +90,10 @@ struct FilterView: View {
 struct FilterView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            FilterView(filter: .constant(""))
-            FilterView(filter: .constant("DataStore"))
+            FilterView(
+                filter: .constant("DataStore"),
+                filterType: .constant(.text)
+            )
         }
     }
 }

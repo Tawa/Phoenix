@@ -33,6 +33,7 @@ struct ComponentDependenciesPopover: View {
             HSplitView {
                 VStack(alignment: .leading) {
                     FilterView(filter: $filter,
+                               filterType: .constant(.text),
                                onSubmit: performSubmit)
                     List {
                         Text("Components:")
