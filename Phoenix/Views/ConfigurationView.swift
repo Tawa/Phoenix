@@ -46,11 +46,6 @@ struct ConfigurationView: View {
                         TextField("Name",
                                   text: $configuration.packageConfigurations[index].name)
                         .focused($focusedName, equals: index)
-                        .onChange(of: focusedName, perform: { newValue in
-                            withAnimation {
-                                configuration.packageConfigurations.sort(by: { $0.name < $1.name })
-                            }
-                        })
                         .font(.title)
                     }.frame(minWidth: columnWidth)
                     columnView(title: "Folder", width: columnWidth) { index in
@@ -90,6 +85,7 @@ struct ConfigurationView: View {
             }.padding()
         }
         .frame(minHeight: 500)
+        .onDisappear { configuration.packageConfigurations.sort(by: { $0.name < $1.name }) }
     }
     
     private func removePackageConfiguration(at index: Int) {
