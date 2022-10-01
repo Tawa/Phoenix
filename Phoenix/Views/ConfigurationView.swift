@@ -4,16 +4,20 @@ import SwiftUI
 struct ConfigurationView: View {
     @Binding var configuration: ProjectConfiguration
     let columnWidth: CGFloat = 200
-    let narrowColumnWidth: CGFloat = 100
+    let narrowColumnWidth: CGFloat = 80
     let rowHeight: CGFloat = 50
     let onDismiss: () -> Void
     
     @FocusState private var focusedName: Int?
     
     @ViewBuilder
-    func columnView<RowContent: View>(title: String, width: CGFloat? = nil, content: @escaping (Int) -> RowContent) -> some View {
-        VStack(alignment: .center) {
-            Text(title)
+    func columnView<HeaderContent: View, RowContent: View>(
+        width: CGFloat? = nil,
+        header: @escaping () -> HeaderContent,
+        content: @escaping (Int) -> RowContent)
+    -> some View {
+        VStack(alignment: .center, spacing: 0) {
+            header()
                 .frame(height: rowHeight * 0.5)
             ForEach(0..<configuration.packageConfigurations.count, id: \.self) { index in
                 content(index)
@@ -23,8 +27,8 @@ struct ConfigurationView: View {
     }
     
     var body: some View {
-        VStack {
-            ScrollView(.vertical, showsIndicators: true) {
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack {
                 Text("Project Configuration")
                     .font(.largeTitle)
                 Divider()
@@ -41,50 +45,74 @@ struct ConfigurationView: View {
                     }))
                 }.font(.title)
                 Divider()
-                HStack(spacing: 0) {
-                    columnView(title: "Name") { index in
+                HStack(spacing: 8) {
+                    columnView {
+                        HStack {
+                            Text("Name")
+                                .font(.title.bold())
+                            Spacer()
+                        }
+                    } content: { index in
                         TextField("Name",
                                   text: $configuration.packageConfigurations[index].name)
                         .focused($focusedName, equals: index)
                         .font(.title)
                     }.frame(minWidth: columnWidth)
-                    columnView(title: "Folder", width: columnWidth) { index in
+                    columnView(width: columnWidth) {
+                        HStack {
+                            Text("Folder")
+                                .font(.title.bold())
+                            Spacer()
+                        }
+                    } content: { index in
                         TextField("Folder Name",
                                   text: .init(get: { configuration.packageConfigurations[index].containerFolderName ?? "" },
                                               set: { configuration.packageConfigurations[index].containerFolderName = $0.isEmpty ? nil : $0 }))
                         .font(.title)
                     }
-                    columnView(title: "Append Name?", width: narrowColumnWidth) { index in
+                    columnView(width: narrowColumnWidth) {
+                        Text("Append Name")
+                            .font(.subheadline.bold())
+                    } content: { index in
                         Toggle("", isOn: $configuration.packageConfigurations[index].appendPackageName)
                     }
-                    columnView(title: "Has Tests?", width: narrowColumnWidth) { index in
+                    columnView(width: narrowColumnWidth) {
+                        Text("Has Test")
+                            .font(.subheadline.bold())
+                    } content: { index in
                         Toggle("", isOn: $configuration.packageConfigurations[index].hasTests)
                     }
-                    columnView(title: "Internal Dependency", width: columnWidth) { index in
+                    columnView(width: columnWidth) {
+                        HStack {
+                            Text("Internal Dependency")
+                                .font(.subheadline.bold())
+                            Spacer()
+                        }
+                    } content: { index in
                         TextField("Dependency Name",
                                   text: .init(get: { configuration.packageConfigurations[index].internalDependency ?? "" },
                                               set: { configuration.packageConfigurations[index].internalDependency = $0.isEmpty ? nil : $0 }))
                         .font(.title)
                     }
-                    columnView(title: "", width: narrowColumnWidth) { index in
+                    columnView {
+                        Text("")
+                    } content: { index in
                         Button(action: { removePackageConfiguration(at: index) }) {
                             Image(systemName: "trash")
                                 .padding()
                         }
                     }
                 }
-            }
-            .padding()
-            HStack {
-                Button(action: onAddNew) {
-                    Text("Add New")
-                }
-                Button(action: onDismiss) {
-                    Text("Close")
-                }.keyboardShortcut(.cancelAction)
+                HStack {
+                    Button(action: onAddNew) {
+                        Text("Add New")
+                    }
+                    Button(action: onDismiss) {
+                        Text("Close")
+                    }.keyboardShortcut(.cancelAction)
+                }.padding()
             }.padding()
         }
-        .frame(minHeight: 500)
         .onDisappear { configuration.packageConfigurations.sort(by: { $0.name < $1.name }) }
     }
     
