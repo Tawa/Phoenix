@@ -101,7 +101,7 @@ struct ContentView: View {
         ComponentView(
             title: store.title(for: component.name),
             platformsContent: { platformsContent(forComponent: component) },
-            dependencies: component.dependencies.sorted(),
+            dependencies: component.dependencies,
             dependencyView: { dependencyType in
                 VStack(spacing: 0) {
                     Divider()
