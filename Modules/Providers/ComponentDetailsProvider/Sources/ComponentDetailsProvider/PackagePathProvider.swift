@@ -11,7 +11,9 @@ public struct PackagePathProvider: PackagePathProviderProtocol {
         self.packageNameProvider = packageNameProvider
     }
     
-    public func path(for name: Name, of family: Family, packageConfiguration: PackageConfiguration) -> String {
+    public func path(for name: Name,
+                     of family: Family,
+                     packageConfiguration: PackageConfiguration) -> String {
         var path: String = ""
         
         if let containerFolder = packageConfiguration.containerFolderName {
@@ -28,11 +30,24 @@ public struct PackagePathProvider: PackagePathProviderProtocol {
                      of family: Family,
                      packageConfiguration: PackageConfiguration,
                      relativeToConfiguration: PackageConfiguration) -> String {
+        getPath(for: name,
+                of: family,
+                packageConfiguration: packageConfiguration,
+                relativeToConfiguration: relativeToConfiguration)
+    }
+    
+    public func getPath(for name: Name,
+                        of family: Family,
+                        packageConfiguration: PackageConfiguration,
+                        relativeToConfiguration: PackageConfiguration?) -> String {
         var path: String = ""
-        if relativeToConfiguration.containerFolderName != nil {
-            path = "../../../"
-        } else {
-            path = "../../"
+        
+        if let relativeToConfiguration {
+            if relativeToConfiguration.containerFolderName != nil {
+                path = "../../../"
+            } else {
+                path = "../../"
+            }
         }
         
         if let containerFolder = packageConfiguration.containerFolderName {

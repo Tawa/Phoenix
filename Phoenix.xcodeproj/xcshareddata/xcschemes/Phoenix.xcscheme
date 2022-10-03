@@ -28,9 +28,110 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       codeCoverageEnabled = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "Component"
+            BuildableName = "Component"
+            BlueprintName = "Component"
+            ReferencedContainer = "container:Modules/Entities/Component">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "PackageStringProvider"
+            BuildableName = "PackageStringProvider"
+            BlueprintName = "PackageStringProvider"
+            ReferencedContainer = "container:Modules/Providers/PackageStringProvider">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "SwiftPackage"
+            BuildableName = "SwiftPackage"
+            BlueprintName = "SwiftPackage"
+            ReferencedContainer = "container:Modules/Entities/SwiftPackage">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "DemoAppFeature"
+            BuildableName = "DemoAppFeature"
+            BlueprintName = "DemoAppFeature"
+            ReferencedContainer = "container:Modules/Features/DemoAppFeature">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "PhoenixDocument"
+            BuildableName = "PhoenixDocument"
+            BlueprintName = "PhoenixDocument"
+            ReferencedContainer = "container:Modules/Entities/PhoenixDocument">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "ComponentDetailsProvider"
+            BuildableName = "ComponentDetailsProvider"
+            BlueprintName = "ComponentDetailsProvider"
+            ReferencedContainer = "container:Modules/Providers/ComponentDetailsProvider">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "PackageGenerator"
+            BuildableName = "PackageGenerator"
+            BlueprintName = "PackageGenerator"
+            ReferencedContainer = "container:Modules/Generators/PackageGenerator">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "PBXProjectSyncer"
+            BuildableName = "PBXProjectSyncer"
+            BlueprintName = "PBXProjectSyncer"
+            ReferencedContainer = "container:Modules/Syncers/PBXProjectSyncer">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "DemoAppGenerator"
+            BuildableName = "DemoAppGenerator"
+            BlueprintName = "DemoAppGenerator"
+            ReferencedContainer = "container:Modules/Generators/DemoAppGenerator">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "DocumentCoder"
+            BuildableName = "DocumentCoder"
+            BlueprintName = "DocumentCoder"
+            ReferencedContainer = "container:Modules/Coders/DocumentCoder">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AppVersionProvider"
+            BuildableName = "AppVersionProvider"
+            BlueprintName = "AppVersionProvider"
+            ReferencedContainer = "container:Modules/Providers/AppVersionProvider">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "PhoenixViews"
+            BuildableName = "PhoenixViews"
+            BlueprintName = "PhoenixViews"
+            ReferencedContainer = "container:Modules/Views/PhoenixViews">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "RelativeURLProvider"
+            BuildableName = "RelativeURLProvider"
+            BlueprintName = "RelativeURLProvider"
+            ReferencedContainer = "container:Modules/Providers/RelativeURLProvider">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "ProjectGenerator"
+            BuildableName = "ProjectGenerator"
+            BlueprintName = "ProjectGenerator"
+            ReferencedContainer = "container:Modules/Generators/ProjectGenerator">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3873E5B32804C50A000BCB03"
@@ -40,7 +141,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AppVersionProviderTests"
@@ -50,7 +152,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DocumentCoderTests"
@@ -60,7 +163,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "PhoenixDocumentTests"
@@ -70,7 +174,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "PackageStringProviderTests"
@@ -80,7 +185,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DemoAppFeatureTests"
@@ -90,7 +196,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DemoAppGeneratorTests"
@@ -100,7 +207,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "PackageGeneratorTests"
@@ -110,7 +218,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "PBXProjectSyncerTests"
@@ -120,7 +229,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "PhoenixViewsTests"
@@ -130,7 +240,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "ProjectGeneratorTests"
@@ -140,7 +251,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "RelativeURLProviderTests"
@@ -150,7 +262,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "SwiftPackageTests"
@@ -160,7 +273,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "ComponentTests"
@@ -170,7 +284,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "ComponentDetailsProviderTests"

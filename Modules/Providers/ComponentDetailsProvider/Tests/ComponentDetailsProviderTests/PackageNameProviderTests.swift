@@ -2,7 +2,7 @@ import Component
 @testable import ComponentDetailsProvider
 import XCTest
 
-class PackageNameProviderTestCase: XCTestCase {
+class PackageNameProviderTests: XCTestCase {
 
     let sut = PackageNameProvider()
 
