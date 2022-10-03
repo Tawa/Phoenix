@@ -60,6 +60,7 @@
 		B2F407C828EB8C27007E7434 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F407C728EB8C27007E7434 /* Toolbar.swift */; };
 		B2F407CA28EB8C40007E7434 /* NewComponentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F407C928EB8C40007E7434 /* NewComponentSheet.swift */; };
 		B2F407CC28EB8C53007E7434 /* ConfigurationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F407CB28EB8C53007E7434 /* ConfigurationSheet.swift */; };
+		B2F407CF28EB94CC007E7434 /* ComponentsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F407CE28EB94CC007E7434 /* ComponentsList.swift */; };
 		B2F5B85528C143A600282672 /* PBXProjectSyncer in Frameworks */ = {isa = PBXBuildFile; productRef = B2F5B85428C143A600282672 /* PBXProjectSyncer */; };
 /* End PBXBuildFile section */
 
@@ -152,6 +153,7 @@
 		B2F407C728EB8C27007E7434 /* Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
 		B2F407C928EB8C40007E7434 /* NewComponentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewComponentSheet.swift; sourceTree = "<group>"; };
 		B2F407CB28EB8C53007E7434 /* ConfigurationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationSheet.swift; sourceTree = "<group>"; };
+		B2F407CE28EB94CC007E7434 /* ComponentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsList.swift; sourceTree = "<group>"; };
 		B4F18C5B17A0862878E78D80 /* ComponentDetailsProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ComponentDetailsProviderContract; sourceTree = "<group>"; };
 		B544253829AAED80892BA404 /* DemoAppFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppFeature; sourceTree = "<group>"; };
 		B7248711AB2A2870AED7550A /* PhoenixViews */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PhoenixViews; sourceTree = "<group>"; };
@@ -421,6 +423,7 @@
 			isa = PBXGroup;
 			children = (
 				B2F407C128EB8000007E7434 /* Screen.swift */,
+				B2F407CE28EB94CC007E7434 /* ComponentsList.swift */,
 				B2F407C728EB8C27007E7434 /* Toolbar.swift */,
 				B2F407C928EB8C40007E7434 /* NewComponentSheet.swift */,
 				B2F407CB28EB8C53007E7434 /* ConfigurationSheet.swift */,
@@ -708,6 +711,7 @@
 				B2F407C828EB8C27007E7434 /* Toolbar.swift in Sources */,
 				B233DB6B28EB5BC000243D58 /* PhoenixUITests.swift in Sources */,
 				B2F407C228EB8000007E7434 /* Screen.swift in Sources */,
+				B2F407CF28EB94CC007E7434 /* ComponentsList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

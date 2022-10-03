@@ -35,5 +35,6 @@ final class PhoenixUITests: XCTestCase {
             .addNewComponent()
             .type(givenName: "Networking", familyName: "Support")
             .clickCreate()
+            .openSettings(forFamily: "Supports")
     }
 }

@@ -1,7 +1,7 @@
 import AccessibilityIdentifiers
 import XCTest
 
-class Screen: Toolbar {
+class Screen: Toolbar, ComponentsList {
     static let app = XCUIApplication()
     
     var window: XCUIElement {
