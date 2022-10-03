@@ -5,6 +5,7 @@ import PhoenixDocument
 import PhoenixViews
 import SwiftUI
 import SwiftPackage
+import AccessibilityIdentifiers
 
 struct ContentView: View {
     @StateObject private var viewModel: ViewModel
@@ -303,12 +304,15 @@ struct ContentView: View {
                     Button(action: viewModel.onConfigurationButton) {
                         Image(systemName: "wrench.and.screwdriver")
                         Text("Configuration")
-                    }.keyboardShortcut(",", modifiers: [.command])
+                    }
+                    .keyboardShortcut(",", modifiers: [.command])
+                    .with(accessibilityIdentifier: Toolbar.configurationButton)
                     Button(action: viewModel.onAddButton) {
                         Image(systemName: "plus.circle.fill")
                         Text("New Component")
-                    }.keyboardShortcut("A", modifiers: [.command, .shift])
-
+                    }
+                    .keyboardShortcut("A", modifiers: [.command, .shift])
+                    .with(accessibilityIdentifier: Toolbar.newComponentButton)
                     Spacer()
                     
                     Button(action: {

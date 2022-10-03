@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import SwiftUI
 
 struct NewComponentPopover: View {
@@ -21,6 +22,7 @@ struct NewComponentPopover: View {
                     .focused($focusField, equals: .given)
                     .font(.largeTitle)
                     .textFieldStyle(.plain)
+                    .with(accessibilityIdentifier: NewComponentSheet.givenNameTextField)
 
                 ZStack {
                     HStack {
@@ -36,16 +38,21 @@ struct NewComponentPopover: View {
                             guard newValue != .family else { return }
                             familyNameSuggestion(familyName).map { familyName = $0 }
                         }
+                        .with(accessibilityIdentifier: NewComponentSheet.familyNameTextField)
                 }.font(.largeTitle)
 
                 Spacer().frame(height: 30)
                 HStack {
                     Button(action: onDismiss) {
                         Text("Cancel")
-                    }.keyboardShortcut(.cancelAction)
+                    }
+                    .keyboardShortcut(.cancelAction)
+                    .with(accessibilityIdentifier: NewComponentSheet.cancelButton)
                     Button(action: onSubmitAction) {
                         Text("Create")
-                    }.keyboardShortcut(.defaultAction)
+                    }
+                    .keyboardShortcut(.defaultAction)
+                    .with(accessibilityIdentifier: NewComponentSheet.createButton)
                 }
             }
             .frame(minWidth: 300)
