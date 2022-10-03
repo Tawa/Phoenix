@@ -2,23 +2,7 @@ import XCTest
 @testable import AppVersionProvider
 import AppVersionProviderContract
 
-struct AppVersionStringProviderMock: CurrentAppVersionStringProviderProtocol {
-    let value: String?
-
-    func currentAppVersionString() -> String? {
-        value
-    }
-}
-
-struct AppVersionStringParserMock: AppVersionStringParserProtocol {
-    let value: AppVersionProtocol?
-
-    func appVersion(from string: String) -> AppVersionProtocol? {
-        value
-    }
-}
-
-final class AppVersionProviderTests: XCTestCase {
+final class CurrentAppVersionProviderTests: XCTestCase {
 
     func test_whenStringIsNilAndVersionIsNil_returnsNil() {
         // Given
