@@ -1,5 +1,3 @@
-import AppVersionProvider
-import AppVersionProviderContract
 import ComponentDetailsProvider
 import ComponentDetailsProviderContract
 import DemoAppFeature
@@ -22,15 +20,6 @@ import RelativeURLProviderContract
 import SwiftPackage
 
 extension Container {
-    static let currentAppVersionStringProvider = Factory { Bundle.main as CurrentAppVersionStringProviderProtocol }
-    static let appVersionStringParser = Factory { AppVersionStringParser() as AppVersionStringParserProtocol }
-    static let currentAppVersionProvider = Factory {
-        CurrentAppVersionProvider(
-            appVersionStringProvider: Container.currentAppVersionStringProvider(),
-            appVersionStringParser: Container.appVersionStringParser()
-        ) as CurrentAppVersionProviderProtocol
-    }
-
     static let phoenixDocumentFileWrappersDecoder = Factory {
         PhoenixDocumentFileWrappersDecoder(
             appVersionStringParser: Container.appVersionStringParser()
@@ -119,11 +108,7 @@ extension Container {
     static let demoAppNameProvider = Factory {
         DemoAppNameProvider() as DemoAppNameProviderProtocol
     }
-    
-    static let appVersionUpdateProvider = Factory {
-        AppVersionUpdateProvider() as AppVersionUpdateProviderProtocol
-    }
-    
+        
     static let filesURLDataStore = Factory {
         FilesURLDataStore(
             dictionaryCache: UserDefaults.standard
@@ -132,11 +117,5 @@ extension Container {
     
     static let relativeURLProvider = Factory {
         RelativeURLProvider() as RelativeURLProviderProtocol
-    }
-}
-
-extension Bundle: CurrentAppVersionStringProviderProtocol {
-    public func currentAppVersionString() -> String? {
-        infoDictionary?["CFBundleShortVersionString"] as? String
     }
 }

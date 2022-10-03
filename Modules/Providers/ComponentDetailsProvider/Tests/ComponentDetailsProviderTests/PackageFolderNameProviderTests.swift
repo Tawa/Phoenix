@@ -2,7 +2,7 @@
 import Component
 import XCTest
 
-class PackageFolderNameProviderTestCase: XCTestCase {
+class PackageFolderNameProviderTests: XCTestCase {
 
     func testFamilyWithFolderName() {
         // Given

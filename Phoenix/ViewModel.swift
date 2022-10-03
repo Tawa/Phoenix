@@ -247,7 +247,7 @@ class ViewModel: ObservableObject {
                 
             } receiveValue: { appVersionInfos in
                 withAnimation {
-                    self.appUpdateVersionInfo = appVersionInfos.first
+                    self.appUpdateVersionInfo = appVersionInfos.results.first
                 }
             }
     }

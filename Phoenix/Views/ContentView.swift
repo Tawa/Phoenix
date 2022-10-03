@@ -101,7 +101,7 @@ struct ContentView: View {
         ComponentView(
             title: store.title(for: component.name),
             platformsContent: { platformsContent(forComponent: component) },
-            dependencies: component.dependencies.sorted(),
+            dependencies: component.dependencies,
             dependencyView: { dependencyType in
                 VStack(spacing: 0) {
                     Divider()
@@ -280,7 +280,7 @@ struct ContentView: View {
                         Link(destination: URL(
                             string: "https://apps.apple.com/us/app/phoenix-app/id1626793172")!
                         ) {
-                            Text("Open App Store")
+                            Text("Update")
                         }
                         Button("Dismiss") {
                             withAnimation {
@@ -289,7 +289,7 @@ struct ContentView: View {
                         }.buttonStyle(.plain)
                     }
                 }
-                .padding()
+                .padding([.leading, .top, .trailing])
             }
             ZStack {
                 Button(action: onUpArrow, label: {})

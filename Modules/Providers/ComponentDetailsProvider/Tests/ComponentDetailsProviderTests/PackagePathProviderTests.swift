@@ -30,6 +30,16 @@ final class PackagePathProviderTests: XCTestCase {
     lazy var componentName = Name(given: "Given", family: "Family")
     lazy var family = Family(name: "Family", ignoreSuffix: false, folder: nil)
 
+    func testContract() {
+        // When
+        let path = sut.path(for: componentName,
+                            of: family,
+                            packageConfiguration: .contract)
+
+        // Then
+        XCTAssertEqual(path, "Contracts/PackageFolderName/PackageName")
+    }
+    
     func testContractRelativeToContract() {
         // When
         let path = sut.path(for: componentName,
