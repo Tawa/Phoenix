@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import SwiftUI
 
 struct ComponentsListRow: Hashable, Identifiable {
@@ -51,6 +52,7 @@ struct ComponentsList: View {
                                 onSelect: row.onSelect,
                                 onDuplicate: row.onDuplicate
                             )
+                            .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
                         }
                     } header: {
                         HStack {
@@ -58,6 +60,7 @@ struct ComponentsList: View {
                                 .font(.title.bold())
                             Button(action: section.onSelect,
                                    label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
+                            .with(accessibilityIdentifier: ComponentsListIdentifiers.familySettingsButton(named: section.name))
                             Spacer()
                         }
                         .padding(.vertical)

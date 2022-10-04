@@ -1,0 +1,16 @@
+{
+  "dependencies" : [
+
+  ],
+  "macOSVersion" : "v11",
+  "modules" : {
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Support",
+    "given" : "AccessibilityIdentifiers"
+  },
+  "resources" : [
+
+  ]
+}
