@@ -3,6 +3,7 @@ import SwiftUI
 
 struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable {
     let title: String
+    let dependencyName: String
 
     let value: DataType?
     let allValues: [DataType]
@@ -17,17 +18,27 @@ struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable
             HStack {
                 Text(title)
                 Image(systemName: "arrow.right")
-                Menu {
+                Menu(content: {
                     ForEach(allValues, id: \.self) { type in
                         Button(String(describing: type), action: { onValueChange(type) })
+                            .with(accessibilityIdentifier: DependencyViewIdentifiers.option(dependencyName: dependencyName,
+                                                                                            packageName: title,
+                                                                                            option: String(describing: type)))
                     }
                     if value != nil {
                         Divider()
                         Button(action: { onValueChange(nil) }, label: { Text("Remove") })
+                            .with(accessibilityIdentifier: DependencyViewIdentifiers.removeOption(
+                                dependencyName: dependencyName,
+                                packageName: title))
                     }
-                } label: {
+                }, label: {
                     Text(value.map { String(describing:$0) } ?? "Add")
-                }.frame(width: 150)
+                })
+                .with(accessibilityIdentifier: DependencyViewIdentifiers.menu(
+                    dependencyName: dependencyName,
+                    packageName: title))
+                .frame(width: 150)
             }
         }
     }
@@ -57,6 +68,7 @@ where TargetType: Identifiable, SelectionType: Hashable {
                     HStack {
                         DependencyModuleTypeSelectorView<SelectionType>(
                             title: dependencyType.title,
+                            dependencyName: title,
                             value: dependencyType.selectedValue,
                             allValues: allSelectionValues,
                             onValueChange: { onUpdateTargetTypeValue(dependencyType.value, $0) })
@@ -66,6 +78,7 @@ where TargetType: Identifiable, SelectionType: Hashable {
                             Divider()
                             DependencyModuleTypeSelectorView<SelectionType>(
                                 title: subtitle,
+                                dependencyName: title,
                                 value: dependencyType.selectedSubValue,
                                 allValues: allSelectionValues,
                                 onValueChange: { onUpdateTargetTypeValue(subvalue, $0) })

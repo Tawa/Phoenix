@@ -1,7 +1,7 @@
 import AccessibilityIdentifiers
 import XCTest
 
-class Screen: Toolbar, ComponentsList, ComponentScreen {
+class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
     static let app = XCUIApplication()
     
     var window: XCUIElement {
@@ -74,5 +74,12 @@ class Screen: Toolbar, ComponentsList, ComponentScreen {
             .openNewComponentSheet()
             .type(givenName: givenName, familyName: familyName)
             .clickCreate()
+    }
+    
+    @discardableResult
+    func select(option: String, dependencyName: String, packageName: String) -> Screen {
+        return self
+            .clickSelector(dependencyName: dependencyName, packageName: packageName)
+            .click(dependencyName: dependencyName, packageName: packageName, option: option)
     }
 }
