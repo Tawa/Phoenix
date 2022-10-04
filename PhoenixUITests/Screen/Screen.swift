@@ -15,7 +15,20 @@ class Screen: Toolbar, ComponentsList {
     @discardableResult
     func closeAllWindows() -> Screen {
         while Screen.app.windows.firstMatch.exists {
-            Screen.app.windows.firstMatch.buttons[XCUIIdentifierCloseWindow].click()
+            let closeButton = Screen.app.windows.firstMatch.buttons[XCUIIdentifierCloseWindow]
+            if closeButton.exists {
+                closeButton.click()
+            }
+            
+            let cancelButton = Screen.app.windows.firstMatch.buttons["Cancel"]
+            if cancelButton.exists {
+                cancelButton.click()
+            }
+            
+            let deleteButton = Screen.app.windows.firstMatch.buttons["Delete"]
+            if deleteButton.exists {
+                deleteButton.click()
+            }
         }
         return self
     }
