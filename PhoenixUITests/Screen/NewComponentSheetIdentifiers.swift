@@ -3,16 +3,16 @@ import XCTest
 
 class NewComponentSheet: Screen {
     var givenNameTextField: XCUIElement {
-        Screen.app.textFields[AccessibilityIdentifiers.NewComponentSheet.givenNameTextField.identifier]
+        Screen.app.textFields[NewComponentSheetIdentifiers.givenNameTextField.identifier]
     }
     var familyNameTextField: XCUIElement {
-        Screen.app.textFields[AccessibilityIdentifiers.NewComponentSheet.familyNameTextField.identifier]
+        Screen.app.textFields[NewComponentSheetIdentifiers.familyNameTextField.identifier]
     }
     var cancelButton: XCUIElement {
-        Screen.app.buttons[AccessibilityIdentifiers.NewComponentSheet.cancelButton.identifier]
+        Screen.app.buttons[NewComponentSheetIdentifiers.cancelButton.identifier]
     }
     var createButton: XCUIElement {
-        Screen.app.buttons[AccessibilityIdentifiers.NewComponentSheet.createButton.identifier]
+        Screen.app.buttons[NewComponentSheetIdentifiers.createButton.identifier]
     }
     
     @discardableResult

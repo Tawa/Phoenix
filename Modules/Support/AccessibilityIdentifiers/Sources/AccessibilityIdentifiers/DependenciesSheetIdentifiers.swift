@@ -1,6 +1,6 @@
 import Foundation
 
-public enum DependenciesSheet: AccessibilityIdentifiable {
+public enum DependenciesSheetIdentifiers: AccessibilityIdentifiable {
     case filter
     case component(named: String)
     

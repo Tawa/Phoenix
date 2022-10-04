@@ -6,7 +6,7 @@ protocol ComponentScreen: Screen {
 
 extension ComponentScreen {
     var dependenciesPlusButton: XCUIElement {
-        Screen.app.buttons[AccessibilityIdentifiers.ComponentScreen.dependenciesPlusButton.identifier]
+        Screen.app.buttons[ComponentIdentifiers.dependenciesPlusButton.identifier]
     }
     
     @discardableResult

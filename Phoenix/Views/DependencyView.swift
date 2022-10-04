@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import SwiftUI
 
 struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable {

@@ -77,7 +77,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                         Text("Dependencies")
                             .font(.largeTitle.bold())
                         Button(action: onShowDependencySheet) { Image(systemName: "plus") }
-                            .with(accessibilityIdentifier: ComponentScreen.dependenciesPlusButton)
+                            .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
                     }
                 }
                 Divider()

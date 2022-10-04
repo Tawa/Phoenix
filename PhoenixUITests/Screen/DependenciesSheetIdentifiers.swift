@@ -3,11 +3,11 @@ import XCTest
 
 class DependenciesSheet: Screen {
     var filter: XCUIElement {
-        Screen.app.textFields[AccessibilityIdentifiers.DependenciesSheet.filter.identifier]
+        Screen.app.textFields[DependenciesSheetIdentifiers.filter.identifier]
     }
     
     func component(named: String) -> XCUIElement {
-        Screen.app.buttons[AccessibilityIdentifiers.DependenciesSheet.component(named: named).identifier]
+        Screen.app.buttons[DependenciesSheetIdentifiers.component(named: named).identifier]
     }
     
     @discardableResult

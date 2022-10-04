@@ -1,6 +1,6 @@
 import Foundation
 
-public enum NewComponentSheet: String, AccessibilityIdentifiable {
+public enum NewComponentSheetIdentifiers: String, AccessibilityIdentifiable {
     public var identifier: String { rawValue }
     
     case givenNameTextField

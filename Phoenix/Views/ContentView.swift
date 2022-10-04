@@ -306,13 +306,13 @@ struct ContentView: View {
                         Text("Configuration")
                     }
                     .keyboardShortcut(",", modifiers: [.command])
-                    .with(accessibilityIdentifier: Toolbar.configurationButton)
+                    .with(accessibilityIdentifier: ToolbarIdentifiers.configurationButton)
                     Button(action: viewModel.onAddButton) {
                         Image(systemName: "plus.circle.fill")
                         Text("New Component")
                     }
                     .keyboardShortcut("A", modifiers: [.command, .shift])
-                    .with(accessibilityIdentifier: Toolbar.newComponentButton)
+                    .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
                     Spacer()
                     
                     Button(action: {

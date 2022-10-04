@@ -22,7 +22,7 @@ struct NewComponentSheet: View {
                     .focused($focusField, equals: .given)
                     .font(.largeTitle)
                     .textFieldStyle(.plain)
-                    .with(accessibilityIdentifier: AccessibilityIdentifiers.NewComponentSheet.givenNameTextField)
+                    .with(accessibilityIdentifier: NewComponentSheetIdentifiers.givenNameTextField)
 
                 ZStack {
                     HStack {
@@ -38,7 +38,7 @@ struct NewComponentSheet: View {
                             guard newValue != .family else { return }
                             familyNameSuggestion(familyName).map { familyName = $0 }
                         }
-                        .with(accessibilityIdentifier: AccessibilityIdentifiers.NewComponentSheet.familyNameTextField)
+                        .with(accessibilityIdentifier: NewComponentSheetIdentifiers.familyNameTextField)
                 }.font(.largeTitle)
 
                 Spacer().frame(height: 30)
@@ -47,12 +47,12 @@ struct NewComponentSheet: View {
                         Text("Cancel")
                     }
                     .keyboardShortcut(.cancelAction)
-                    .with(accessibilityIdentifier: AccessibilityIdentifiers.NewComponentSheet.cancelButton)
+                    .with(accessibilityIdentifier: NewComponentSheetIdentifiers.cancelButton)
                     Button(action: onSubmitAction) {
                         Text("Create")
                     }
                     .keyboardShortcut(.defaultAction)
-                    .with(accessibilityIdentifier: AccessibilityIdentifiers.NewComponentSheet.createButton)
+                    .with(accessibilityIdentifier: NewComponentSheetIdentifiers.createButton)
                 }
             }
             .frame(minWidth: 300)
