@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct FamilyPopover: View {
+struct FamilySheet: View {
     let name: String
     let ignoreSuffix: Bool
     let onUpdateSelectedFamily: (Bool) -> Void
@@ -51,15 +51,15 @@ struct FamilyPopover: View {
     }
 }
 
-//struct FamilyPopover_Previews: PreviewProvider {
+//struct FamilySheet_Previews: PreviewProvider {
 //    static var previews: some View {
-//        FamilyPopover(
-//            viewModel: FamilyPopoverViewModel(
+//        FamilySheet(
+//            viewModel: FamilySheetViewModel(
 //                family: Family(name: "Repository",
 //                               ignoreSuffix: false,
 //                               folder: nil)))
-//        FamilyPopover(
-//            viewModel: FamilyPopoverViewModel(
+//        FamilySheet(
+//            viewModel: FamilySheetViewModel(
 //                family: Family(name: "Shared",
 //                               ignoreSuffix: true,
 //                               folder: "Support")))

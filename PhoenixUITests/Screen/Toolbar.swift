@@ -20,7 +20,7 @@ extension Toolbar {
     }
     
     @discardableResult
-    func addNewComponent() -> NewComponentSheet {
+    func openNewComponentSheet() -> NewComponentSheet {
         newComponentButton.click()
         return NewComponentSheet()
     }

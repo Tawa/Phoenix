@@ -43,12 +43,12 @@ class ViewModel: ObservableObject {
     private var appUpdateVersionInfoSub: AnyCancellable? = nil
     @Published var appUpdateVersionInfo: AppVersionInfo? = nil
     
-    // MARK: - Popovers
+    // MARK: - Sheets
     @Published var showingConfigurationPopup: Bool = false
     @Published var showingNewComponentPopup: ComponentPopupState? = nil
-    @Published var showingDependencyPopover: Bool = false
+    @Published var showingDependencySheet: Bool = false
     @Published var alertState: AlertState? = nil
-    @Published var showingGeneratePopover: Bool = false
+    @Published var showingGenerateSheet: Bool = false
     @Published var demoAppFeatureData: DemoAppFeatureInput? = nil
     @Published var modulesFolderURL: URL? = nil {
         didSet {
@@ -162,21 +162,21 @@ class ViewModel: ObservableObject {
         skipXcodeProject = skip
     }
     
-    func onGeneratePopoverButton(fileURL: URL?) {
+    func onGenerateSheetButton(fileURL: URL?) {
         if
             modulesFolderURL == nil,
             let fileURL = fileURL,
             FileManager.default.isDeletableFile(atPath: fileURL.path) {
             modulesFolderURL = fileURL
         }
-        showingGeneratePopover = true
+        showingGenerateSheet = true
     }
     
-    func onDismissGeneratePopover() {
-        showingGeneratePopover = false
+    func onDismissGenerateSheet() {
+        showingGenerateSheet = false
     }
     
-    func onGeneratePopoverGenerate(document: PhoenixDocument) {
+    func onGenerateSheetGenerate(document: PhoenixDocument) {
         onGenerate(document: document)
     }
     
@@ -185,7 +185,7 @@ class ViewModel: ObservableObject {
             alertState = .errorString("Could not find path for modules folder.")
             return
         }
-        showingGeneratePopover = false
+        showingGenerateSheet = false
         do {
             try projectGenerator.generate(document: document, folderURL: fileURL)
         } catch {

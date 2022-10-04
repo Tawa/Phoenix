@@ -25,8 +25,8 @@ struct ContentView: View {
                 if let selectedComponentName = viewModel.selectedComponentName,
                    let selectedComponent = store.getComponent(withName: selectedComponentName) {
                     componentView(for: selectedComponent)
-                        .sheet(isPresented: .constant(viewModel.showingDependencyPopover)) {
-                            dependencyPopover(component: selectedComponent)
+                        .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
+                            dependencySheet(component: selectedComponent)
                         }
                 } else {
                     HStack(alignment: .top) {
@@ -44,9 +44,9 @@ struct ContentView: View {
                       message: Text(alertState.title),
                       dismissButton: .default(Text("Ok")))
             }).sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
-                newComponentPopover(state: state)
+                newComponentSheet(state: state)
             }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
-                familyPopover(family: family)
+                familySheet(family: family)
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
                 ConfigurationView(configuration: store.document.projectConfiguration) {
                     viewModel.showingConfigurationPopup = false
@@ -55,11 +55,11 @@ struct ContentView: View {
             .sheet(item: $viewModel.demoAppFeatureData, content: { data in
                 Container.demoAppFeatureView(data)
             })
-            .sheet(isPresented: $viewModel.showingGeneratePopover,
-                   onDismiss: viewModel.onDismissGeneratePopover,
+            .sheet(isPresented: $viewModel.showingGenerateSheet,
+                   onDismiss: viewModel.onDismissGenerateSheet,
                    content: {
-                GeneratePopoverView(
-                    viewModel: GeneratePopoverViewModel(
+                GenerateSheetView(
+                    viewModel: GenerateSheetViewModel(
                         modulesPath: viewModel.modulesFolderURL?.path ?? "path/to/modules",
                         xcodeProjectPath: viewModel.xcodeProjectURL?.path ?? "path/to/Project.xcodeproj",
                         hasModulesPath: viewModel.modulesFolderURL != nil,
@@ -69,7 +69,7 @@ struct ContentView: View {
                         onOpenXcodeProject: viewModel.onOpenXcodeProject,
                         onSkipXcodeProject: viewModel.onSkipXcodeProject,
                         onGenerate: { viewModel.onGenerate(document: store.document.wrappedValue) },
-                        onDismiss: viewModel.onDismissGeneratePopover)
+                        onDismiss: viewModel.onDismissGenerateSheet)
                 )
             })
         }
@@ -130,14 +130,14 @@ struct ContentView: View {
             allTargetTypes: allTargetTypes(forComponent: component),
             onRemoveResourceWithId: { store.removeResource(withId: $0, forComponentWithName: component.name) },
             onAddResourceWithName: { store.addResource($0, forComponentWithName: component.name) },
-            onShowDependencyPopover: { viewModel.showingDependencyPopover = true },
+            onShowDependencySheet: { viewModel.showingDependencySheet = true },
             resourcesValueBinding: componentResourcesValueBinding(component: component)
         )
         .frame(minWidth: 750)
     }
     
-    func newComponentPopover(state: ComponentPopupState) -> some View {
-        return NewComponentPopover(onSubmit: { name, familyName in
+    func newComponentSheet(state: ComponentPopupState) -> some View {
+        return NewComponentSheet(onSubmit: { name, familyName in
             let name = Name(given: name, family: familyName)
             switch state {
             case .new:
@@ -157,7 +157,7 @@ struct ContentView: View {
         })
     }
     
-    func dependencyPopover(component: Component) -> some View {
+    func dependencySheet(component: Component) -> some View {
         let filteredNames = Dictionary(grouping: store.allNames.filter { name in
             component.name != name && !component.dependencies.contains { componentDependencyType in
                 guard case let .local(componentDependency) = componentDependencyType else { return false }
@@ -170,13 +170,13 @@ struct ContentView: View {
                 ComponentDependenciesListRow(name: store.title(for: name),
                                              onSelect: {
                     store.addDependencyToComponent(withName: component.name, dependencyName: name)
-                    viewModel.showingDependencyPopover = false
+                    viewModel.showingDependencySheet = false
                 })
             }))
         }.sorted { lhs, rhs in
             lhs.name < rhs.name
         }
-        return ComponentDependenciesPopover(
+        return ComponentDependenciesSheet(
             sections: sections,
             onExternalSubmit: { remoteDependency in
                 let urlString = remoteDependency.urlString
@@ -201,15 +201,15 @@ struct ContentView: View {
                 store.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
                                                                                                             name: name,
                                                                                                             value: version))
-                viewModel.showingDependencyPopover = false
+                viewModel.showingDependencySheet = false
             },
             onDismiss: {
-                viewModel.showingDependencyPopover = false
+                viewModel.showingDependencySheet = false
             }).frame(minWidth: 900, minHeight: 400)
     }
     
-    func familyPopover(family: Family) -> some View {
-        return FamilyPopover(name: family.name,
+    func familySheet(family: Family) -> some View {
+        return FamilySheet(name: family.name,
                              ignoreSuffix: family.ignoreSuffix,
                              onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
                              folderName: family.folder ?? "",
@@ -316,7 +316,7 @@ struct ContentView: View {
                     Spacer()
                     
                     Button(action: {
-                        viewModel.onGeneratePopoverButton(fileURL: store.fileURL)
+                        viewModel.onGenerateSheetButton(fileURL: store.fileURL)
                     }, label: {
                         Image(systemName: "shippingbox.fill")
                         Text("Generate")

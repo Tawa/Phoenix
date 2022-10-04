@@ -7,21 +7,22 @@ struct ComponentListItem: View {
     let onDuplicate: () -> Void
 
     var body: some View {
-        ZStack(alignment: .leading) {
-            isSelected ? Color.gray : Color.clear
-            Text(name)
-                .font(.title2)
-                .foregroundColor(isSelected ? Color.white : nil)
-                .padding(8)
-        }
-        .contentShape(Rectangle())
-        .cornerRadius(8)
-        .onTapGesture(perform: onSelect)
-        .contextMenu {
-            Button(action: onDuplicate) {
-                Text("Duplicate")
+        Button(action: onSelect) {
+            ZStack(alignment: .leading) {
+                isSelected ? Color.gray : Color.clear
+                Text(name)
+                    .font(.title2)
+                    .foregroundColor(isSelected ? Color.white : nil)
+                    .padding(8)
             }
-        }
+            .contentShape(Rectangle())
+            .cornerRadius(8)
+            .contextMenu {
+                Button(action: onDuplicate) {
+                    Text("Duplicate")
+                }
+            }
+        }.buttonStyle(.plain)
     }
 }
 

@@ -7,7 +7,7 @@ protocol ComponentsList: Screen {
 extension ComponentsList {
     
     func component(named: String) -> XCUIElement {
-        Screen.app.otherElements[ComponentsListIdentifiers.component(named: named).identifier]
+        Screen.app.buttons[ComponentsListIdentifiers.component(named: named).identifier]
     }
     
     func familySettingsButton(named: String) -> XCUIElement {

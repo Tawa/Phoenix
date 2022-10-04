@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import SwiftUI
 
 struct ComponentDependenciesListRow: Hashable, Identifiable {
@@ -20,7 +21,7 @@ struct ComponentDependenciesListSection: Hashable, Identifiable {
     var rows: [ComponentDependenciesListRow]
 }
 
-struct ComponentDependenciesPopover: View {
+struct ComponentDependenciesSheet: View {
 
     let sections: [ComponentDependenciesListSection]
     let onExternalSubmit: (RemoteDependencyFormResult) -> Void
@@ -34,6 +35,7 @@ struct ComponentDependenciesPopover: View {
                 VStack(alignment: .leading) {
                     FilterView(filter: $filter,
                                onSubmit: performSubmit)
+                    .with(accessibilityIdentifier: DependenciesSheet.filter)
                     List {
                         Text("Components:")
                             .font(.largeTitle)
