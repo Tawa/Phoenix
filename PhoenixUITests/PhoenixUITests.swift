@@ -12,6 +12,7 @@ final class PhoenixUITests: XCTestCase {
         let dataStore = "DataStore"
         
         let support = "Support"
+        let defaultSupport = "Supports"
         let networking = "Networking"
         
         let wordpressFeature = wordpress + feature
@@ -30,15 +31,15 @@ final class PhoenixUITests: XCTestCase {
             .addNewComponent(givenName: wordpress, familyName: repository)
             .addNewComponent(givenName: wordpress, familyName: dataStore)
             .addNewComponent(givenName: networking, familyName: support)
-            .openFamilySettings(named: "Supports")
+            .openFamilySettings(named: defaultSupport)
             .toggleAppendName()
             .set(folderName: support)
             .clickDone()
-            .select(component: wordpressRepository,
-                    andAddDependencyWithContractAndMock: networking, wordpressDataStore)
-            .select(component: wordpressUseCases,
-                    andAddDependencyWithContractAndMock: wordpressRepository)
             .select(component: wordpressFeature,
                     andAddDependencyWithContractAndMock: wordpressUseCases)
+            .select(component: wordpressUseCases,
+                    andAddDependencyWithContractAndMock: wordpressRepository)
+            .select(component: wordpressRepository,
+                    andAddDependencyWithContractAndMock: networking, wordpressDataStore)
     }
 }
