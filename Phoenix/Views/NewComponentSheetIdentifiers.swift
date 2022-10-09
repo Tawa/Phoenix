@@ -1,7 +1,7 @@
 import AccessibilityIdentifiers
 import SwiftUI
 
-struct NewComponentPopover: View {
+struct NewComponentSheet: View {
     enum FocusFields: Hashable {
         case given
         case family
@@ -12,7 +12,7 @@ struct NewComponentPopover: View {
     let familyNameSuggestion: (String) -> String?
     @State private var name: String = ""
     @State private var familyName: String = ""
-    @State private var popoverViewModel: PopoverViewModel? = nil
+    @State private var infoSheetModel: InfoSheetModel? = nil
     @FocusState private var focusField: FocusFields?
 
     var body: some View {
@@ -22,7 +22,7 @@ struct NewComponentPopover: View {
                     .focused($focusField, equals: .given)
                     .font(.largeTitle)
                     .textFieldStyle(.plain)
-                    .with(accessibilityIdentifier: NewComponentSheet.givenNameTextField)
+                    .with(accessibilityIdentifier: NewComponentSheetIdentifiers.givenNameTextField)
 
                 ZStack {
                     HStack {
@@ -38,7 +38,7 @@ struct NewComponentPopover: View {
                             guard newValue != .family else { return }
                             familyNameSuggestion(familyName).map { familyName = $0 }
                         }
-                        .with(accessibilityIdentifier: NewComponentSheet.familyNameTextField)
+                        .with(accessibilityIdentifier: NewComponentSheetIdentifiers.familyNameTextField)
                 }.font(.largeTitle)
 
                 Spacer().frame(height: 30)
@@ -47,12 +47,12 @@ struct NewComponentPopover: View {
                         Text("Cancel")
                     }
                     .keyboardShortcut(.cancelAction)
-                    .with(accessibilityIdentifier: NewComponentSheet.cancelButton)
+                    .with(accessibilityIdentifier: NewComponentSheetIdentifiers.cancelButton)
                     Button(action: onSubmitAction) {
                         Text("Create")
                     }
                     .keyboardShortcut(.defaultAction)
-                    .with(accessibilityIdentifier: NewComponentSheet.createButton)
+                    .with(accessibilityIdentifier: NewComponentSheetIdentifiers.createButton)
                 }
             }
             .frame(minWidth: 300)
@@ -61,9 +61,9 @@ struct NewComponentPopover: View {
             .background(.ultraThinMaterial)
             .onAppear { focusField = .given }
         }
-        .sheet(item: $popoverViewModel) { viewModel in
-            PopoverView(viewModel: viewModel) {
-                popoverViewModel = nil
+        .sheet(item: $infoSheetModel) { model in
+            InfoSheet(model: model) {
+                infoSheetModel = nil
             }
         }
     }
@@ -74,19 +74,19 @@ struct NewComponentPopover: View {
         do {
             try onSubmit(name, familyName)
         } catch {
-            popoverViewModel = .init(text: error.localizedDescription)
+            infoSheetModel = .init(text: error.localizedDescription)
         }
     }
 
-    private func onPopoverOkayButton() {
+    private func onSheetOkayButton() {
         focusField = nil
-        popoverViewModel = nil
+        infoSheetModel = nil
     }
 }
 
-struct NewComponentPopover_Previews: PreviewProvider {
+struct NewComponentSheet_Previews: PreviewProvider {
     static var previews: some View {
-        NewComponentPopover(onSubmit: { _, _ in },
+        NewComponentSheet(onSubmit: { _, _ in },
                             onDismiss: {},
                             familyNameSuggestion: { $0 })
     }

@@ -1,6 +1,6 @@
 import Foundation
 
-public enum ConfigurationSheet: AccessibilityIdentifiable {
+public enum ConfigurationSheetIdentifiers: AccessibilityIdentifiable {
     case addNewButton
     case closeButton
     case textField(column: Int, row: Int)

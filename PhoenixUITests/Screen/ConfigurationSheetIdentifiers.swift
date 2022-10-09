@@ -3,16 +3,16 @@ import XCTest
 
 class ConfigurationSheet: Screen {
     var addNewButton: XCUIElement {
-        Screen.app.buttons[AccessibilityIdentifiers.ConfigurationSheet.addNewButton.identifier]
+        Screen.app.buttons[ConfigurationSheetIdentifiers.addNewButton.identifier]
     }
     
     var closeButton: XCUIElement {
-        Screen.app.buttons[AccessibilityIdentifiers.ConfigurationSheet.closeButton.identifier]
+        Screen.app.buttons[ConfigurationSheetIdentifiers.closeButton.identifier]
     }
     
     func textField(column: Int, row: Int) -> XCUIElement {
         Screen.app.textFields[
-            AccessibilityIdentifiers.ConfigurationSheet.textField(
+            ConfigurationSheetIdentifiers.textField(
                 column: column,
                 row: row
             ).identifier

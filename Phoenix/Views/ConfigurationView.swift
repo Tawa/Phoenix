@@ -58,7 +58,7 @@ struct ConfigurationView: View {
                                   text: $configuration.packageConfigurations[index].name)
                         .focused($focusedName, equals: index)
                         .font(.title)
-                        .with(accessibilityIdentifier: ConfigurationSheet.textField(column: 0, row: index))
+                        .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 0, row: index))
                     }.frame(minWidth: columnWidth)
                     columnView(width: columnWidth) {
                         HStack {
@@ -71,7 +71,7 @@ struct ConfigurationView: View {
                                   text: .init(get: { configuration.packageConfigurations[index].containerFolderName ?? "" },
                                               set: { configuration.packageConfigurations[index].containerFolderName = $0.isEmpty ? nil : $0 }))
                         .font(.title)
-                        .with(accessibilityIdentifier: ConfigurationSheet.textField(column: 1, row: index))
+                        .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 1, row: index))
                     }
                     columnView(width: narrowColumnWidth) {
                         Text("Append Name")
@@ -96,7 +96,7 @@ struct ConfigurationView: View {
                                   text: .init(get: { configuration.packageConfigurations[index].internalDependency ?? "" },
                                               set: { configuration.packageConfigurations[index].internalDependency = $0.isEmpty ? nil : $0 }))
                         .font(.title)
-                        .with(accessibilityIdentifier: ConfigurationSheet.textField(column: 2, row: index))
+                        .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 2, row: index))
                     }
                     columnView {
                         Text("")
@@ -111,12 +111,12 @@ struct ConfigurationView: View {
                     Button(action: onAddNew) {
                         Text("Add New")
                     }
-                    .with(accessibilityIdentifier: ConfigurationSheet.addNewButton)
+                    .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.addNewButton)
                     Button(action: onDismiss) {
                         Text("Close")
                     }
                     .keyboardShortcut(.cancelAction)
-                    .with(accessibilityIdentifier: ConfigurationSheet.closeButton)
+                    .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.closeButton)
                 }.padding()
             }.padding()
         }

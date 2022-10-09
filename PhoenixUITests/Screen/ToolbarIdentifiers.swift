@@ -6,11 +6,11 @@ protocol Toolbar: Screen {
 
 extension Toolbar {
     var configurationButton: XCUIElement {
-        Screen.app.buttons[AccessibilityIdentifiers.Toolbar.configurationButton.identifier]
+        Screen.app.buttons[ToolbarIdentifiers.configurationButton.identifier]
     }
     
     var newComponentButton: XCUIElement {
-        Screen.app.buttons[AccessibilityIdentifiers.Toolbar.newComponentButton.identifier]
+        Screen.app.buttons[ToolbarIdentifiers.newComponentButton.identifier]
     }
     
     @discardableResult
@@ -20,7 +20,7 @@ extension Toolbar {
     }
     
     @discardableResult
-    func addNewComponent() -> NewComponentSheet {
+    func openNewComponentSheet() -> NewComponentSheet {
         newComponentButton.click()
         return NewComponentSheet()
     }

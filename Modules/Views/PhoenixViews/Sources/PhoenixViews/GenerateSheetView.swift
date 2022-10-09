@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct GeneratePopoverViewModel {
+public struct GenerateSheetViewModel {
     let modulesPath: String
     let xcodeProjectPath: String
     
@@ -40,48 +40,48 @@ public struct GeneratePopoverViewModel {
     }
 }
 
-public struct GeneratePopoverView: View {
-    let viewModel: GeneratePopoverViewModel
+public struct GenerateSheetView: View {
+    let viewModel: GenerateSheetViewModel
     
-    public init(viewModel: GeneratePopoverViewModel) {
+    public init(viewModel: GenerateSheetViewModel) {
         self.viewModel = viewModel
     }
     
     public var body: some View {
         VStack(alignment: .leading) {
-            VStack(alignment: .leading) {
-                HStack {
-                    Button(action: viewModel.onOpenModulesFolder, label: {
+            Button(action: viewModel.onOpenModulesFolder) {
+                VStack(alignment: .leading) {
+                    HStack {
                         Image(systemName: "folder")
-                    }).help("Open Folder")
-                    Text("Modules Folder")
+                        Text("Modules Folder")
+                    }
+                    HStack {
+                        Text(viewModel.modulesPath)
+                            .opacity(viewModel.hasModulesPath ? 1 : 0.2)
+                        Spacer()
+                    }
                 }
-                HStack {
-                    Text(viewModel.modulesPath)
-                        .opacity(viewModel.hasModulesPath ? 1 : 0.2)
-                    Spacer()
-                }
-            }.onTapGesture(perform: viewModel.onOpenModulesFolder)
+            }.buttonStyle(.plain)
             
-            VStack(alignment: .leading) {
-                HStack {
-                    Button(action: viewModel.onOpenXcodeProject, label: {
+            Button(action: viewModel.onOpenXcodeProject) {
+                VStack(alignment: .leading) {
+                    HStack {
                         Image(systemName: "wrench.and.screwdriver")
-                    }).help("Open Xcode Project")
-                    Text("Xcode Project")
-                    Toggle("Skip this step", isOn: Binding(get: {
-                        viewModel.isSkipXcodeProjectOn
-                    }, set: { newValue in
-                        self.viewModel.onSkipXcodeProject(newValue)
-                    }))
+                        Text("Xcode Project")
+                        Toggle("Skip this step", isOn: Binding(get: {
+                            viewModel.isSkipXcodeProjectOn
+                        }, set: { newValue in
+                            self.viewModel.onSkipXcodeProject(newValue)
+                        }))
+                    }
+                    HStack {
+                        Text(viewModel.xcodeProjectPath)
+                            .opacity(xcodeProjectPathOpaticy)
+                        Spacer()
+                    }
                 }
-                HStack {
-                    Text(viewModel.xcodeProjectPath)
-                        .opacity(xcodeProjectPathOpaticy)
-                    Spacer()
-                }
-            }.onTapGesture(perform: viewModel.onOpenXcodeProject)
-                        
+            }.buttonStyle(.plain)
+
             HStack {
                 Button(action: viewModel.onGenerate) {
                     Text("Generate")
@@ -113,10 +113,10 @@ public struct GeneratePopoverView: View {
     }
 }
 
-struct GeneratePopoverView_Previews: PreviewProvider {
+struct GenerateSheetView_Previews: PreviewProvider {
     static var previews: some View {
-        GeneratePopoverView(
-            viewModel: GeneratePopoverViewModel(
+        GenerateSheetView(
+            viewModel: GenerateSheetViewModel(
                 modulesPath: "path/to/modules",
                 xcodeProjectPath: "path/to/Project.xcodeproj",
                 hasModulesPath: true,

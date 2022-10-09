@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import SwiftUI
 
 struct ComponentView<PlatformsContent, DependencyType, DependencyContent, ModuleType, LibraryType, TargetType, ResourcesType>: View
@@ -26,7 +27,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let allTargetTypes: [IdentifiableWithSubtype<TargetType>]
     let onRemoveResourceWithId: (String) -> Void
     let onAddResourceWithName: (String) -> Void
-    let onShowDependencyPopover: () -> Void
+    let onShowDependencySheet: () -> Void
     @Binding var resourcesValueBinding: [DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]
 
     var body: some View {
@@ -75,7 +76,8 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                     HStack {
                         Text("Dependencies")
                             .font(.largeTitle.bold())
-                        Button(action: onShowDependencyPopover) { Image(systemName: "plus") }
+                        Button(action: onShowDependencySheet) { Image(systemName: "plus") }
+                            .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
                     }
                 }
                 Divider()

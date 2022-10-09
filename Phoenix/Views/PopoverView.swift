@@ -1,17 +1,17 @@
 import SwiftUI
 
-struct PopoverViewModel: Identifiable {
+struct InfoSheetModel: Identifiable {
     let id: String = UUID().uuidString
     let text: String
 }
 
-struct PopoverView: View {
-    let viewModel: PopoverViewModel
+struct InfoSheet: View {
+    let model: InfoSheetModel
     let onOkayButton: () -> Void
 
     var body: some View {
         VStack(alignment: .center) {
-            Text(viewModel.text)
+            Text(model.text)
                 .font(.largeTitle)
             Button(action: onOkayButton) {
                 Text("Ok")

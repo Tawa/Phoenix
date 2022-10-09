@@ -4,36 +4,42 @@ final class PhoenixUITests: XCTestCase {
 
     let screen = Screen()
 
-    func testExample() throws {
+    func testAppFlow() throws {
+        let wordpress = "Wordpress"
+        let feature = "Feature"
+        let useCases = "UseCases"
+        let repository = "Repository"
+        let dataStore = "DataStore"
+        
+        let support = "Support"
+        let defaultSupport = "Supports"
+        let networking = "Networking"
+        
+        let wordpressFeature = wordpress + feature
+        let wordpressUseCases = wordpress + useCases
+        let wordpressRepository = wordpress + repository
+        let wordpressDataStore = wordpress + dataStore
+
         screen
             .launch()
-            .closeAllWindows()
-            .newFile()
+            .closeAllWindowsIfNecessary()
+            .createNewFile()
             .maximize()
-            .openConfiguration()
-            .addNew()
-            .addNew()
-            .type(text: "Contract", column: 0, row: 1)
-            .type(text: "Contracts", column: 1, row: 1)
-            .type(text: "Contract", column: 2, row: 0)
-            .type(text: "Mock", column: 0, row: 2)
-            .type(text: "Mocks", column: 1, row: 2)
-            .type(text: "Contract", column: 2, row: 2)
-            .close()
-            .addNewComponent()
-            .type(givenName: "Wordpress", familyName: "Repository")
-            .clickCreate()
-            .addNewComponent()
-            .type(givenName: "Wordpress", familyName: "DataStore")
-            .clickCreate()
-            .addNewComponent()
-            .type(givenName: "Wordpress", familyName: "Feature")
-            .clickCreate()
-            .addNewComponent()
-            .type(givenName: "Wordpress", familyName: "UseCases")
-            .clickCreate()
-            .addNewComponent()
-            .type(givenName: "Networking", familyName: "Support")
-            .clickCreate()
+            .configureContractImplementationAndMock()
+            .addNewComponent(givenName: wordpress, familyName: feature)
+            .addNewComponent(givenName: wordpress, familyName: useCases)
+            .addNewComponent(givenName: wordpress, familyName: repository)
+            .addNewComponent(givenName: wordpress, familyName: dataStore)
+            .addNewComponent(givenName: networking, familyName: support)
+            .openFamilySettings(named: defaultSupport)
+            .toggleAppendName()
+            .set(folderName: support)
+            .clickDone()
+            .select(component: wordpressFeature,
+                    andAddDependencyWithContractAndMock: wordpressUseCases)
+            .select(component: wordpressUseCases,
+                    andAddDependencyWithContractAndMock: wordpressRepository)
+            .select(component: wordpressRepository,
+                    andAddDependencyWithContractAndMock: networking, wordpressDataStore)
     }
 }

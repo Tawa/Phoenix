@@ -1,6 +1,7 @@
+import AccessibilityIdentifiers
 import SwiftUI
 
-struct FamilyPopover: View {
+struct FamilySheet: View {
     let name: String
     let ignoreSuffix: Bool
     let onUpdateSelectedFamily: (Bool) -> Void
@@ -23,7 +24,7 @@ struct FamilyPopover: View {
                             .font(.title.bold())
                         + Text("\nExample: \(componentNameExample)")
                             .font(.subheadline.italic())
-                    }
+                    }.with(accessibilityIdentifier: FamilySheetIdentifiers.appendNameToggle)
                     
                     HStack {
                         Text("Folder Name:")
@@ -32,6 +33,7 @@ struct FamilyPopover: View {
                                   text: Binding(get: { folderName },
                                                 set: { onUpdateFolderName($0) }))
                         .font(.largeTitle)
+                        .with(accessibilityIdentifier: FamilySheetIdentifiers.folderNameTextField)
                         Button(action: { onUpdateFolderName(nil) }) {
                             Text("Use Default")
                         }
@@ -41,7 +43,9 @@ struct FamilyPopover: View {
                 }
                 Button(action: onDismiss) {
                     Text("Done")
-                }.keyboardShortcut(.cancelAction)
+                }
+                .keyboardShortcut(.cancelAction)
+                .with(accessibilityIdentifier: FamilySheetIdentifiers.doneButton)
             }
             .frame(maxWidth: 600)
             .padding()
@@ -51,15 +55,15 @@ struct FamilyPopover: View {
     }
 }
 
-//struct FamilyPopover_Previews: PreviewProvider {
+//struct FamilySheet_Previews: PreviewProvider {
 //    static var previews: some View {
-//        FamilyPopover(
-//            viewModel: FamilyPopoverViewModel(
+//        FamilySheet(
+//            viewModel: FamilySheetViewModel(
 //                family: Family(name: "Repository",
 //                               ignoreSuffix: false,
 //                               folder: nil)))
-//        FamilyPopover(
-//            viewModel: FamilyPopoverViewModel(
+//        FamilySheet(
+//            viewModel: FamilySheetViewModel(
 //                family: Family(name: "Shared",
 //                               ignoreSuffix: true,
 //                               folder: "Support")))
