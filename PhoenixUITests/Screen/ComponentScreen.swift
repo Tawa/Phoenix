@@ -22,4 +22,11 @@ extension ComponentScreen {
             .filter(text: named)
             .tapEnter()
     }
+    
+    @discardableResult
+    func addDependency(named: String) -> Screen {
+        return self
+            .clickDependenciesPlusButton()
+            .clickComponent(named: named)
+    }
 }

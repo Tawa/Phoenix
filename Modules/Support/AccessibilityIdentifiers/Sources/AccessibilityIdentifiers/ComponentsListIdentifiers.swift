@@ -9,7 +9,7 @@ public enum ComponentsListIdentifiers: AccessibilityIdentifiable {
         case let .component(named):
             return "ComponentsList-\(named)"
         case let .familySettingsButton(named):
-            return "ComponentsListFamilySettings-\(named)"
+            return "ComponentsList-FamilySettings-\(named)"
         }
     }
 }

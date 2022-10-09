@@ -4,32 +4,41 @@ final class PhoenixUITests: XCTestCase {
 
     let screen = Screen()
 
-    func testExample() throws {
+    func testAppFlow() throws {
+        let wordpress = "Wordpress"
+        let feature = "Feature"
+        let useCases = "UseCases"
+        let repository = "Repository"
+        let dataStore = "DataStore"
+        
+        let support = "Support"
+        let networking = "Networking"
+        
+        let wordpressFeature = wordpress + feature
+        let wordpressUseCases = wordpress + useCases
+        let wordpressRepository = wordpress + repository
+        let wordpressDataStore = wordpress + dataStore
+
         screen
             .launch()
             .closeAllWindowsIfNecessary()
             .createNewFile()
             .maximize()
             .configureContractImplementationAndMock()
-            .addNewComponent(givenName: "Wordpress", familyName: "Repository")
-            .addNewComponent(givenName: "Wordpress", familyName: "DataStore")
-            .addNewComponent(givenName: "Wordpress", familyName: "Feature")
-            .addNewComponent(givenName: "Wordpress", familyName: "UseCases")
-            .addNewComponent(givenName: "Networking", familyName: "Support")
-            .selectComponent(named: "WordpressRepository")
-            .addDependencyViaFilter(named: "Networking")
-            .select(option: "Contract", dependencyName: "NetworkingSupport", packageName: "Implementation")
-            .select(option: "Mock", dependencyName: "NetworkingSupport", packageName: "Tests")
-            .addDependencyViaFilter(named: "WordpressDataStore")
-            .select(option: "Contract", dependencyName: "WordpressDataStore", packageName: "Implementation")
-            .select(option: "Mock", dependencyName: "WordpressDataStore", packageName: "Tests")
-            .selectComponent(named: "WordpressUseCases")
-            .addDependencyViaFilter(named: "WordpressRepository")
-            .select(option: "Contract", dependencyName: "WordpressRepository", packageName: "Implementation")
-            .select(option: "Mock", dependencyName: "WordpressRepository", packageName: "Tests")
-            .selectComponent(named: "WordpressFeature")
-            .addDependencyViaFilter(named: "WordpressUseCases")
-            .select(option: "Contract", dependencyName: "WordpressUseCases", packageName: "Implementation")
-            .select(option: "Mock", dependencyName: "WordpressUseCases", packageName: "Tests")
+            .addNewComponent(givenName: wordpress, familyName: feature)
+            .addNewComponent(givenName: wordpress, familyName: useCases)
+            .addNewComponent(givenName: wordpress, familyName: repository)
+            .addNewComponent(givenName: wordpress, familyName: dataStore)
+            .addNewComponent(givenName: networking, familyName: support)
+            .openFamilySettings(named: "Supports")
+            .toggleAppendName()
+            .set(folderName: support)
+            .clickDone()
+            .select(component: wordpressRepository,
+                    andAddDependencyWithContractAndMock: networking, wordpressDataStore)
+            .select(component: wordpressUseCases,
+                    andAddDependencyWithContractAndMock: wordpressRepository)
+            .select(component: wordpressFeature,
+                    andAddDependencyWithContractAndMock: wordpressUseCases)
     }
 }

@@ -82,4 +82,11 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .clickSelector(dependencyName: dependencyName, packageName: packageName)
             .click(dependencyName: dependencyName, packageName: packageName, option: option)
     }
+    
+    @discardableResult
+    func selectContractAndMock(forDependency named: String) -> Screen {
+        return self
+            .select(option: "Contract", dependencyName: named, packageName: "Implementation")
+            .select(option: "Mock", dependencyName: named, packageName: "Tests")
+    }
 }

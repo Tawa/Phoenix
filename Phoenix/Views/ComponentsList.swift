@@ -55,15 +55,17 @@ struct ComponentsList: View {
                             .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
                         }
                     } header: {
-                        HStack {
-                            Text(section.name)
-                                .font(.title.bold())
-                            Button(action: section.onSelect,
-                                   label: { Image(systemName: "rectangle.and.pencil.and.ellipsis") })
-                            .with(accessibilityIdentifier: ComponentsListIdentifiers.familySettingsButton(named: section.name))
-                            Spacer()
-                        }
+                        Button(action: section.onSelect,
+                               label: {
+                            HStack {
+                                Text(section.name)
+                                    .font(.title.bold())
+                                Image(systemName: "rectangle.and.pencil.and.ellipsis")
+                            }
+                        })
+                        .buttonStyle(.plain)
                         .padding(.vertical)
+                        .with(accessibilityIdentifier: ComponentsListIdentifiers.familySettingsButton(named: section.name))
                     }
                     Divider()
                 }

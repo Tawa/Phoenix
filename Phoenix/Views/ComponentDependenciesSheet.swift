@@ -47,6 +47,7 @@ struct ComponentDependenciesSheet: View {
                                     } label: {
                                         Text(row.name)
                                     }
+                                    .with(accessibilityIdentifier: DependenciesSheetIdentifiers.component(named: row.name))
                                 }
                             } header: {
                                 Text(section.name)

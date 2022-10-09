@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import SwiftUI
 
 struct FamilySheet: View {
@@ -23,7 +24,7 @@ struct FamilySheet: View {
                             .font(.title.bold())
                         + Text("\nExample: \(componentNameExample)")
                             .font(.subheadline.italic())
-                    }
+                    }.with(accessibilityIdentifier: FamilySheetIdentifiers.appendNameToggle)
                     
                     HStack {
                         Text("Folder Name:")
@@ -32,6 +33,7 @@ struct FamilySheet: View {
                                   text: Binding(get: { folderName },
                                                 set: { onUpdateFolderName($0) }))
                         .font(.largeTitle)
+                        .with(accessibilityIdentifier: FamilySheetIdentifiers.folderNameTextField)
                         Button(action: { onUpdateFolderName(nil) }) {
                             Text("Use Default")
                         }
@@ -41,7 +43,9 @@ struct FamilySheet: View {
                 }
                 Button(action: onDismiss) {
                     Text("Done")
-                }.keyboardShortcut(.cancelAction)
+                }
+                .keyboardShortcut(.cancelAction)
+                .with(accessibilityIdentifier: FamilySheetIdentifiers.doneButton)
             }
             .frame(maxWidth: 600)
             .padding()
