@@ -50,7 +50,7 @@ struct ContentView: View {
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
                 ConfigurationView(configuration: store.document.projectConfiguration) {
                     viewModel.showingConfigurationPopup = false
-                }.frame(minHeight: 300)
+                }.frame(minHeight: 800)
             }
             .sheet(item: $viewModel.demoAppFeatureData, content: { data in
                 Container.demoAppFeatureView(data)

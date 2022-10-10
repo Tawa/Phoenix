@@ -29,7 +29,7 @@ struct ConfigurationView: View {
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: true) {
-            VStack {
+            VStack(alignment: .leading) {
                 Text("Project Configuration")
                     .font(.largeTitle)
                 Divider()
@@ -106,23 +106,42 @@ struct ConfigurationView: View {
                                 .padding()
                         }
                     }
-                }
-                HStack {
-                    Button(action: onAddNew) {
-                        Text("Add New")
-                    }
-                    .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.addNewButton)
-                    Button(action: onDismiss) {
-                        Text("Close")
-                    }
-                    .keyboardShortcut(.cancelAction)
-                    .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.closeButton)
                 }.padding()
+                Button(action: onAddNew) {
+                    Text("Add New Package")
+                }.padding(.horizontal)
+                .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.addNewButton)
+                if configuration.packageConfigurations.count > 1 {
+                    DependencyView<PackageTargetType, String>(
+                        title: "Default Dependencies",
+                        allTypes: allTypes(),
+                        allSelectionValues: configuration.packageConfigurations.map(\.name),
+                        onUpdateTargetTypeValue: { packageTargetType, value in
+                            configuration.defaultDependencies[packageTargetType] = value
+                        })
+                }
+                Button(action: onDismiss) {
+                    Text("Close")
+                }.padding(.horizontal)
+                .keyboardShortcut(.cancelAction)
+                .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.closeButton)
             }.padding()
         }
         .onDisappear { configuration.packageConfigurations.sort(by: { $0.name < $1.name }) }
     }
     
+    private func allTypes() -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
+        configuration.packageConfigurations.map { packageConfiguration in
+            IdentifiableWithSubtypeAndSelection(
+                title: packageConfiguration.name,
+                subtitle: packageConfiguration.hasTests ? "Tests" : nil,
+                value: PackageTargetType(name: packageConfiguration.name, isTests: false),
+                subValue: packageConfiguration.hasTests ? PackageTargetType(name: packageConfiguration.name, isTests: true) : nil,
+                selectedValue: configuration.defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: false)],
+                selectedSubValue: configuration.defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: true)])
+        }
+    }
+                        
     private func removePackageConfiguration(at index: Int) {
         configuration.packageConfigurations.remove(at: index)
     }

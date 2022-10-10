@@ -146,11 +146,21 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
     }
     
     func addDependencyToComponent(withName name: Name, dependencyName: Name) {
-        getComponent(withName: name) {
-            var dependencies = $0.dependencies
-            dependencies.append(.local(ComponentDependency(name: dependencyName, targetTypes: [:])))
+        getComponent(withName: name) { component in
+            var dependencies = component.dependencies
+            var targetTypes: [PackageTargetType: String] = [:]
+            getComponent(withName: dependencyName) { dependencyComponent in
+                let projectConfiguration = document.wrappedValue.projectConfiguration
+                let defaultDependencies = projectConfiguration.defaultDependencies
+                if !defaultDependencies.values.contains(where: { value in
+                    dependencyComponent.modules[value] == nil
+                }) {
+                    targetTypes = projectConfiguration.defaultDependencies
+                }
+            }
+            dependencies.append(.local(ComponentDependency(name: dependencyName, targetTypes: targetTypes)))
             dependencies.sort()
-            $0.dependencies = dependencies
+            component.dependencies = dependencies
         }
     }
 
