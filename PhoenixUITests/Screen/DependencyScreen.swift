@@ -28,6 +28,12 @@ extension DependencySheet {
     }
     
     @discardableResult
+    func assertSelector(dependencyName: String, packageName: String, label: String) -> DependencySheet {
+        XCTAssertEqual(selector(dependencyName: dependencyName, packageName: packageName).title, label)
+        return self
+    }
+    
+    @discardableResult
     func click(dependencyName: String, packageName: String, option: String) -> Screen {
         self.option(dependencyName: dependencyName, packageName: packageName, option: option).click()
         return Screen()

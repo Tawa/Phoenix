@@ -33,6 +33,7 @@ extension ComponentsList {
             screen
                 .addDependencyViaFilter(named: dependency)
                 .selectContractAndMock(forDependency: dependency)
+                .assertContractAndMock(forDependency: dependency)
         }
         return screen
     }
