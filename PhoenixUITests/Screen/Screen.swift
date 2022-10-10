@@ -74,6 +74,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .openNewComponentSheet()
             .type(givenName: givenName, familyName: familyName)
             .clickCreate()
+            .assertComponent(givenName: givenName, familyName: familyName)
     }
     
     @discardableResult
@@ -88,5 +89,18 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
         return self
             .select(option: "Contract", dependencyName: named, packageName: "Implementation")
             .select(option: "Mock", dependencyName: named, packageName: "Tests")
+    }
+    
+    @discardableResult
+    func assertComponent(givenName: String, familyName: String) -> Screen {
+        XCTAssertTrue(component(named: givenName + familyName).exists)
+        return self
+    }
+    
+    @discardableResult
+    func assertContractAndMock(forDependency named: String) -> Screen {
+        return self
+            .assertSelector(dependencyName: named, packageName: "Implementation", label: "Contract")
+            .assertSelector(dependencyName: named, packageName: "Tests", label: "Mock")
     }
 }

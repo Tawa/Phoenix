@@ -24,6 +24,7 @@ class FamilySheet: Screen {
     @discardableResult
     func toggleAppendName() -> FamilySheet {
         appendNameToggle.click()
+        XCTAssertFalse(appendNameToggle.isSelected)
         return self
     }
     
