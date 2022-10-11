@@ -27,12 +27,11 @@ extension ComponentsList {
     }
     
     @discardableResult
-    func select(component: String, andAddDependencyWithContractAndMock dependencies: String...) -> Screen {
+    func select(component: String, andAddDependency dependencies: String...) -> Screen {
         let screen = self.selectComponent(named: component)
         dependencies.forEach { dependency in
             screen
                 .addDependencyViaFilter(named: dependency)
-                .selectContractAndMock(forDependency: dependency)
                 .assertContractAndMock(forDependency: dependency)
         }
         return screen
