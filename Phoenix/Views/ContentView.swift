@@ -86,6 +86,7 @@ struct ContentView: View {
             sections: filteredComponentsFamilies
                 .map { componentsFamily in
                         .init(name: sectionTitle(forFamily: componentsFamily.family),
+                              folderName: sectionFolderName(forFamily: componentsFamily.family),
                               rows: componentsFamily.components.map { component in
                                 .init(name: componentName(component, for: componentsFamily.family),
                                       isSelected: viewModel.selectedComponentName == component.name,
@@ -353,10 +354,14 @@ struct ContentView: View {
     }
     
     private func sectionTitle(forFamily family: Family) -> String {
-        if let folder = family.folder {
-            return folder
-        }
-        return viewModel.folderName(forFamily: family.name)
+        family.name == family.folder ? family.name : viewModel.folderName(forFamily: family.name)
+    }
+    
+    private func sectionFolderName(forFamily family: Family) -> String? {
+        let result = family.folder ?? viewModel.folderName(forFamily: family.name)
+        guard result != family.name
+        else { return nil }
+        return result
     }
     
     private func iOSPlatformMenuTitle(forComponent component: Component) -> String {
