@@ -22,8 +22,15 @@ struct ComponentsListSection: Hashable, Identifiable {
     var id: Int { hashValue }
     
     let name: String
+    let folderName: String?
     let rows: [ComponentsListRow]
     let onSelect: () -> Void
+    
+    var title: String {
+        folderName.map { folderName in
+            name + "(Folder: \(folderName)"
+        } ?? name
+    }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(name)
@@ -60,6 +67,10 @@ struct ComponentsList: View {
                             HStack {
                                 Text(section.name)
                                     .font(.title.bold())
+                                section.folderName.map { folderName -> Text? in
+                                    guard folderName != section.name else { return nil }
+                                    return Text("(\(Image(systemName: "folder")) \(folderName))").font(.subheadline)
+                                }
                                 Image(systemName: "rectangle.and.pencil.and.ellipsis")
                             }
                         })
@@ -91,15 +102,21 @@ struct ComponentsList_Previews: PreviewProvider {
     struct Preview: View {
         var body: some View {
             ComponentsList(filter: .constant(""), sections: [
-                .init(name: "DataStore", rows: [
+                .init(name: "DataStore",
+                      folderName: "DataStores",
+                      rows: [
                     .init(name: "WordpressDataStore", isSelected: false, onSelect: {}, onDuplicate: {})
                 ],
                       onSelect: {}),
-                .init(name: "Repository", rows: [
+                .init(name: "Repository",
+                      folderName: "Repositories",
+                      rows: [
                     .init(name: "WordpressRepository", isSelected: true, onSelect: {}, onDuplicate: {})
                 ],
                       onSelect: {}),
-                .init(name: "Shared", rows: [
+                .init(name: "Shared",
+                      folderName: nil,
+                      rows: [
                     .init(name: "Networking", isSelected: false, onSelect: {}, onDuplicate: {})
                 ],
                       onSelect: {})
