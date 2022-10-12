@@ -28,8 +28,8 @@ extension DependencySheet {
     }
     
     @discardableResult
-    func assertSelector(dependencyName: String, packageName: String, label: String) -> DependencySheet {
-        XCTAssertEqual(selector(dependencyName: dependencyName, packageName: packageName).title, label)
+    func assertSelector(dependencyName: String, packageName: String, title: String) -> DependencySheet {
+        XCTAssertEqual(selector(dependencyName: dependencyName, packageName: packageName).title, title)
         return self
     }
     

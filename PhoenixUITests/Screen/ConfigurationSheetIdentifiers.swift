@@ -39,4 +39,15 @@ class ConfigurationSheet: Screen {
         cell.typeText(text)
         return self
     }
+    
+    @discardableResult
+    func selectDefaultDependenciesContractAndMock() -> ConfigurationSheet {
+        let dependencyName = "Default Dependencies"
+        self
+            .select(option: "Contract", dependencyName: dependencyName, packageName: "Implementation")
+            .select(option: "Mock", dependencyName: dependencyName, packageName: "Tests")
+            .assertSelector(dependencyName: dependencyName, packageName: "Implementation", title: "Contract")
+            .assertSelector(dependencyName: dependencyName, packageName: "Tests", title: "Mock")
+        return self
+    }
 }

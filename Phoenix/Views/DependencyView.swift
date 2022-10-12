@@ -47,20 +47,34 @@ struct DependencyModuleTypeSelectorView<DataType>: View where DataType: Hashable
 struct DependencyView<TargetType, SelectionType>: View
 where TargetType: Identifiable, SelectionType: Hashable {
     let title: String
-    let onSelection: () -> Void
-    let onRemove: () -> Void
+    let onSelection: (() -> Void)?
+    let onRemove: (() -> Void)?
 
     let allTypes: [IdentifiableWithSubtypeAndSelection<TargetType, SelectionType>]
     let allSelectionValues: [SelectionType]
     let onUpdateTargetTypeValue: (TargetType, SelectionType?) -> Void
 
+    init(title: String,
+         onSelection: (() -> Void)? = nil,
+         onRemove: (() -> Void)? = nil,
+         allTypes: [IdentifiableWithSubtypeAndSelection<TargetType, SelectionType>],
+         allSelectionValues: [SelectionType],
+         onUpdateTargetTypeValue: @escaping (TargetType, SelectionType?) -> Void) {
+        self.title = title
+        self.onSelection = onSelection
+        self.onRemove = onRemove
+        self.allTypes = allTypes
+        self.allSelectionValues = allSelectionValues
+        self.onUpdateTargetTypeValue = onUpdateTargetTypeValue
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text(title)
                     .font(.largeTitle.bold())
-                Button(action: onSelection) { Text("Jump to") }
-                Button(action: onRemove) { Text("Remove") }
+                onSelection.map { Button(action: $0) { Text("Jump to") } }
+                onRemove.map { Button(action: $0) { Text("Remove") } }
             }
             .padding(.bottom)
             VStack {

@@ -65,6 +65,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .type(text: "Mock", column: 0, row: 2)
             .type(text: "Mocks", column: 1, row: 2)
             .type(text: "Contract", column: 2, row: 2)
+            .selectDefaultDependenciesContractAndMock()
             .close()
     }
     
@@ -100,7 +101,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
     @discardableResult
     func assertContractAndMock(forDependency named: String) -> Screen {
         return self
-            .assertSelector(dependencyName: named, packageName: "Implementation", label: "Contract")
-            .assertSelector(dependencyName: named, packageName: "Tests", label: "Mock")
+            .assertSelector(dependencyName: named, packageName: "Implementation", title: "Contract")
+            .assertSelector(dependencyName: named, packageName: "Tests", title: "Mock")
     }
 }

@@ -36,10 +36,10 @@ final class PhoenixUITests: XCTestCase {
             .set(folderName: support)
             .clickDone()
             .select(component: wordpressFeature,
-                    andAddDependencyWithContractAndMock: wordpressUseCases)
+                    andAddDependency: wordpressUseCases)
             .select(component: wordpressUseCases,
-                    andAddDependencyWithContractAndMock: wordpressRepository)
+                    andAddDependency: wordpressRepository)
             .select(component: wordpressRepository,
-                    andAddDependencyWithContractAndMock: networking, wordpressDataStore)
+                    andAddDependency: networking, wordpressDataStore)
     }
 }
