@@ -1,6 +1,6 @@
 import Component
-import Foundation
 import DocumentCoderContract
+import Foundation
 import PhoenixDocument
 
 struct PhoenixDocumentFileWrappersDecoder_2_0_0: PhoenixDocumentFileWrappersDecoderProtocol {

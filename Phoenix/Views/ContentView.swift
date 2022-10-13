@@ -211,13 +211,13 @@ struct ContentView: View {
     
     func familySheet(family: Family) -> some View {
         return FamilySheet(name: family.name,
-                             ignoreSuffix: family.ignoreSuffix,
-                             onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
-                             folderName: family.folder ?? "",
-                             onUpdateFolderName: { store.updateFamily(withName: family.name, folder: $0) },
-                             defaultFolderName: viewModel.folderName(forFamily: family.name),
-                             componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
-                             onDismiss: { viewModel.selectedFamilyName = nil })
+                           ignoreSuffix: family.ignoreSuffix,
+                           onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
+                           folderName: family.folder ?? "",
+                           onUpdateFolderName: { store.updateFamily(withName: family.name, folder: $0) },
+                           defaultFolderName: viewModel.folderName(forFamily: family.name),
+                           componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
+                           onDismiss: { viewModel.selectedFamilyName = nil })
     }
     
     func componentDependencyView(forComponent component: Component, dependency: ComponentDependency) -> some View {

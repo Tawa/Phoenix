@@ -4,6 +4,12 @@ final class PhoenixUITests: XCTestCase {
 
     let screen = Screen()
 
+    override func setUp() {
+        super.setUp()
+        
+        continueAfterFailure = false
+    }
+    
     func testAppFlow() throws {
         let wordpress = "Wordpress"
         let feature = "Feature"

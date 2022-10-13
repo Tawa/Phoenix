@@ -173,13 +173,21 @@ class DemoAppFeatureInteractor {
         
         let family = componentsFamily.family
 
-        Array(component.modules.keys).forEach { targetType in
+        var alreadyExists = false
+        for targetType in component.modules.keys {
             let title = packageNameProvider.packageName(forComponentName: component.name,
                                                         of: family,
                                                         packageConfiguration: .init(name: "", appendPackageName: false, hasTests: false))
             
-            selections.insert(DemoAppDependencySelection(title: title, targetType: targetType))
+            let selection = DemoAppDependencySelection(title: title, targetType: targetType)
+            if selections.contains(selection) {
+                alreadyExists = true
+                break
+            } else {
+                selections.insert(selection)
+            }
         }
+        guard !alreadyExists else { return }
         
         component.localDependencies.map(\.name)
             .forEach { add(dependencyNamed: $0, toSelection: &selections) }
