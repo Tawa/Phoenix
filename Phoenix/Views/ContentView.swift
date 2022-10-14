@@ -8,12 +8,8 @@ import SwiftPackage
 import AccessibilityIdentifiers
 
 struct ContentView: View {
-    @StateObject private var viewModel: ViewModel
+    @StateObject var viewModel: ViewModel
     @EnvironmentObject private var store: PhoenixDocumentStore
-    
-    init(viewModel: ViewModel) {
-        self._viewModel = .init(wrappedValue: viewModel)
-    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -316,12 +312,10 @@ struct ContentView: View {
                     .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
                     Spacer()
                     
-                    Button(action: {
-                        viewModel.onGenerateSheetButton(fileURL: store.fileURL)
-                    }, label: {
+                    Button(action: viewModel.onGenerateSheetButton) {
                         Image(systemName: "shippingbox.fill")
                         Text("Generate")
-                    }).keyboardShortcut(.init("R"), modifiers: .command)
+                    }.keyboardShortcut(.init("R"), modifiers: .command)
                     Button(action: { viewModel.onGenerate(document: store.document.wrappedValue) }) {
                         Image(systemName: "play")
                     }

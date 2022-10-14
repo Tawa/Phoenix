@@ -85,8 +85,6 @@ class ViewModel: ObservableObject {
     }
     private var fileURL: URL? { dataStore?.fileURL }
     
-    private var pathsCache: [URL: URL] = [:]
-    
     let appVersionUpdateProvider: AppVersionUpdateProviderProtocol
     let pbxProjSyncer: PBXProjectSyncerProtocol
     let familyFolderNameProvider: FamilyFolderNameProviderProtocol
@@ -162,14 +160,14 @@ class ViewModel: ObservableObject {
         skipXcodeProject = skip
     }
     
-    func onGenerateSheetButton(fileURL: URL?) {
-        if
-            modulesFolderURL == nil,
-            let fileURL = fileURL,
-            FileManager.default.isDeletableFile(atPath: fileURL.path) {
-            modulesFolderURL = fileURL
+    func onGenerateSheetButton() {
+        getFileURL { fileURL in
+            if self.modulesFolderURL == nil,
+               FileManager.default.isDeletableFile(atPath: fileURL.path) {
+                self.modulesFolderURL = fileURL.deletingLastPathComponent()
+            }
+            self.showingGenerateSheet = true
         }
-        showingGenerateSheet = true
     }
     
     func onDismissGenerateSheet() {
