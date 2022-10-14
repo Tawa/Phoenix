@@ -154,26 +154,31 @@ class ViewModel: ObservableObject {
         showingGenerateSheet = false
     }
     
-    func onGenerateSheetGenerate(document: PhoenixDocument) {
-        onGenerate(document: document)
+    func onGenerateSheetGenerate(document: PhoenixDocument, fileURL: URL?) {
+        onGenerate(document: document, fileURL: fileURL)
     }
     
-    func onGenerate(document: PhoenixDocument) {
-        guard let fileURL = modulesFolderURL else {
+    func onGenerate(document: PhoenixDocument, fileURL: URL?) {
+        getFileURL(fileURL: fileURL) { fileURL in
+            self.onGenerate(document: document, nonOptionalFileURL: fileURL)
+        }
+    }
+    func onGenerate(document: PhoenixDocument, nonOptionalFileURL: URL) {
+        guard let modulesFolderURL = modulesFolderURL else {
             alertState = .errorString("Could not find path for modules folder.")
             return
         }
         showingGenerateSheet = false
         do {
-            try projectGenerator.generate(document: document, folderURL: fileURL)
+            try projectGenerator.generate(document: document, folderURL: modulesFolderURL)
         } catch {
             alertState = .errorString("Error generating project: \(error)")
         }
         
         guard !skipXcodeProject else { return }
-        generateXcodeProject(for: document, fileURL: fileURL)
+        generateXcodeProject(for: document, fileURL: nonOptionalFileURL)
     }
-    
+
     private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL?) {
         guard let xcodeProjectURL = xcodeProjectURL else { return }
         onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL, fileURL: fileURL)

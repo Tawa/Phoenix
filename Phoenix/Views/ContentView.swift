@@ -65,7 +65,7 @@ struct ContentView: View {
                         onOpenModulesFolder: { viewModel.onOpenModulesFolder(fileURL: fileURL) },
                         onOpenXcodeProject: { viewModel.onOpenXcodeProject(fileURL: fileURL) },
                         onSkipXcodeProject: viewModel.onSkipXcodeProject,
-                        onGenerate: { viewModel.onGenerate(document: document) },
+                        onGenerate: { viewModel.onGenerate(document: document, fileURL: fileURL) },
                         onDismiss: viewModel.onDismissGenerateSheet)
                 )
             })
@@ -318,7 +318,7 @@ struct ContentView: View {
                         Image(systemName: "shippingbox.fill")
                         Text("Generate")
                     }.keyboardShortcut(.init("R"), modifiers: .command)
-                    Button(action: { viewModel.onGenerate(document: document) }) {
+                    Button(action: { viewModel.onGenerate(document: document, fileURL: fileURL) }) {
                         Image(systemName: "play")
                     }
                     .disabled(viewModel.modulesFolderURL == nil || viewModel.xcodeProjectURL == nil)
