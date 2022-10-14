@@ -30,10 +30,6 @@ enum AlertState: Hashable, Identifiable {
     }
 }
 
-protocol ViewModelDataStore: AnyObject {
-    var fileURL: URL? { get }
-}
-
 class ViewModel: ObservableObject {
     // MARK: - Selection
     @Published var selectedComponentName: Name? = nil
@@ -52,38 +48,22 @@ class ViewModel: ObservableObject {
     @Published var demoAppFeatureData: DemoAppFeatureInput? = nil
     @Published var modulesFolderURL: URL? = nil {
         didSet {
-            if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
-                filesURLDataStore.set(modulesFolderURL: modulesFolderURL, forFileURL: fileURL)
-            }
+//            if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
+//                filesURLDataStore.set(modulesFolderURL: modulesFolderURL, forFileURL: fileURL)
+//            }
         }
     }
     @Published var xcodeProjectURL: URL? = nil {
         didSet {
-            if let fileURL = fileURL, let xcodeProjectURL = xcodeProjectURL {
-                filesURLDataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
-            }
+//            if let fileURL = fileURL, let xcodeProjectURL = xcodeProjectURL {
+//                filesURLDataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
+//            }
         }
     }
     @Published var skipXcodeProject: Bool = false
 
     // MARK: - Filters
     @Published var componentsListFilter: String = ""
-    
-    weak var dataStore: ViewModelDataStore? {
-        didSet {
-            if let fileURL = dataStore?.fileURL {
-                modulesFolderURL = filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).flatMap { url in
-                    guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
-                    return url
-                }
-                xcodeProjectURL = filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL).flatMap { url in
-                    guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
-                    return url
-                }
-            }
-        }
-    }
-    private var fileURL: URL? { dataStore?.fileURL }
     
     let appVersionUpdateProvider: AppVersionUpdateProviderProtocol
     let pbxProjSyncer: PBXProjectSyncerProtocol
@@ -124,7 +104,7 @@ class ViewModel: ObservableObject {
         showingNewComponentPopup = .template(component)
     }
     
-    private func getFileURL(_ completion: @escaping (URL) -> Void) {
+    private func getFileURL(fileURL: URL?, _ completion: @escaping (URL) -> Void) {
         guard let fileURL = fileURL else {
             alertState = .errorString("File must be saved before packages can be generated.")
             return
@@ -132,16 +112,16 @@ class ViewModel: ObservableObject {
         completion(fileURL)
     }
     
-    private func getAccessToURL(file: Bool, completion: @escaping (URL) -> Void) {
-        getFileURL { fileURL in
+    private func getAccessToURL(file: Bool, fileURL: URL?, completion: @escaping (URL) -> Void) {
+        getFileURL(fileURL: fileURL) { fileURL in
             if let url = self.openFolderSelection(at: fileURL, chooseFiles: file) {
                 completion(url)
             }
         }
     }
     
-    func onOpenModulesFolder() {
-        getAccessToURL(file: false) { url in
+    func onOpenModulesFolder(fileURL: URL?) {
+        getAccessToURL(file: false, fileURL: fileURL) { url in
             if url.lastPathComponent.hasSuffix(".ash") {
                 self.modulesFolderURL = url.deletingLastPathComponent()
             } else {
@@ -150,8 +130,8 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func onOpenXcodeProject() {
-        getAccessToURL(file: true) { url in
+    func onOpenXcodeProject(fileURL: URL?) {
+        getAccessToURL(file: true, fileURL: fileURL) { url in
             self.xcodeProjectURL = url
         }
     }
@@ -160,8 +140,8 @@ class ViewModel: ObservableObject {
         skipXcodeProject = skip
     }
     
-    func onGenerateSheetButton() {
-        getFileURL { fileURL in
+    func onGenerateSheetButton(fileURL: URL?) {
+        getFileURL(fileURL: fileURL) { fileURL in
             if self.modulesFolderURL == nil,
                FileManager.default.isDeletableFile(atPath: fileURL.path) {
                 self.modulesFolderURL = fileURL.deletingLastPathComponent()
@@ -191,16 +171,27 @@ class ViewModel: ObservableObject {
         }
         
         guard !skipXcodeProject else { return }
-        generateXcodeProject(for: document)
+        generateXcodeProject(for: document, fileURL: fileURL)
     }
     
-    private func generateXcodeProject(for document: PhoenixDocument) {
+    private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL?) {
         guard let xcodeProjectURL = xcodeProjectURL else { return }
-        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL)
+        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL, fileURL: fileURL)
     }
     
-    func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, ashFileURL: URL?) {
-        getFileURL { fileURL in
+    func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, fileURL: URL?) {
+        if let fileURL = fileURL {
+            modulesFolderURL = filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).flatMap { url in
+                guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
+                return url
+            }
+            xcodeProjectURL = filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL).flatMap { url in
+                guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
+                return url
+            }
+        }
+
+        getFileURL(fileURL: fileURL) { fileURL in
             self.demoAppFeatureData = .init(
                 component: component,
                 document: document,
@@ -214,8 +205,8 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL) {
-        getFileURL { fileURL in
+    func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL, fileURL: URL?) {
+        getFileURL(fileURL: fileURL) { fileURL in
             do {
                 try self.pbxProjSyncer.sync(document: document, at: fileURL, withProjectAt: xcodeFileURL)
             } catch {

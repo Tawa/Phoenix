@@ -8,8 +8,9 @@ import SwiftPackage
 import AccessibilityIdentifiers
 
 struct ContentView: View {
+    var fileURL: URL?
+    @Binding var document: PhoenixDocument
     @StateObject var viewModel: ViewModel
-    @EnvironmentObject private var store: PhoenixDocumentStore
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -19,7 +20,7 @@ struct ContentView: View {
                 componentsList()
                 
                 if let selectedComponentName = viewModel.selectedComponentName,
-                   let selectedComponent = store.getComponent(withName: selectedComponentName) {
+                   let selectedComponent = document.getComponent(withName: selectedComponentName) {
                     componentView(for: selectedComponent)
                         .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
                             dependencySheet(component: selectedComponent)
@@ -41,10 +42,10 @@ struct ContentView: View {
                       dismissButton: .default(Text("Ok")))
             }).sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
                 newComponentSheet(state: state)
-            }.sheet(item: .constant(store.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
+            }.sheet(item: .constant(document.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
                 familySheet(family: family)
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
-                ConfigurationView(configuration: store.document.projectConfiguration) {
+                ConfigurationView(configuration: $document.projectConfiguration) {
                     viewModel.showingConfigurationPopup = false
                 }.frame(minHeight: 800)
             }
@@ -61,16 +62,15 @@ struct ContentView: View {
                         hasModulesPath: viewModel.modulesFolderURL != nil,
                         hasXcodeProjectPath: viewModel.xcodeProjectURL != nil,
                         isSkipXcodeProjectOn: viewModel.skipXcodeProject,
-                        onOpenModulesFolder: viewModel.onOpenModulesFolder,
-                        onOpenXcodeProject: viewModel.onOpenXcodeProject,
+                        onOpenModulesFolder: { viewModel.onOpenModulesFolder(fileURL: fileURL) },
+                        onOpenXcodeProject: { viewModel.onOpenXcodeProject(fileURL: fileURL) },
                         onSkipXcodeProject: viewModel.onSkipXcodeProject,
-                        onGenerate: { viewModel.onGenerate(document: store.document.wrappedValue) },
+                        onGenerate: { viewModel.onGenerate(document: document) },
                         onDismiss: viewModel.onDismissGenerateSheet)
                 )
             })
         }
         .onAppear {
-            viewModel.dataStore = store
             viewModel.checkForUpdate()
         }
     }
@@ -97,7 +97,7 @@ struct ContentView: View {
     
     func componentView(for component: Component) -> some View {
         ComponentView(
-            title: store.title(for: component.name),
+            title: document.title(for: component.name),
             platformsContent: { platformsContent(forComponent: component) },
             dependencies: component.dependencies,
             dependencyView: { dependencyType in
@@ -114,19 +114,21 @@ struct ContentView: View {
             allLibraryTypes: LibraryType.allCases,
             allModuleTypes: configurationTargetTypes().map { $0.title },
             isModuleTypeOn: { component.modules[$0] != nil },
-            onModuleTypeSwitchedOn: { store.addModuleTypeForComponent(withName: component.name, moduleType: $0) },
-            onModuleTypeSwitchedOff: { store.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
+            onModuleTypeSwitchedOn: { document.addModuleTypeForComponent(withName: component.name, moduleType: $0) },
+            onModuleTypeSwitchedOff: { document.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
             moduleTypeTitle: { component.modules[$0]?.rawValue ?? "undefined" },
-            onSelectionOfLibraryTypeForModuleType: { store.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
-            onGenerateDemoAppProject: { viewModel.onGenerateDemoProject(for: component, from: store.document.wrappedValue, ashFileURL: store.fileURL) },
+            onSelectionOfLibraryTypeForModuleType: { document.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
+            onGenerateDemoAppProject: {
+                viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
+            },
             onRemove: {
                 guard let name = viewModel.selectedComponentName else { return }
-                store.removeComponent(withName: name)
+                document.removeComponent(withName: name)
                 viewModel.selectedComponentName = nil
             },
             allTargetTypes: allTargetTypes(forComponent: component),
-            onRemoveResourceWithId: { store.removeResource(withId: $0, forComponentWithName: component.name) },
-            onAddResourceWithName: { store.addResource($0, forComponentWithName: component.name) },
+            onRemoveResourceWithId: { document.removeResource(withId: $0, forComponentWithName: component.name) },
+            onAddResourceWithName: { document.addResource($0, forComponentWithName: component.name) },
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             resourcesValueBinding: componentResourcesValueBinding(component: component)
         )
@@ -138,9 +140,9 @@ struct ContentView: View {
             let name = Name(given: name, family: familyName)
             switch state {
             case .new:
-                try store.addNewComponent(withName: name)
+                try document.addNewComponent(withName: name)
             case let .template(component):
-                try store.addNewComponent(withName: name, template: component)
+                try document.addNewComponent(withName: name, template: component)
             }
             viewModel.selectedComponentName = name
             viewModel.showingNewComponentPopup = nil
@@ -148,14 +150,14 @@ struct ContentView: View {
             viewModel.showingNewComponentPopup = nil
         }, familyNameSuggestion: { familyName in
             guard !familyName.isEmpty else { return nil }
-            return store.componentsFamilies.first { componentFamily in
+            return document.componentsFamilies.first { componentFamily in
                 componentFamily.family.name.hasPrefix(familyName)
             }?.family.name
         })
     }
     
     func dependencySheet(component: Component) -> some View {
-        let filteredNames = Dictionary(grouping: store.allNames.filter { name in
+        let filteredNames = Dictionary(grouping: document.allNames.filter { name in
             component.name != name && !component.dependencies.contains { componentDependencyType in
                 guard case let .local(componentDependency) = componentDependencyType else { return false }
                 return componentDependency.name == name
@@ -164,9 +166,9 @@ struct ContentView: View {
         let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
             partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
                                                                   rows: keyValue.value.map { name in
-                ComponentDependenciesListRow(name: store.title(for: name),
+                ComponentDependenciesListRow(name: document.title(for: name),
                                              onSelect: {
-                    store.addDependencyToComponent(withName: component.name, dependencyName: name)
+                    document.addDependencyToComponent(withName: component.name, dependencyName: name)
                     viewModel.showingDependencySheet = false
                 })
             }))
@@ -195,7 +197,7 @@ struct ContentView: View {
                 case .exact:
                     version = .exact(version: remoteDependency.versionValue)
                 }
-                store.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
+                document.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
                                                                                                             name: name,
                                                                                                             value: version))
                 viewModel.showingDependencySheet = false
@@ -208,9 +210,9 @@ struct ContentView: View {
     func familySheet(family: Family) -> some View {
         return FamilySheet(name: family.name,
                            ignoreSuffix: family.ignoreSuffix,
-                           onUpdateSelectedFamily: { store.updateFamily(withName: family.name, ignoresSuffix: !$0) },
+                           onUpdateSelectedFamily: { document.updateFamily(withName: family.name, ignoresSuffix: !$0) },
                            folderName: family.folder ?? "",
-                           onUpdateFolderName: { store.updateFamily(withName: family.name, folder: $0) },
+                           onUpdateFolderName: { document.updateFamily(withName: family.name, folder: $0) },
                            defaultFolderName: viewModel.folderName(forFamily: family.name),
                            componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
                            onDismiss: { viewModel.selectedFamilyName = nil })
@@ -218,12 +220,12 @@ struct ContentView: View {
     
     func componentDependencyView(forComponent component: Component, dependency: ComponentDependency) -> some View {
         DependencyView<PackageTargetType, String>(
-            title: store.title(for: dependency.name),
+            title: document.title(for: dependency.name),
             onSelection: { viewModel.selectedComponentName = dependency.name },
-            onRemove: { store.removeDependencyForComponent(withComponentName: component.name, componentDependency: dependency) },
+            onRemove: { document.removeDependencyForComponent(withComponentName: component.name, componentDependency: dependency) },
             allTypes: componentTypes(for: dependency, component: component),
             allSelectionValues: allTargetTypes(forDependency: dependency).map { $0.title },
-            onUpdateTargetTypeValue: { store.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
+            onUpdateTargetTypeValue: { document.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
     }
     
     func remoteDependencyView(forComponent component: Component, dependency: RemoteDependency) -> some View {
@@ -239,11 +241,11 @@ struct ContentView: View {
             versionPlaceholder: versionPlaceholder(for: dependency),
             versionTitle: dependency.version.title,
             versionText: dependency.version.stringValue,
-            onSubmitVersionText: { store.updateVersionStringValueForRemoteDependency(withComponentName: component.name, dependency: dependency, stringValue: $0) },
+            onSubmitVersionText: { document.updateVersionStringValueForRemoteDependency(withComponentName: component.name, dependency: dependency, stringValue: $0) },
             allDependencyTypes: allDependencyTypes(dependency: dependency, component: component),
             enabledTypes: enabledDependencyTypes(for: dependency, component: component),
-            onUpdateDependencyType: { store.updateModuleTypeForRemoteDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) },
-            onRemove: { store.removeRemoteDependencyForComponent(withComponentName: component.name, dependency: dependency) }
+            onUpdateDependencyType: { document.updateModuleTypeForRemoteDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) },
+            onRemove: { document.removeRemoteDependencyForComponent(withComponentName: component.name, dependency: dependency) }
         )
     }
     
@@ -251,15 +253,15 @@ struct ContentView: View {
         Group {
             CustomMenu(title: iOSPlatformMenuTitle(forComponent: component),
                        data: IOSVersion.allCases,
-                       onSelection: { store.setIOSVersionForComponent(withName: component.name, iOSVersion: $0) },
+                       onSelection: { document.setIOSVersionForComponent(withName: component.name, iOSVersion: $0) },
                        hasRemove: component.iOSVersion != nil,
-                       onRemove: { store.removeIOSVersionForComponent(withName: component.name) })
+                       onRemove: { document.removeIOSVersionForComponent(withName: component.name) })
             .frame(width: 150)
             CustomMenu(title: macOSPlatformMenuTitle(forComponent: component),
                        data: MacOSVersion.allCases,
-                       onSelection: { store.setMacOSVersionForComponent(withName: component.name, macOSVersion: $0) },
+                       onSelection: { document.setMacOSVersionForComponent(withName: component.name, macOSVersion: $0) },
                        hasRemove: component.macOSVersion != nil,
-                       onRemove: { store.removeMacOSVersionForComponent(withName: component.name) })
+                       onRemove: { document.removeMacOSVersionForComponent(withName: component.name) })
             .frame(width: 150)
         }
     }
@@ -312,11 +314,11 @@ struct ContentView: View {
                     .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
                     Spacer()
                     
-                    Button(action: viewModel.onGenerateSheetButton) {
+                    Button(action: { viewModel.onGenerateSheetButton(fileURL: fileURL) }) {
                         Image(systemName: "shippingbox.fill")
                         Text("Generate")
                     }.keyboardShortcut(.init("R"), modifiers: .command)
-                    Button(action: { viewModel.onGenerate(document: store.document.wrappedValue) }) {
+                    Button(action: { viewModel.onGenerate(document: document) }) {
                         Image(systemName: "play")
                     }
                     .disabled(viewModel.modulesFolderURL == nil || viewModel.xcodeProjectURL == nil)
@@ -331,8 +333,8 @@ struct ContentView: View {
     // MARK: - Private
     
     private var filteredComponentsFamilies: [ComponentsFamily] {
-        guard !viewModel.componentsListFilter.isEmpty else { return store.componentsFamilies }
-        return store.componentsFamilies
+        guard !viewModel.componentsListFilter.isEmpty else { return document.componentsFamilies }
+        return document.componentsFamilies
             .map { componentsFamily in
                 ComponentsFamily(family: componentsFamily.family,
                                  components: componentsFamily.components.filter {
@@ -391,7 +393,7 @@ struct ContentView: View {
     
     private func updateVersion(for dependency: RemoteDependency, version: ExternalDependencyVersion) {
         guard let name = viewModel.selectedComponentName else { return }
-        store.updateVersionForRemoteDependency(withComponentName: name, dependency: dependency, version: version)
+        document.updateVersionForRemoteDependency(withComponentName: name, dependency: dependency, version: version)
     }
     
     private func versionPlaceholder(for dependency: RemoteDependency) -> String {
@@ -417,7 +419,7 @@ struct ContentView: View {
                              menuOption: resource.type,
                              targetTypes: resource.targets)
             }
-        }, set: { store.updateResource($0.map {
+        }, set: { document.updateResource($0.map {
             return ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) }, forComponentWithName: component.name)
         })
     }
@@ -434,12 +436,12 @@ struct ContentView: View {
     }
     
     private func allTargetTypes(forDependency dependency: ComponentDependency) -> [IdentifiableWithSubtype<PackageTargetType>] {
-        guard let component = store.getComponent(withName: dependency.name) else { return [] }
+        guard let component = document.getComponent(withName: dependency.name) else { return [] }
         return allTargetTypes(forComponent: component)
     }
     
     private func configurationTargetTypes() -> [IdentifiableWithSubtype<PackageTargetType>] {
-        store.document.wrappedValue.projectConfiguration.packageConfigurations.map { packageConfiguration in
+        document.projectConfiguration.packageConfigurations.map { packageConfiguration in
             IdentifiableWithSubtype(title: packageConfiguration.name,
                                     subtitle: packageConfiguration.hasTests ? "Tests" : nil,
                                     value: PackageTargetType(name: packageConfiguration.name, isTests: false),

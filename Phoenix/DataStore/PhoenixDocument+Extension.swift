@@ -1,22 +1,15 @@
 import Component
+import Foundation
 import PhoenixDocument
-import SwiftUI
 import SwiftPackage
 
-class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
-    let fileURL: URL?
-    private(set) var document: Binding<PhoenixDocument>
-    
-    init(fileURL: URL?, document: Binding<PhoenixDocument>) {
-        self.fileURL = fileURL
-        self.document = document
-    }
+extension PhoenixDocument {
 
     func getFamily(withName name: String) -> Family? {
-        document.families.wrappedValue.first(where: { $0.family.name == name })?.family
+        families.first(where: { $0.family.name == name })?.family
     }
 
-    var componentsFamilies: [ComponentsFamily] { document.families.wrappedValue }
+    var componentsFamilies: [ComponentsFamily] { families }
     var allNames: [Name] { componentsFamilies.flatMap { $0.components }.map(\.name) }
 
     func title(for name: Name) -> String {
@@ -28,7 +21,7 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         allNames.contains(name)
     }
 
-    func component(withName name: Name, containsDependencyWithName dependencyName: Name) -> Bool {
+    mutating func component(withName name: Name, containsDependencyWithName dependencyName: Name) -> Bool {
         var value: Bool = false
         getComponent(withName: name) { component in
             value = component.localDependencies.contains { $0.name == dependencyName }
@@ -37,26 +30,26 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
     }
 
     func family(for name: Name) -> Family? {
-        document.families.first(where: { name.family == $0.wrappedValue.family.name })?.family.wrappedValue
+        families.first(where: { name.family == $0.family.name })?.family
     }
 
     // MARK: - Private
-    private func getComponent(withName name: Name, _ completion: (inout Component) -> Void) {
+    private mutating func getComponent(withName name: Name, _ completion: (inout Component) -> Void) {
         guard
-            let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.components.contains(where: { $0.name == name }) }),
-            let componentIndex = document.families.wrappedValue[familyIndex].components.firstIndex(where: { $0.name == name })
+            let familyIndex = families.firstIndex(where: { $0.components.contains(where: { $0.name == name }) }),
+            let componentIndex = families[familyIndex].components.firstIndex(where: { $0.name == name })
         else { return }
-        completion(&document.families[familyIndex].components[componentIndex].wrappedValue)
+        completion(&families[familyIndex].components[componentIndex])
     }
 
-    private func getFamily(withName name: String, _ completion: (inout Family) -> Void) {
+    private mutating func getFamily(withName name: String, _ completion: (inout Family) -> Void) {
         guard
-            let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.family.name == name })
+            let familyIndex = families.firstIndex(where: { $0.family.name == name })
         else { return }
-        completion(&document.families[familyIndex].family.wrappedValue)
+        completion(&families[familyIndex].family)
     }
 
-    private func get(remoteDependency: RemoteDependency, componentWithName name: Name, _ completion: (inout RemoteDependency) -> Void) {
+    private mutating func get(remoteDependency: RemoteDependency, componentWithName name: Name, _ completion: (inout RemoteDependency) -> Void) {
         getComponent(withName: name) { component in
             var dependencies = component.dependencies
             guard
@@ -70,7 +63,7 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         }
     }
 
-    private func get(dependency: ComponentDependency, componentWithName name: Name, _ completion: (inout ComponentDependency) -> Void) {
+    private mutating func get(dependency: ComponentDependency, componentWithName name: Name, _ completion: (inout ComponentDependency) -> Void) {
         getComponent(withName: name) { component in
             var dependencies = component.dependencies
             guard
@@ -87,13 +80,13 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
     // MARK: - Document modifiers
     func getComponent(withName name: Name) -> Component? {
         guard
-            let component = document.families.wrappedValue.flatMap(\.components).first(where: { $0.name == name })
+            let component = families.flatMap(\.components).first(where: { $0.name == name })
         else { return nil }
         return component
     }
 
 
-    func addNewComponent(withName name: Name, template: Component? = nil) throws {
+    mutating func addNewComponent(withName name: Name, template: Component? = nil) throws {
         if name.given.isEmpty {
             throw NSError(domain: "Given name cannot be empty", code: 500)
         } else if name.family.isEmpty {
@@ -102,16 +95,16 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
             throw NSError(domain: "Name already in use", code: 502)
         }
 
-        var componentsFamily: ComponentsFamily = document
+        var componentsFamily: ComponentsFamily = self
             .families
             .first(where: { componentsFamily in
-                name.family == componentsFamily.wrappedValue.family.name
-            })?.wrappedValue ?? ComponentsFamily(family: Family(name: name.family, ignoreSuffix: false, folder: nil), components: [])
+                name.family == componentsFamily.family.name
+            }) ?? ComponentsFamily(family: Family(name: name.family, ignoreSuffix: false, folder: nil), components: [])
         guard componentsFamily.components.contains(where: { $0.name == name }) == false else { return }
 
         var array = componentsFamily.components
 
-        let moduleTypes: [String: LibraryType] = document.wrappedValue.projectConfiguration.packageConfigurations
+        let moduleTypes: [String: LibraryType] = projectConfiguration.packageConfigurations
             .reduce(into: [String: LibraryType](), { partialResult, packageConfiguration in
                 partialResult[packageConfiguration.name] = .undefined
             })
@@ -127,44 +120,45 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
 
         componentsFamily.components = array
 
-        if let familyIndex = document.families.firstIndex(where: { $0.wrappedValue.family.name == name.family }) {
-            document.families[familyIndex].components.wrappedValue = array
+        if let familyIndex = families.firstIndex(where: { $0.family.name == name.family }) {
+            families[familyIndex].components = array
         } else {
-            var familiesArray = document.families.wrappedValue
+            var familiesArray = families
             familiesArray.append(componentsFamily)
             familiesArray.sort(by: { $0.family.name < $1.family.name })
-            document.families.wrappedValue = familiesArray
+            families = familiesArray
         }
     }
 
-    func updateFamily(withName name: String, ignoresSuffix: Bool) {
+    mutating func updateFamily(withName name: String, ignoresSuffix: Bool) {
         getFamily(withName: name) { $0.ignoreSuffix = ignoresSuffix }
     }
 
-    func updateFamily(withName name: String, folder: String?) {
+    mutating func updateFamily(withName name: String, folder: String?) {
         getFamily(withName: name) { $0.folder = folder?.isEmpty == true ? nil : folder }
     }
     
-    func addDependencyToComponent(withName name: Name, dependencyName: Name) {
-        getComponent(withName: name) { component in
-            var dependencies = component.dependencies
-            var targetTypes: [PackageTargetType: String] = [:]
-            getComponent(withName: dependencyName) { dependencyComponent in
-                let projectConfiguration = document.wrappedValue.projectConfiguration
-                let defaultDependencies = projectConfiguration.defaultDependencies
-                if !defaultDependencies.values.contains(where: { value in
-                    dependencyComponent.modules[value] == nil
-                }) {
-                    targetTypes = projectConfiguration.defaultDependencies
+    mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {
+        let defaultDependencies = projectConfiguration.defaultDependencies
+        var targetTypes: [PackageTargetType: String] = [:]
+        getComponent(withName: dependencyName) { dependencyComponent in
+            if !defaultDependencies.values.contains(where: { dependencyComponent.modules[$0] == nil }) {
+                targetTypes = defaultDependencies.filter{ element in
+                    dependencyComponent.modules.contains { (key, _) in
+                        key == element.value
+                    }
                 }
             }
+        }
+        getComponent(withName: name) { component in
+            var dependencies = component.dependencies
             dependencies.append(.local(ComponentDependency(name: dependencyName, targetTypes: targetTypes)))
             dependencies.sort()
             component.dependencies = dependencies
         }
     }
 
-    func addRemoteDependencyToComponent(withName name: Name, dependency: RemoteDependency) {
+    mutating func addRemoteDependencyToComponent(withName name: Name, dependency: RemoteDependency) {
         getComponent(withName: name) {
             var dependencies = $0.dependencies
             dependencies.append(.remote(dependency))
@@ -173,23 +167,23 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         }
     }
 
-    func setIOSVersionForComponent(withName name: Name, iOSVersion: IOSVersion) {
+    mutating func setIOSVersionForComponent(withName name: Name, iOSVersion: IOSVersion) {
         getComponent(withName: name) { $0.iOSVersion = iOSVersion }
     }
 
-    func removeIOSVersionForComponent(withName name: Name) {
+    mutating func removeIOSVersionForComponent(withName name: Name) {
         getComponent(withName: name) { $0.iOSVersion = nil }
     }
 
-    func setMacOSVersionForComponent(withName name: Name, macOSVersion: MacOSVersion) {
+    mutating func setMacOSVersionForComponent(withName name: Name, macOSVersion: MacOSVersion) {
         getComponent(withName: name) { $0.macOSVersion = macOSVersion }
     }
 
-    func removeMacOSVersionForComponent(withName name: Name) {
+    mutating func removeMacOSVersionForComponent(withName name: Name) {
         getComponent(withName: name) { $0.macOSVersion = nil }
     }
 
-    func addModuleTypeForComponent(withName name: Name, moduleType: String) {
+    mutating func addModuleTypeForComponent(withName name: Name, moduleType: String) {
         getComponent(withName: name) {
             var modules = $0.modules
             modules[moduleType] = .undefined
@@ -197,7 +191,7 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         }
     }
 
-    func removeModuleTypeForComponent(withName name: Name, moduleType: String) {
+    mutating func removeModuleTypeForComponent(withName name: Name, moduleType: String) {
         getComponent(withName: name) {
             var modules = $0.modules
             modules.removeValue(forKey: moduleType)
@@ -205,21 +199,21 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         }
     }
 
-    func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: String) {
+    mutating func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: String) {
         getComponent(withName: name) {
             $0.modules[moduleType] = libraryType
         }
     }
 
-    func removeComponent(withName name: Name) {
+    mutating func removeComponent(withName name: Name) {
         guard
-            let familyIndex = document.families.wrappedValue.firstIndex(where: { $0.components.contains(where: { $0.name == name }) })
+            let familyIndex = families.firstIndex(where: { $0.components.contains(where: { $0.name == name }) })
         else { return }
-        document.families[familyIndex].components.wrappedValue.removeAll(where: { $0.name == name })
-        document.families.wrappedValue.removeAll(where: { $0.components.isEmpty })
+        families[familyIndex].components.removeAll(where: { $0.name == name })
+        families.removeAll(where: { $0.components.isEmpty })
     }
 
-    func removeDependencyForComponent(withComponentName name: Name, componentDependency: ComponentDependency) {
+    mutating func removeDependencyForComponent(withComponentName name: Name, componentDependency: ComponentDependency) {
         getComponent(withName: name) {
             var dependencies = $0.dependencies
             dependencies.removeAll(where: { $0 == .local(componentDependency) })
@@ -228,7 +222,7 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         }
     }
 
-    func removeRemoteDependencyForComponent(withComponentName name: Name, dependency: RemoteDependency) {
+    mutating func removeRemoteDependencyForComponent(withComponentName name: Name, dependency: RemoteDependency) {
         getComponent(withName: name) {
             var dependencies = $0.dependencies
             dependencies.removeAll(where: { $0 == .remote(dependency) })
@@ -237,7 +231,7 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         }
     }
 
-    func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: PackageTargetType, value: String?) {
+    mutating func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: PackageTargetType, value: String?) {
         get(dependency: dependency, componentWithName: name) { dependency in
             if let value = value {
                 dependency.targetTypes[type] = value
@@ -247,7 +241,7 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         }
     }
 
-    func updateModuleTypeForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, type: PackageTargetType, value: Bool) {
+    mutating func updateModuleTypeForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, type: PackageTargetType, value: Bool) {
         get(remoteDependency: dependency, componentWithName: name) { dependency in
             let typeIndex = dependency.targetTypes.firstIndex(of: type)
             if value && typeIndex == nil {
@@ -259,11 +253,11 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         }
     }
 
-    func updateVersionForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, version: ExternalDependencyVersion) {
+    mutating func updateVersionForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, version: ExternalDependencyVersion) {
         get(remoteDependency: dependency, componentWithName: name) { $0.version = version }
     }
 
-    func updateVersionStringValueForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, stringValue: String) {
+    mutating func updateVersionStringValueForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, stringValue: String) {
         get(remoteDependency: dependency, componentWithName: name) { dependency in
             switch dependency.version {
             case .from:
@@ -276,17 +270,17 @@ class PhoenixDocumentStore: ObservableObject, ViewModelDataStore {
         }
     }
 
-    func updateResource(_ resources: [ComponentResources], forComponentWithName name: Name) {
+    mutating func updateResource(_ resources: [ComponentResources], forComponentWithName name: Name) {
         getComponent(withName: name) { $0.resources = resources }
     }
 
-    func addResource(_ folderName: String, forComponentWithName name: Name) {
+    mutating func addResource(_ folderName: String, forComponentWithName name: Name) {
         getComponent(withName: name) { $0.resources.append(.init(folderName: folderName,
                                                                  type: .process,
                                                                  targets: [])) }
     }
 
-    func removeResource(withId id: String, forComponentWithName name: Name) {
+    mutating func removeResource(withId id: String, forComponentWithName name: Name) {
         getComponent(withName: name) { $0.resources.removeAll(where: { $0.id == id }) }
     }
 }
