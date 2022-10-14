@@ -8,6 +8,8 @@ struct PhoenixApp: App {
     var body: some Scene {
         DocumentGroup(newDocument: PhoenixDocument()) { file in
             ContentView(
+                fileURL: file.fileURL,
+                document: file.$document,
                 viewModel: ViewModel(
                     appVersionUpdateProvider: Container.appVersionUpdateProvider(),
                     pbxProjSyncer: Container.pbxProjSyncer(),
@@ -16,10 +18,6 @@ struct PhoenixApp: App {
                     projectGenerator: Container.projectGenerator()
                 )
             )
-                .environmentObject(PhoenixDocumentStore(
-                    fileURL: file.fileURL,
-                    document: file.$document
-                ))
         }.windowToolbarStyle(.expanded)
     }
 }

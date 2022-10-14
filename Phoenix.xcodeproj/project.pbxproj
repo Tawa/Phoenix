@@ -32,7 +32,7 @@
 		38BCCCA02854B7E300E928CA /* file_1_0_0.ash in Resources */ = {isa = PBXBuildFile; fileRef = 38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */; };
 		38C7D1492808B35300E2675B /* NewComponentSheetIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C7D1482808B35300E2675B /* NewComponentSheetIdentifiers.swift */; };
 		38E0B2FA2815702E00B5992D /* ComponentDependenciesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2F92815702E00B5992D /* ComponentDependenciesSheet.swift */; };
-		38E0B2FD2815766E00B5992D /* PhoenixDocumentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2FC2815766E00B5992D /* PhoenixDocumentStore.swift */; };
+		38E0B2FD2815766E00B5992D /* PhoenixDocument+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2FC2815766E00B5992D /* PhoenixDocument+Extension.swift */; };
 		38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */; };
 		38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2512A2837E163002FFA31 /* ViewModel.swift */; };
 		38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */; };
@@ -127,7 +127,7 @@
 		38BCCC9F2854B7E300E928CA /* file_1_0_0.ash */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = file_1_0_0.ash; sourceTree = "<group>"; };
 		38C7D1482808B35300E2675B /* NewComponentSheetIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewComponentSheetIdentifiers.swift; sourceTree = "<group>"; };
 		38E0B2F92815702E00B5992D /* ComponentDependenciesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentDependenciesSheet.swift; sourceTree = "<group>"; };
-		38E0B2FC2815766E00B5992D /* PhoenixDocumentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentStore.swift; sourceTree = "<group>"; };
+		38E0B2FC2815766E00B5992D /* PhoenixDocument+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhoenixDocument+Extension.swift"; sourceTree = "<group>"; };
 		38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencyView.swift; sourceTree = "<group>"; };
 		38E2512A2837E163002FFA31 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentModuleTypeView.swift; sourceTree = "<group>"; };
@@ -359,7 +359,7 @@
 		38E0B2FB2815765E00B5992D /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
-				38E0B2FC2815766E00B5992D /* PhoenixDocumentStore.swift */,
+				38E0B2FC2815766E00B5992D /* PhoenixDocument+Extension.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -675,7 +675,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */,
-				38E0B2FD2815766E00B5992D /* PhoenixDocumentStore.swift in Sources */,
+				38E0B2FD2815766E00B5992D /* PhoenixDocument+Extension.swift in Sources */,
 				38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */,
 				3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilySheet.swift in Sources */,
