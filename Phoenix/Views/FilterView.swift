@@ -7,7 +7,6 @@ struct FilterView: View {
     var body: some View {
         HStack {
             TextField("Filter", text: $filter)
-                .font(.title)
                 .onSubmit {
                     onSubmit?()
                 }

@@ -15,6 +15,7 @@ where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
     @Binding var values: [ValueContainer]
     let allTargetTypes: [IdentifiableWithSubtype<TargetType>]
     let onRemoveValue: (String) -> Void
+    let newValuePlaceholder: String
     let onNewValue: (String) -> Void
 
     var body: some View {
@@ -35,7 +36,6 @@ where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
                         .frame(width: 150)
                         TextField("Folder Name", text: Binding(get: { textValues[value.id] ?? "" },
                                                                set: { textValues[value.id] = $0 }))
-                            .font(.largeTitle)
                             .foregroundColor(value.wrappedValue.value == textValues[value.id] ? nil : .red)
                             .onSubmit { value.wrappedValue.value = textValues[value.id] ?? "" }
                     }
@@ -58,15 +58,15 @@ where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
                 }
             }
             HStack {
-                TextField("New",
-                          text: $newFieldValue)
-                .font(.largeTitle)
                 Button(action: {
-                    onNewValue(newFieldValue)
+                    onNewValue(newFieldValue.isEmpty ? newValuePlaceholder : newFieldValue)
                     newFieldValue = ""
                 }) {
                     Text("Add")
                 }
+                TextField(newValuePlaceholder,
+                          text: $newFieldValue)
+                .font(.largeTitle)
             }
         }
         .onChange(of: values, perform: refreshTextValues(with:))
@@ -112,6 +112,7 @@ struct DynamicTextFieldList_Previews: PreviewProvider {
                                     .init(title: "Third", subtitle: nil, value: .mock, subValue: nil)
                                  ],
                                  onRemoveValue: { _ in },
+                                 newValuePlaceholder: "Resources",
                                  onNewValue: { _ in })
         }
     }

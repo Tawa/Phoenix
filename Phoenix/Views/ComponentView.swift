@@ -71,7 +71,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
 
                 Section {
                     ForEach(dependencies, content: dependencyView)
-                        .padding([.vertical])
                 } header: {
                     HStack {
                         Text("Dependencies")
@@ -87,6 +86,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                         values: $resourcesValueBinding,
                         allTargetTypes: allTargetTypes,
                         onRemoveValue: onRemoveResourceWithId,
+                        newValuePlaceholder: "Resources",
                         onNewValue: onAddResourceWithName)
                 } header: {
                     Text("Resources")
