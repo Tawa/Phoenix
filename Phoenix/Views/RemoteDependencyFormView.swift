@@ -55,6 +55,7 @@ struct RemoteDependencyFormView: View {
 
     private let title: String = "External Dependency:"
     private let urlTitle: String = "URL:"
+    private let labelsWidth: CGFloat = 100
 
     @State private var urlString: String = ""
     @State private var versionString: String = ""
@@ -65,23 +66,21 @@ struct RemoteDependencyFormView: View {
     @State private var versionType: VersionType = .from
 
     let onSubmit: (RemoteDependencyFormResult) -> Void
+    let onDismiss: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading) {
             Text(title)
-                .font(.largeTitle)
+                .font(.title)
 
             HStack {
                 HStack {
                     Text(urlTitle)
-                        .font(.title)
                     Spacer()
                 }
-                .frame(width: 100)
+                .frame(width: labelsWidth)
                 TextField("ex: git@github.com:team/repo.git",
                           text: $urlString)
-                .font(.title)
-                .padding()
             }
 
             HStack {
@@ -92,11 +91,9 @@ struct RemoteDependencyFormView: View {
                 } label: {
                     Text(versionType.title)
                 }
-                .frame(width: 100)
+                .frame(width: labelsWidth)
 
                 TextField("1.0.0", text: $versionString)
-                    .font(.largeTitle)
-                    .padding()
             }
 
 
@@ -108,21 +105,21 @@ struct RemoteDependencyFormView: View {
                 } label: {
                     Text(productType.title)
                 }
-                .frame(width: 100)
+                .frame(width: labelsWidth)
 
                 TextField("Name", text: $name)
-                    .font(.largeTitle)
-                    .padding()
 
                 if case .product = productType {
                     TextField("Package", text: $package)
-                        .font(.largeTitle)
-                        .padding()
                 }
             }
 
-            Button(action: submit) {
-                Text("Add")
+            HStack {
+                Button(action: submit) {
+                    Text("Add")
+                }
+                Button(action: onDismiss) { Text("Cancel") }
+                    .keyboardShortcut(.cancelAction)
             }
         }.padding()
     }
@@ -140,6 +137,7 @@ struct RemoteDependencyFormView: View {
 
 struct RemoteDependencyFormView_Previews: PreviewProvider {
     static var previews: some View {
-        RemoteDependencyFormView(onSubmit: { _ in })
+        RemoteDependencyFormView(onSubmit: { _ in },
+                                 onDismiss: {})
     }
 }
