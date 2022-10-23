@@ -28,9 +28,21 @@ extension PhoenixDocument {
         }
         return value
     }
+    
+    mutating func updateDefaultdependencyForComponent(withName name: Name, packageType: PackageTargetType, value: String?) {
+        getComponent(withName: name) { component in
+            component.defaultDependencies[packageType] = value
+        }
+    }
 
     func family(for name: Name) -> Family? {
         families.first(where: { name.family == $0.family.name })?.family
+    }
+    
+    mutating func updateDefaultdependencyForFamily(named name: String, packageType: PackageTargetType, value: String?) {
+        getFamily(withName: name) { family in
+            family.defaultDependencies[packageType] = value
+        }
     }
 
     // MARK: - Private
@@ -114,7 +126,8 @@ extension PhoenixDocument {
                                      macOSVersion: template?.macOSVersion,
                                      modules: template?.modules ?? moduleTypes,
                                      dependencies: template?.dependencies ?? [],
-                                     resources: template?.resources ?? [])
+                                     resources: template?.resources ?? [],
+                                     defaultDependencies: [:])
         array.append(newComponent)
         array.sort(by: { $0.name.full < $1.name.full })
 
@@ -139,7 +152,14 @@ extension PhoenixDocument {
     }
     
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {
-        let defaultDependencies = projectConfiguration.defaultDependencies
+        var defaultDependencies: [PackageTargetType: String] = getComponent(withName: dependencyName)?.defaultDependencies ?? [:]
+        if defaultDependencies.isEmpty {
+            defaultDependencies = getFamily(withName: dependencyName.family)?.defaultDependencies ?? [:]
+        }
+        if defaultDependencies.isEmpty {
+            defaultDependencies = projectConfiguration.defaultDependencies
+        }
+
         var targetTypes: [PackageTargetType: String] = [:]
         getComponent(withName: dependencyName) { dependencyComponent in
             if !defaultDependencies.values.contains(where: { dependencyComponent.modules[$0] == nil }) {
@@ -151,6 +171,7 @@ extension PhoenixDocument {
             }
         }
         getComponent(withName: name) { component in
+            targetTypes = targetTypes.filter { (key, _) in component.modules.contains(where: { $0.key == key.name }) }
             var dependencies = component.dependencies
             dependencies.append(.local(ComponentDependency(name: dependencyName, targetTypes: targetTypes)))
             dependencies.sort()

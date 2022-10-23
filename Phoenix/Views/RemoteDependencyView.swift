@@ -21,15 +21,13 @@ where DependencyType: Identifiable,
     let onRemove: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text(name)
-                    .font(.largeTitle.bold())
+                    .bold()
                 Button(action: onRemove) { Text("Remove") }
-                Spacer()
             }
             Text(urlString)
-                .font(.title)
 
             HStack {
                 Menu {
@@ -39,13 +37,14 @@ where DependencyType: Identifiable,
                 } label: {
                     Text(versionTitle)
                 }
-                .frame(width: 150)
-                LazySubmitTextField(placeholder: versionPlaceholder,
-                                    initialValue: versionText,
-                                    onSubmit: onSubmitVersionText)
+                .frame(width: 100)
+                TextField(versionPlaceholder,
+                          text: .init(get: { versionText},
+                                      set: { onSubmitVersionText($0) }))
                 Spacer()
+                    .frame(maxWidth: .infinity)
             }
-            VStack {
+            VStack(spacing: 0) {
                 ForEach(allDependencyTypes) { dependencyType in
                     HStack {
                         Toggle(isOn: .init(get: { enabledTypes.contains(where: { dependencyType.value == $0 }) },
@@ -62,7 +61,6 @@ where DependencyType: Identifiable,
                     }
                 }
             }
-
         }
         .padding()
     }

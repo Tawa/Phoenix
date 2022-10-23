@@ -38,7 +38,7 @@ final class PhoenixUITests: XCTestCase {
             .addNewComponent(givenName: wordpress, familyName: dataStore)
             .addNewComponent(givenName: networking, familyName: support)
             .openFamilySettings(named: defaultSupport)
-            .toggleAppendName()
+            .toggleAppendName(familyName: defaultSupport)
             .set(folderName: support)
             .clickDone()
             .select(component: wordpressFeature,

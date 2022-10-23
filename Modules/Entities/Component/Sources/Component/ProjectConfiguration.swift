@@ -34,12 +34,12 @@ public struct ProjectConfiguration: Codable, Hashable {
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.packageConfigurations, forKey: .packageConfigurations)
+        try container.encode(packageConfigurations, forKey: .packageConfigurations)
         if !defaultDependencies.isEmpty {
-            try container.encode(self.defaultDependencies, forKey: .defaultDependencies)
+            try container.encode(defaultDependencies, forKey: .defaultDependencies)
         }
-        try container.encode(self.swiftVersion, forKey: .swiftVersion)
-        try container.encodeIfPresent(self.defaultOrganizationIdentifier, forKey: .defaultOrganizationIdentifier)
+        try container.encode(swiftVersion, forKey: .swiftVersion)
+        try container.encodeIfPresent(defaultOrganizationIdentifier, forKey: .defaultOrganizationIdentifier)
     }
 }
 

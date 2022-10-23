@@ -5,8 +5,9 @@ import SwiftUI
 struct ConfigurationView: View {
     @Binding var configuration: ProjectConfiguration
     let columnWidth: CGFloat = 200
-    let narrowColumnWidth: CGFloat = 80
-    let rowHeight: CGFloat = 50
+    let narrowColumnWidth: CGFloat = 100
+    let rowHeight: CGFloat = 30
+    let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
     let onDismiss: () -> Void
     
     @FocusState private var focusedName: Int?
@@ -36,7 +37,7 @@ struct ConfigurationView: View {
                 HStack {
                     Text("Swift Version")
                     TextField("default: \(ProjectConfiguration.default.swiftVersion)", text: $configuration.swiftVersion)
-                }.font(.title)
+                }
                 HStack {
                     Text("Demo Apps Default Organization Identifier")
                     TextField("com.myorganization.demoapp", text: Binding(get: {
@@ -44,58 +45,52 @@ struct ConfigurationView: View {
                     }, set: { newValue in
                         configuration.defaultOrganizationIdentifier = newValue.isEmpty ? nil : newValue
                     }))
-                }.font(.title)
+                }
                 Divider()
                 HStack(spacing: 8) {
                     columnView {
                         HStack {
                             Text("Name")
-                                .font(.title.bold())
+                                .bold()
                             Spacer()
                         }
                     } content: { index in
                         TextField("Name",
                                   text: $configuration.packageConfigurations[index].name)
                         .focused($focusedName, equals: index)
-                        .font(.title)
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 0, row: index))
                     }.frame(minWidth: columnWidth)
                     columnView(width: columnWidth) {
                         HStack {
                             Text("Folder")
-                                .font(.title.bold())
+                                .bold()
                             Spacer()
                         }
                     } content: { index in
                         TextField("Folder Name",
                                   text: .init(get: { configuration.packageConfigurations[index].containerFolderName ?? "" },
                                               set: { configuration.packageConfigurations[index].containerFolderName = $0.isEmpty ? nil : $0 }))
-                        .font(.title)
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 1, row: index))
                     }
                     columnView(width: narrowColumnWidth) {
                         Text("Append Name")
-                            .font(.subheadline.bold())
                     } content: { index in
                         Toggle("", isOn: $configuration.packageConfigurations[index].appendPackageName)
                     }
                     columnView(width: narrowColumnWidth) {
                         Text("Has Test")
-                            .font(.subheadline.bold())
                     } content: { index in
                         Toggle("", isOn: $configuration.packageConfigurations[index].hasTests)
                     }
                     columnView(width: columnWidth) {
                         HStack {
                             Text("Internal Dependency")
-                                .font(.subheadline.bold())
                             Spacer()
                         }
                     } content: { index in
                         TextField("Dependency Name",
                                   text: .init(get: { configuration.packageConfigurations[index].internalDependency ?? "" },
                                               set: { configuration.packageConfigurations[index].internalDependency = $0.isEmpty ? nil : $0 }))
-                        .font(.title)
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 2, row: index))
                     }
                     columnView {
@@ -114,7 +109,7 @@ struct ConfigurationView: View {
                 if configuration.packageConfigurations.count > 1 {
                     DependencyView<PackageTargetType, String>(
                         title: "Default Dependencies",
-                        allTypes: allTypes(),
+                        allTypes: allDependenciesConfiguration,
                         allSelectionValues: configuration.packageConfigurations.map(\.name),
                         onUpdateTargetTypeValue: { packageTargetType, value in
                             configuration.defaultDependencies[packageTargetType] = value
@@ -125,21 +120,10 @@ struct ConfigurationView: View {
                 }.padding(.horizontal)
                 .keyboardShortcut(.cancelAction)
                 .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.closeButton)
+                Spacer()
             }.padding()
         }
         .onDisappear { configuration.packageConfigurations.sort(by: { $0.name < $1.name }) }
-    }
-    
-    private func allTypes() -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
-        configuration.packageConfigurations.map { packageConfiguration in
-            IdentifiableWithSubtypeAndSelection(
-                title: packageConfiguration.name,
-                subtitle: packageConfiguration.hasTests ? "Tests" : nil,
-                value: PackageTargetType(name: packageConfiguration.name, isTests: false),
-                subValue: packageConfiguration.hasTests ? PackageTargetType(name: packageConfiguration.name, isTests: true) : nil,
-                selectedValue: configuration.defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: false)],
-                selectedSubValue: configuration.defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: true)])
-        }
     }
                         
     private func removePackageConfiguration(at index: Int) {
@@ -155,8 +139,3 @@ struct ConfigurationView: View {
     }
 }
 
-struct ConfigurationView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConfigurationView(configuration: .constant(.default), onDismiss: {})
-    }
-}

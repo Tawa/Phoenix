@@ -29,7 +29,9 @@ extension DependencySheet {
     
     @discardableResult
     func assertSelector(dependencyName: String, packageName: String, title: String) -> DependencySheet {
-        XCTAssertEqual(selector(dependencyName: dependencyName, packageName: packageName).title, title)
+        XCTAssertEqual(selector(dependencyName: dependencyName, packageName: packageName).title,
+                       title,
+                       "Dependency \"\(dependencyName)\" should select \"\(title)\" for package \"\(packageName)\"")
         return self
     }
     

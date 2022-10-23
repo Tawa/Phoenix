@@ -10,7 +10,8 @@ final class ComponentTests: XCTestCase {
                                   macOSVersion: nil,
                                   modules: [:],
                                   dependencies: [],
-                                  resources: [])
+                                  resources: [],
+                                  defaultDependencies: [:])
         
         // When
         let id = component.id
@@ -33,7 +34,8 @@ final class ComponentTests: XCTestCase {
                                            targetTypes: [:])),
                 .remote(RemoteDependency(url: "url", name: .name("name"), value: .branch(name: "main")))
             ],
-            resources: [])
+            resources: [],
+            defaultDependencies: [:])
 
        // When
         let localDependencies = component.localDependencies

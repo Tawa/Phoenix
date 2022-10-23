@@ -66,11 +66,11 @@ struct ComponentsList: View {
                                label: {
                             HStack {
                                 Text(section.name)
-                                    .font(.title.bold())
+                                    .font(.title)
                                 section.folderName.map { folderName -> Text? in
                                     guard folderName != section.name else { return nil }
-                                    return Text("(\(Image(systemName: "folder")) \(folderName))").font(.subheadline)
-                                }
+                                    return Text("(\(Image(systemName: "folder")) \(folderName))")
+                                }?.help("Folder Name")
                                 Image(systemName: "rectangle.and.pencil.and.ellipsis")
                             }
                         })

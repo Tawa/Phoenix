@@ -31,10 +31,10 @@ public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        self.id = UUID().uuidString
-        self.folderName = try container.decode(String.self, forKey: .folderName)
-        self.type = try container.decode(TargetResources.ResourcesType.self, forKey: .type)
-        self.targets = try container.decode([PackageTargetType].self, forKey: .targets)
+        id = UUID().uuidString
+        folderName = try container.decode(String.self, forKey: .folderName)
+        type = try container.decode(TargetResources.ResourcesType.self, forKey: .type)
+        targets = try container.decode([PackageTargetType].self, forKey: .targets)
     }
 
     public func encode(to encoder: Encoder) throws {

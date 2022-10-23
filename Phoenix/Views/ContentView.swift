@@ -45,7 +45,11 @@ struct ContentView: View {
             }.sheet(item: .constant(document.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
                 familySheet(family: family)
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
-                ConfigurationView(configuration: $document.projectConfiguration) {
+                ConfigurationView(
+                    configuration: $document.projectConfiguration,
+                    allDependenciesConfiguration: allDependenciesConfiguration(
+                        defaultDependencies: document.projectConfiguration.defaultDependencies)
+                ) {
                     viewModel.showingConfigurationPopup = false
                 }.frame(minHeight: 800)
             }
@@ -74,7 +78,7 @@ struct ContentView: View {
             viewModel.checkForUpdate()
         }
     }
-        
+    
     // MARK: - Views
     func componentsList() -> some View {
         ComponentsList(
@@ -118,6 +122,14 @@ struct ContentView: View {
             onModuleTypeSwitchedOff: { document.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
             moduleTypeTitle: { component.modules[$0]?.rawValue ?? "undefined" },
             onSelectionOfLibraryTypeForModuleType: { document.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
+            allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: component.defaultDependencies),
+            allDependenciesSelectionValues: allDependenciesSelectionValues(forComponent: component),
+            onUpdateTargetTypeValue: {
+                document.updateDefaultdependencyForComponent(
+                    withName: component.name,
+                    packageType: $0,
+                    value: $1)
+            },
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
             },
@@ -198,8 +210,8 @@ struct ContentView: View {
                     version = .exact(version: remoteDependency.versionValue)
                 }
                 document.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
-                                                                                                            name: name,
-                                                                                                            value: version))
+                                                                                                               name: name,
+                                                                                                               value: version))
                 viewModel.showingDependencySheet = false
             },
             onDismiss: {
@@ -208,14 +220,23 @@ struct ContentView: View {
     }
     
     func familySheet(family: Family) -> some View {
-        return FamilySheet(name: family.name,
-                           ignoreSuffix: family.ignoreSuffix,
-                           onUpdateSelectedFamily: { document.updateFamily(withName: family.name, ignoresSuffix: !$0) },
-                           folderName: family.folder ?? "",
-                           onUpdateFolderName: { document.updateFamily(withName: family.name, folder: $0) },
-                           defaultFolderName: viewModel.folderName(forFamily: family.name),
-                           componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
-                           onDismiss: { viewModel.selectedFamilyName = nil })
+        FamilySheet(
+            name: family.name,
+            ignoreSuffix: family.ignoreSuffix,
+            onUpdateSelectedFamily: { document.updateFamily(withName: family.name, ignoresSuffix: !$0) },
+            folderName: family.folder ?? "",
+            onUpdateFolderName: { document.updateFamily(withName: family.name, folder: $0) },
+            defaultFolderName: viewModel.folderName(forFamily: family.name),
+            componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
+            allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: family.defaultDependencies),
+            allDependenciesSelectionValues: allDependenciesSelectionValues(),
+            onUpdateTargetTypeValue: {
+                document.updateDefaultdependencyForFamily(
+                    named: family.name,
+                    packageType: $0,
+                    value: $1)
+            },
+            onDismiss: { viewModel.selectedFamilyName = nil })
     }
     
     func componentDependencyView(forComponent component: Component, dependency: ComponentDependency) -> some View {
@@ -326,7 +347,7 @@ struct ContentView: View {
                 }
             }
             .padding()
-        .background(Color.white.opacity(0.1))
+            .background(Color.white.opacity(0.1))
         }
     }
     
@@ -424,7 +445,6 @@ struct ContentView: View {
         })
     }
     
-    
     private func allDependencyTypes(dependency: RemoteDependency, component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
         allTargetTypes(forComponent: component)
     }
@@ -469,5 +489,28 @@ struct ContentView: View {
         } else {
             viewModel.selectedComponentName = allNames.last
         }
+    }
+    
+    func allDependenciesConfiguration(
+        defaultDependencies: [PackageTargetType: String]
+    ) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
+        let configuration = document.projectConfiguration
+        return configuration.packageConfigurations.map { packageConfiguration in
+            IdentifiableWithSubtypeAndSelection(
+                title: packageConfiguration.name,
+                subtitle: packageConfiguration.hasTests ? "Tests" : nil,
+                value: PackageTargetType(name: packageConfiguration.name, isTests: false),
+                subValue: packageConfiguration.hasTests ? PackageTargetType(name: packageConfiguration.name, isTests: true) : nil,
+                selectedValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: false)],
+                selectedSubValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: true)])
+        }
+    }
+    
+    func allDependenciesSelectionValues() -> [String] {
+        document.projectConfiguration.packageConfigurations.map(\.name)
+    }
+    
+    func allDependenciesSelectionValues(forComponent component: Component) -> [String] {
+        component.modules.map(\.key).sorted()
     }
 }
