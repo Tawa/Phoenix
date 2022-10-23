@@ -105,4 +105,26 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .assertSelector(dependencyName: named, packageName: "Implementation", title: "Contract")
             .assertSelector(dependencyName: named, packageName: "Tests", title: "Mock")
     }
+
+    @discardableResult
+    func assertContractContractAndMock(forDependency named: String) -> Screen {
+        return self
+            .assertSelector(dependencyName: named, packageName: "Contract", title: "Contract")
+            .assertSelector(dependencyName: named, packageName: "Implementation", title: "Contract")
+            .assertSelector(dependencyName: named, packageName: "Tests", title: "Mock")
+    }
+
+    @discardableResult
+    func selectDefaultDependenciesContractContractAndMock() -> Screen {
+        let dependencyName = "Default Dependencies"
+        self
+            .select(option: "Contract", dependencyName: dependencyName, packageName: "Contract")
+            .select(option: "Contract", dependencyName: dependencyName, packageName: "Implementation")
+            .select(option: "Mock", dependencyName: dependencyName, packageName: "Tests")
+            .assertSelector(dependencyName: dependencyName, packageName: "Contract", title: "Contract")
+            .assertSelector(dependencyName: dependencyName, packageName: "Implementation", title: "Contract")
+            .assertSelector(dependencyName: dependencyName, packageName: "Tests", title: "Mock")
+        return self
+    }
+
 }
