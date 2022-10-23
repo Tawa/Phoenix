@@ -171,6 +171,7 @@ extension PhoenixDocument {
             }
         }
         getComponent(withName: name) { component in
+            targetTypes = targetTypes.filter { (key, _) in component.modules.contains(where: { $0.key == key.name }) }
             var dependencies = component.dependencies
             dependencies.append(.local(ComponentDependency(name: dependencyName, targetTypes: targetTypes)))
             dependencies.sort()
