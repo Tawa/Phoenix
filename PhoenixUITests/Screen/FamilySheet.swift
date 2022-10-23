@@ -22,9 +22,10 @@ class FamilySheet: Screen {
     }
     
     @discardableResult
-    func toggleAppendName() -> FamilySheet {
+    func toggleAppendName(familyName: String) -> FamilySheet {
         appendNameToggle.click()
-        XCTAssertFalse(appendNameToggle.isSelected)
+        XCTAssertFalse(appendNameToggle.isSelected,
+                       "Append Name toggle should not be selected for Family \(familyName)")
         return self
     }
     

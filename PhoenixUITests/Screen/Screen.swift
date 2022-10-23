@@ -94,7 +94,8 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
     
     @discardableResult
     func assertComponent(givenName: String, familyName: String) -> Screen {
-        XCTAssertTrue(component(named: givenName + familyName).exists)
+        XCTAssertTrue(component(named: givenName + familyName).exists,
+                      "\(givenName + familyName) Component Not Found")
         return self
     }
     
