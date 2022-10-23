@@ -43,6 +43,7 @@ class ViewModel: ObservableObject {
     @Published var showingConfigurationPopup: Bool = false
     @Published var showingNewComponentPopup: ComponentPopupState? = nil
     @Published var showingDependencySheet: Bool = false
+    @Published var showingRemoteDependencySheet: Bool = false
     @Published var alertState: AlertState? = nil
     @Published var showingGenerateSheet: Bool = false
     @Published var demoAppFeatureData: DemoAppFeatureInput? = nil

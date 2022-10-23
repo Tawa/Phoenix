@@ -25,6 +25,9 @@ struct ContentView: View {
                         .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
                             dependencySheet(component: selectedComponent)
                         }
+                        .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
+                            remoteDependencySheet(component: selectedComponent)
+                        }
                 } else {
                     HStack(alignment: .top) {
                         VStack(alignment: .leading) {
@@ -142,6 +145,7 @@ struct ContentView: View {
             onRemoveResourceWithId: { document.removeResource(withId: $0, forComponentWithName: component.name) },
             onAddResourceWithName: { document.addResource($0, forComponentWithName: component.name) },
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
+            onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true },
             resourcesValueBinding: componentResourcesValueBinding(component: component)
         )
         .frame(minWidth: 750)
@@ -192,34 +196,37 @@ struct ContentView: View {
         }
         return ComponentDependenciesSheet(
             sections: sections,
-            onExternalSubmit: { remoteDependency in
-                let urlString = remoteDependency.urlString
-                
-                let name: ExternalDependencyName
-                switch remoteDependency.productType {
-                case .name:
-                    name = .name(remoteDependency.productName)
-                case .product:
-                    name = .product(name: remoteDependency.productName, package: remoteDependency.productPackage)
-                }
-                
-                let version: ExternalDependencyVersion
-                switch remoteDependency.versionType {
-                case .from:
-                    version = .from(version: remoteDependency.versionValue)
-                case .branch:
-                    version = .branch(name: remoteDependency.versionValue)
-                case .exact:
-                    version = .exact(version: remoteDependency.versionValue)
-                }
-                document.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
-                                                                                                               name: name,
-                                                                                                               value: version))
-                viewModel.showingDependencySheet = false
-            },
             onDismiss: {
                 viewModel.showingDependencySheet = false
-            }).frame(minWidth: 900, minHeight: 400)
+            }).frame(minHeight: 600)
+    }
+    
+    func remoteDependencySheet(component: Component) -> some View {
+        RemoteDependencySheet(onExternalSubmit: { remoteDependency in
+            let urlString = remoteDependency.urlString
+            
+            let name: ExternalDependencyName
+            switch remoteDependency.productType {
+            case .name:
+                name = .name(remoteDependency.productName)
+            case .product:
+                name = .product(name: remoteDependency.productName, package: remoteDependency.productPackage)
+            }
+            
+            let version: ExternalDependencyVersion
+            switch remoteDependency.versionType {
+            case .from:
+                version = .from(version: remoteDependency.versionValue)
+            case .branch:
+                version = .branch(name: remoteDependency.versionValue)
+            case .exact:
+                version = .exact(version: remoteDependency.versionValue)
+            }
+            document.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
+                                                                                                           name: name,
+                                                                                                           value: version))
+            viewModel.showingRemoteDependencySheet = false
+        }, onDismiss: { viewModel.showingRemoteDependencySheet = false })
     }
     
     func familySheet(family: Family) -> some View {

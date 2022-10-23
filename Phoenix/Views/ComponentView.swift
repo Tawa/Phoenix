@@ -32,6 +32,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let onRemoveResourceWithId: (String) -> Void
     let onAddResourceWithName: (String) -> Void
     let onShowDependencySheet: () -> Void
+    let onShowRemoteDependencySheet: () -> Void
     @Binding var resourcesValueBinding: [DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]
 
     var body: some View {
@@ -92,6 +93,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                             .font(.largeTitle.bold())
                         Button(action: onShowDependencySheet) { Image(systemName: "plus") }
                             .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
+                        Button(action: onShowRemoteDependencySheet) { Text("Add Remote Dependency") }
                     }
                 }
                 Divider()
