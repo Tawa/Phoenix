@@ -151,6 +151,17 @@ extension PhoenixDocument {
         getFamily(withName: name) { $0.folder = folder?.isEmpty == true ? nil : folder }
     }
     
+    mutating func updateFamilyRule(withName name: String, otherFamilyName: String, enabled: Bool) {
+        getFamily(withName: name) { family in
+            if enabled {
+                family.excludedFamilies.removeAll(where: { otherFamilyName == $0 })
+            } else if !family.excludedFamilies.contains(otherFamilyName) {
+                family.excludedFamilies.append(otherFamilyName)
+                family.excludedFamilies.sort()
+            }
+        }
+    }
+    
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {
         var defaultDependencies: [PackageTargetType: String] = getComponent(withName: dependencyName)?.defaultDependencies ?? [:]
         if defaultDependencies.isEmpty {

@@ -236,6 +236,14 @@ struct ContentView: View {
                     packageType: $0,
                     value: $1)
             },
+            rules: document.families.map(\.family).filter { $0 != family }.map { otherFamily in
+                FamilyRule(
+                    name: otherFamily.name,
+                    enabled: !family.excludedFamilies.contains(where: { otherFamily.name == $0 })
+                )
+            }, onUpdateFamilyRule: { name, enabled in
+                document.updateFamilyRule(withName: family.name, otherFamilyName: name, enabled: enabled)
+            },
             onDismiss: { viewModel.selectedFamilyName = nil })
     }
     
