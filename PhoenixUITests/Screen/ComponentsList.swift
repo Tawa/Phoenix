@@ -27,7 +27,7 @@ extension ComponentsList {
     }
     
     @discardableResult
-    func select(component: String, andAddDependency dependencies: String...) -> Screen {
+    func selectAndAssertContractAndMock(component: String, andAddDependency dependencies: String...) -> Screen {
         let screen = self.selectComponent(named: component)
         dependencies.forEach { dependency in
             screen
@@ -36,7 +36,18 @@ extension ComponentsList {
         }
         return screen
     }
-    
+
+    @discardableResult
+    func selectAndAssertContractContractAndMock(component: String, andAddDependency dependencies: String...) -> Screen {
+        let screen = self.selectComponent(named: component)
+        dependencies.forEach { dependency in
+            screen
+                .addDependencyViaFilter(named: dependency)
+                .assertContractContractAndMock(forDependency: dependency)
+        }
+        return screen
+    }
+
     @discardableResult
     func openFamilySettings(named: String) -> FamilySheet {
         familySettingsButton(named: named).click()

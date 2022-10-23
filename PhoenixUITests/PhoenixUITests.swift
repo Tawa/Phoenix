@@ -19,7 +19,9 @@ final class PhoenixUITests: XCTestCase {
         
         let support = "Support"
         let defaultSupport = "Supports"
+        let navigator = "Navigator"
         let networking = "Networking"
+        
         
         let wordpressFeature = wordpress + feature
         let wordpressUseCases = wordpress + useCases
@@ -37,15 +39,20 @@ final class PhoenixUITests: XCTestCase {
             .addNewComponent(givenName: wordpress, familyName: repository)
             .addNewComponent(givenName: wordpress, familyName: dataStore)
             .addNewComponent(givenName: networking, familyName: support)
+            .addNewComponent(givenName: navigator, familyName: support)
             .openFamilySettings(named: defaultSupport)
             .toggleAppendName(familyName: defaultSupport)
             .set(folderName: support)
             .clickDone()
-            .select(component: wordpressFeature,
+            .selectComponent(named: navigator)
+            .selectDefaultDependenciesContractContractAndMock()
+            .selectAndAssertContractAndMock(component: wordpressFeature,
                     andAddDependency: wordpressUseCases)
-            .select(component: wordpressUseCases,
+            .selectAndAssertContractContractAndMock(component: wordpressFeature,
+                                                    andAddDependency: navigator)
+            .selectAndAssertContractAndMock(component: wordpressUseCases,
                     andAddDependency: wordpressRepository)
-            .select(component: wordpressRepository,
+            .selectAndAssertContractAndMock(component: wordpressRepository,
                     andAddDependency: networking, wordpressDataStore)
     }
 }
