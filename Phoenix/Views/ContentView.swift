@@ -122,6 +122,14 @@ struct ContentView: View {
             onModuleTypeSwitchedOff: { document.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
             moduleTypeTitle: { component.modules[$0]?.rawValue ?? "undefined" },
             onSelectionOfLibraryTypeForModuleType: { document.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
+            allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: component.defaultDependencies),
+            allDependenciesSelectionValues: allDependenciesSelectionValues(forComponent: component),
+            onUpdateTargetTypeValue: {
+                document.updateDefaultdependencyForComponent(
+                    withName: component.name,
+                    packageType: $0,
+                    value: $1)
+            },
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
             },
@@ -212,19 +220,23 @@ struct ContentView: View {
     }
     
     func familySheet(family: Family) -> some View {
-        return FamilySheet(name: family.name,
-                           ignoreSuffix: family.ignoreSuffix,
-                           onUpdateSelectedFamily: { document.updateFamily(withName: family.name, ignoresSuffix: !$0) },
-                           folderName: family.folder ?? "",
-                           onUpdateFolderName: { document.updateFamily(withName: family.name, folder: $0) },
-                           defaultFolderName: viewModel.folderName(forFamily: family.name),
-                           componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
-                           allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: family.defaultDependencies),
-                           allDependenciesSelectionValues: allDependenciesSelectionValues(),
-                           onUpdateTargetTypeValue: { document.updateDefaultdependencyForFamily(named: family.name,
-                                                                                                packageType: $0,
-                                                                                                value: $1) },
-                           onDismiss: { viewModel.selectedFamilyName = nil })
+        FamilySheet(
+            name: family.name,
+            ignoreSuffix: family.ignoreSuffix,
+            onUpdateSelectedFamily: { document.updateFamily(withName: family.name, ignoresSuffix: !$0) },
+            folderName: family.folder ?? "",
+            onUpdateFolderName: { document.updateFamily(withName: family.name, folder: $0) },
+            defaultFolderName: viewModel.folderName(forFamily: family.name),
+            componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
+            allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: family.defaultDependencies),
+            allDependenciesSelectionValues: allDependenciesSelectionValues(),
+            onUpdateTargetTypeValue: {
+                document.updateDefaultdependencyForFamily(
+                    named: family.name,
+                    packageType: $0,
+                    value: $1)
+            },
+            onDismiss: { viewModel.selectedFamilyName = nil })
     }
     
     func componentDependencyView(forComponent component: Component, dependency: ComponentDependency) -> some View {
@@ -496,5 +508,9 @@ struct ContentView: View {
     
     func allDependenciesSelectionValues() -> [String] {
         document.projectConfiguration.packageConfigurations.map(\.name)
+    }
+    
+    func allDependenciesSelectionValues(forComponent component: Component) -> [String] {
+        component.modules.map(\.key).sorted()
     }
 }

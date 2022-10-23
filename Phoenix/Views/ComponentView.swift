@@ -1,4 +1,5 @@
 import AccessibilityIdentifiers
+import Component
 import SwiftUI
 
 struct ComponentView<PlatformsContent, DependencyType, DependencyContent, ModuleType, LibraryType, TargetType, ResourcesType>: View
@@ -22,6 +23,9 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let onModuleTypeSwitchedOff: (ModuleType) -> Void
     let moduleTypeTitle: (ModuleType) -> String
     let onSelectionOfLibraryTypeForModuleType: (LibraryType?, ModuleType) -> Void
+    let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
+    let allDependenciesSelectionValues: [String]
+    let onUpdateTargetTypeValue: (PackageTargetType, String?) -> Void
     let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
     let allTargetTypes: [IdentifiableWithSubtype<TargetType>]
@@ -33,19 +37,21 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     var body: some View {
         List {
             VStack(alignment: .leading) {
-                HStack {
-                    Text(title)
-                        .font(.largeTitle.bold())
-                        .multilineTextAlignment(.leading)
-                    Spacer()
-                    Button(action: onGenerateDemoAppProject) {
-                        Text("Generate Demo App")
-                    }.help("Generate Demo App Xcode Project")
-                    Button(role: .destructive, action: onRemove) {
-                        Image(systemName: "trash")
-                    }.help("Remove")
+                Group {
+                    HStack {
+                        Text(title)
+                            .font(.largeTitle.bold())
+                            .multilineTextAlignment(.leading)
+                        Spacer()
+                        Button(action: onGenerateDemoAppProject) {
+                            Text("Generate Demo App")
+                        }.help("Generate Demo App Xcode Project")
+                        Button(role: .destructive, action: onRemove) {
+                            Image(systemName: "trash")
+                        }.help("Remove")
+                    }
+                    Divider()
                 }
-                Divider()
                 HStack {
                     Text("Platforms:")
                     platformsContent()
@@ -68,6 +74,15 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                     Spacer()
                 }
                 Divider()
+                
+                Group {
+                    DependencyView<PackageTargetType, String>(
+                        title: "Default Dependencies",
+                        allTypes: allDependenciesConfiguration,
+                        allSelectionValues: allDependenciesSelectionValues,
+                        onUpdateTargetTypeValue: onUpdateTargetTypeValue)
+                    Divider()
+                }
 
                 Section {
                     ForEach(dependencies, content: dependencyView)
