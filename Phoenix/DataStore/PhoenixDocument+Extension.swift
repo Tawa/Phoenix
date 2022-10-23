@@ -10,7 +10,7 @@ extension PhoenixDocument {
     }
 
     var componentsFamilies: [ComponentsFamily] { families }
-    var allNames: [Name] { componentsFamilies.flatMap { $0.components }.map(\.name) }
+    private var allNames: [Name] { componentsFamilies.flatMap { $0.components }.map(\.name) }
 
     func title(for name: Name) -> String {
         let family = family(for: name)
