@@ -169,7 +169,10 @@ struct ContentView: View {
     }
     
     func dependencySheet(component: Component) -> some View {
-        let filteredNames = Dictionary(grouping: document.allNames.filter { name in
+        let familyName = document.getFamily(withName: component.name.family)?.name ?? ""
+        let allFamilies = document.componentsFamilies.filter { !$0.family.excludedFamilies.contains(familyName) }
+        let allNames = allFamilies.flatMap(\.components).map(\.name)
+        let filteredNames = Dictionary(grouping: allNames.filter { name in
             component.name != name && !component.dependencies.contains { componentDependencyType in
                 guard case let .local(componentDependency) = componentDependencyType else { return false }
                 return componentDependency.name == name
@@ -235,6 +238,14 @@ struct ContentView: View {
                     named: family.name,
                     packageType: $0,
                     value: $1)
+            },
+            rules: document.families.map(\.family).filter { $0 != family }.map { otherFamily in
+                FamilyRule(
+                    name: otherFamily.name,
+                    enabled: !family.excludedFamilies.contains(where: { otherFamily.name == $0 })
+                )
+            }, onUpdateFamilyRule: { name, enabled in
+                document.updateFamilyRule(withName: family.name, otherFamilyName: name, enabled: enabled)
             },
             onDismiss: { viewModel.selectedFamilyName = nil })
     }

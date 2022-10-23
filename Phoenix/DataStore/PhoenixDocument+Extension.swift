@@ -10,7 +10,7 @@ extension PhoenixDocument {
     }
 
     var componentsFamilies: [ComponentsFamily] { families }
-    var allNames: [Name] { componentsFamilies.flatMap { $0.components }.map(\.name) }
+    private var allNames: [Name] { componentsFamilies.flatMap { $0.components }.map(\.name) }
 
     func title(for name: Name) -> String {
         let family = family(for: name)
@@ -149,6 +149,17 @@ extension PhoenixDocument {
 
     mutating func updateFamily(withName name: String, folder: String?) {
         getFamily(withName: name) { $0.folder = folder?.isEmpty == true ? nil : folder }
+    }
+    
+    mutating func updateFamilyRule(withName name: String, otherFamilyName: String, enabled: Bool) {
+        getFamily(withName: name) { family in
+            if enabled {
+                family.excludedFamilies.removeAll(where: { otherFamilyName == $0 })
+            } else if !family.excludedFamilies.contains(otherFamilyName) {
+                family.excludedFamilies.append(otherFamilyName)
+                family.excludedFamilies.sort()
+            }
+        }
     }
     
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {

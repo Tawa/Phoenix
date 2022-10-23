@@ -6,18 +6,25 @@ public struct Family: Codable, Hashable, Identifiable {
         case ignoreSuffix
         case folder
         case defaultDependencies
+        case excludedFamilies
     }
 
     public let name: String
     public var ignoreSuffix: Bool
     public var folder: String?
     public var defaultDependencies: [PackageTargetType: String]
+    public var excludedFamilies: [String]
 
-    public init(name: String, ignoreSuffix: Bool = false, folder: String? = nil) {
+    public init(name: String,
+                ignoreSuffix: Bool = false,
+                folder: String? = nil,
+                defaultDependencies: [PackageTargetType: String] = [:],
+                excludedFamilies: [String] = []) {
         self.name = name
         self.ignoreSuffix = ignoreSuffix
         self.folder = folder
-        self.defaultDependencies = [:]
+        self.defaultDependencies = defaultDependencies
+        self.excludedFamilies = excludedFamilies
     }
     
     public init(from decoder: Decoder) throws {
@@ -26,6 +33,7 @@ public struct Family: Codable, Hashable, Identifiable {
         ignoreSuffix = try container.decode(Bool.self, forKey: .ignoreSuffix)
         folder = try container.decodeIfPresent(String.self, forKey: .folder)
         defaultDependencies = try container.decodeIfPresent([PackageTargetType : String].self, forKey: .defaultDependencies) ?? [:]
+        excludedFamilies = try container.decodeIfPresent([String].self, forKey: .excludedFamilies) ?? []
     }
     
     
@@ -36,6 +44,9 @@ public struct Family: Codable, Hashable, Identifiable {
         try container.encodeIfPresent(folder, forKey: .folder)
         if !defaultDependencies.isEmpty {
             try container.encode(defaultDependencies, forKey: .defaultDependencies)
+        }
+        if !excludedFamilies.isEmpty {
+            try container.encode(excludedFamilies, forKey: .excludedFamilies)
         }
     }
 }
