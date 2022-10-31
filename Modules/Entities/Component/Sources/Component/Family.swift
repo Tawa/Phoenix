@@ -43,7 +43,7 @@ public struct Family: Codable, Hashable, Identifiable {
         try container.encode(ignoreSuffix, forKey: .ignoreSuffix)
         try container.encodeIfPresent(folder, forKey: .folder)
         if !defaultDependencies.isEmpty {
-            try container.encode(defaultDependencies, forKey: .defaultDependencies)
+            try container.encodeSorted(dictionary: defaultDependencies, forKey: .defaultDependencies)
         }
         if !excludedFamilies.isEmpty {
             try container.encode(excludedFamilies, forKey: .excludedFamilies)

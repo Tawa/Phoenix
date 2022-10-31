@@ -36,7 +36,7 @@ public struct ProjectConfiguration: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(packageConfigurations, forKey: .packageConfigurations)
         if !defaultDependencies.isEmpty {
-            try container.encode(defaultDependencies, forKey: .defaultDependencies)
+            try container.encodeSorted(dictionary: defaultDependencies, forKey: .defaultDependencies)
         }
         try container.encode(swiftVersion, forKey: .swiftVersion)
         try container.encodeIfPresent(defaultOrganizationIdentifier, forKey: .defaultOrganizationIdentifier)
