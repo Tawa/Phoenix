@@ -65,7 +65,7 @@ public struct Component: Codable, Hashable, Identifiable {
         try container.encode(dependencies, forKey: .dependencies)
         try container.encode(resources, forKey: .resources)
         if !defaultDependencies.isEmpty {
-            try container.encode(defaultDependencies, forKey: .defaultDependencies)
+            try container.encodeSorted(dictionary: defaultDependencies, forKey: .defaultDependencies)
         }
     }
 }
