@@ -25,13 +25,18 @@ class Composition {
     }
     
     // MARK: - Domain
+    lazy var getComponentsFamiliesUseCase = Factory { [unowned self] in
+        GetComponentsFamiliesUseCase(
+            componentsFilterRepository: componentsFilterRepository(),
+            documentRepository: phoenixDocumentRepository()
+        ) as GetComponentsFamiliesUseCaseProtocol
+    }
     lazy var getComponentsListItemsUseCase = Factory { [unowned self] in
         GetComponentsListItemsUseCase(
-            componentsFilterRepository: componentsFilterRepository(),
-            documentRepository: self.phoenixDocumentRepository(),
+            getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
             familyFolderNameProvider: Container.familyFolderNameProvider(),
             selectionRepository: self.selectionRepository()
-        )
+        ) as GetComponentsListItemsUseCaseProtocol
     }
     
     lazy var deleteComponentUseCase = Factory { [unowned self] in
@@ -65,8 +70,22 @@ class Composition {
         )as UpdateComponentsFilterUseCaseProtocol
     }
     
+    lazy var selectNextComponentUseCase = Factory { [unowned self] in
+        SelectNextComponentUseCase(
+            getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
+            selectionRepository: selectionRepository()
+        ) as SelectNextComponentUseCaseProtocol
+    }
+
+    lazy var selectPreviousComponentUseCase = Factory { [unowned self] in
+        SelectPreviousComponentUseCase(
+            getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
+            selectionRepository: selectionRepository()
+        ) as SelectPreviousComponentUseCaseProtocol
+    }
+
     // MARK: - Presentation
-    lazy var componentsFilterInteractor = Factory { [unowned self] in
+    lazy var componentsFilterInteractor = Factory(scope: .singleton) { [unowned self] in
         FilterViewInteractor(
             clearComponentsFilterUseCase: clearComponentsFilterUseCase(),
             getComponentsFilterUseCase: getComponentsFilterUseCase(),

@@ -509,25 +509,11 @@ struct ContentView: View {
     }
     
     private func onDownArrow() {
-        let allNames = filteredComponentsFamilies.flatMap(\.components).map(\.name)
-        if let selectedComponentName = viewModel.selectedComponentName,
-           let index = allNames.firstIndex(of: selectedComponentName),
-           index < allNames.count - 1 {
-            viewModel.selectedComponentName = allNames[index+1]
-        } else {
-            viewModel.selectedComponentName = allNames.first
-        }
+        composition.selectNextComponentUseCase().perform()
     }
     
     private func onUpArrow() {
-        let allNames = filteredComponentsFamilies.flatMap(\.components).map(\.name)
-        if let selectedComponentName = viewModel.selectedComponentName,
-           let index = allNames.firstIndex(of: selectedComponentName),
-           index > 0 {
-            viewModel.selectedComponentName = allNames[index-1]
-        } else {
-            viewModel.selectedComponentName = allNames.last
-        }
+        composition.selectPreviousComponentUseCase().perform()
     }
     
     func allDependenciesConfiguration(

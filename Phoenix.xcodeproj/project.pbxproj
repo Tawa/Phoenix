@@ -48,6 +48,9 @@
 		B233D86528DBACFB0061BA7A /* ComponentDetailsProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B233D86428DBACFB0061BA7A /* ComponentDetailsProvider */; };
 		B233DB6B28EB5BC000243D58 /* PhoenixUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */; };
 		B236A5FB291DAED4008D658E /* DeleteComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236A5FA291DAED4008D658E /* DeleteComponentUseCase.swift */; };
+		B236A5FD291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236A5FC291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift */; };
+		B236A5FF291DB54B008D658E /* SelectNextComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */; };
+		B236A601291DB715008D658E /* SelectPreviousComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236A600291DB715008D658E /* SelectPreviousComponentUseCase.swift */; };
 		B23F1A1028D64A4C00933FC4 /* SwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = B23F1A0F28D64A4C00933FC4 /* SwiftPackage */; };
 		B240A5D8291D5D7D00815CC3 /* SelectionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5D7291D5D7D00815CC3 /* SelectionRepository.swift */; };
 		B240A5DB291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */; };
@@ -161,6 +164,9 @@
 		B233DB6828EB5BC000243D58 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITests.swift; sourceTree = "<group>"; };
 		B236A5FA291DAED4008D658E /* DeleteComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteComponentUseCase.swift; sourceTree = "<group>"; };
+		B236A5FC291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentsFamiliesUseCase.swift; sourceTree = "<group>"; };
+		B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNextComponentUseCase.swift; sourceTree = "<group>"; };
+		B236A600291DB715008D658E /* SelectPreviousComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPreviousComponentUseCase.swift; sourceTree = "<group>"; };
 		B240A5D7291D5D7D00815CC3 /* SelectionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionRepository.swift; sourceTree = "<group>"; };
 		B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentsListItemsUseCase.swift; sourceTree = "<group>"; };
 		B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectComponentUseCase.swift; sourceTree = "<group>"; };
@@ -449,10 +455,13 @@
 			children = (
 				B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */,
 				B236A5FA291DAED4008D658E /* DeleteComponentUseCase.swift */,
+				B236A5FC291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift */,
 				B24F6D92291D98BF007170DD /* GetComponentsFilterUseCase.swift */,
 				B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */,
 				B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */,
 				B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */,
+				B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */,
+				B236A600291DB715008D658E /* SelectPreviousComponentUseCase.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -720,6 +729,7 @@
 				3810D8D32809C555006E7EE3 /* FamilySheet.swift in Sources */,
 				38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */,
 				388DA8A8281863750066086A /* CustomMenu.swift in Sources */,
+				B236A601291DB715008D658E /* SelectPreviousComponentUseCase.swift in Sources */,
 				3810D8CF28099B82006E7EE3 /* ComponentListItem.swift in Sources */,
 				3873E5A62804C509000BCB03 /* PhoenixDocument+Extensions.swift in Sources */,
 				38E251332837EC73002FFA31 /* FilterView.swift in Sources */,
@@ -732,7 +742,9 @@
 				381855762819CACD00BF6696 /* DynamicTextFieldList.swift in Sources */,
 				B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
+				B236A5FD291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift in Sources */,
 				38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */,
+				B236A5FF291DB54B008D658E /* SelectNextComponentUseCase.swift in Sources */,
 				B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */,
 				B24F6D97291D997F007170DD /* ClearComponentsFilterUseCase.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesSheet.swift in Sources */,

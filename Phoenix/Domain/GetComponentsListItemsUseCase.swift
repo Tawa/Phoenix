@@ -11,57 +11,46 @@ protocol GetComponentsListItemsUseCaseProtocol {
 }
 
 struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
-    let componentsFilterRepository: ComponentsFilterRepositoryProtocol
-    let documentRepository: PhoenixDocumentRepositoryProtocol
+    let getComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol
     let familyFolderNameProvider: FamilyFolderNameProviderProtocol
     let selectionRepository: SelectionRepositoryProtocol
 
-    init(componentsFilterRepository: ComponentsFilterRepositoryProtocol,
-         documentRepository: PhoenixDocumentRepositoryProtocol,
+    init(getComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol,
          familyFolderNameProvider: FamilyFolderNameProviderProtocol,
          selectionRepository: SelectionRepositoryProtocol) {
-        self.componentsFilterRepository = componentsFilterRepository
-        self.documentRepository = documentRepository
+        self.getComponentsFamiliesUseCase = getComponentsFamiliesUseCase
         self.familyFolderNameProvider = familyFolderNameProvider
         self.selectionRepository = selectionRepository
     }
     
-    var list: [ComponentsListSection] { map(documentRepository.value,
-                                            selection: selectionRepository.value,
-                                            filter: componentsFilterRepository.value) }
+    var list: [ComponentsListSection] { map(getComponentsFamiliesUseCase.families,
+                                            selection: selectionRepository.value) }
     var listPublisher: AnyPublisher<[ComponentsListSection], Never> {
-        Publishers.CombineLatest3(
-            documentRepository.publisher,
-            selectionRepository.publisher,
-            componentsFilterRepository.publisher
+        Publishers.CombineLatest(
+            getComponentsFamiliesUseCase.familiesPublisher,
+            selectionRepository.publisher
         )
-        .map { (document, selection, filter) in
-            self.map(document, selection: selection, filter: filter)
+        .map { (families, selection) in
+            self.map(families, selection: selection)
         }
         .eraseToAnyPublisher()
     }
     
-    private func map(_ value: PhoenixDocument, selection: Name?, filter: String?) -> [ComponentsListSection] {
-        value.componentsFamilies
+    private func map(_ families: [ComponentsFamily], selection: Name?) -> [ComponentsListSection] {
+        families
             .compactMap { componentsFamily in
                 let section: ComponentsListSection = .init(
                     name: sectionTitle(forFamily: componentsFamily.family),
                     folderName: sectionFolderName(forFamily: componentsFamily.family),
                     rows: componentsFamily.components.compactMap { component in
                         let name = componentName(component, for: componentsFamily.family)
-                        if let filter = filter?.lowercased(),
-                           !filter.isEmpty,
-                           !name.lowercased().contains(filter) {
-                            return nil
-                        }
                         return .init(
                             id: component.id,
                             name: name,
                             isSelected: component.name == selection
                         )
-                    },
-                    onSelect: {})
-                
+                    }
+                )
                 if section.rows.isEmpty { return nil }
                 return section
             }

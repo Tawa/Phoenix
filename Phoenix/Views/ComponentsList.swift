@@ -31,7 +31,6 @@ struct ComponentsListSection: Hashable, Identifiable {
     let name: String
     let folderName: String?
     let rows: [ComponentsListRow]
-    let onSelect: () -> Void
     
     var title: String {
         folderName.map { folderName in
@@ -106,7 +105,7 @@ struct ComponentsList: View {
                             .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
                         }
                     } header: {
-                        Button(action: section.onSelect,
+                        Button(action: {},
                                label: {
                             HStack {
                                 Text(section.name)
