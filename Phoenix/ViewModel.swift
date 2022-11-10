@@ -95,7 +95,18 @@ class ViewModel: ObservableObject {
             .selectionRepository()
             .publisher
             .sink { [weak self] name in
+                guard self?.selectedComponentName != name else { return }
                 self?.selectedComponentName = name
+            }.store(in: &subscriptions)
+        
+        self._selectedComponentName
+            .projectedValue
+            .compactMap { $0 }
+            .sink { [weak self] name in
+                guard let selectionRepository = self?.composition.selectionRepository(),
+                      selectionRepository.value != name
+                else { return }
+                selectionRepository.select(name: name)
             }.store(in: &subscriptions)
 
     }

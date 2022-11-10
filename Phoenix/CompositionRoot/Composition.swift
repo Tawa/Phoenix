@@ -3,7 +3,7 @@ import PhoenixDocument
 import SwiftUI
 
 class Composition {
-    let document: Binding<PhoenixDocument>
+    var document: Binding<PhoenixDocument>
     
     init(document: Binding<PhoenixDocument>) {
         self.document = document

@@ -6,19 +6,13 @@ struct ComponentsListRow: Hashable, Identifiable {
     let id: String
     let name: String
     let isSelected: Bool
-    let onSelect: () -> Void
-    let onDuplicate: () -> Void
     
     init(id: String,
          name: String,
-         isSelected: Bool,
-         onSelect: @escaping () -> Void,
-         onDuplicate: @escaping () -> Void) {
+         isSelected: Bool) {
         self.id = id
         self.name = name
         self.isSelected = isSelected
-        self.onSelect = onSelect
-        self.onDuplicate = onDuplicate
     }
     
     func hash(into hasher: inout Hasher) {
@@ -107,7 +101,7 @@ struct ComponentsList: View {
                                 name: row.name,
                                 isSelected: row.isSelected,
                                 onSelect: { interactor.select(id: row.id) },
-                                onDuplicate: row.onDuplicate
+                                onDuplicate: { }
                             )
                             .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
                         }

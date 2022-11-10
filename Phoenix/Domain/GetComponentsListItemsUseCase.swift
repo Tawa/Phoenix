@@ -57,9 +57,8 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
                         return .init(
                             id: component.id,
                             name: name,
-                            isSelected: component.name == selection,
-                            onSelect: {},
-                            onDuplicate: {})
+                            isSelected: component.name == selection
+                        )
                     },
                     onSelect: {})
                 

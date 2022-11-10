@@ -392,7 +392,6 @@ struct ContentView: View {
                         .lowercased().contains(viewModel.componentsListFilter.lowercased())
                 })
             }.filter { !$0.components.isEmpty }
-        
     }
     
     private func componentName(_ component: Component, for family: Family) -> String {
