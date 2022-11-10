@@ -8,6 +8,7 @@ protocol PhoenixDocumentRepositoryProtocol {
     var publisher: AnyPublisher<PhoenixDocument, Never> { get }
     
     func component(with id: String) -> Component?
+    func deleteComponent(with id: String)
 }
 
 class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
@@ -34,5 +35,16 @@ class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
     
     func component(with id: String) -> Component? {
         value.componentsFamilies.flatMap(\.components).first(where: { $0.id == id })
+    }
+    
+    func deleteComponent(with id: String) {
+        guard let name = document
+            .wrappedValue
+            .families
+            .flatMap(\.components)
+            .first(where: { $0.id == id })?
+            .name
+        else { return }
+        document.wrappedValue.removeComponent(withName: name)
     }
 }

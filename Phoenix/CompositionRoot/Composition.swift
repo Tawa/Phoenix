@@ -34,6 +34,12 @@ class Composition {
         )
     }
     
+    lazy var deleteComponentUseCase = Factory(scope: .singleton) { [unowned self] in
+        DeleteComponentUseCase(
+            phoenixDocumentRepository: phoenixDocumentRepository()
+        ) as DeleteComponentUseCaseProtocol
+    }
+    
     lazy var selectComponentUseCase = Factory(scope: .singleton) { [unowned self] in
         SelectComponentUseCase(
             phoenixDocumentRepository: self.phoenixDocumentRepository(),

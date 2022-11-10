@@ -33,7 +33,8 @@ struct PhoenixApp: App {
                     filesURLDataStore: Container.filesURLDataStore(),
                     projectGenerator: Container.projectGenerator(),
                     composition: compositionRoot.composition(for: file.$document, url: file.fileURL)
-                ), composition: compositionRoot.composition(for: file.$document, url: file.fileURL)
+                ),
+                composition: compositionRoot.composition(for: file.$document, url: file.fileURL)
             )
         }.windowToolbarStyle(.expanded)
     }

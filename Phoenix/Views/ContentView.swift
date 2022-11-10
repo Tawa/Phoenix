@@ -7,11 +7,24 @@ import SwiftUI
 import SwiftPackage
 import AccessibilityIdentifiers
 
+class ContentViewInteractor {
+    let deleteComponentUseCase: DeleteComponentUseCaseProtocol
+    
+    init(deleteComponentUseCase: DeleteComponentUseCaseProtocol) {
+        self.deleteComponentUseCase = deleteComponentUseCase
+    }
+    
+    func onRemoveComponent(with id: String) {
+        deleteComponentUseCase.deleteComponent(with: id)
+    }
+}
+
 struct ContentView: View {
     var fileURL: URL?
     @Binding var document: PhoenixDocument
     @StateObject var viewModel: ViewModel
     let composition: Composition
+    let interactor: ContentViewInteractor
     
     init(fileURL: URL?,
          document: Binding<PhoenixDocument>,
@@ -22,6 +35,7 @@ struct ContentView: View {
         self._viewModel = .init(wrappedValue: viewModel)
         
         self.composition = composition
+        self.interactor = .init(deleteComponentUseCase: composition.deleteComponentUseCase())
     }
     
     var body: some View {
@@ -147,11 +161,7 @@ struct ContentView: View {
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
             },
-            onRemove: {
-                guard let name = viewModel.selectedComponentName else { return }
-                document.removeComponent(withName: name)
-                viewModel.selectedComponentName = nil
-            },
+            onRemove: { interactor.onRemoveComponent(with: component.id) },
             allTargetTypes: allTargetTypes(forComponent: component),
             onRemoveResourceWithId: { document.removeResource(withId: $0, forComponentWithName: component.name) },
             onAddResourceWithName: { document.addResource($0, forComponentWithName: component.name) },
