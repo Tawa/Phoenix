@@ -14,11 +14,10 @@ class SelectionRepository: SelectionRepositoryProtocol {
             subject.send(value)
         }
     }
-    private var subject: PassthroughSubject<Name?, Never> = .init()
+    private var subject: CurrentValueSubject<Name?, Never> = .init(nil)
     var publisher: AnyPublisher<Name?, Never> { subject.eraseToAnyPublisher() }
     
     init() {
-        print("Created Selection Repository")
     }
     
     func select(name: Name) {

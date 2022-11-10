@@ -77,6 +77,7 @@ class ComponentsListInteractor {
 
         subscription = getComponentsListItemsUseCase
             .listPublisher
+            .removeDuplicates()
             .sink(receiveValue: { [weak self] sections in
                 self?.viewData.sections = sections
             })
@@ -84,9 +85,6 @@ class ComponentsListInteractor {
     
     func select(id: String) {
         selectComponentUseCase.select(id: id)
-    }
-    
-    func onAppear() {
     }
 }
 
@@ -101,7 +99,6 @@ struct ComponentsList: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            //            FilterView(filter: $filter)
             List {
                 ForEach(viewData.sections) { section in
                     Section {
@@ -139,7 +136,6 @@ struct ComponentsList: View {
             .frame(minHeight: 200, maxHeight: .infinity)
             .listStyle(SidebarListStyle())
         }
-        .onAppear(perform: interactor.onAppear)
     }
     
     private var numberOfComponentsString: String {

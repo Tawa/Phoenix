@@ -96,12 +96,17 @@ struct ContentView: View {
     
     // MARK: - Views
     func componentsList() -> some View {
-        ComponentsList(
-            interactor: ComponentsListInteractor(
-                getComponentsListItemsUseCase: composition.getComponentsListItemsUseCase(),
-                selectComponentUseCase: composition.selectComponentUseCase()
+        VStack {
+            FilterView(
+                interactor: composition.componentsFilterInteractor()
             )
-        )
+            ComponentsList(
+                interactor: ComponentsListInteractor(
+                    getComponentsListItemsUseCase: composition.getComponentsListItemsUseCase(),
+                    selectComponentUseCase: composition.selectComponentUseCase()
+                )
+            )
+        }
         .frame(minWidth: 250)
     }
     

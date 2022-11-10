@@ -51,6 +51,11 @@
 		B240A5D8291D5D7D00815CC3 /* SelectionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5D7291D5D7D00815CC3 /* SelectionRepository.swift */; };
 		B240A5DB291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */; };
 		B240A5DD291D655B00815CC3 /* SelectComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */; };
+		B24F6D91291D9862007170DD /* ComponentsFilterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */; };
+		B24F6D93291D98BF007170DD /* GetComponentsFilterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D92291D98BF007170DD /* GetComponentsFilterUseCase.swift */; };
+		B24F6D95291D996F007170DD /* UpdateComponentsFilterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */; };
+		B24F6D97291D997F007170DD /* ClearComponentsFilterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */; };
+		B24F6D99291D9B6A007170DD /* Composition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D98291D9B6A007170DD /* Composition.swift */; };
 		B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B266B0B428BA8BF900778F3A /* RelativeURLProvider */; };
 		B291BD2328CA83A0000D2149 /* DemoAppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = B291BD2228CA83A0000D2149 /* DemoAppFeature */; };
 		B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */; };
@@ -157,6 +162,11 @@
 		B240A5D7291D5D7D00815CC3 /* SelectionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionRepository.swift; sourceTree = "<group>"; };
 		B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentsListItemsUseCase.swift; sourceTree = "<group>"; };
 		B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectComponentUseCase.swift; sourceTree = "<group>"; };
+		B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsFilterRepository.swift; sourceTree = "<group>"; };
+		B24F6D92291D98BF007170DD /* GetComponentsFilterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentsFilterUseCase.swift; sourceTree = "<group>"; };
+		B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateComponentsFilterUseCase.swift; sourceTree = "<group>"; };
+		B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearComponentsFilterUseCase.swift; sourceTree = "<group>"; };
+		B24F6D98291D9B6A007170DD /* Composition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Composition.swift; sourceTree = "<group>"; };
 		B26383E928D7773D00C9380E /* PhoenixRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PhoenixRelease.entitlements; sourceTree = "<group>"; };
 		B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+Features.swift"; sourceTree = "<group>"; };
 		B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencySheet.swift; sourceTree = "<group>"; };
@@ -321,6 +331,7 @@
 			children = (
 				B291BD2428CA8440000D2149 /* Features */,
 				38BCCC942854A0C000E928CA /* CompositionRoot.swift */,
+				B24F6D98291D9B6A007170DD /* Composition.swift */,
 				B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */,
 			);
 			path = CompositionRoot;
@@ -381,6 +392,7 @@
 				38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */,
 				B21394CF291C76B30019BF2E /* PhoenixDocumentRepository.swift */,
 				B240A5D7291D5D7D00815CC3 /* SelectionRepository.swift */,
+				B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -433,8 +445,11 @@
 		B240A5D9291D5E4F00815CC3 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */,
+				B24F6D92291D98BF007170DD /* GetComponentsFilterUseCase.swift */,
 				B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */,
 				B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */,
+				B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -696,6 +711,7 @@
 			files = (
 				3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */,
 				38E0B2FD2815766E00B5992D /* PhoenixDocument+Extension.swift in Sources */,
+				B24F6D99291D9B6A007170DD /* Composition.swift in Sources */,
 				38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */,
 				3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilySheet.swift in Sources */,
@@ -715,15 +731,19 @@
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
 				38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */,
 				B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */,
+				B24F6D97291D997F007170DD /* ClearComponentsFilterUseCase.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesSheet.swift in Sources */,
 				38C7D1492808B35300E2675B /* NewComponentSheetIdentifiers.swift in Sources */,
 				B240A5DB291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift in Sources */,
 				38E251312837E96A002FFA31 /* PopoverView.swift in Sources */,
 				3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */,
+				B24F6D95291D996F007170DD /* UpdateComponentsFilterUseCase.swift in Sources */,
 				B240A5D8291D5D7D00815CC3 /* SelectionRepository.swift in Sources */,
 				B240A5DD291D655B00815CC3 /* SelectComponentUseCase.swift in Sources */,
+				B24F6D93291D98BF007170DD /* GetComponentsFilterUseCase.swift in Sources */,
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
 				B29FDC5A2905725B006A0007 /* RemoteDependencySheet.swift in Sources */,
+				B24F6D91291D9862007170DD /* ComponentsFilterRepository.swift in Sources */,
 				38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */,
 				3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */,
 				B21BF48D28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift in Sources */,
