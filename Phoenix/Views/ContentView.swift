@@ -11,6 +11,18 @@ struct ContentView: View {
     var fileURL: URL?
     @Binding var document: PhoenixDocument
     @StateObject var viewModel: ViewModel
+    let composition: Composition
+    
+    init(fileURL: URL?,
+         document: Binding<PhoenixDocument>,
+         viewModel: ViewModel,
+         composition: Composition) {
+        self.fileURL = fileURL
+        self._document = document
+        self._viewModel = .init(wrappedValue: viewModel)
+        
+        self.composition = composition
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -85,19 +97,10 @@ struct ContentView: View {
     // MARK: - Views
     func componentsList() -> some View {
         ComponentsList(
-            filter: $viewModel.componentsListFilter,
-            sections: filteredComponentsFamilies
-                .map { componentsFamily in
-                        .init(name: sectionTitle(forFamily: componentsFamily.family),
-                              folderName: sectionFolderName(forFamily: componentsFamily.family),
-                              rows: componentsFamily.components.map { component in
-                                .init(name: componentName(component, for: componentsFamily.family),
-                                      isSelected: viewModel.selectedComponentName == component.name,
-                                      onSelect: { viewModel.selectedComponentName = component.name },
-                                      onDuplicate: { viewModel.onDuplicate(component: component) })
-                        },
-                              onSelect: { viewModel.selectedFamilyName = componentsFamily.family.name })
-                }
+            interactor: ComponentsListInteractor(
+                getComponentsListItemsUseCase: composition.getComponentsListItemsUseCase(),
+                selectComponentUseCase: composition.selectComponentUseCase()
+            )
         )
         .frame(minWidth: 250)
     }

@@ -32,6 +32,8 @@ enum AlertState: Hashable, Identifiable {
 
 class ViewModel: ObservableObject {
     // MARK: - Selection
+    var subscriptions: Set<AnyCancellable> = .init()
+    let composition: Composition
     @Published var selectedComponentName: Name? = nil
     @Published var selectedFamilyName: String? = nil
     
@@ -79,13 +81,23 @@ class ViewModel: ObservableObject {
         pbxProjSyncer: PBXProjectSyncerProtocol,
         familyFolderNameProvider: FamilyFolderNameProviderProtocol,
         filesURLDataStore: FilesURLDataStoreProtocol,
-        projectGenerator: ProjectGeneratorProtocol
+        projectGenerator: ProjectGeneratorProtocol,
+        composition: Composition
     ) {
         self.appVersionUpdateProvider = appVersionUpdateProvider
         self.pbxProjSyncer = pbxProjSyncer
         self.familyFolderNameProvider = familyFolderNameProvider
         self.filesURLDataStore = filesURLDataStore
         self.projectGenerator = projectGenerator
+        self.composition = composition
+        
+        composition
+            .selectionRepository()
+            .publisher
+            .sink { [weak self] name in
+                self?.selectedComponentName = name
+            }.store(in: &subscriptions)
+
     }
     
     // MARK: - FamilyFolderNameProvider

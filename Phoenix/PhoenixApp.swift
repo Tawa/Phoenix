@@ -3,8 +3,24 @@ import PhoenixDocument
 import SwiftPackage
 import SwiftUI
 
+class PhoenixAppCompositionRoot: ObservableObject {
+    var compositions: [URL: Composition] = [:]
+    
+    func composition(for document: Binding<PhoenixDocument>, url: URL?) -> Composition {
+        guard let url = url else { return Composition(document: document) }
+        if let composition = compositions[url] {
+            return composition
+        }
+        let composition = Composition(document: document)
+        self.compositions[url] = composition
+        return composition
+    }
+}
+
 @main
 struct PhoenixApp: App {
+    @StateObject var compositionRoot: PhoenixAppCompositionRoot = .init()
+    
     var body: some Scene {
         DocumentGroup(newDocument: PhoenixDocument()) { file in
             ContentView(
@@ -15,8 +31,9 @@ struct PhoenixApp: App {
                     pbxProjSyncer: Container.pbxProjSyncer(),
                     familyFolderNameProvider: Container.familyFolderNameProvider(),
                     filesURLDataStore: Container.filesURLDataStore(),
-                    projectGenerator: Container.projectGenerator()
-                )
+                    projectGenerator: Container.projectGenerator(),
+                    composition: compositionRoot.composition(for: file.$document, url: file.fileURL)
+                ), composition: compositionRoot.composition(for: file.$document, url: file.fileURL)
             )
         }.windowToolbarStyle(.expanded)
     }

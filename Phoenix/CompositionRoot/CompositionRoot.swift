@@ -19,6 +19,49 @@ import RelativeURLProvider
 import RelativeURLProviderContract
 import SwiftPackage
 
+import PhoenixDocument
+import SwiftUI
+
+class Composition {
+    let document: Binding<PhoenixDocument>
+    
+    init(document: Binding<PhoenixDocument>) {
+        self.document = document
+        print("Initialising Composition")
+    }
+    
+    deinit {
+        print("Deinitialising Composition")
+    }
+    
+    // MARK: - Data
+    lazy var phoenixDocumentRepository = Factory(scope: .singleton) { [unowned self] in
+        PhoenixDocumentRepository(
+            document: self.document
+        ) as PhoenixDocumentRepositoryProtocol
+    }
+    
+    lazy var selectionRepository = Factory(scope: .singleton) { [unowned self] in
+        SelectionRepository() as SelectionRepositoryProtocol
+    }
+    
+    // MARK: - Domain
+    lazy var getComponentsListItemsUseCase = Factory(scope: .singleton) { [unowned self] in
+        GetComponentsListItemsUseCase(
+            documentRepository: self.phoenixDocumentRepository(),
+            familyFolderNameProvider: Container.familyFolderNameProvider(),
+            selectionRepository: self.selectionRepository()
+        )
+    }
+    
+    lazy var selectComponentUseCase = Factory(scope: .singleton) { [unowned self] in
+        SelectComponentUseCase(
+            phoenixDocumentRepository: self.phoenixDocumentRepository(),
+            selectionRepository: self.selectionRepository()
+        ) as SelectComponentUseCaseProtocol
+    }
+}
+
 extension Container {
     static let phoenixDocumentFileWrappersDecoder = Factory {
         PhoenixDocumentFileWrappersDecoder(

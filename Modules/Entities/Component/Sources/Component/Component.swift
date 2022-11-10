@@ -1,3 +1,4 @@
+import Foundation
 import SwiftPackage
 
 public struct DefaultLocalization: Codable, Hashable {
@@ -12,7 +13,7 @@ public struct DefaultLocalization: Codable, Hashable {
 }
 
 public struct Component: Codable, Hashable, Identifiable {
-    public var id: Name { name }
+    public var id: String = UUID().uuidString
 
     public let name: Name
     public var defaultLocalization: DefaultLocalization
