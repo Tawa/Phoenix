@@ -25,7 +25,7 @@ class Composition {
     }
     
     // MARK: - Domain
-    lazy var getComponentsListItemsUseCase = Factory(scope: .singleton) { [unowned self] in
+    lazy var getComponentsListItemsUseCase = Factory { [unowned self] in
         GetComponentsListItemsUseCase(
             componentsFilterRepository: componentsFilterRepository(),
             documentRepository: self.phoenixDocumentRepository(),
@@ -34,39 +34,39 @@ class Composition {
         )
     }
     
-    lazy var deleteComponentUseCase = Factory(scope: .singleton) { [unowned self] in
+    lazy var deleteComponentUseCase = Factory { [unowned self] in
         DeleteComponentUseCase(
             phoenixDocumentRepository: phoenixDocumentRepository()
         ) as DeleteComponentUseCaseProtocol
     }
     
-    lazy var selectComponentUseCase = Factory(scope: .singleton) { [unowned self] in
+    lazy var selectComponentUseCase = Factory { [unowned self] in
         SelectComponentUseCase(
             phoenixDocumentRepository: self.phoenixDocumentRepository(),
             selectionRepository: self.selectionRepository()
         ) as SelectComponentUseCaseProtocol
     }
     
-    lazy var clearComponentsFilterUseCase = Factory(scope: .singleton) { [unowned self] in
+    lazy var clearComponentsFilterUseCase = Factory { [unowned self] in
         ClearComponentsFilterUseCase(
             componentsFilterRepository: componentsFilterRepository()
         )as ClearComponentsFilterUseCaseProtocol
     }
     
-    lazy var getComponentsFilterUseCase = Factory(scope: .singleton) { [unowned self] in
+    lazy var getComponentsFilterUseCase = Factory { [unowned self] in
         GetComponentsFilterUseCase(
             componentsFilterRepository: componentsFilterRepository()
         )as GetComponentsFilterUseCaseProtocol
     }
     
-    lazy var updateComponentsFilterUseCase = Factory(scope: .singleton) { [unowned self] in
+    lazy var updateComponentsFilterUseCase = Factory { [unowned self] in
         UpdateComponentsFilterUseCase(
             componentsFilterRepository: componentsFilterRepository()
         )as UpdateComponentsFilterUseCaseProtocol
     }
     
     // MARK: - Presentation
-    lazy var componentsFilterInteractor = Factory(scope: .singleton) { [unowned self] in
+    lazy var componentsFilterInteractor = Factory { [unowned self] in
         FilterViewInteractor(
             clearComponentsFilterUseCase: clearComponentsFilterUseCase(),
             getComponentsFilterUseCase: getComponentsFilterUseCase(),

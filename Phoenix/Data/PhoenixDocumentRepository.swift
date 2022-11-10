@@ -7,6 +7,8 @@ protocol PhoenixDocumentRepositoryProtocol {
     var value: PhoenixDocument { get }
     var publisher: AnyPublisher<PhoenixDocument, Never> { get }
     
+    func bind(document: Binding<PhoenixDocument>)
+    
     func component(with id: String) -> Component?
     func deleteComponent(with id: String)
 }
@@ -31,6 +33,16 @@ class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
                 document.wrappedValue = $0
                 self.subject.send($0)
             })
+    }
+    
+    func bind(document: Binding<PhoenixDocument>) {
+        self.document = Binding(
+            get: { document.wrappedValue },
+            set: {
+                document.wrappedValue = $0
+                self.subject.send($0)
+            })
+        subject.send(document.wrappedValue)
     }
     
     func component(with id: String) -> Component? {

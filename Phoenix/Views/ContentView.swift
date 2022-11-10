@@ -36,6 +36,7 @@ struct ContentView: View {
         
         self.composition = composition
         self.interactor = .init(deleteComponentUseCase: composition.deleteComponentUseCase())
+        self.composition.phoenixDocumentRepository().bind(document: document)
     }
     
     var body: some View {
