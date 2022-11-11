@@ -64,6 +64,13 @@ class Composition {
         )as GetComponentsFilterUseCaseProtocol
     }
     
+    lazy var getSelectedComponentUseCase = Factory { [unowned self] in
+        GetSelectedComponentUseCase(
+            getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
+            selectionRepository: selectionRepository()
+        )
+    }
+    
     lazy var updateComponentsFilterUseCase = Factory { [unowned self] in
         UpdateComponentsFilterUseCase(
             componentsFilterRepository: componentsFilterRepository()
@@ -97,6 +104,12 @@ class Composition {
         ComponentsListInteractor(
             getComponentsListItemsUseCase: getComponentsListItemsUseCase(),
             selectComponentUseCase: selectComponentUseCase()
+        )
+    }
+    
+    lazy var componentViewInteractor = Factory { [unowned self] in
+        ComponentViewInteractor(
+            getSelectedComponentUseCase: getSelectedComponentUseCase()
         )
     }
 }
