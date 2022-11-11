@@ -30,6 +30,7 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
             getComponentsFamiliesUseCase.familiesPublisher,
             selectionRepository.publisher
         )
+        .subscribe(on: DispatchQueue.global(qos: .background))
         .map { (families, selection) in
             self.map(families, selection: selection)
         }

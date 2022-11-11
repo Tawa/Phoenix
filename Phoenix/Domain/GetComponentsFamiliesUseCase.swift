@@ -25,6 +25,7 @@ struct GetComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol {
             documentRepository.publisher,
             componentsFilterRepository.publisher
         )
+        .subscribe(on: DispatchQueue.global(qos: .background))
         .map { (document, filter) in
             self.map(document, filter: filter)
         }

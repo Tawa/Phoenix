@@ -12,7 +12,7 @@ class Composition {
     // MARK: - Data
     lazy var phoenixDocumentRepository = Factory(scope: .singleton) { [unowned self] in
         PhoenixDocumentRepository(
-            document: self.document
+            document: document
         ) as PhoenixDocumentRepositoryProtocol
     }
     
@@ -35,7 +35,7 @@ class Composition {
         GetComponentsListItemsUseCase(
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
             familyFolderNameProvider: Container.familyFolderNameProvider(),
-            selectionRepository: self.selectionRepository()
+            selectionRepository: selectionRepository()
         ) as GetComponentsListItemsUseCaseProtocol
     }
     
@@ -85,10 +85,18 @@ class Composition {
     }
 
     // MARK: - Presentation
-    lazy var componentsFilterInteractor = Factory(scope: .singleton) { [unowned self] in
+    lazy var componentsFilterInteractor = Factory { [unowned self] in
         FilterViewInteractor(
             clearComponentsFilterUseCase: clearComponentsFilterUseCase(),
             getComponentsFilterUseCase: getComponentsFilterUseCase(),
-            updateComponentsFilterUseCase: updateComponentsFilterUseCase())
+            updateComponentsFilterUseCase: updateComponentsFilterUseCase()
+        )
+    }
+    
+    lazy var componentsListInteractor = Factory { [unowned self] in
+        ComponentsListInteractor(
+            getComponentsListItemsUseCase: getComponentsListItemsUseCase(),
+            selectComponentUseCase: selectComponentUseCase()
+        )
     }
 }

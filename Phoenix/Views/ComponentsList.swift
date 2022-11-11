@@ -14,15 +14,6 @@ struct ComponentsListRow: Hashable, Identifiable {
         self.name = name
         self.isSelected = isSelected
     }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
-        hasher.combine(isSelected)
-    }
-    
-    static func ==(lhs: Self, rhs: Self) -> Bool {
-        lhs.id == rhs.id
-    }
 }
 
 struct ComponentsListSection: Hashable, Identifiable {
@@ -36,15 +27,6 @@ struct ComponentsListSection: Hashable, Identifiable {
         folderName.map { folderName in
             name + "(Folder: \(folderName)"
         } ?? name
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
-        hasher.combine(rows)
-    }
-    
-    static func ==(lhs: Self, rhs: Self) -> Bool {
-        lhs.id == rhs.id
     }
 }
 
@@ -66,11 +48,12 @@ class ComponentsListInteractor {
          selectComponentUseCase: SelectComponentUseCaseProtocol) {
         self.getComponentsListItemsUseCase = getComponentsListItemsUseCase
         self.selectComponentUseCase = selectComponentUseCase
-        viewData.sections = getComponentsListItemsUseCase.list
 
+        viewData = .init(sections: getComponentsListItemsUseCase.list)
         subscription = getComponentsListItemsUseCase
             .listPublisher
-            .removeDuplicates()
+            .filter { [weak self] in self?.viewData.sections != $0}
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] sections in
                 self?.viewData.sections = sections
             })
