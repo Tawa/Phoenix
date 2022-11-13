@@ -8,35 +8,25 @@ import SwiftPackage
 import AccessibilityIdentifiers
 
 class ContentViewInteractor {
-    let deleteComponentUseCase: DeleteComponentUseCaseProtocol
-    
-    init(deleteComponentUseCase: DeleteComponentUseCaseProtocol) {
-        self.deleteComponentUseCase = deleteComponentUseCase
-    }
-    
-    func onRemoveComponent(with id: String) {
-        deleteComponentUseCase.deleteComponent(with: id)
+    func onRemoveComponent(with id: String, composition: Composition) {
+        composition.deleteComponentUseCase().deleteComponent(with: id)
     }
 }
 
 struct ContentView: View {
+    @EnvironmentObject var composition: Composition
+    
     var fileURL: URL?
     @Binding var document: PhoenixDocument
     @StateObject var viewModel: ViewModel
-    let composition: Composition
-    let interactor: ContentViewInteractor
+    let interactor: ContentViewInteractor = .init()
     
     init(fileURL: URL?,
          document: Binding<PhoenixDocument>,
-         viewModel: ViewModel,
-         composition: Composition) {
+         viewModel: ViewModel) {
         self.fileURL = fileURL
         self._document = document
         self._viewModel = .init(wrappedValue: viewModel)
-        
-        self.composition = composition
-        self.interactor = .init(deleteComponentUseCase: composition.deleteComponentUseCase())
-        self.composition.phoenixDocumentRepository().bind(document: document)
     }
     
     var body: some View {
@@ -76,7 +66,7 @@ struct ContentView: View {
                 familySheet(family: family)
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
                 ConfigurationView(
-                    configuration: $document.projectConfiguration,
+                    interactor: composition.configurationViewInteractor(),
                     allDependenciesConfiguration: allDependenciesConfiguration(
                         defaultDependencies: document.projectConfiguration.defaultDependencies)
                 ) {
@@ -155,7 +145,7 @@ struct ContentView: View {
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
             },
-            onRemove: { interactor.onRemoveComponent(with: component.id) },
+            onRemove: { interactor.onRemoveComponent(with: component.id, composition: composition) },
             allTargetTypes: allTargetTypes(forComponent: component),
             onRemoveResourceWithId: { document.removeResource(withId: $0, forComponentWithName: component.name) },
             onAddResourceWithName: { document.addResource($0, forComponentWithName: component.name) },

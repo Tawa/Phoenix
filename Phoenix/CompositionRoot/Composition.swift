@@ -2,7 +2,7 @@ import Factory
 import PhoenixDocument
 import SwiftUI
 
-class Composition {
+class Composition: ObservableObject {
     var document: Binding<PhoenixDocument>
     
     init(document: Binding<PhoenixDocument>) {
@@ -31,12 +31,25 @@ class Composition {
             documentRepository: phoenixDocumentRepository()
         ) as GetComponentsFamiliesUseCaseProtocol
     }
+    
     lazy var getComponentsListItemsUseCase = Factory { [unowned self] in
         GetComponentsListItemsUseCase(
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
             familyFolderNameProvider: Container.familyFolderNameProvider(),
             selectionRepository: selectionRepository()
         ) as GetComponentsListItemsUseCaseProtocol
+    }
+    
+    lazy var getProjectConfigurationUseCase = Factory { [unowned self] in
+        GetProjectConfigurationUseCase(
+            phoenixDocumentRepository: phoenixDocumentRepository()
+        ) as GetProjectConfigurationUseCaseProtocol
+    }
+    
+    lazy var updateProjectConfigurationUseCase = Factory { [unowned self] in
+        UpdateProjectConfigurationUseCase(
+            phoenixDocumentRepository: phoenixDocumentRepository()
+        ) as UpdateProjectConfigurationUseCaseProtocol
     }
     
     lazy var deleteComponentUseCase = Factory { [unowned self] in
@@ -110,6 +123,13 @@ class Composition {
     lazy var componentViewInteractor = Factory { [unowned self] in
         ComponentViewInteractor(
             getSelectedComponentUseCase: getSelectedComponentUseCase()
+        )
+    }
+    
+    lazy var configurationViewInteractor = Factory { [unowned self] in
+        ConfigurationViewInteractor(
+            getProjectConfigurationUseCase: getProjectConfigurationUseCase(),
+            updateProjectConfigurationUseCase: updateProjectConfigurationUseCase()
         )
     }
 }

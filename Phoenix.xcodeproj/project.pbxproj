@@ -42,6 +42,7 @@
 		38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */; };
 		B21394D0291C76B30019BF2E /* PhoenixDocumentRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21394CF291C76B30019BF2E /* PhoenixDocumentRepository.swift */; };
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
+		B2142FDA2921954300EEB98B /* GetProjectConfigurationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */; };
 		B21BF48D28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */; };
 		B224D9AC28C3CCA300997F80 /* PhoenixViews in Frameworks */ = {isa = PBXBuildFile; productRef = B224D9AB28C3CCA300997F80 /* PhoenixViews */; };
 		B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B22AFDA728B9528400C471A4 /* DemoAppGenerator */; };
@@ -161,6 +162,7 @@
 		981295FCE3B52E97779A2186 /* DocumentCoder */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoder; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		B21394CF291C76B30019BF2E /* PhoenixDocumentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentRepository.swift; sourceTree = "<group>"; };
+		B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProjectConfigurationUseCase.swift; sourceTree = "<group>"; };
 		B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+AppVersion.swift"; sourceTree = "<group>"; };
 		B233DB6828EB5BC000243D58 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITests.swift; sourceTree = "<group>"; };
@@ -365,11 +367,11 @@
 		38C7D144280888E800E2675B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B27B03FC291ED1DC0024551A /* Component */,
 				38E0B2F92815702E00B5992D /* ComponentDependenciesSheet.swift */,
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
 				38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */,
 				3810D8CC280990AF006E7EE3 /* ComponentsList.swift */,
-				3810D8CA2809811F006E7EE3 /* ComponentView.swift */,
 				3880FEE72842216800ED0110 /* ConfigurationView.swift */,
 				3873E5A72804C509000BCB03 /* ContentView.swift */,
 				3810D8DE280B4ADD006E7EE3 /* DependencyView.swift */,
@@ -460,6 +462,7 @@
 				B236A5FC291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift */,
 				B24F6D92291D98BF007170DD /* GetComponentsFilterUseCase.swift */,
 				B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */,
+				B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */,
 				B25621AF291E785C0093C8B9 /* GetSelectedComponentUseCase.swift */,
 				B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */,
 				B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */,
@@ -467,6 +470,14 @@
 				B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */,
 			);
 			path = Domain;
+			sourceTree = "<group>";
+		};
+		B27B03FC291ED1DC0024551A /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				3810D8CA2809811F006E7EE3 /* ComponentView.swift */,
+			);
+			path = Component;
 			sourceTree = "<group>";
 		};
 		B291BD2428CA8440000D2149 /* Features */ = {
@@ -751,6 +762,7 @@
 				B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */,
 				B24F6D97291D997F007170DD /* ClearComponentsFilterUseCase.swift in Sources */,
 				B25621B0291E785C0093C8B9 /* GetSelectedComponentUseCase.swift in Sources */,
+				B2142FDA2921954300EEB98B /* GetProjectConfigurationUseCase.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesSheet.swift in Sources */,
 				38C7D1492808B35300E2675B /* NewComponentSheetIdentifiers.swift in Sources */,
 				B240A5DB291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift in Sources */,

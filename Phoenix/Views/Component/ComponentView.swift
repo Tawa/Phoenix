@@ -4,11 +4,7 @@ import Component
 import SwiftUI
 
 class ComponentViewData: ObservableObject {
-    @Published var data: ComponentData = .default {
-        didSet {
-            print("Data: \(data)")
-        }
-    }
+    @Published var data: ComponentData = .default
 }
 
 class ComponentViewInteractor {

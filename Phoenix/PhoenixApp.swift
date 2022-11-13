@@ -9,6 +9,7 @@ class PhoenixAppCompositionRoot: ObservableObject {
     func composition(for document: Binding<PhoenixDocument>, url: URL?) -> Composition {
         guard let url = url else { return Composition(document: document) }
         if let composition = compositions[url] {
+            composition.phoenixDocumentRepository().bind(document: document)
             return composition
         }
         let composition = Composition(document: document)
@@ -33,9 +34,9 @@ struct PhoenixApp: App {
                     filesURLDataStore: Container.filesURLDataStore(),
                     projectGenerator: Container.projectGenerator(),
                     composition: compositionRoot.composition(for: file.$document, url: file.fileURL)
-                ),
-                composition: compositionRoot.composition(for: file.$document, url: file.fileURL)
+                )
             )
+            .environmentObject(compositionRoot.composition(for: file.$document, url: file.fileURL))
         }.windowToolbarStyle(.expanded)
     }
 }

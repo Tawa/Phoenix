@@ -11,6 +11,7 @@ protocol PhoenixDocumentRepositoryProtocol {
     
     func component(with id: String) -> Component?
     func deleteComponent(with id: String)
+    func update(configuration: ProjectConfiguration)
 }
 
 class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
@@ -58,5 +59,9 @@ class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
             .name
         else { return }
         document.wrappedValue.removeComponent(withName: name)
+    }
+    
+    func update(configuration: ProjectConfiguration) {
+        document.wrappedValue.projectConfiguration = configuration
     }
 }

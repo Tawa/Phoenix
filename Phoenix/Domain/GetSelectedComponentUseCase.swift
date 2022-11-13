@@ -48,6 +48,12 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
               let component = componentFamilies[familyIndex].components.first(where: { $0.name == selection })
         else { return .default }
         
-        return ComponentData(title: component.name.full)
+        let title = componentName(component.name, for: componentFamilies[familyIndex].family)
+        
+        return ComponentData(title: title)
+    }
+    
+    private func componentName(_ name: Name, for family: Family) -> String {
+        family.ignoreSuffix == true ? name.given : name.given + name.family
     }
 }
