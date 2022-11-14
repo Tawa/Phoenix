@@ -21,7 +21,7 @@ struct SelectNextComponentUseCase: SelectNextComponentUseCaseProtocol {
         
         guard !components.isEmpty else { return }
 
-        let selectedName = selectionRepository.value
+        let selectedName = selectionRepository.componentName
         if let index = components.firstIndex(where: { $0.name == selectedName }) {
             let result = (index + 1)%components.count
             let name = components[result].name

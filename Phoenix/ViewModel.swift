@@ -90,25 +90,8 @@ class ViewModel: ObservableObject {
         self.filesURLDataStore = filesURLDataStore
         self.projectGenerator = projectGenerator
         self.composition = composition
-        
-        composition
-            .selectionRepository()
-            .publisher
-            .sink { [weak self] name in
-                guard self?.selectedComponentName != name else { return }
-                self?.selectedComponentName = name
-            }.store(in: &subscriptions)
-        
-        self._selectedComponentName
-            .projectedValue
-            .compactMap { $0 }
-            .sink { [weak self] name in
-                guard let selectionRepository = self?.composition.selectionRepository(),
-                      selectionRepository.value != name
-                else { return }
-                selectionRepository.select(name: name)
-            }.store(in: &subscriptions)
 
+        subscribeToPublishers()
     }
     
     // MARK: - FamilyFolderNameProvider
@@ -268,5 +251,49 @@ class ViewModel: ObservableObject {
                     self.appUpdateVersionInfo = appVersionInfos.results.first
                 }
             }
+    }
+}
+
+// MARK: - Private
+private extension ViewModel {
+    func subscribeToPublishers() {
+        composition
+            .selectionRepository()
+            .componentNamePublisher
+            .sink { [weak self] name in
+                guard self?.selectedComponentName != name else { return }
+                self?.selectedComponentName = name
+            }.store(in: &subscriptions)
+        
+        _selectedComponentName
+            .projectedValue
+            .compactMap { $0 }
+            .sink { [weak self] name in
+                guard let selectionRepository = self?.composition.selectionRepository(),
+                      selectionRepository.componentName != name
+                else { return }
+                selectionRepository.select(name: name)
+            }.store(in: &subscriptions)
+        
+        composition
+            .selectionRepository()
+            .familyNamePublisher
+            .sink { [weak self] familyName in
+                guard self?.selectedFamilyName != familyName else { return }
+                self?.selectedFamilyName = familyName
+            }.store(in: &subscriptions)
+        
+        _selectedFamilyName
+            .projectedValue
+            .sink { [weak self] familyName in
+                guard let selectionRepository = self?.composition.selectionRepository(),
+                      selectionRepository.familyName != familyName
+                else { return }
+                if let familyName = familyName {
+                    selectionRepository.select(familyName: familyName)
+                } else {
+                    selectionRepository.deselectFamilyName()
+                }
+            }.store(in: &subscriptions)
     }
 }

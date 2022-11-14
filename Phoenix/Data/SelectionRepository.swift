@@ -2,25 +2,47 @@ import Combine
 import Component
 
 protocol SelectionRepositoryProtocol {
-    var value: Name? { get }
-    var publisher: AnyPublisher<Name?, Never> { get }
+    var componentName: Name? { get }
+    var componentNamePublisher: AnyPublisher<Name?, Never> { get }
+    
+    var familyName: String? { get }
+    var familyNamePublisher: AnyPublisher<String?, Never> { get }
     
     func select(name: Name)
+    
+    func select(familyName: String)
+    func deselectFamilyName()
 }
 
 class SelectionRepository: SelectionRepositoryProtocol {
-    var value: Name? = nil {
+    var componentName: Name? = nil {
         didSet {
-            subject.send(value)
+            componentNameSubject.send(componentName)
         }
     }
-    private var subject: CurrentValueSubject<Name?, Never> = .init(nil)
-    var publisher: AnyPublisher<Name?, Never> { subject.eraseToAnyPublisher() }
+    private var componentNameSubject: CurrentValueSubject<Name?, Never> = .init(nil)
+    var componentNamePublisher: AnyPublisher<Name?, Never> { componentNameSubject.eraseToAnyPublisher() }
+    
+    var familyName: String? = nil {
+        didSet {
+            familyNameSubject.send(familyName)
+        }
+    }
+    private var familyNameSubject: CurrentValueSubject<String?, Never> = .init(nil)
+    var familyNamePublisher: AnyPublisher<String?, Never> { familyNameSubject.eraseToAnyPublisher() }
     
     init() {
     }
     
     func select(name: Name) {
-        self.value = name
+        self.componentName = name
+    }
+    
+    func select(familyName: String) {
+        self.familyName = familyName
+    }
+
+    func deselectFamilyName() {
+        familyName = nil
     }
 }

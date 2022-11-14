@@ -21,12 +21,12 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
     
     var componentData: ComponentData {
         map(componentFamilies: getComponentsFamiliesUseCase.families,
-            selection: selectionRepository.value)
+            selection: selectionRepository.componentName)
     }
     var componentDataPublisher: AnyPublisher<ComponentData, Never> {
         Publishers.CombineLatest(
             getComponentsFamiliesUseCase.familiesPublisher,
-            selectionRepository.publisher
+            selectionRepository.componentNamePublisher
         )
             .subscribe(on: DispatchQueue.global(qos: .background))
             .map { (families, selection)  in
