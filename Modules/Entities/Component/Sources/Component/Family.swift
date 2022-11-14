@@ -1,5 +1,7 @@
+import Foundation
+
 public struct Family: Codable, Hashable, Identifiable {
-    public var id: Int { hashValue }
+    public var id: String = UUID().uuidString
 
     enum CodingKeys: CodingKey {
         case name

@@ -41,6 +41,7 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
         families
             .compactMap { componentsFamily in
                 let section: ComponentsListSection = .init(
+                    id: componentsFamily.family.id,
                     name: sectionTitle(forFamily: componentsFamily.family),
                     folderName: sectionFolderName(forFamily: componentsFamily.family),
                     rows: componentsFamily.components.compactMap { component in

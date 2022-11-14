@@ -1,10 +1,11 @@
 import Component
 
-protocol SelectComponentUseCaseProtocol {
+protocol SelectFamilyUseCaseProtocol {
     func select(id: String)
+    func deselect()
 }
 
-struct SelectComponentUseCase: SelectComponentUseCaseProtocol {
+struct SelectFamilyUseCase: SelectFamilyUseCaseProtocol {
     let phoenixDocumentRepository: PhoenixDocumentRepositoryProtocol
     let selectionRepository: SelectionRepositoryProtocol
     
@@ -13,11 +14,15 @@ struct SelectComponentUseCase: SelectComponentUseCaseProtocol {
         self.phoenixDocumentRepository = phoenixDocumentRepository
         self.selectionRepository = selectionRepository
     }
-    
+
     func select(id: String) {
         phoenixDocumentRepository
-            .component(with: id)
+            .family(with: id)
             .map(\.name)
-            .map(selectionRepository.select(name:))
+            .map(selectionRepository.select(familyName:))
+    }
+    
+    func deselect() {
+        selectionRepository.deselectFamilyName()
     }
 }

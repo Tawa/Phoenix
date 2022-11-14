@@ -12,6 +12,8 @@ protocol PhoenixDocumentRepositoryProtocol {
     func component(with id: String) -> Component?
     func deleteComponent(with id: String)
     func update(configuration: ProjectConfiguration)
+    
+    func family(with id: String) -> Family?
 }
 
 class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
@@ -63,5 +65,9 @@ class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
     
     func update(configuration: ProjectConfiguration) {
         document.wrappedValue.projectConfiguration = configuration
+    }
+    
+    func family(with id: String) -> Family? {
+        value.componentsFamilies.first(where: { $0.family.id == id })?.family
     }
 }

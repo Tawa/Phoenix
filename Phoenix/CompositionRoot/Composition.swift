@@ -60,9 +60,16 @@ class Composition: ObservableObject {
     
     lazy var selectComponentUseCase = Factory { [unowned self] in
         SelectComponentUseCase(
-            phoenixDocumentRepository: self.phoenixDocumentRepository(),
-            selectionRepository: self.selectionRepository()
+            phoenixDocumentRepository: phoenixDocumentRepository(),
+            selectionRepository: selectionRepository()
         ) as SelectComponentUseCaseProtocol
+    }
+    
+    lazy var selectFamilyUseCase = Factory { [unowned self] in
+        SelectFamilyUseCase(
+            phoenixDocumentRepository: phoenixDocumentRepository(),
+            selectionRepository: selectionRepository()
+        ) as SelectFamilyUseCaseProtocol
     }
     
     lazy var clearComponentsFilterUseCase = Factory { [unowned self] in
@@ -116,7 +123,8 @@ class Composition: ObservableObject {
     lazy var componentsListInteractor = Factory { [unowned self] in
         ComponentsListInteractor(
             getComponentsListItemsUseCase: getComponentsListItemsUseCase(),
-            selectComponentUseCase: selectComponentUseCase()
+            selectComponentUseCase: selectComponentUseCase(),
+            selectFamilyUseCase: selectFamilyUseCase()
         )
     }
     

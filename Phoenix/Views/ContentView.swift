@@ -62,8 +62,8 @@ struct ContentView: View {
                       dismissButton: .default(Text("Ok")))
             }).sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
                 newComponentSheet(state: state)
-            }.sheet(item: .constant(document.getFamily(withName: viewModel.selectedFamilyName ?? ""))) { family in
-                familySheet(family: family)
+            }.sheet(isPresented: .constant(viewModel.selectedFamilyName != nil)) {
+                FamilySheet(interactor: FamilySheetInteractor(selectFamilyUseCase: composition.selectFamilyUseCase()))
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
                 ConfigurationView(
                     interactor: composition.configurationViewInteractor(),
@@ -232,34 +232,6 @@ struct ContentView: View {
                                                                                                            value: version))
             viewModel.showingRemoteDependencySheet = false
         }, onDismiss: { viewModel.showingRemoteDependencySheet = false })
-    }
-    
-    func familySheet(family: Family) -> some View {
-        FamilySheet(
-            name: family.name,
-            ignoreSuffix: family.ignoreSuffix,
-            onUpdateSelectedFamily: { document.updateFamily(withName: family.name, ignoresSuffix: !$0) },
-            folderName: family.folder ?? "",
-            onUpdateFolderName: { document.updateFamily(withName: family.name, folder: $0) },
-            defaultFolderName: viewModel.folderName(forFamily: family.name),
-            componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
-            allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: family.defaultDependencies),
-            allDependenciesSelectionValues: allDependenciesSelectionValues(),
-            onUpdateTargetTypeValue: {
-                document.updateDefaultdependencyForFamily(
-                    named: family.name,
-                    packageType: $0,
-                    value: $1)
-            },
-            rules: document.families.map(\.family).filter { $0 != family }.map { otherFamily in
-                FamilyRule(
-                    name: otherFamily.name,
-                    enabled: !family.excludedFamilies.contains(where: { otherFamily.name == $0 })
-                )
-            }, onUpdateFamilyRule: { name, enabled in
-                document.updateFamilyRule(withName: family.name, otherFamilyName: name, enabled: enabled)
-            },
-            onDismiss: { viewModel.selectedFamilyName = nil })
     }
     
     func componentDependencyView(forComponent component: Component, dependency: ComponentDependency) -> some View {

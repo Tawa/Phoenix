@@ -17,7 +17,7 @@ struct ComponentsListRow: Hashable, Identifiable {
 }
 
 struct ComponentsListSection: Hashable, Identifiable {
-    var id: String { name }
+    let id: String
     
     let name: String
     let folderName: String?
@@ -41,13 +41,16 @@ class ComponentsListViewData: ObservableObject {
 class ComponentsListInteractor {
     let getComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol
     let selectComponentUseCase: SelectComponentUseCaseProtocol
+    let selectFamilyUseCase: SelectFamilyUseCaseProtocol
     var viewData: ComponentsListViewData = .init(sections: [])
     var subscription: AnyCancellable?
     
     init(getComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol,
-         selectComponentUseCase: SelectComponentUseCaseProtocol) {
+         selectComponentUseCase: SelectComponentUseCaseProtocol,
+         selectFamilyUseCase: SelectFamilyUseCaseProtocol) {
         self.getComponentsListItemsUseCase = getComponentsListItemsUseCase
         self.selectComponentUseCase = selectComponentUseCase
+        self.selectFamilyUseCase = selectFamilyUseCase
 
         viewData = .init(sections: getComponentsListItemsUseCase.list)
         subscription = getComponentsListItemsUseCase
@@ -61,6 +64,10 @@ class ComponentsListInteractor {
     
     func select(id: String) {
         selectComponentUseCase.select(id: id)
+    }
+    
+    func selectFamily(id: String) {
+        selectFamilyUseCase.select(id: id)
     }
 }
 
@@ -88,7 +95,7 @@ struct ComponentsList: View {
                             .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
                         }
                     } header: {
-                        Button(action: {},
+                        Button(action: { interactor.selectFamily(id: section.id) },
                                label: {
                             HStack {
                                 Text(section.name)
