@@ -20,7 +20,7 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
     let selectionRepository: SelectionRepositoryProtocol
     
     var componentData: ComponentData {
-        map(componentFamilies: getComponentsFamiliesUseCase.families,
+        map(families: getComponentsFamiliesUseCase.families,
             selection: selectionRepository.componentName)
     }
     var componentDataPublisher: AnyPublisher<ComponentData, Never> {
@@ -30,7 +30,7 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
         )
             .subscribe(on: DispatchQueue.global(qos: .background))
             .map { (families, selection)  in
-                self.map(componentFamilies: families, selection: selection)
+                self.map(families: families, selection: selection)
             }
             .removeDuplicates()
             .eraseToAnyPublisher()
@@ -42,13 +42,13 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
         self.selectionRepository = selectionRepository
     }
     
-    private func map(componentFamilies: [ComponentsFamily], selection: Name?) -> ComponentData {
+    private func map(families: [ComponentsFamily], selection: Name?) -> ComponentData {
         guard let selection,
-              let familyIndex = componentFamilies.firstIndex(where: { $0.family.name == selection.family }),
-              let component = componentFamilies[familyIndex].components.first(where: { $0.name == selection })
+              let familyIndex = families.firstIndex(where: { $0.family.name == selection.family }),
+              let component = families[familyIndex].components.first(where: { $0.name == selection })
         else { return .default }
         
-        let title = componentName(component.name, for: componentFamilies[familyIndex].family)
+        let title = componentName(component.name, for: families[familyIndex].family)
         
         return ComponentData(title: title)
     }

@@ -65,11 +65,24 @@ class Composition: ObservableObject {
         ) as SelectComponentUseCaseProtocol
     }
     
+    lazy var getSelectedFamilyUseCase = Factory { [unowned self] in
+        GetSelectedFamilyUseCase(
+            getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
+            selectionRepository: selectionRepository()
+        ) as GetSelectedFamilyUseCaseProtocol
+    }
+    
     lazy var selectFamilyUseCase = Factory { [unowned self] in
         SelectFamilyUseCase(
             phoenixDocumentRepository: phoenixDocumentRepository(),
             selectionRepository: selectionRepository()
         ) as SelectFamilyUseCaseProtocol
+    }
+    
+    lazy var updateFamilyUseCase = Factory { [unowned self] in
+        UpdateFamilyUseCase(
+            phoenixDocumentRepository: phoenixDocumentRepository()
+        ) as UpdateFamilyUseCaseProtocol
     }
     
     lazy var clearComponentsFilterUseCase = Factory { [unowned self] in

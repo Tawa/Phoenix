@@ -1,13 +1,13 @@
 import AccessibilityIdentifiers
+import Combine
 import Component
+import ComponentDetailsProviderContract
 import SwiftUI
 
 class FamilySheetViewData: ObservableObject {
     @Published var name: String
     @Published var ignoreSuffix: Bool
-    @Published var onUpdateSelectedFamily: (Bool) -> Void
     @Published var folderName: String
-    @Published var onUpdateFolderName: (String?) -> Void
     @Published var defaultFolderName: String
     @Published var componentNameExample: String
     @Published var allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
@@ -16,11 +16,10 @@ class FamilySheetViewData: ObservableObject {
     @Published var rules: [FamilyRule]
     @Published var onUpdateFamilyRule: (String, Bool) -> Void
     
-    init(name: String = "",
+    init(family: Family,
+         name: String = "",
          ignoreSuffix: Bool = false,
-         onUpdateSelectedFamily: @escaping (Bool) -> Void = { _ in },
          folderName: String = "",
-         onUpdateFolderName: @escaping (String?) -> Void = { _ in },
          defaultFolderName: String = "",
          componentNameExample: String = "",
          allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] = [],
@@ -30,9 +29,7 @@ class FamilySheetViewData: ObservableObject {
          onUpdateFamilyRule: @escaping (String, Bool) -> Void = { _, _ in }) {
         self.name = name
         self.ignoreSuffix = ignoreSuffix
-        self.onUpdateSelectedFamily = onUpdateSelectedFamily
         self.folderName = folderName
-        self.onUpdateFolderName = onUpdateFolderName
         self.defaultFolderName = defaultFolderName
         self.componentNameExample = componentNameExample
         self.allDependenciesConfiguration = allDependenciesConfiguration
@@ -43,13 +40,6 @@ class FamilySheetViewData: ObservableObject {
     }
     /*
      FamilySheet(
-         name: family.name,
-         ignoreSuffix: family.ignoreSuffix,
-         onUpdateSelectedFamily: { document.updateFamily(withName: family.name, ignoresSuffix: !$0) },
-         folderName: family.folder ?? "",
-         onUpdateFolderName: { document.updateFamily(withName: family.name, folder: $0) },
-         defaultFolderName: viewModel.folderName(forFamily: family.name),
-         componentNameExample: "Component\(family.ignoreSuffix ? "" : family.name)",
          allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: family.defaultDependencies),
          allDependenciesSelectionValues: allDependenciesSelectionValues(),
          onUpdateTargetTypeValue: {
@@ -71,16 +61,52 @@ class FamilySheetViewData: ObservableObject {
 }
 
 class FamilySheetInteractor {
+    let familyFolderNameProvider: FamilyFolderNameProviderProtocol
+    let getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol
     let selectFamilyUseCase: SelectFamilyUseCaseProtocol
+    let updateFamilyUseCase: UpdateFamilyUseCaseProtocol
+
+    var family: Family
     var viewData: FamilySheetViewData
-    
-    init(selectFamilyUseCase: SelectFamilyUseCaseProtocol) {
+    var subscription: AnyCancellable?
+
+    init(familyFolderNameProvider: FamilyFolderNameProviderProtocol,
+         getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol,
+         selectFamilyUseCase: SelectFamilyUseCaseProtocol,
+         updateFamilyUseCase: UpdateFamilyUseCaseProtocol) {
+        self.familyFolderNameProvider = familyFolderNameProvider
         self.selectFamilyUseCase = selectFamilyUseCase
-        self.viewData = FamilySheetViewData()
+        self.getSelectedFamilyUseCase = getSelectedFamilyUseCase
+        self.updateFamilyUseCase = updateFamilyUseCase
+
+        family = getSelectedFamilyUseCase.family
+        self.viewData = .init(family: family)
+        self.reloadViewData(family: family)
+        
+        subscription = getSelectedFamilyUseCase
+            .familyPublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] family in
+                self?.reloadViewData(family: family)
+            })
     }
     
     func deselect() {
         selectFamilyUseCase.deselect()
+    }
+    
+    func update(family: Family) {
+        updateFamilyUseCase.update(family: family)
+    }
+    
+    private func reloadViewData(family: Family) {
+        self.family = family
+        
+        viewData.name = family.name
+        viewData.ignoreSuffix = family.ignoreSuffix
+        viewData.folderName = family.folder ?? ""
+        viewData.defaultFolderName = familyFolderNameProvider.folderName(forFamily: family.name)
+        viewData.componentNameExample = "Component\(family.ignoreSuffix ? "" : family.name)"
     }
 }
 
@@ -106,7 +132,11 @@ struct FamilySheet: View {
                     .font(.largeTitle)
                 
                 Toggle(isOn: Binding(get: { !viewData.ignoreSuffix },
-                                     set: { viewData.onUpdateSelectedFamily($0) })) {
+                                     set: { _ in
+                    var family = interactor.family
+                    family.ignoreSuffix.toggle()
+                    interactor.update(family: family)
+                })) {
                     Text("Append Component Name with Family Name. ")
                         .bold()
                     + Text("\nExample: \(viewData.componentNameExample)")
@@ -117,9 +147,17 @@ struct FamilySheet: View {
                     Text("Folder Name:")
                     TextField("Default: (\(viewData.defaultFolderName))",
                               text: Binding(get: { viewData.folderName },
-                                            set: { viewData.onUpdateFolderName($0) }))
+                                            set: {
+                        var family = interactor.family
+                        family.folder = $0.isEmpty ? nil : $0
+                        interactor.update(family: family)
+                    }))
                     .with(accessibilityIdentifier: FamilySheetIdentifiers.folderNameTextField)
-                    Button(action: { viewData.onUpdateFolderName(nil) }) {
+                    Button(action: {
+                        var family = interactor.family
+                        family.folder = nil
+                        interactor.update(family: family)
+                    }) {
                         Text("Use Default")
                     }
                 }
