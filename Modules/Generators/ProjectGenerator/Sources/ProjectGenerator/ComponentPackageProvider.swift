@@ -32,7 +32,7 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
                                                           of: family,
                                                           packageConfiguration: packageConfiguration)
         
-        let defaultLocalization: String? = component.defaultLocalization[packageConfiguration.name]
+        let defaultLocalization: String? = component.defaultLocalization.modules.contains(packageConfiguration.name) ? component.defaultLocalization.value : nil
         
         let packageTargetType = PackageTargetType(name: packageConfiguration.name, isTests: false)
         var dependencies: [Dependency] = []
