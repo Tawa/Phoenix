@@ -1,97 +1,63 @@
 import AccessibilityIdentifiers
+import Factory
 import Combine
 import Component
 import ComponentDetailsProviderContract
 import SwiftUI
 
-class FamilySheetViewData: ObservableObject {
-    @Published var name: String
-    @Published var ignoreSuffix: Bool
-    @Published var folderName: String
-    @Published var defaultFolderName: String
-    @Published var componentNameExample: String
-    @Published var allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
-    @Published var allDependenciesSelectionValues: [String]
-    @Published var onUpdateTargetTypeValue: (PackageTargetType, String?) -> Void
-    @Published var rules: [FamilyRule]
-    @Published var onUpdateFamilyRule: (String, Bool) -> Void
+struct FamilySheetData {
+    var family: Family
+    let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
+    let allDependenciesSelectionValues: [String]
+    let rules: [FamilyRule]
+}
+
+class FamilySheetPresenter: ObservableObject {
+    @Injected(Container.familyFolderNameProvider) var familyFolderNameProvider
+    @Published var viewData: FamilySheetData
+    var name: String { viewData.family.name }
+    var ignoreSuffix: Bool { viewData.family.ignoreSuffix }
+    var folderName: String { viewData.family.folder ?? "" }
+    var defaultFolderName: String { familyFolderNameProvider.folderName(forFamily: viewData.family.name) }
+    var componentNameExample: String { "Component\(viewData.family.ignoreSuffix ? "" : viewData.family.name)" }
+    var allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] { viewData.allDependenciesConfiguration }
+    var allDependenciesSelectionValues: [String] { viewData.allDependenciesSelectionValues }
+    var rules: [FamilyRule] { viewData.rules }
     
-    init(family: Family,
-         name: String = "",
-         ignoreSuffix: Bool = false,
-         folderName: String = "",
-         defaultFolderName: String = "",
-         componentNameExample: String = "",
-         allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] = [],
-         allDependenciesSelectionValues: [String] = [],
-         onUpdateTargetTypeValue: @escaping (PackageTargetType, String?) -> Void = { _, _ in },
-         rules: [FamilyRule] = [],
-         onUpdateFamilyRule: @escaping (String, Bool) -> Void = { _, _ in }) {
-        self.name = name
-        self.ignoreSuffix = ignoreSuffix
-        self.folderName = folderName
-        self.defaultFolderName = defaultFolderName
-        self.componentNameExample = componentNameExample
-        self.allDependenciesConfiguration = allDependenciesConfiguration
-        self.allDependenciesSelectionValues = allDependenciesSelectionValues
-        self.onUpdateTargetTypeValue = onUpdateTargetTypeValue
-        self.rules = rules
-        self.onUpdateFamilyRule = onUpdateFamilyRule
+    init(viewData: FamilySheetData) {
+        self.viewData = viewData
     }
-    /*
-     FamilySheet(
-         allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: family.defaultDependencies),
-         allDependenciesSelectionValues: allDependenciesSelectionValues(),
-         onUpdateTargetTypeValue: {
-             document.updateDefaultdependencyForFamily(
-                 named: family.name,
-                 packageType: $0,
-                 value: $1)
-         },
-         rules: document.families.map(\.family).filter { $0 != family }.map { otherFamily in
-             FamilyRule(
-                 name: otherFamily.name,
-                 enabled: !family.excludedFamilies.contains(where: { otherFamily.name == $0 })
-             )
-         }, onUpdateFamilyRule: { name, enabled in
-             document.updateFamilyRule(withName: family.name, otherFamilyName: name, enabled: enabled)
-         },
-         onDismiss: { viewModel.selectedFamilyName = nil })
-     */
 }
 
 class FamilySheetInteractor {
     let familyFolderNameProvider: FamilyFolderNameProviderProtocol
-    let getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol
+    let getFamilySheetDataUseCase: GetFamilySheetDataUseCaseProtocol
     let selectFamilyUseCase: SelectFamilyUseCaseProtocol
     let updateFamilyUseCase: UpdateFamilyUseCaseProtocol
 
-    var family: Family
-    var viewData: FamilySheetViewData
+    var viewData: FamilySheetPresenter
     var subscription: AnyCancellable?
 
     init(familyFolderNameProvider: FamilyFolderNameProviderProtocol,
-         getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol,
+         getFamilySheetDataUseCase: GetFamilySheetDataUseCaseProtocol,
          selectFamilyUseCase: SelectFamilyUseCaseProtocol,
          updateFamilyUseCase: UpdateFamilyUseCaseProtocol) {
         self.familyFolderNameProvider = familyFolderNameProvider
+        self.getFamilySheetDataUseCase = getFamilySheetDataUseCase
         self.selectFamilyUseCase = selectFamilyUseCase
-        self.getSelectedFamilyUseCase = getSelectedFamilyUseCase
         self.updateFamilyUseCase = updateFamilyUseCase
 
-        family = getSelectedFamilyUseCase.family
-        self.viewData = .init(family: family)
-        self.reloadViewData(family: family)
-        
-        subscription = getSelectedFamilyUseCase
-            .familyPublisher
+        self.viewData = .init(viewData: getFamilySheetDataUseCase.value)
+        subscription = getFamilySheetDataUseCase
+            .publisher
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] family in
-                self?.reloadViewData(family: family)
+            .sink(receiveValue: { [weak self] viewData in
+                self?.viewData.viewData = viewData
             })
     }
     
     func deselect() {
+        subscription?.cancel()
         selectFamilyUseCase.deselect()
     }
     
@@ -99,14 +65,10 @@ class FamilySheetInteractor {
         updateFamilyUseCase.update(family: family)
     }
     
-    private func reloadViewData(family: Family) {
-        self.family = family
-        
-        viewData.name = family.name
-        viewData.ignoreSuffix = family.ignoreSuffix
-        viewData.folderName = family.folder ?? ""
-        viewData.defaultFolderName = familyFolderNameProvider.folderName(forFamily: family.name)
-        viewData.componentNameExample = "Component\(family.ignoreSuffix ? "" : family.name)"
+    func update(_ closure: (inout Family) -> Void) {
+        var family = viewData.viewData.family
+        closure(&family)
+        updateFamilyUseCase.update(family: family)
     }
 }
 
@@ -117,7 +79,7 @@ struct FamilyRule: Identifiable {
 }
 
 struct FamilySheet: View {
-    @ObservedObject var viewData: FamilySheetViewData
+    @ObservedObject var viewData: FamilySheetPresenter
     let interactor: FamilySheetInteractor
     
     init(interactor: FamilySheetInteractor) {
@@ -133,9 +95,9 @@ struct FamilySheet: View {
                 
                 Toggle(isOn: Binding(get: { !viewData.ignoreSuffix },
                                      set: { _ in
-                    var family = interactor.family
-                    family.ignoreSuffix.toggle()
-                    interactor.update(family: family)
+                    interactor.update { family in
+                        family.ignoreSuffix.toggle()
+                    }
                 })) {
                     Text("Append Component Name with Family Name. ")
                         .bold()
@@ -147,16 +109,16 @@ struct FamilySheet: View {
                     Text("Folder Name:")
                     TextField("Default: (\(viewData.defaultFolderName))",
                               text: Binding(get: { viewData.folderName },
-                                            set: {
-                        var family = interactor.family
-                        family.folder = $0.isEmpty ? nil : $0
-                        interactor.update(family: family)
+                                            set: { newValue in
+                        interactor.update { family in
+                            family.folder = newValue.isEmpty ? nil : newValue
+                        }
                     }))
                     .with(accessibilityIdentifier: FamilySheetIdentifiers.folderNameTextField)
                     Button(action: {
-                        var family = interactor.family
-                        family.folder = nil
-                        interactor.update(family: family)
+                        interactor.update { family in
+                            family.folder = nil
+                        }
                     }) {
                         Text("Use Default")
                     }
@@ -168,15 +130,28 @@ struct FamilySheet: View {
                     title: "Default Dependencies",
                     allTypes: viewData.allDependenciesConfiguration,
                     allSelectionValues: viewData.allDependenciesSelectionValues,
-                    onUpdateTargetTypeValue: viewData.onUpdateTargetTypeValue)
-                
+                    onUpdateTargetTypeValue: { (packageTargetType, value) -> Void in
+                        interactor.update { family in
+                            family.defaultDependencies[packageTargetType] = value
+                        }
+                    }
+                )
                 
                 VStack(alignment: .leading) {
                     Text("Allow ") + Text(viewData.name).bold() + Text(" components to be used in:")
                     ForEach(viewData.rules) { rule in
                         Toggle(rule.name,
                                isOn: Binding(get: { rule.enabled },
-                                             set: { viewData.onUpdateFamilyRule(rule.name, $0) })
+                                             set: { enabled in
+                            interactor.update { family in
+                                if enabled {
+                                    family.excludedFamilies.removeAll(where: { rule.name == $0 })
+                                } else {
+                                    family.excludedFamilies.append(rule.name)
+                                    family.excludedFamilies.sort()
+                                }
+                            }
+                        })
                         )
                     }
                 }

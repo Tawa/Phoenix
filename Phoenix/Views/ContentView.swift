@@ -30,7 +30,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        return VStack(alignment: .leading, spacing: 0) {
             toolbarViews()
             Divider()
             HSplitView {
@@ -66,7 +66,7 @@ struct ContentView: View {
                 FamilySheet(
                     interactor: FamilySheetInteractor(
                         familyFolderNameProvider: Container.familyFolderNameProvider(),
-                        getSelectedFamilyUseCase: composition.getSelectedFamilyUseCase(),
+                        getFamilySheetDataUseCase: composition.getFamilySheetDataUseCase(),
                         selectFamilyUseCase: composition.selectFamilyUseCase(),
                         updateFamilyUseCase: composition.updateFamilyUseCase()
                     )

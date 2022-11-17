@@ -13,7 +13,7 @@ struct GetSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol {
 
     var family: Family {
         map(families: getComponentsFamiliesUseCase.families,
-            familyName: selectionRepository.familyName)
+            familyName: selectionRepository.familyName) ?? defaultFamily()
     }
     var familyPublisher: AnyPublisher<Family, Never> {
         Publishers.CombineLatest(
@@ -24,6 +24,7 @@ struct GetSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol {
         .map { (families, familyName)  in
             self.map(families: families, familyName: familyName)
         }
+        .compactMap { $0 }
         .removeDuplicates()
         .eraseToAnyPublisher()
     }
@@ -34,8 +35,8 @@ struct GetSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol {
         self.selectionRepository = selectionRepository
     }
 
-    private func map(families: [ComponentsFamily], familyName: String?) -> Family {
-        families.first(where: { $0.family.name == familyName })?.family ?? defaultFamily()
+    private func map(families: [ComponentsFamily], familyName: String?) -> Family? {
+        families.first(where: { $0.family.name == familyName })?.family
     }
     
     private func defaultFamily() -> Family {
