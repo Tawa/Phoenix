@@ -122,6 +122,7 @@ extension PhoenixDocument {
             })
 
         let newComponent = Component(name: name,
+                                     defaultLocalization: [:],
                                      iOSVersion: template?.iOSVersion,
                                      macOSVersion: template?.macOSVersion,
                                      modules: template?.modules ?? moduleTypes,
