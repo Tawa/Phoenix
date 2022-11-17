@@ -160,11 +160,4 @@ class Composition: ObservableObject {
             getSelectedComponentUseCase: getSelectedComponentUseCase()
         )
     }
-    
-    lazy var configurationViewInteractor = Factory { [unowned self] in
-        ConfigurationViewInteractor(
-            getProjectConfigurationUseCase: getProjectConfigurationUseCase(),
-            updateProjectConfigurationUseCase: updateProjectConfigurationUseCase()
-        )
-    }
 }

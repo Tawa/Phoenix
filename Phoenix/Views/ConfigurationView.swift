@@ -4,62 +4,24 @@ import Component
 import Factory
 import SwiftUI
 
-class ConfigurationViewData: ObservableObject {
-    @Published var configuration: ProjectConfiguration
-    
-    init(configuration: ProjectConfiguration) {
-        self.configuration = configuration
-    }
-}
-
-class ConfigurationViewInteractor {
-    let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
-    let updateProjectConfigurationUseCase: UpdateProjectConfigurationUseCaseProtocol
-
-    var viewData: ConfigurationViewData
-    var subscription: AnyCancellable?
-    
-    init(getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
-         updateProjectConfigurationUseCase: UpdateProjectConfigurationUseCaseProtocol) {
-        self.viewData = .init(configuration: getProjectConfigurationUseCase.value)
-        self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
-        self.updateProjectConfigurationUseCase = updateProjectConfigurationUseCase
-        
-        subscription = getProjectConfigurationUseCase
-            .publisher
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] projectConfiguration in
-                self?.viewData.configuration = projectConfiguration
-            })
-    }
-    
-    func update(configuration: ProjectConfiguration) {
-        updateProjectConfigurationUseCase.update(configuration: configuration)
-    }
-}
-
 struct ConfigurationView: View {
-    @ObservedObject var viewData: ConfigurationViewData
-    let interactor: ConfigurationViewInteractor
-    private var configuration: ProjectConfiguration { viewData.configuration }
+    @EnvironmentObject var composition: Composition
+    @Binding var configuration: ProjectConfiguration
     let columnWidth: CGFloat = 200
     let narrowColumnWidth: CGFloat = 100
     let rowHeight: CGFloat = 30
-    let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
     let onDismiss: () -> Void
     
     @FocusState private var focusedName: Int?
     
-    init(interactor: ConfigurationViewInteractor,
-         allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>],
-         onDismiss: @escaping () -> Void,
-         focusedName: Int? = nil) {
-        self.interactor = interactor
-        self.viewData = interactor.viewData
-        self.allDependenciesConfiguration = allDependenciesConfiguration
-        self.onDismiss = onDismiss
-        self.focusedName = focusedName
-    }
+    init(
+        getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
+        onDismiss: @escaping () -> Void,
+        focusedName: Int? = nil) {
+            _configuration = getProjectConfigurationUseCase.binding
+            self.onDismiss = onDismiss
+            self.focusedName = focusedName
+        }
     
     @ViewBuilder
     func columnView<HeaderContent: View, RowContent: View>(
@@ -70,7 +32,7 @@ struct ConfigurationView: View {
         VStack(alignment: .center, spacing: 0) {
             header()
                 .frame(height: rowHeight * 0.5)
-            ForEach(0..<viewData.configuration.packageConfigurations.count, id: \.self) { index in
+            ForEach(0..<configuration.packageConfigurations.count, id: \.self) { index in
                 content(index)
                     .frame(height: rowHeight)
             }
@@ -86,23 +48,11 @@ struct ConfigurationView: View {
                 HStack {
                     Text("Swift Version")
                     TextField("default: \(ProjectConfiguration.default.swiftVersion)",
-                              text: Binding(get: {
-                        viewData.configuration.swiftVersion
-                    }, set: {
-                        var configuration = interactor.viewData.configuration
-                        configuration.swiftVersion = $0
-                        interactor.update(configuration: configuration)
-                    }))
+                              text: $configuration.swiftVersion)
                 }
                 HStack {
                     Text("Demo Apps Default Organization Identifier")
-                    TextField("com.myorganization.demoapp", text: Binding(get: {
-                        configuration.defaultOrganizationIdentifier ?? ""
-                    }, set: { newValue in
-                        var configuration = interactor.viewData.configuration
-                        configuration.defaultOrganizationIdentifier = newValue.isEmpty ? nil : newValue
-                        interactor.update(configuration: configuration)
-                    }))
+                    TextField("com.myorganization.demoapp", text: $configuration.defaultOrganizationIdentifier.nonOptionalBinding)
                 }
                 Divider()
                 HStack(spacing: 8) {
@@ -114,13 +64,7 @@ struct ConfigurationView: View {
                         }
                     } content: { index in
                         TextField("Name",
-                                  text: Binding(get: {
-                            viewData.configuration.packageConfigurations[index].name
-                        }, set: {
-                            var configuration = interactor.viewData.configuration
-                            configuration.packageConfigurations[index].name = $0
-                            interactor.update(configuration: configuration)
-                        }))
+                                  text: $configuration.packageConfigurations[index].name)
                         .focused($focusedName, equals: index)
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 0, row: index))
                     }.frame(minWidth: columnWidth)
@@ -132,37 +76,18 @@ struct ConfigurationView: View {
                         }
                     } content: { index in
                         TextField("Folder Name",
-                                  text: .init(get: { configuration.packageConfigurations[index].containerFolderName ?? "" },
-                                              set: {
-                            var configuration = interactor.viewData.configuration
-                            configuration.packageConfigurations[index].containerFolderName = $0.isEmpty ? nil : $0
-                            interactor.update(configuration: configuration)
-                        }))
+                                  text: $configuration.packageConfigurations[index].containerFolderName.nonOptionalBinding)
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 1, row: index))
                     }
                     columnView(width: narrowColumnWidth) {
                         Text("Append Name")
                     } content: { index in
-                        Toggle("",
-                               isOn: Binding(get: {
-                            viewData.configuration.packageConfigurations[index].appendPackageName
-                        }, set: {
-                            var configuration = interactor.viewData.configuration
-                            configuration.packageConfigurations[index].appendPackageName = $0
-                            interactor.update(configuration: configuration)
-                        }))
+                        Toggle("", isOn: $configuration.packageConfigurations[index].appendPackageName)
                     }
                     columnView(width: narrowColumnWidth) {
                         Text("Has Test")
                     } content: { index in
-                        Toggle("",
-                               isOn: Binding(get: {
-                            viewData.configuration.packageConfigurations[index].hasTests
-                        }, set: {
-                            var configuration = interactor.viewData.configuration
-                            configuration.packageConfigurations[index].hasTests = $0
-                            interactor.update(configuration: configuration)
-                        }))
+                        Toggle("", isOn: $configuration.packageConfigurations[index].hasTests)
                     }
                     columnView(width: columnWidth) {
                         HStack {
@@ -171,12 +96,7 @@ struct ConfigurationView: View {
                         }
                     } content: { index in
                         TextField("Dependency Name",
-                                  text: .init(get: { configuration.packageConfigurations[index].internalDependency ?? "" },
-                                              set: {
-                            var configuration = interactor.viewData.configuration
-                            configuration.packageConfigurations[index].internalDependency = $0.isEmpty ? nil : $0
-                            interactor.update(configuration: configuration)
-                        }))
+                                  text: $configuration.packageConfigurations[index].internalDependency.nonOptionalBinding)
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 2, row: index))
                     }
                     columnView {
@@ -191,47 +111,35 @@ struct ConfigurationView: View {
                 Button(action: onAddNew) {
                     Text("Add New Package")
                 }.padding(.horizontal)
-                .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.addNewButton)
+                    .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.addNewButton)
                 if configuration.packageConfigurations.count > 1 {
-                    DependencyView<PackageTargetType, String>(
-                        title: "Default Dependencies",
-                        allTypes: allDependenciesConfiguration,
-                        allSelectionValues: configuration.packageConfigurations.map(\.name),
-                        onUpdateTargetTypeValue: { packageTargetType, value in
-                            var configuration = interactor.viewData.configuration
-                            configuration.defaultDependencies[packageTargetType] = value
-                            interactor.update(configuration: configuration)
-                        })
+                    RelationView(defaultDependencies: $configuration.defaultDependencies,
+                                 title: "Default Dependencies",
+                                 getRelationViewDataUseCase: composition.getRelationViewDataUseCase())
                 }
                 Button(action: onDismiss) {
                     Text("Close")
                 }.padding(.horizontal)
-                .keyboardShortcut(.cancelAction)
-                .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.closeButton)
+                    .keyboardShortcut(.cancelAction)
+                    .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.closeButton)
                 Spacer()
             }.padding()
         }
         .onDisappear {
-            var configuration = interactor.viewData.configuration
             configuration.packageConfigurations.sort(by: { $0.name < $1.name })
-            interactor.update(configuration: configuration)
         }
     }
-                        
+    
     private func removePackageConfiguration(at index: Int) {
-        var configuration = interactor.viewData.configuration
         configuration.packageConfigurations.remove(at: index)
-        interactor.update(configuration: configuration)
     }
     
     private func onAddNew() {
-        var configuration = interactor.viewData.configuration
         configuration.packageConfigurations.append(.init(name: "Name",
                                                          containerFolderName: nil,
                                                          appendPackageName: true,
                                                          internalDependency: nil,
                                                          hasTests: false))
-        interactor.update(configuration: configuration)
     }
 }
 

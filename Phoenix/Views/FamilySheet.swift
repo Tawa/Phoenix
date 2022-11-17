@@ -5,6 +5,17 @@ import Component
 import ComponentDetailsProviderContract
 import SwiftUI
 
+extension Binding where Value == String? {
+    var nonOptionalBinding: Binding<String> {
+        Binding<String> {
+            wrappedValue ?? ""
+        } set: {
+            wrappedValue = $0.nilIfEmpty
+        }
+
+    }
+}
+
 extension String {
     var nilIfEmpty: String? { isEmpty ? nil : self }
 }

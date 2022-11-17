@@ -69,11 +69,7 @@ struct ContentView: View {
                     selectFamilyUseCase: composition.selectFamilyUseCase()
                 )
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
-                ConfigurationView(
-                    interactor: composition.configurationViewInteractor(),
-                    allDependenciesConfiguration: allDependenciesConfiguration(
-                        defaultDependencies: document.projectConfiguration.defaultDependencies)
-                ) {
+                ConfigurationView(getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase()) {
                     viewModel.showingConfigurationPopup = false
                 }.frame(minHeight: 800)
             }
