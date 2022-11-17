@@ -73,6 +73,13 @@ class Composition: ObservableObject {
         ) as GetSelectedFamilyUseCaseProtocol
     }
     
+    lazy var getRelationViewDataUseCase = Factory { [unowned self] in
+        GetRelationViewDataUseCase(
+            getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase(),
+            getProjectConfigurationUseCase: getProjectConfigurationUseCase()
+        ) as GetRelationViewDataUseCaseProtocol
+    }
+    
     lazy var getAllDependenciesConfigurationUseCase = Factory { [unowned self] in
         GetAllDependenciesConfigurationUseCase(
             phoenixDocumentRepository: phoenixDocumentRepository()
@@ -81,9 +88,7 @@ class Composition: ObservableObject {
     
     lazy var getFamilySheetDataUseCase = Factory { [unowned self] in
         GetFamilySheetDataUseCase(
-            getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase(),
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
-            getProjectConfigurationUseCase: getProjectConfigurationUseCase(),
             getSelectedFamilyUseCase: getSelectedFamilyUseCase()
         ) as GetFamilySheetDataUseCaseProtocol
     }

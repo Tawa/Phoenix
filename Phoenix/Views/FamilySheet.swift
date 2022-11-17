@@ -11,8 +11,6 @@ extension String {
 
 struct FamilySheetData {
     var family: Family
-    let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
-    let allDependenciesSelectionValues: [String]
     let rules: [FamilyRule]
 }
 
@@ -23,9 +21,8 @@ struct FamilyRule: Identifiable {
 }
 
 struct FamilySheet: View {
+    @EnvironmentObject var composition: Composition
     @Binding var family: Family
-    let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
-    let allDependenciesSelectionValues: [String]
     let rules: [FamilyRule]
     
     // MARK: - UseCases
@@ -46,8 +43,6 @@ struct FamilySheet: View {
         _family = getSelectedFamilyUseCase.binding
         
         let familySheetData = getFamilySheetDataUseCase.value
-        self.allDependenciesConfiguration = familySheetData.allDependenciesConfiguration
-        self.allDependenciesSelectionValues = familySheetData.allDependenciesSelectionValues
         self.rules = familySheetData.rules
         
         self.selectFamilyUseCase = selectFamilyUseCase
@@ -78,14 +73,9 @@ struct FamilySheet: View {
                 
                 Spacer().frame(height: 30)
                 
-                DependencyView<PackageTargetType, String>(
-                    title: "Default Dependencies",
-                    allTypes: allDependenciesConfiguration,
-                    allSelectionValues: allDependenciesSelectionValues,
-                    onUpdateTargetTypeValue: { (packageTargetType, value) -> Void in
-                        family.defaultDependencies[packageTargetType] = value
-                    }
-                )
+                RelationView(defaultDependencies: $family.defaultDependencies,
+                             title: "Default Dependencies",
+                             getRelationViewDataUseCase: composition.getRelationViewDataUseCase())
                 
                 VStack(alignment: .leading) {
                     Text("Allow ") + Text(name).bold() + Text(" components to be used in:")

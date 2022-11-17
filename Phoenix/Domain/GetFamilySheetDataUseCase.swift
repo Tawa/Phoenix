@@ -7,59 +7,39 @@ protocol GetFamilySheetDataUseCaseProtocol {
 }
 
 struct GetFamilySheetDataUseCase: GetFamilySheetDataUseCaseProtocol {
-    let getAllDependenciesConfigurationUseCase: GetAllDependenciesConfigurationUseCaseProtocol
     let getComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol
-    let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
     let getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol
     
     var value: FamilySheetData {
         let family = getSelectedFamilyUseCase.family
         return map(family: family,
-                   allDependenciesConfiguration: getAllDependenciesConfigurationUseCase.value(
-                    defaultDependencies: family.defaultDependencies
-                   ),
-                   allFamilies: getComponentsFamiliesUseCase.families,
-                   packageConfigurations: getProjectConfigurationUseCase.value.packageConfigurations
-                   
-        )
+                   allFamilies: getComponentsFamiliesUseCase.families)
     }
     
     var publisher: AnyPublisher<FamilySheetData, Never> {
         getSelectedFamilyUseCase
             .familyPublisher
             .map { family in
-                self.map(
-                    family: family,
-                    allDependenciesConfiguration: getAllDependenciesConfigurationUseCase.value(defaultDependencies: family.defaultDependencies),
-                    allFamilies: getComponentsFamiliesUseCase.families,
-                    packageConfigurations: getProjectConfigurationUseCase.value.packageConfigurations
-                )
+                self.map(family: family,
+                    allFamilies: getComponentsFamiliesUseCase.families)
             }
             .eraseToAnyPublisher()
     }
     
     init(
-        getAllDependenciesConfigurationUseCase: GetAllDependenciesConfigurationUseCaseProtocol,
         getComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol,
-        getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
         getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol
     ) {
-        self.getAllDependenciesConfigurationUseCase = getAllDependenciesConfigurationUseCase
         self.getComponentsFamiliesUseCase = getComponentsFamiliesUseCase
-        self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
         self.getSelectedFamilyUseCase = getSelectedFamilyUseCase
     }
     
     func map(
         family: Family,
-        allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>],
-        allFamilies: [ComponentsFamily],
-        packageConfigurations: [PackageConfiguration]
+        allFamilies: [ComponentsFamily]
     ) -> FamilySheetData {
         FamilySheetData(
             family: family,
-            allDependenciesConfiguration: allDependenciesConfiguration,
-            allDependenciesSelectionValues: packageConfigurations.map(\.name),
             rules: allFamilies.map(\.family).map { otherFamily in
                 FamilyRule(
                     name: otherFamily.name,
