@@ -64,12 +64,9 @@ struct ContentView: View {
                 newComponentSheet(state: state)
             }.sheet(isPresented: .constant(viewModel.selectedFamilyName != nil)) {
                 FamilySheet(
-                    interactor: FamilySheetInteractor(
-                        familyFolderNameProvider: Container.familyFolderNameProvider(),
-                        getFamilySheetDataUseCase: composition.getFamilySheetDataUseCase(),
-                        selectFamilyUseCase: composition.selectFamilyUseCase(),
-                        updateFamilyUseCase: composition.updateFamilyUseCase()
-                    )
+                    getSelectedFamilyUseCase: composition.getSelectedFamilyUseCase(),
+                    getFamilySheetDataUseCase: composition.getFamilySheetDataUseCase(),
+                    selectFamilyUseCase: composition.selectFamilyUseCase()
                 )
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
                 ConfigurationView(
