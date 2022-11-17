@@ -2,16 +2,18 @@ import XCTest
 @testable import Component
 
 final class ComponentTests: XCTestCase {
-
+    
     func testId() {
         // Given
-        let component = Component(name: Name(given: "Given", family: "Family"),
-                                  iOSVersion: nil,
-                                  macOSVersion: nil,
-                                  modules: [:],
-                                  dependencies: [],
-                                  resources: [],
-                                  defaultDependencies: [:])
+        let component = Component(
+            name: Name(given: "Given", family: "Family"),
+            defaultLocalization: .init(),
+            iOSVersion: nil,
+            macOSVersion: nil,
+            modules: [:],
+            dependencies: [],
+            resources: [],
+            defaultDependencies: [:])
         
         // When
         let id = component.id
@@ -24,6 +26,7 @@ final class ComponentTests: XCTestCase {
         // Given
         let component = Component(
             name: Name(given: "Wordpress", family: "Repository"),
+            defaultLocalization: .init(),
             iOSVersion: nil,
             macOSVersion: nil,
             modules: [:],
@@ -36,8 +39,8 @@ final class ComponentTests: XCTestCase {
             ],
             resources: [],
             defaultDependencies: [:])
-
-       // When
+        
+        // When
         let localDependencies = component.localDependencies
         
         // Then

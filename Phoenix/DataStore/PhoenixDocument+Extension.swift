@@ -122,6 +122,7 @@ extension PhoenixDocument {
             })
 
         let newComponent = Component(name: name,
+                                     defaultLocalization: .init(),
                                      iOSVersion: template?.iOSVersion,
                                      macOSVersion: template?.macOSVersion,
                                      modules: template?.modules ?? moduleTypes,
@@ -260,6 +261,12 @@ extension PhoenixDocument {
             dependencies.removeAll(where: { $0 == .remote(dependency) })
             dependencies.sort()
             $0.dependencies = dependencies
+        }
+    }
+    
+    mutating func update(defaultLocalization: DefaultLocalization, forComponentName name: Name) {
+        getComponent(withName: name) { component in
+            component.defaultLocalization = defaultLocalization
         }
     }
 

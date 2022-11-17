@@ -16,6 +16,9 @@ import PackageDescription
 let package = Package(
     name: "\(package.name)",\n
 """
+        if let defaultLocalization = package.defaultLocalization {
+            value += "    defaultLocalization: \"\(defaultLocalization)\",\n"
+        }
 
         if package.iOSVersion != nil || package.macOSVersion != nil {
             value += "    platforms: [\n"

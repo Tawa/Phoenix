@@ -24,13 +24,15 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
     
     
     public func package(for component: Component,
-                 of family: Family,
-                 allFamilies: [Family],
-                 packageConfiguration: PackageConfiguration,
-                 projectConfiguration: ProjectConfiguration) -> PackageWithPath {
+                        of family: Family,
+                        allFamilies: [Family],
+                        packageConfiguration: PackageConfiguration,
+                        projectConfiguration: ProjectConfiguration) -> PackageWithPath {
         let packageName = packageNameProvider.packageName(forComponentName: component.name,
                                                           of: family,
                                                           packageConfiguration: packageConfiguration)
+        
+        let defaultLocalization: String? = component.defaultLocalization.modules.contains(packageConfiguration.name) ? component.defaultLocalization.value : nil
         
         let packageTargetType = PackageTargetType(name: packageConfiguration.name, isTests: false)
         var dependencies: [Dependency] = []
@@ -117,6 +119,7 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         }
         
         return .init(package: .init(name: packageName,
+                                    defaultLocalization: defaultLocalization,
                                     iOSVersion: component.iOSVersion,
                                     macOSVersion: component.macOSVersion,
                                     products: [Product.library(Library(name: packageName,

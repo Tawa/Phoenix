@@ -105,6 +105,9 @@ struct ContentView: View {
     func componentView(for component: Component) -> some View {
         ComponentView(
             title: document.title(for: component.name),
+            defaultLocalization: component.defaultLocalization,
+            onUpdateDefaultLocalization: { document.update(defaultLocalization: $0,
+                                                           forComponentName: component.name) },
             platformsContent: { platformsContent(forComponent: component) },
             dependencies: component.dependencies,
             dependencyView: { dependencyType in
