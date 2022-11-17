@@ -61,7 +61,6 @@
 		B240A5DB291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */; };
 		B240A5DD291D655B00815CC3 /* SelectComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */; };
 		B24F6D91291D9862007170DD /* ComponentsFilterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */; };
-		B24F6D93291D98BF007170DD /* GetComponentsFilterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D92291D98BF007170DD /* GetComponentsFilterUseCase.swift */; };
 		B24F6D95291D996F007170DD /* UpdateComponentsFilterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */; };
 		B24F6D97291D997F007170DD /* ClearComponentsFilterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */; };
 		B24F6D99291D9B6A007170DD /* Composition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D98291D9B6A007170DD /* Composition.swift */; };
@@ -186,7 +185,6 @@
 		B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentsListItemsUseCase.swift; sourceTree = "<group>"; };
 		B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectComponentUseCase.swift; sourceTree = "<group>"; };
 		B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsFilterRepository.swift; sourceTree = "<group>"; };
-		B24F6D92291D98BF007170DD /* GetComponentsFilterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentsFilterUseCase.swift; sourceTree = "<group>"; };
 		B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateComponentsFilterUseCase.swift; sourceTree = "<group>"; };
 		B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearComponentsFilterUseCase.swift; sourceTree = "<group>"; };
 		B24F6D98291D9B6A007170DD /* Composition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Composition.swift; sourceTree = "<group>"; };
@@ -477,7 +475,6 @@
 				B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */,
 				B236A5FA291DAED4008D658E /* DeleteComponentUseCase.swift */,
 				B236A5FC291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift */,
-				B24F6D92291D98BF007170DD /* GetComponentsFilterUseCase.swift */,
 				B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */,
 				B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */,
 				B25621AF291E785C0093C8B9 /* GetSelectedComponentUseCase.swift */,
@@ -803,7 +800,6 @@
 				B24F6D95291D996F007170DD /* UpdateComponentsFilterUseCase.swift in Sources */,
 				B240A5D8291D5D7D00815CC3 /* SelectionRepository.swift in Sources */,
 				B240A5DD291D655B00815CC3 /* SelectComponentUseCase.swift in Sources */,
-				B24F6D93291D98BF007170DD /* GetComponentsFilterUseCase.swift in Sources */,
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
 				B29FDC5A2905725B006A0007 /* RemoteDependencySheet.swift in Sources */,
 				B24F6D91291D9862007170DD /* ComponentsFilterRepository.swift in Sources */,

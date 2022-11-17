@@ -21,14 +21,6 @@ extension PhoenixDocument {
         allNames.contains(name)
     }
 
-    mutating func component(withName name: Name, containsDependencyWithName dependencyName: Name) -> Bool {
-        var value: Bool = false
-        getComponent(withName: name) { component in
-            value = component.localDependencies.contains { $0.name == dependencyName }
-        }
-        return value
-    }
-    
     mutating func updateDefaultdependencyForComponent(withName name: Name, packageType: PackageTargetType, value: String?) {
         getComponent(withName: name) { component in
             component.defaultDependencies[packageType] = value
@@ -38,12 +30,6 @@ extension PhoenixDocument {
     func family(for name: Name) -> Family? {
         families.first(where: { name.family == $0.family.name })?.family
     }
-    
-    mutating func updateDefaultdependencyForFamily(named name: String, packageType: PackageTargetType, value: String?) {
-        getFamily(withName: name) { family in
-            family.defaultDependencies[packageType] = value
-        }
-    }
 
     // MARK: - Private
     private mutating func getComponent(withName name: Name, _ completion: (inout Component) -> Void) {
@@ -52,13 +38,6 @@ extension PhoenixDocument {
             let componentIndex = families[familyIndex].components.firstIndex(where: { $0.name == name })
         else { return }
         completion(&families[familyIndex].components[componentIndex])
-    }
-
-    private mutating func getFamily(withName name: String, _ completion: (inout Family) -> Void) {
-        guard
-            let familyIndex = families.firstIndex(where: { $0.family.name == name })
-        else { return }
-        completion(&families[familyIndex].family)
     }
 
     private mutating func get(remoteDependency: RemoteDependency, componentWithName name: Name, _ completion: (inout RemoteDependency) -> Void) {
@@ -141,25 +120,6 @@ extension PhoenixDocument {
             familiesArray.append(componentsFamily)
             familiesArray.sort(by: { $0.family.name < $1.family.name })
             families = familiesArray
-        }
-    }
-
-    mutating func updateFamily(withName name: String, ignoresSuffix: Bool) {
-        getFamily(withName: name) { $0.ignoreSuffix = ignoresSuffix }
-    }
-
-    mutating func updateFamily(withName name: String, folder: String?) {
-        getFamily(withName: name) { $0.folder = folder?.isEmpty == true ? nil : folder }
-    }
-    
-    mutating func updateFamilyRule(withName name: String, otherFamilyName: String, enabled: Bool) {
-        getFamily(withName: name) { family in
-            if enabled {
-                family.excludedFamilies.removeAll(where: { otherFamilyName == $0 })
-            } else if !family.excludedFamilies.contains(otherFamilyName) {
-                family.excludedFamilies.append(otherFamilyName)
-                family.excludedFamilies.sort()
-            }
         }
     }
     

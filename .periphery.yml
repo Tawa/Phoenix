@@ -1,0 +1,6 @@
+project: Phoenix.xcodeproj
+retain_objc_accessible: true
+schemes:
+- Phoenix
+targets:
+- Phoenix

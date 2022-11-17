@@ -6,15 +6,12 @@ class FilterViewData: ObservableObject {
 
 class FilterViewInteractor {
     let clearComponentsFilterUseCase: ClearComponentsFilterUseCaseProtocol
-    let getComponentsFilterUseCase: GetComponentsFilterUseCaseProtocol
     let updateComponentsFilterUseCase: UpdateComponentsFilterUseCaseProtocol
     let viewData: FilterViewData = .init()
     
     init(clearComponentsFilterUseCase: ClearComponentsFilterUseCaseProtocol,
-         getComponentsFilterUseCase: GetComponentsFilterUseCaseProtocol,
          updateComponentsFilterUseCase: UpdateComponentsFilterUseCaseProtocol) {
         self.clearComponentsFilterUseCase = clearComponentsFilterUseCase
-        self.getComponentsFilterUseCase = getComponentsFilterUseCase
         self.updateComponentsFilterUseCase = updateComponentsFilterUseCase
     }
     

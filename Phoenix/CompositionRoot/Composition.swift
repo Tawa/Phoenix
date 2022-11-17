@@ -112,12 +112,6 @@ class Composition: ObservableObject {
         )as ClearComponentsFilterUseCaseProtocol
     }
     
-    lazy var getComponentsFilterUseCase = Factory { [unowned self] in
-        GetComponentsFilterUseCase(
-            componentsFilterRepository: componentsFilterRepository()
-        )as GetComponentsFilterUseCaseProtocol
-    }
-    
     lazy var getSelectedComponentUseCase = Factory { [unowned self] in
         GetSelectedComponentUseCase(
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
@@ -149,7 +143,6 @@ class Composition: ObservableObject {
     lazy var componentsFilterInteractor = Factory { [unowned self] in
         FilterViewInteractor(
             clearComponentsFilterUseCase: clearComponentsFilterUseCase(),
-            getComponentsFilterUseCase: getComponentsFilterUseCase(),
             updateComponentsFilterUseCase: updateComponentsFilterUseCase()
         )
     }

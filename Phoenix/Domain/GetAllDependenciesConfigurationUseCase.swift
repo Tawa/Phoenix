@@ -6,9 +6,6 @@ protocol GetAllDependenciesConfigurationUseCaseProtocol {
     func value(
         defaultDependencies: [PackageTargetType: String]
     ) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
-    func publisher(
-        defaultDependencies: [PackageTargetType: String]
-    ) -> AnyPublisher<[IdentifiableWithSubtypeAndSelection<PackageTargetType, String>], Never>
 }
 
 struct GetAllDependenciesConfigurationUseCase: GetAllDependenciesConfigurationUseCaseProtocol {
@@ -21,16 +18,6 @@ struct GetAllDependenciesConfigurationUseCase: GetAllDependenciesConfigurationUs
             configuration: phoenixDocumentRepository.value.projectConfiguration,
             defaultDependencies: defaultDependencies
         )
-    }
-    
-    func publisher(
-        defaultDependencies: [PackageTargetType: String]
-    ) -> AnyPublisher<[IdentifiableWithSubtypeAndSelection<PackageTargetType, String>], Never> {
-        phoenixDocumentRepository
-            .publisher
-            .map(\.projectConfiguration)
-            .map { map(configuration: $0, defaultDependencies: defaultDependencies) }
-            .eraseToAnyPublisher()
     }
     
     init(phoenixDocumentRepository: PhoenixDocumentRepositoryProtocol) {

@@ -3,7 +3,6 @@ import Component
 
 protocol GetFamilySheetDataUseCaseProtocol {
     var value: FamilySheetData { get }
-    var publisher: AnyPublisher<FamilySheetData, Never> { get }
 }
 
 struct GetFamilySheetDataUseCase: GetFamilySheetDataUseCaseProtocol {
@@ -14,16 +13,6 @@ struct GetFamilySheetDataUseCase: GetFamilySheetDataUseCaseProtocol {
         let family = getSelectedFamilyUseCase.family
         return map(family: family,
                    allFamilies: getComponentsFamiliesUseCase.families)
-    }
-    
-    var publisher: AnyPublisher<FamilySheetData, Never> {
-        getSelectedFamilyUseCase
-            .familyPublisher
-            .map { family in
-                self.map(family: family,
-                    allFamilies: getComponentsFamiliesUseCase.families)
-            }
-            .eraseToAnyPublisher()
     }
     
     init(
