@@ -42,6 +42,8 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
             return try PhoenixDocumentFileWrappersDecoder_1_0_0().phoenixDocument(from: fileWrapper)
         } else if appVersion.stringValue.hasPrefix("2.") {
             return try PhoenixDocumentFileWrappersDecoder_2_0_0().phoenixDocument(from: fileWrapper)
+        } else if appVersion.stringValue.hasPrefix("3.") {
+            return try PhoenixDocumentFileWrappersDecoder_3_0_0().phoenixDocument(from: fileWrapper)
         }
 
         throw PhoenixDocumentError.versionUnsupported

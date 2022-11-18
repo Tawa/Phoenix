@@ -46,7 +46,8 @@ private extension Component {
             iOSVersion: nil,
             macOSVersion: nil,
             modules: [:],
-            dependencies: [],
+            localDependencies: [],
+            remoteDependencies: [],
             resources: [],
             defaultDependencies: [:])
     }

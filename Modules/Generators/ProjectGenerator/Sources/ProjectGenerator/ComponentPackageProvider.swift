@@ -2,6 +2,12 @@ import Component
 import ComponentDetailsProviderContract
 import SwiftPackage
 
+extension Component {
+    var allDependencies: [ComponentDependencyType] {
+        localDependencies.map(ComponentDependencyType.local) + remoteDependencies.map(ComponentDependencyType.remote)
+    }
+}
+
 extension Sequence where Element: Hashable {
     func uniqued() -> [Element] {
         var set = Set<Element>()
@@ -36,7 +42,7 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         
         let packageTargetType = PackageTargetType(name: packageConfiguration.name, isTests: false)
         var dependencies: [Dependency] = []
-        var implementationDependencies: [Dependency] = component.dependencies.sorted().compactMap { dependencyType -> Dependency? in
+        var implementationDependencies: [Dependency] = component.allDependencies.sorted().compactMap { dependencyType -> Dependency? in
             switch dependencyType {
             case let .local(componentDependency):
                 guard
@@ -84,7 +90,7 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         dependencies = implementationDependencies
         if packageConfiguration.hasTests {
             let packageTestsTargetType = PackageTargetType(name: packageConfiguration.name, isTests: true)
-            let testsDependencies: [Dependency] = component.dependencies.sorted().compactMap { dependencyType -> Dependency? in
+            let testsDependencies: [Dependency] = component.allDependencies.sorted().compactMap { dependencyType -> Dependency? in
                 switch dependencyType {
                 case let .local(componentDependency):
                     guard

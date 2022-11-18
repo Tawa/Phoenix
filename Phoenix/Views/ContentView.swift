@@ -111,18 +111,10 @@ struct ContentView: View {
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
             getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase(),
             getSelectedComponentUseCase: composition.getSelectedComponentUseCase(),
-            dependencies: component.dependencies,
-            dependencyView: { dependencyType in
-                VStack(spacing: 0) {
-                    Divider()
-                    switch dependencyType {
-                    case let .local(dependency):
-                        componentDependencyView(forComponent: component, dependency: dependency)
-                    case let .remote(dependency):
-                        remoteDependencyView(forComponent: component, dependency: dependency)
-                    }
-                }
-            },
+            localDependencies: component.localDependencies,
+            localDependencyView: { componentDependencyView(forComponent: component, dependency: $0) },
+            remoteDependencies: component.remoteDependencies,
+            remoteDependencyView: { remoteDependencyView(forComponent: component, dependency: $0) },
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
             },
@@ -163,9 +155,8 @@ struct ContentView: View {
         let allFamilies = document.componentsFamilies.filter { !$0.family.excludedFamilies.contains(familyName) }
         let allNames = allFamilies.flatMap(\.components).map(\.name)
         let filteredNames = Dictionary(grouping: allNames.filter { name in
-            component.name != name && !component.dependencies.contains { componentDependencyType in
-                guard case let .local(componentDependency) = componentDependencyType else { return false }
-                return componentDependency.name == name
+            component.name != name && !component.localDependencies.contains { localDependency in
+                localDependency.name == name
             }
         }, by: { $0.family })
         let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in

@@ -4,10 +4,12 @@ import Component
 import SwiftUI
 import SwiftPackage
 
-struct ComponentView<DependencyType, DependencyContent, TargetType, ResourcesType>: View
+struct ComponentView<LocalDependencyType, LocalDependencyContent, RemoteDependencyType, RemoteDependencyContent, TargetType, ResourcesType>: View
 where
-DependencyType: Identifiable,
-DependencyContent: View,
+LocalDependencyType: Identifiable,
+RemoteDependencyType: Identifiable,
+LocalDependencyContent: View,
+RemoteDependencyContent: View,
 TargetType: Identifiable & Hashable,
 ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
 {
@@ -16,8 +18,10 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
     let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
     
-    let dependencies: [DependencyType]
-    let dependencyView: (DependencyType) -> DependencyContent
+    let localDependencies: [LocalDependencyType]
+    let localDependencyView: (LocalDependencyType) -> LocalDependencyContent
+    let remoteDependencies: [RemoteDependencyType]
+    let remoteDependencyView: (RemoteDependencyType) -> RemoteDependencyContent
     let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
     let allTargetTypes: [IdentifiableWithSubtype<TargetType>]
@@ -35,8 +39,10 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
         getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
         getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
-        dependencies: [DependencyType],
-        dependencyView: @escaping (DependencyType) -> DependencyContent,
+        localDependencies: [LocalDependencyType],
+        localDependencyView: @escaping (LocalDependencyType) -> LocalDependencyContent,
+        remoteDependencies: [RemoteDependencyType],
+        remoteDependencyView: @escaping (RemoteDependencyType) -> RemoteDependencyContent,
         onGenerateDemoAppProject: @escaping () -> Void,
         onRemove: @escaping () -> Void,
         allTargetTypes: [IdentifiableWithSubtype<TargetType>],
@@ -51,8 +57,12 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         self.getComponentTitleUseCase = getComponentTitleUseCase
         self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
         
-        self.dependencies = dependencies
-        self.dependencyView = dependencyView
+        self.localDependencies = localDependencies
+        self.localDependencyView = localDependencyView
+        
+        self.remoteDependencies = remoteDependencies
+        self.remoteDependencyView = remoteDependencyView
+        
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
         self.onRemove = onRemove
         self.allTargetTypes = allTargetTypes
@@ -72,20 +82,10 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                 moduleTypesView()
                 defaultLocalizationView()
                 platformsContent()
+
                 defaultDependenciesView()
-                
-                Section {
-                    ForEach(dependencies, content: dependencyView)
-                } header: {
-                    HStack {
-                        Text("Dependencies")
-                            .font(.largeTitle.bold())
-                        Button(action: onShowDependencySheet) { Image(systemName: "plus") }
-                            .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
-                        Button(action: onShowRemoteDependencySheet) { Text("Add Remote Dependency") }
-                    }
-                }
-                Divider()
+                localDependenciesView()
+                remoteDependenciesView()
                 
                 Section {
                     DynamicTextFieldList(
@@ -182,6 +182,43 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                 getRelationViewDataUseCase: composition.getRelationViewDataUseCase()
             )
         }
+    }
+    
+    @ViewBuilder private func localDependenciesView() -> some View {
+        Section {
+            ForEach(localDependencies) { localDependency in
+                HStack {
+                    Divider()
+                    localDependencyView(localDependency)
+                }
+            }
+        } header: {
+            HStack {
+                Text("Local Dependencies")
+                    .font(.largeTitle.bold())
+                Button(action: onShowDependencySheet) { Image(systemName: "plus") }
+                    .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
+            }
+        }
+        Divider()
+    }
+    
+    @ViewBuilder private func remoteDependenciesView() -> some View {
+        Section {
+            ForEach(remoteDependencies) { remoteDependency in
+                HStack {
+                    Divider()
+                    remoteDependencyView(remoteDependency)
+                }
+            }
+        } header: {
+            HStack {
+                Text("Remote Dependencies")
+                    .font(.largeTitle.bold())
+                Button(action: onShowRemoteDependencySheet) { Image(systemName: "plus") }
+            }
+        }
+        Divider()
     }
     
     // MARK: - Helper Functions

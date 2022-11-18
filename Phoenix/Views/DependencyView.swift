@@ -71,10 +71,8 @@ where TargetType: Identifiable, SelectionType: Hashable {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text(title)
-                    .bold()
-                onSelection.map { Button(action: $0) { Text("Jump to") } }
-                onRemove.map { Button(action: $0) { Text("Remove") } }
+                onSelection.map { Button(action: $0) { Text(title).bold() } }
+                onRemove.map { Button(action: $0) { Image(systemName: "trash") } }
             }
             .padding(.bottom)
             VStack {

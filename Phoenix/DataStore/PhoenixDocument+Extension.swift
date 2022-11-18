@@ -42,29 +42,29 @@ extension PhoenixDocument {
 
     private mutating func get(remoteDependency: RemoteDependency, componentWithName name: Name, _ completion: (inout RemoteDependency) -> Void) {
         getComponent(withName: name) { component in
-            var dependencies = component.dependencies
+            var remoteDependencies = component.remoteDependencies
             guard
-                let index = dependencies.firstIndex(where: { $0 == .remote(remoteDependency) }),
-                case var .remote(temp) = dependencies.remove(at: index)
+                let index = remoteDependencies.firstIndex(of: remoteDependency)
             else { return }
+            var temp = remoteDependencies.remove(at: index)
             completion(&temp)
-            dependencies.append(.remote(temp))
-            dependencies.sort()
-            component.dependencies = dependencies
+            remoteDependencies.append(temp)
+            remoteDependencies.sort()
+            component.remoteDependencies = remoteDependencies
         }
     }
 
     private mutating func get(dependency: ComponentDependency, componentWithName name: Name, _ completion: (inout ComponentDependency) -> Void) {
         getComponent(withName: name) { component in
-            var dependencies = component.dependencies
+            var localDependencies = component.localDependencies
             guard
-                let index = dependencies.firstIndex(where: { $0 == .local(dependency) }),
-                case var .local(temp) = dependencies.remove(at: index)
+                let index = localDependencies.firstIndex(of: dependency)
             else { return }
+            var temp = localDependencies.remove(at: index)
             completion(&temp)
-            dependencies.append(.local(temp))
-            dependencies.sort()
-            component.dependencies = dependencies
+            localDependencies.append(temp)
+            localDependencies.sort()
+            component.localDependencies = localDependencies
         }
     }
 
@@ -105,7 +105,8 @@ extension PhoenixDocument {
                                      iOSVersion: template?.iOSVersion,
                                      macOSVersion: template?.macOSVersion,
                                      modules: template?.modules ?? moduleTypes,
-                                     dependencies: template?.dependencies ?? [],
+                                     localDependencies: template?.localDependencies ?? [],
+                                     remoteDependencies: template?.remoteDependencies ?? [],
                                      resources: template?.resources ?? [],
                                      defaultDependencies: [:])
         array.append(newComponent)
@@ -144,19 +145,19 @@ extension PhoenixDocument {
         }
         getComponent(withName: name) { component in
             targetTypes = targetTypes.filter { (key, _) in component.modules.contains(where: { $0.key == key.name }) }
-            var dependencies = component.dependencies
-            dependencies.append(.local(ComponentDependency(name: dependencyName, targetTypes: targetTypes)))
-            dependencies.sort()
-            component.dependencies = dependencies
+            var localDependencies = component.localDependencies
+            localDependencies.append(ComponentDependency(name: dependencyName, targetTypes: targetTypes))
+            localDependencies.sort()
+            component.localDependencies = localDependencies
         }
     }
 
     mutating func addRemoteDependencyToComponent(withName name: Name, dependency: RemoteDependency) {
         getComponent(withName: name) {
-            var dependencies = $0.dependencies
-            dependencies.append(.remote(dependency))
-            dependencies.sort()
-            $0.dependencies = dependencies
+            var remoteDependencies = $0.remoteDependencies
+            remoteDependencies.append(dependency)
+            remoteDependencies.sort()
+            $0.remoteDependencies = remoteDependencies
         }
     }
 
@@ -208,19 +209,19 @@ extension PhoenixDocument {
 
     mutating func removeDependencyForComponent(withComponentName name: Name, componentDependency: ComponentDependency) {
         getComponent(withName: name) {
-            var dependencies = $0.dependencies
-            dependencies.removeAll(where: { $0 == .local(componentDependency) })
-            dependencies.sort()
-            $0.dependencies = dependencies
+            var localDependencies = $0.localDependencies
+            localDependencies.removeAll(where: { $0 == componentDependency })
+            localDependencies.sort()
+            $0.localDependencies = localDependencies
         }
     }
 
     mutating func removeRemoteDependencyForComponent(withComponentName name: Name, dependency: RemoteDependency) {
         getComponent(withName: name) {
-            var dependencies = $0.dependencies
-            dependencies.removeAll(where: { $0 == .remote(dependency) })
-            dependencies.sort()
-            $0.dependencies = dependencies
+            var remoteDependencies = $0.remoteDependencies
+            remoteDependencies.removeAll(where: { $0 == dependency })
+            remoteDependencies.sort()
+            $0.remoteDependencies = remoteDependencies
         }
     }
     

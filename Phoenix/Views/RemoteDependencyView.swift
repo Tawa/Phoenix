@@ -25,7 +25,7 @@ where DependencyType: Identifiable,
             HStack {
                 Text(name)
                     .bold()
-                Button(action: onRemove) { Text("Remove") }
+                Button(action: onRemove) { Image(systemName: "trash") }
             }
             Text(urlString)
 
