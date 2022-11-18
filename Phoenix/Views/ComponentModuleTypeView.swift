@@ -1,22 +1,47 @@
+import SwiftPackage
 import SwiftUI
 
-struct ComponentModuleTypeView<Data>: View where Data: Identifiable {
-    let title: String
-    let isOn: Bool
-    let onOn: () -> Void
-    let onOff: () -> Void
-    let selectionData: [Data]
-    let selectionTitle: String
-    let onSelection: (Data) -> Void
-    let onRemove: () -> Void
+struct ComponentModuleTypesView: View {
+    @Binding var dictionary: [String: LibraryType]
+    let allModuleTypes: [String]
+    let allLibraryTypes: [LibraryType] = LibraryType.allCases
+    
+    var body: some View {
+        VStack {
+            ForEach(allModuleTypes, id: \.self) { moduleType in
+                ComponentModuleTypeView(
+                    title: "\(moduleType)",
+                    isOn: Binding(
+                        get: { dictionary[moduleType] != nil },
+                        set: {
+                            if $0 {
+                                dictionary[moduleType] = .undefined
+                            } else {
+                                dictionary.removeValue(forKey: moduleType)
+                            }
+                        }
+                    ),
+                    selectionData: allLibraryTypes,
+                    selectionTitle: dictionary[moduleType]?.rawValue ?? "undefined",
+                    onSelection: { dictionary[moduleType] = $0 },
+                    onRemove: { dictionary.removeValue(forKey: moduleType) })
+                
+            }
+        }
+    }
+}
 
+struct ComponentModuleTypeView: View {
+    let title: String
+    @Binding var isOn: Bool
+    let selectionData: [LibraryType]
+    let selectionTitle: String
+    let onSelection: (LibraryType) -> Void
+    let onRemove: () -> Void
+    
     var body: some View {
         HStack {
-            CustomToggle(title: title,
-                         isOnValue: isOn,
-                         whenTurnedOn: onOn,
-                         whenTurnedOff: onOff)
-
+            Toggle(title, isOn: $isOn)
             if isOn {
                 CustomMenu(title: selectionTitle,
                            data: selectionData,
@@ -26,43 +51,5 @@ struct ComponentModuleTypeView<Data>: View where Data: Identifiable {
             }
             Spacer()
         }
-    }
-}
-
-struct ComponentModuleTypeView_Previews: PreviewProvider {
-    enum MockType: Identifiable, Hashable {
-        var id: Int { hashValue }
-        case first
-        case second
-        case third
-    }
-
-    static var previews: some View {
-        Group {
-            ComponentModuleTypeView(title: "Package Type",
-                                    isOn: false,
-                                    onOn: {},
-                                    onOff: {},
-                                    selectionData: [MockType.first, .second, .third],
-                                    selectionTitle: "undefined",
-                                    onSelection: { _ in },
-                                    onRemove: {})
-            ComponentModuleTypeView(title: "Package Type",
-                                    isOn: true,
-                                    onOn: {},
-                                    onOff: {},
-                                    selectionData: [MockType.first, .second, .third],
-                                    selectionTitle: "undefined",
-                                    onSelection: { _ in },
-                                    onRemove: {})
-            ComponentModuleTypeView(title: "Package Type",
-                                    isOn: true,
-                                    onOn: {},
-                                    onOff: {},
-                                    selectionData: [MockType.first, .second, .third],
-                                    selectionTitle: "dynamic",
-                                    onSelection: { _ in },
-                                    onRemove: {})
-        }.frame(height: 50)
     }
 }

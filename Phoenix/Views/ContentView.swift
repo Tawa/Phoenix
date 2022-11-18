@@ -109,6 +109,7 @@ struct ContentView: View {
     func componentView(for component: Component) -> some View {
         ComponentView(
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
+            getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase(),
             getSelectedComponentUseCase: composition.getSelectedComponentUseCase(),
             platformsContent: { platformsContent(forComponent: component) },
             dependencies: component.dependencies,
@@ -123,13 +124,6 @@ struct ContentView: View {
                     }
                 }
             },
-            allLibraryTypes: LibraryType.allCases,
-            allModuleTypes: configurationTargetTypes().map { $0.title },
-            isModuleTypeOn: { component.modules[$0] != nil },
-            onModuleTypeSwitchedOn: { document.addModuleTypeForComponent(withName: component.name, moduleType: $0) },
-            onModuleTypeSwitchedOff: { document.removeModuleTypeForComponent(withName: component.name, moduleType:$0) },
-            moduleTypeTitle: { component.modules[$0]?.rawValue ?? "undefined" },
-            onSelectionOfLibraryTypeForModuleType: { document.set(forComponentWithName: component.name, libraryType: $0, forModuleType: $1) },
             allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: component.defaultDependencies),
             allDependenciesSelectionValues: allDependenciesSelectionValues(forComponent: component),
             onUpdateTargetTypeValue: {

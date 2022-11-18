@@ -2,29 +2,23 @@ import AccessibilityIdentifiers
 import Combine
 import Component
 import SwiftUI
+import SwiftPackage
 
-struct ComponentView<PlatformsContent, DependencyType, DependencyContent, LibraryType, TargetType, ResourcesType>: View
+struct ComponentView<PlatformsContent, DependencyType, DependencyContent, TargetType, ResourcesType>: View
 where
 PlatformsContent: View,
 DependencyType: Identifiable,
 DependencyContent: View,
-LibraryType: Identifiable,
 TargetType: Identifiable & Hashable,
 ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
 {
     @Binding var component: Component
     let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
+    let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
     
     let platformsContent: () -> PlatformsContent
     let dependencies: [DependencyType]
     let dependencyView: (DependencyType) -> DependencyContent
-    let allLibraryTypes: [LibraryType]
-    let allModuleTypes: [String]
-    let isModuleTypeOn: (String) -> Bool
-    let onModuleTypeSwitchedOn: (String) -> Void
-    let onModuleTypeSwitchedOff: (String) -> Void
-    let moduleTypeTitle: (String) -> String
-    let onSelectionOfLibraryTypeForModuleType: (LibraryType?, String) -> Void
     let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
     let allDependenciesSelectionValues: [String]
     let onUpdateTargetTypeValue: (PackageTargetType, String?) -> Void
@@ -39,20 +33,15 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
 
     // MARK: - Private
     private var title: String { getComponentTitleUseCase.title(forComponent: component) }
-    
+    private let allModuleTypes: [String]
+
     init(
         getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
+        getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
         getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
         platformsContent: @escaping () -> PlatformsContent,
         dependencies: [DependencyType],
         dependencyView: @escaping (DependencyType) -> DependencyContent,
-        allLibraryTypes: [LibraryType],
-        allModuleTypes: [String],
-        isModuleTypeOn: @escaping (String) -> Bool,
-        onModuleTypeSwitchedOn: @escaping (String) -> Void,
-        onModuleTypeSwitchedOff: @escaping (String) -> Void,
-        moduleTypeTitle: @escaping (String) -> String,
-        onSelectionOfLibraryTypeForModuleType: @escaping (LibraryType?, String) -> Void,
         allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>],
         allDependenciesSelectionValues: [String],
         onUpdateTargetTypeValue: @escaping (PackageTargetType, String?) -> Void,
@@ -68,16 +57,11 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         _component = getSelectedComponentUseCase.binding
         
         self.getComponentTitleUseCase = getComponentTitleUseCase
+        self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
+
         self.platformsContent = platformsContent
         self.dependencies = dependencies
         self.dependencyView = dependencyView
-        self.allLibraryTypes = allLibraryTypes
-        self.allModuleTypes = allModuleTypes
-        self.isModuleTypeOn = isModuleTypeOn
-        self.onModuleTypeSwitchedOn = onModuleTypeSwitchedOn
-        self.onModuleTypeSwitchedOff = onModuleTypeSwitchedOff
-        self.moduleTypeTitle = moduleTypeTitle
-        self.onSelectionOfLibraryTypeForModuleType = onSelectionOfLibraryTypeForModuleType
         self.allDependenciesConfiguration = allDependenciesConfiguration
         self.allDependenciesSelectionValues = allDependenciesSelectionValues
         self.onUpdateTargetTypeValue = onUpdateTargetTypeValue
@@ -89,6 +73,8 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         self.onShowDependencySheet = onShowDependencySheet
         self.onShowRemoteDependencySheet = onShowRemoteDependencySheet
         self._resourcesValueBinding = resourcesValueBinding
+        
+        self.allModuleTypes = getProjectConfigurationUseCase.value.packageConfigurations.map(\.name)
     }
     
     var body: some View {
@@ -112,18 +98,8 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                 Group {
                     HStack(alignment: .top) {
                         Text("Module Types:")
-                        VStack {
-                            ForEach(allModuleTypes, id: \.self) { moduleType in
-                                ComponentModuleTypeView(title: "\(moduleType)",
-                                                        isOn: isModuleTypeOn(moduleType),
-                                                        onOn: { onModuleTypeSwitchedOn(moduleType) },
-                                                        onOff: { onModuleTypeSwitchedOff(moduleType) },
-                                                        selectionData: allLibraryTypes,
-                                                        selectionTitle: moduleTypeTitle(moduleType),
-                                                        onSelection: { onSelectionOfLibraryTypeForModuleType($0, moduleType) },
-                                                        onRemove: { onSelectionOfLibraryTypeForModuleType(nil, moduleType) })
-                            }
-                        }
+                        ComponentModuleTypesView(dictionary: $component.modules,
+                                                 allModuleTypes: allModuleTypes)
                         Spacer()
                     }
                     Divider()
@@ -176,6 +152,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         }
     }
     
+    // MARK: - Private
     @ViewBuilder private func defaultLocalizationView() -> some View {
         HStack(alignment: .top) {
             Text("Default Localization: ")
@@ -202,5 +179,9 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                 }
             }
         }
+    }
+    
+    private func isModuleTypeOn(_ name: String) -> Bool {
+        component.modules[name] != nil
     }
 }
