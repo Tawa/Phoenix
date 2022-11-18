@@ -30,7 +30,6 @@ struct PhoenixApp: App {
                 viewModel: ViewModel(
                     appVersionUpdateProvider: Container.appVersionUpdateProvider(),
                     pbxProjSyncer: Container.pbxProjSyncer(),
-                    familyFolderNameProvider: Container.familyFolderNameProvider(),
                     filesURLDataStore: Container.filesURLDataStore(),
                     projectGenerator: Container.projectGenerator(),
                     composition: compositionRoot.composition(for: file.$document, url: file.fileURL)

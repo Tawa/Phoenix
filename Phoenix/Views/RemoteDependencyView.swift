@@ -73,7 +73,6 @@ struct RemoteDependencyView_Previews: PreviewProvider {
         case contract
         case implementation
         case tests
-        case mocks
     }
 
     enum VersionTypeMock: Hashable, Identifiable {

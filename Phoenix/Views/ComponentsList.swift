@@ -22,12 +22,6 @@ struct ComponentsListSection: Hashable, Identifiable {
     let name: String
     let folderName: String?
     let rows: [ComponentsListRow]
-    
-    var title: String {
-        folderName.map { folderName in
-            name + "(Folder: \(folderName)"
-        } ?? name
-    }
 }
 
 class ComponentsListViewData: ObservableObject {

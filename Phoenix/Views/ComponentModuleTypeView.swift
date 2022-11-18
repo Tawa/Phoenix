@@ -30,7 +30,7 @@ struct ComponentModuleTypeView<Data>: View where Data: Identifiable {
 }
 
 struct ComponentModuleTypeView_Previews: PreviewProvider {
-    enum MockType: Identifiable, CaseIterable, Hashable {
+    enum MockType: Identifiable, Hashable {
         var id: Int { hashValue }
         case first
         case second
@@ -43,7 +43,7 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     isOn: false,
                                     onOn: {},
                                     onOff: {},
-                                    selectionData: MockType.allCases,
+                                    selectionData: [MockType.first, .second, .third],
                                     selectionTitle: "undefined",
                                     onSelection: { _ in },
                                     onRemove: {})
@@ -51,7 +51,7 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     isOn: true,
                                     onOn: {},
                                     onOff: {},
-                                    selectionData: MockType.allCases,
+                                    selectionData: [MockType.first, .second, .third],
                                     selectionTitle: "undefined",
                                     onSelection: { _ in },
                                     onRemove: {})
@@ -59,7 +59,7 @@ struct ComponentModuleTypeView_Previews: PreviewProvider {
                                     isOn: true,
                                     onOn: {},
                                     onOff: {},
-                                    selectionData: MockType.allCases,
+                                    selectionData: [MockType.first, .second, .third],
                                     selectionTitle: "dynamic",
                                     onSelection: { _ in },
                                     onRemove: {})

@@ -3,31 +3,6 @@ import Combine
 import Component
 import SwiftUI
 
-class ComponentViewData: ObservableObject {
-    @Published var data: ComponentData = .default
-}
-
-class ComponentViewInteractor {
-    let getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol
-    var viewData: ComponentViewData = .init()
-    var subscription: AnyCancellable?
-
-    init(getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol) {
-        self.getSelectedComponentUseCase = getSelectedComponentUseCase
-        
-        viewData.data = getSelectedComponentUseCase.componentData
-        subscription = getSelectedComponentUseCase
-            .componentDataPublisher
-            .filter { [weak self] in
-                return self?.viewData.data != $0
-            }
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] data in
-                self?.viewData.data = data
-            })
-    }
-}
-
 struct ComponentView<PlatformsContent, DependencyType, DependencyContent, LibraryType, TargetType, ResourcesType>: View
 where
 PlatformsContent: View,
@@ -37,8 +12,7 @@ LibraryType: Identifiable,
 TargetType: Identifiable & Hashable,
 ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
 {
-    @ObservedObject var viewData: ComponentViewData
-    let interactor: ComponentViewInteractor
+    @Binding var component: Component
     let defaultLocalization: DefaultLocalization
     let onUpdateDefaultLocalization: (DefaultLocalization) -> Void
     let platformsContent: () -> PlatformsContent
@@ -63,8 +37,11 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let onShowRemoteDependencySheet: () -> Void
     @Binding var resourcesValueBinding: [DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]
 
+    // MARK: - Private
+    private var title: String { component.name.full }
+    
     init(
-        interactor: ComponentViewInteractor,
+        getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
         defaultLocalization: DefaultLocalization,
         onUpdateDefaultLocalization: @escaping (DefaultLocalization) -> Void,
         platformsContent: @escaping () -> PlatformsContent,
@@ -89,8 +66,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         onShowRemoteDependencySheet: @escaping () -> Void,
         resourcesValueBinding: Binding<[DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]>
     ) {
-        self.interactor = interactor
-        self.viewData = interactor.viewData
+        _component = getSelectedComponentUseCase.binding
         
         self.defaultLocalization = defaultLocalization
         self.onUpdateDefaultLocalization = onUpdateDefaultLocalization
@@ -122,7 +98,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
             VStack(alignment: .leading) {
                 Group {
                     HStack {
-                        Text(viewData.data.title)
+                        Text(title)
                             .font(.largeTitle.bold())
                             .multilineTextAlignment(.leading)
                         Spacer()

@@ -46,12 +46,6 @@ class Composition: ObservableObject {
         ) as GetProjectConfigurationUseCaseProtocol
     }
     
-    lazy var updateProjectConfigurationUseCase = Factory { [unowned self] in
-        UpdateProjectConfigurationUseCase(
-            phoenixDocumentRepository: phoenixDocumentRepository()
-        ) as UpdateProjectConfigurationUseCaseProtocol
-    }
-    
     lazy var deleteComponentUseCase = Factory { [unowned self] in
         DeleteComponentUseCase(
             phoenixDocumentRepository: phoenixDocumentRepository()
@@ -114,6 +108,7 @@ class Composition: ObservableObject {
     
     lazy var getSelectedComponentUseCase = Factory { [unowned self] in
         GetSelectedComponentUseCase(
+            phoenixDocumentRepository: phoenixDocumentRepository(),
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
             selectionRepository: selectionRepository()
         )
@@ -152,12 +147,6 @@ class Composition: ObservableObject {
             getComponentsListItemsUseCase: getComponentsListItemsUseCase(),
             selectComponentUseCase: selectComponentUseCase(),
             selectFamilyUseCase: selectFamilyUseCase()
-        )
-    }
-    
-    lazy var componentViewInteractor = Factory { [unowned self] in
-        ComponentViewInteractor(
-            getSelectedComponentUseCase: getSelectedComponentUseCase()
         )
     }
 }

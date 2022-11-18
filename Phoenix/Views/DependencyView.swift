@@ -116,7 +116,6 @@ struct DependencyView_Previews: PreviewProvider {
     enum MockSelectionType: Identifiable, CaseIterable, Hashable {
         var id: Int { hashValue }
         case contract
-        case implementation
         case mock
     }
 

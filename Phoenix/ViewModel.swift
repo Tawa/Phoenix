@@ -65,12 +65,8 @@ class ViewModel: ObservableObject {
     }
     @Published var skipXcodeProject: Bool = false
 
-    // MARK: - Filters
-    @Published var componentsListFilter: String = ""
-    
     let appVersionUpdateProvider: AppVersionUpdateProviderProtocol
     let pbxProjSyncer: PBXProjectSyncerProtocol
-    let familyFolderNameProvider: FamilyFolderNameProviderProtocol
     let filesURLDataStore: FilesURLDataStoreProtocol
     let projectGenerator: ProjectGeneratorProtocol
     
@@ -79,24 +75,17 @@ class ViewModel: ObservableObject {
     init(
         appVersionUpdateProvider: AppVersionUpdateProviderProtocol,
         pbxProjSyncer: PBXProjectSyncerProtocol,
-        familyFolderNameProvider: FamilyFolderNameProviderProtocol,
         filesURLDataStore: FilesURLDataStoreProtocol,
         projectGenerator: ProjectGeneratorProtocol,
         composition: Composition
     ) {
         self.appVersionUpdateProvider = appVersionUpdateProvider
         self.pbxProjSyncer = pbxProjSyncer
-        self.familyFolderNameProvider = familyFolderNameProvider
         self.filesURLDataStore = filesURLDataStore
         self.projectGenerator = projectGenerator
         self.composition = composition
 
         subscribeToPublishers()
-    }
-    
-    // MARK: - FamilyFolderNameProvider
-    func folderName(forFamily family: String) -> String {
-        familyFolderNameProvider.folderName(forFamily: family)
     }
         
     func onConfigurationButton() {
@@ -159,10 +148,6 @@ class ViewModel: ObservableObject {
     
     func onDismissGenerateSheet() {
         showingGenerateSheet = false
-    }
-    
-    func onGenerateSheetGenerate(document: PhoenixDocument, fileURL: URL?) {
-        onGenerate(document: document, fileURL: fileURL)
     }
     
     func onGenerate(document: PhoenixDocument, fileURL: URL?) {

@@ -110,7 +110,7 @@ struct ContentView: View {
     
     func componentView(for component: Component) -> some View {
         ComponentView(
-            interactor: composition.componentViewInteractor(),
+            getSelectedComponentUseCase: composition.getSelectedComponentUseCase(),
             defaultLocalization: component.defaultLocalization,
             onUpdateDefaultLocalization: { document.update(defaultLocalization: $0,
                                                            forComponentName: component.name) },
@@ -258,7 +258,7 @@ struct ContentView: View {
             versionTitle: dependency.version.title,
             versionText: dependency.version.stringValue,
             onSubmitVersionText: { document.updateVersionStringValueForRemoteDependency(withComponentName: component.name, dependency: dependency, stringValue: $0) },
-            allDependencyTypes: allDependencyTypes(dependency: dependency, component: component),
+            allDependencyTypes: allDependencyTypes(component: component),
             enabledTypes: enabledDependencyTypes(for: dependency, component: component),
             onUpdateDependencyType: { document.updateModuleTypeForRemoteDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) },
             onRemove: { document.removeRemoteDependencyForComponent(withComponentName: component.name, dependency: dependency) }
@@ -347,34 +347,6 @@ struct ContentView: View {
     }
     
     // MARK: - Private
-    
-    private var filteredComponentsFamilies: [ComponentsFamily] {
-        guard !viewModel.componentsListFilter.isEmpty else { return document.componentsFamilies }
-        return document.componentsFamilies
-            .map { componentsFamily in
-                ComponentsFamily(family: componentsFamily.family,
-                                 components: componentsFamily.components.filter {
-                    componentName($0, for: componentsFamily.family)
-                        .lowercased().contains(viewModel.componentsListFilter.lowercased())
-                })
-            }.filter { !$0.components.isEmpty }
-    }
-    
-    private func componentName(_ component: Component, for family: Family) -> String {
-        family.ignoreSuffix == true ? component.name.given : component.name.given + component.name.family
-    }
-    
-    private func sectionTitle(forFamily family: Family) -> String {
-        family.name == family.folder ? family.name : viewModel.folderName(forFamily: family.name)
-    }
-    
-    private func sectionFolderName(forFamily family: Family) -> String? {
-        let result = family.folder ?? viewModel.folderName(forFamily: family.name)
-        guard result != family.name
-        else { return nil }
-        return result
-    }
-    
     private func iOSPlatformMenuTitle(forComponent component: Component) -> String {
         if let iOSVersion = component.iOSVersion {
             return ".iOS(.\(iOSVersion))"
@@ -439,7 +411,7 @@ struct ContentView: View {
         })
     }
     
-    private func allDependencyTypes(dependency: RemoteDependency, component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
+    private func allDependencyTypes(component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
         allTargetTypes(forComponent: component)
     }
     
@@ -484,10 +456,6 @@ struct ContentView: View {
                 selectedValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: false)],
                 selectedSubValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: true)])
         }
-    }
-    
-    func allDependenciesSelectionValues() -> [String] {
-        document.projectConfiguration.packageConfigurations.map(\.name)
     }
     
     func allDependenciesSelectionValues(forComponent component: Component) -> [String] {
