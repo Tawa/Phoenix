@@ -111,7 +111,6 @@ struct ContentView: View {
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
             getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase(),
             getSelectedComponentUseCase: composition.getSelectedComponentUseCase(),
-            platformsContent: { platformsContent(forComponent: component) },
             dependencies: component.dependencies,
             dependencyView: { dependencyType in
                 VStack(spacing: 0) {
@@ -247,23 +246,6 @@ struct ContentView: View {
         )
     }
     
-    func platformsContent(forComponent component: Component) -> some View {
-        Group {
-            CustomMenu(title: iOSPlatformMenuTitle(forComponent: component),
-                       data: IOSVersion.allCases,
-                       onSelection: { document.setIOSVersionForComponent(withName: component.name, iOSVersion: $0) },
-                       hasRemove: component.iOSVersion != nil,
-                       onRemove: { document.removeIOSVersionForComponent(withName: component.name) })
-            .frame(width: 150)
-            CustomMenu(title: macOSPlatformMenuTitle(forComponent: component),
-                       data: MacOSVersion.allCases,
-                       onSelection: { document.setMacOSVersionForComponent(withName: component.name, macOSVersion: $0) },
-                       hasRemove: component.macOSVersion != nil,
-                       onRemove: { document.removeMacOSVersionForComponent(withName: component.name) })
-            .frame(width: 150)
-        }
-    }
-    
     @ViewBuilder
     private func toolbarViews() -> some View {
         VStack(alignment: .leading) {
@@ -329,22 +311,6 @@ struct ContentView: View {
     }
     
     // MARK: - Private
-    private func iOSPlatformMenuTitle(forComponent component: Component) -> String {
-        if let iOSVersion = component.iOSVersion {
-            return ".iOS(.\(iOSVersion))"
-        } else {
-            return "Add iOS"
-        }
-    }
-    
-    private func macOSPlatformMenuTitle(forComponent component: Component) -> String {
-        if let macOSVersion = component.macOSVersion {
-            return ".macOS(.\(macOSVersion))"
-        } else {
-            return "Add macOS"
-        }
-    }
-    
     private func componentTypes(for dependency: ComponentDependency, component: Component) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
         allTargetTypes(forComponent: component).compactMap { targetType -> IdentifiableWithSubtypeAndSelection<PackageTargetType, String>? in
             let selectedValue = dependency.targetTypes[targetType.value]

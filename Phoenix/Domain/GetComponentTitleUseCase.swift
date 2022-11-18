@@ -2,7 +2,7 @@ import Component
 import Foundation
 
 protocol GetComponentTitleUseCaseProtocol {
-    func title(forComponent component: Component) -> String
+    func title(forComponent name: Name) -> String
 }
 
 struct GetComponentTitleUseCase: GetComponentTitleUseCaseProtocol {
@@ -12,10 +12,10 @@ struct GetComponentTitleUseCase: GetComponentTitleUseCaseProtocol {
         self.phoenixDocumentRepository = phoenixDocumentRepository
     }
     
-    func title(forComponent component: Component) -> String {
-        guard let family = phoenixDocumentRepository.family(named: component.name.family)
-        else { return component.name.full }
-        var name = component.name.given
+    func title(forComponent name: Name) -> String {
+        guard let family = phoenixDocumentRepository.family(named: name.family)
+        else { return name.full }
+        var name = name.given
         if !family.ignoreSuffix {
             name += family.name
         }

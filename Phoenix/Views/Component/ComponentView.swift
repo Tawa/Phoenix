@@ -4,9 +4,8 @@ import Component
 import SwiftUI
 import SwiftPackage
 
-struct ComponentView<PlatformsContent, DependencyType, DependencyContent, TargetType, ResourcesType>: View
+struct ComponentView<DependencyType, DependencyContent, TargetType, ResourcesType>: View
 where
-PlatformsContent: View,
 DependencyType: Identifiable,
 DependencyContent: View,
 TargetType: Identifiable & Hashable,
@@ -17,7 +16,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
     let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
     
-    let platformsContent: () -> PlatformsContent
     let dependencies: [DependencyType]
     let dependencyView: (DependencyType) -> DependencyContent
     let onGenerateDemoAppProject: () -> Void
@@ -28,16 +26,15 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let onShowDependencySheet: () -> Void
     let onShowRemoteDependencySheet: () -> Void
     @Binding var resourcesValueBinding: [DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]
-
+    
     // MARK: - Private
-    private var title: String { getComponentTitleUseCase.title(forComponent: component) }
+    private var title: String { getComponentTitleUseCase.title(forComponent: component.name) }
     private let allModuleTypes: [String]
-
+    
     init(
         getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
         getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
         getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
-        platformsContent: @escaping () -> PlatformsContent,
         dependencies: [DependencyType],
         dependencyView: @escaping (DependencyType) -> DependencyContent,
         onGenerateDemoAppProject: @escaping () -> Void,
@@ -53,8 +50,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         
         self.getComponentTitleUseCase = getComponentTitleUseCase
         self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
-
-        self.platformsContent = platformsContent
+        
         self.dependencies = dependencies
         self.dependencyView = dependencyView
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
@@ -72,47 +68,11 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     var body: some View {
         List {
             VStack(alignment: .leading) {
-                Group {
-                    HStack {
-                        Text(title)
-                            .font(.largeTitle.bold())
-                            .multilineTextAlignment(.leading)
-                        Spacer()
-                        Button(action: onGenerateDemoAppProject) {
-                            Text("Generate Demo App")
-                        }.help("Generate Demo App Xcode Project")
-                        Button(role: .destructive, action: onRemove) {
-                            Image(systemName: "trash")
-                        }.help("Remove")
-                    }
-                    Divider()
-                }
-                Group {
-                    HStack(alignment: .top) {
-                        Text("Module Types:")
-                        ComponentModuleTypesView(dictionary: $component.modules,
-                                                 allModuleTypes: allModuleTypes)
-                        Spacer()
-                    }
-                    Divider()
-                    
-                    defaultLocalizationView()
-                    Divider()
-                    HStack {
-                        Text("Platforms:")
-                        platformsContent()
-                    }
-                    Divider()
-                }
-                
-                Group {
-                    RelationView(
-                        defaultDependencies: $component.defaultDependencies,
-                        title: "Default Dependencies",
-                        getRelationViewDataUseCase: composition.getRelationViewDataUseCase()
-                    )
-                    Divider()
-                }
+                headerView()
+                moduleTypesView()
+                defaultLocalizationView()
+                platformsContent()
+                defaultDependenciesView()
                 
                 Section {
                     ForEach(dependencies, content: dependencyView)
@@ -143,10 +103,33 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
             .padding()
         }
     }
+    // MARK: - Subviews
+    @ViewBuilder private func headerView() -> some View {
+        section {
+            Text(title)
+                .font(.largeTitle.bold())
+                .multilineTextAlignment(.leading)
+            Spacer()
+            Button(action: onGenerateDemoAppProject) {
+                Text("Generate Demo App")
+            }.help("Generate Demo App Xcode Project")
+            Button(role: .destructive, action: onRemove) {
+                Image(systemName: "trash")
+            }.help("Remove")
+        }
+    }
     
-    // MARK: - Private
+    @ViewBuilder private func moduleTypesView() -> some View {
+        section {
+            Text("Module Types:")
+            ComponentModuleTypesView(dictionary: $component.modules,
+                                     allModuleTypes: allModuleTypes)
+            Spacer()
+        }
+    }
+    
     @ViewBuilder private func defaultLocalizationView() -> some View {
-        HStack(alignment: .top) {
+        section {
             Text("Default Localization: ")
             TextField("ex: en", text: $component.defaultLocalization.value.nonOptionalBinding).frame(width: 100)
             VStack(alignment: .leading) {
@@ -170,6 +153,60 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                     }
                 }
             }
+        }
+    }
+    
+    @ViewBuilder private func platformsContent() -> some View {
+        section {
+            Text("Platforms:")
+            CustomMenu(title: iOSPlatformMenuTitle(forComponent: component),
+                       data: IOSVersion.allCases,
+                       onSelection: { component.iOSVersion = $0 },
+                       hasRemove: component.iOSVersion != nil,
+                       onRemove: { component.iOSVersion = nil })
+            .frame(width: 150)
+            CustomMenu(title: macOSPlatformMenuTitle(forComponent: component),
+                       data: MacOSVersion.allCases,
+                       onSelection: { component.macOSVersion = $0 },
+                       hasRemove: component.macOSVersion != nil,
+                       onRemove: { component.macOSVersion = nil })
+            .frame(width: 150)
+        }
+    }
+    
+    @ViewBuilder private func defaultDependenciesView() -> some View {
+        section {
+            RelationView(
+                defaultDependencies: $component.defaultDependencies,
+                title: "Default Dependencies",
+                getRelationViewDataUseCase: composition.getRelationViewDataUseCase()
+            )
+        }
+    }
+    
+    // MARK: - Helper Functions
+    @ViewBuilder private func section<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
+        Section {
+            HStack(alignment: .top) {
+                content()
+            }
+            Divider()
+        }
+    }
+    
+    private func iOSPlatformMenuTitle(forComponent component: Component) -> String {
+        if let iOSVersion = component.iOSVersion {
+            return ".iOS(.\(iOSVersion))"
+        } else {
+            return "Add iOS"
+        }
+    }
+    
+    private func macOSPlatformMenuTitle(forComponent component: Component) -> String {
+        if let macOSVersion = component.macOSVersion {
+            return ".macOS(.\(macOSVersion))"
+        } else {
+            return "Add macOS"
         }
     }
     
