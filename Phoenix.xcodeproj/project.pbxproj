@@ -47,6 +47,7 @@
 		B2142FDA2921954300EEB98B /* GetProjectConfigurationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */; };
 		B216D3A12926EDC6005EDBB5 /* RelationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B216D3A02926EDC6005EDBB5 /* RelationView.swift */; };
 		B216D3A32926F212005EDBB5 /* GetRelationViewDataUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B216D3A22926F212005EDBB5 /* GetRelationViewDataUseCase.swift */; };
+		B216D3A529277BA2005EDBB5 /* GetComponentsFilterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B216D3A429277BA2005EDBB5 /* GetComponentsFilterUseCase.swift */; };
 		B21BF48D28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */; };
 		B224D9AC28C3CCA300997F80 /* PhoenixViews in Frameworks */ = {isa = PBXBuildFile; productRef = B224D9AB28C3CCA300997F80 /* PhoenixViews */; };
 		B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B22AFDA728B9528400C471A4 /* DemoAppGenerator */; };
@@ -61,8 +62,6 @@
 		B240A5DB291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */; };
 		B240A5DD291D655B00815CC3 /* SelectComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */; };
 		B24F6D91291D9862007170DD /* ComponentsFilterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */; };
-		B24F6D95291D996F007170DD /* UpdateComponentsFilterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */; };
-		B24F6D97291D997F007170DD /* ClearComponentsFilterUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */; };
 		B24F6D99291D9B6A007170DD /* Composition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D98291D9B6A007170DD /* Composition.swift */; };
 		B25621B0291E785C0093C8B9 /* GetSelectedComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25621AF291E785C0093C8B9 /* GetSelectedComponentUseCase.swift */; };
 		B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B266B0B428BA8BF900778F3A /* RelativeURLProvider */; };
@@ -173,6 +172,7 @@
 		B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProjectConfigurationUseCase.swift; sourceTree = "<group>"; };
 		B216D3A02926EDC6005EDBB5 /* RelationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationView.swift; sourceTree = "<group>"; };
 		B216D3A22926F212005EDBB5 /* GetRelationViewDataUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRelationViewDataUseCase.swift; sourceTree = "<group>"; };
+		B216D3A429277BA2005EDBB5 /* GetComponentsFilterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentsFilterUseCase.swift; sourceTree = "<group>"; };
 		B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+AppVersion.swift"; sourceTree = "<group>"; };
 		B233DB6828EB5BC000243D58 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITests.swift; sourceTree = "<group>"; };
@@ -184,8 +184,6 @@
 		B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentsListItemsUseCase.swift; sourceTree = "<group>"; };
 		B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectComponentUseCase.swift; sourceTree = "<group>"; };
 		B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsFilterRepository.swift; sourceTree = "<group>"; };
-		B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateComponentsFilterUseCase.swift; sourceTree = "<group>"; };
-		B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearComponentsFilterUseCase.swift; sourceTree = "<group>"; };
 		B24F6D98291D9B6A007170DD /* Composition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Composition.swift; sourceTree = "<group>"; };
 		B25621AF291E785C0093C8B9 /* GetSelectedComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetSelectedComponentUseCase.swift; sourceTree = "<group>"; };
 		B26383E928D7773D00C9380E /* PhoenixRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PhoenixRelease.entitlements; sourceTree = "<group>"; };
@@ -470,21 +468,20 @@
 		B240A5D9291D5E4F00815CC3 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				B24F6D96291D997F007170DD /* ClearComponentsFilterUseCase.swift */,
 				B236A5FA291DAED4008D658E /* DeleteComponentUseCase.swift */,
+				B20883AA29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift */,
 				B236A5FC291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift */,
+				B216D3A429277BA2005EDBB5 /* GetComponentsFilterUseCase.swift */,
 				B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */,
+				B20883AC292442930082CF56 /* GetFamilySheetDataUseCase.swift */,
 				B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */,
+				B216D3A22926F212005EDBB5 /* GetRelationViewDataUseCase.swift */,
 				B25621AF291E785C0093C8B9 /* GetSelectedComponentUseCase.swift */,
 				B2C50B1C29237F9B00B9F6C7 /* GetSelectedFamilyUseCase.swift */,
-				B216D3A22926F212005EDBB5 /* GetRelationViewDataUseCase.swift */,
-				B20883AA29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift */,
-				B20883AC292442930082CF56 /* GetFamilySheetDataUseCase.swift */,
 				B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */,
 				B2C50B162922F58100B9F6C7 /* SelectFamilyUseCase.swift */,
 				B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */,
 				B236A600291DB715008D658E /* SelectPreviousComponentUseCase.swift */,
-				B24F6D94291D996F007170DD /* UpdateComponentsFilterUseCase.swift */,
 				B2C50B1829237E4E00B9F6C7 /* UpdateFamilyUseCase.swift */,
 			);
 			path = Domain;
@@ -779,7 +776,6 @@
 				38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */,
 				B236A5FF291DB54B008D658E /* SelectNextComponentUseCase.swift in Sources */,
 				B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */,
-				B24F6D97291D997F007170DD /* ClearComponentsFilterUseCase.swift in Sources */,
 				B20883AD292442930082CF56 /* GetFamilySheetDataUseCase.swift in Sources */,
 				B2C50B172922F58100B9F6C7 /* SelectFamilyUseCase.swift in Sources */,
 				B216D3A32926F212005EDBB5 /* GetRelationViewDataUseCase.swift in Sources */,
@@ -793,7 +789,6 @@
 				38E251312837E96A002FFA31 /* PopoverView.swift in Sources */,
 				3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */,
 				B20883AB29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift in Sources */,
-				B24F6D95291D996F007170DD /* UpdateComponentsFilterUseCase.swift in Sources */,
 				B240A5D8291D5D7D00815CC3 /* SelectionRepository.swift in Sources */,
 				B240A5DD291D655B00815CC3 /* SelectComponentUseCase.swift in Sources */,
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
@@ -803,6 +798,7 @@
 				3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */,
 				B21BF48D28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift in Sources */,
 				B236A5FB291DAED4008D658E /* DeleteComponentUseCase.swift in Sources */,
+				B216D3A529277BA2005EDBB5 /* GetComponentsFilterUseCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -988,7 +984,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.3;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1022,7 +1018,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.3;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

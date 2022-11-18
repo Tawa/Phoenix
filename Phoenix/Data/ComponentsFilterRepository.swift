@@ -1,13 +1,18 @@
 import Combine
+import SwiftUI
 
 protocol ComponentsFilterRepositoryProtocol {
-    var value: String? { get }
+    var binding: Binding<String?> { get }
+
+    var value: String? { get set }
     var publisher: AnyPublisher<String?, Never> { get }
-    
-    func update(value: String?)
 }
 
 class ComponentsFilterRepository: ComponentsFilterRepositoryProtocol {
+    var binding: Binding<String?> {
+        Binding { self.value } set: { self.value = $0 }
+    }
+    
     var value: String? {
         didSet {
             subject.send(value)
@@ -17,10 +22,5 @@ class ComponentsFilterRepository: ComponentsFilterRepositoryProtocol {
     var publisher: AnyPublisher<String?, Never> { subject.eraseToAnyPublisher() }
     
     init() {
-        
-    }
-    
-    func update(value: String?) {
-        self.value = value
     }
 }

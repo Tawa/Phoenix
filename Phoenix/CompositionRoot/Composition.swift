@@ -25,6 +25,12 @@ class Composition: ObservableObject {
     }
     
     // MARK: - Domain
+    lazy var getComponentsFilterUseCase = Factory { [unowned self] in
+        GetComponentsFilterUseCase(
+            componentsFilterRepository: componentsFilterRepository()
+        ) as GetComponentsFilterUseCaseProtocol
+    }
+    
     lazy var getComponentsFamiliesUseCase = Factory { [unowned self] in
         GetComponentsFamiliesUseCase(
             componentsFilterRepository: componentsFilterRepository(),
@@ -100,24 +106,12 @@ class Composition: ObservableObject {
         ) as UpdateFamilyUseCaseProtocol
     }
     
-    lazy var clearComponentsFilterUseCase = Factory { [unowned self] in
-        ClearComponentsFilterUseCase(
-            componentsFilterRepository: componentsFilterRepository()
-        )as ClearComponentsFilterUseCaseProtocol
-    }
-    
     lazy var getSelectedComponentUseCase = Factory { [unowned self] in
         GetSelectedComponentUseCase(
             phoenixDocumentRepository: phoenixDocumentRepository(),
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
             selectionRepository: selectionRepository()
         )
-    }
-    
-    lazy var updateComponentsFilterUseCase = Factory { [unowned self] in
-        UpdateComponentsFilterUseCase(
-            componentsFilterRepository: componentsFilterRepository()
-        )as UpdateComponentsFilterUseCaseProtocol
     }
     
     lazy var selectNextComponentUseCase = Factory { [unowned self] in
@@ -135,13 +129,6 @@ class Composition: ObservableObject {
     }
 
     // MARK: - Presentation
-    lazy var componentsFilterInteractor = Factory { [unowned self] in
-        FilterViewInteractor(
-            clearComponentsFilterUseCase: clearComponentsFilterUseCase(),
-            updateComponentsFilterUseCase: updateComponentsFilterUseCase()
-        )
-    }
-    
     lazy var componentsListInteractor = Factory { [unowned self] in
         ComponentsListInteractor(
             getComponentsListItemsUseCase: getComponentsListItemsUseCase(),

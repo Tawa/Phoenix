@@ -4,16 +4,16 @@ import SwiftPackage
 import SwiftUI
 
 class PhoenixAppCompositionRoot: ObservableObject {
-    var compositions: [URL: Composition] = [:]
+    var compositions: [String: Composition] = [:]
     
     func composition(for document: Binding<PhoenixDocument>, url: URL?) -> Composition {
-        guard let url = url else { return Composition(document: document) }
-        if let composition = compositions[url] {
+        let id = document.wrappedValue.id
+        if let composition = compositions[id] {
             composition.phoenixDocumentRepository().bind(document: document)
             return composition
         }
         let composition = Composition(document: document)
-        self.compositions[url] = composition
+        self.compositions[id] = composition
         return composition
     }
 }

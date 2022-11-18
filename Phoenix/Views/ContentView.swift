@@ -94,15 +94,13 @@ struct ContentView: View {
                 )
             })
         }
-        .onAppear {
-            viewModel.checkForUpdate()
-        }
+        .onAppear(perform: viewModel.checkForUpdate)
     }
     
     // MARK: - Views
     func componentsList() -> some View {
         VStack {
-            FilterView(interactor: composition.componentsFilterInteractor())
+            FilterView(text: composition.getComponentsFilterUseCase().binding)
             ComponentsList(interactor: composition.componentsListInteractor())
         }
         .frame(minWidth: 250)
