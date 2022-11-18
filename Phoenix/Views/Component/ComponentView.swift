@@ -13,8 +13,8 @@ TargetType: Identifiable & Hashable,
 ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
 {
     @Binding var component: Component
-    let defaultLocalization: DefaultLocalization
-    let onUpdateDefaultLocalization: (DefaultLocalization) -> Void
+    let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
+    
     let platformsContent: () -> PlatformsContent
     let dependencies: [DependencyType]
     let dependencyView: (DependencyType) -> DependencyContent
@@ -38,12 +38,11 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     @Binding var resourcesValueBinding: [DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]
 
     // MARK: - Private
-    private var title: String { component.name.full }
+    private var title: String { getComponentTitleUseCase.title(forComponent: component) }
     
     init(
+        getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
         getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
-        defaultLocalization: DefaultLocalization,
-        onUpdateDefaultLocalization: @escaping (DefaultLocalization) -> Void,
         platformsContent: @escaping () -> PlatformsContent,
         dependencies: [DependencyType],
         dependencyView: @escaping (DependencyType) -> DependencyContent,
@@ -68,8 +67,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     ) {
         _component = getSelectedComponentUseCase.binding
         
-        self.defaultLocalization = defaultLocalization
-        self.onUpdateDefaultLocalization = onUpdateDefaultLocalization
+        self.getComponentTitleUseCase = getComponentTitleUseCase
         self.platformsContent = platformsContent
         self.dependencies = dependencies
         self.dependencyView = dependencyView
@@ -181,19 +179,14 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     @ViewBuilder private func defaultLocalizationView() -> some View {
         HStack(alignment: .top) {
             Text("Default Localization: ")
-            TextField("ex: en", text: Binding(get: { defaultLocalization.value ?? "" },
-                                              set: {
-                var defaultLocalization = defaultLocalization
-                defaultLocalization.value = $0
-                onUpdateDefaultLocalization(defaultLocalization)
-            })).frame(width: 100)
+            TextField("ex: en", text: $component.defaultLocalization.value.nonOptionalBinding).frame(width: 100)
             VStack(alignment: .leading) {
                 ForEach(allModuleTypes.filter(isModuleTypeOn), id: \.self) { moduleType in
                     HStack {
                         Toggle(isOn: Binding(get: {
-                            defaultLocalization.modules.contains(moduleType)
+                            $component.wrappedValue.defaultLocalization.modules.contains(moduleType)
                         }, set: {
-                            var defaultLocalization = defaultLocalization
+                            var defaultLocalization = component.defaultLocalization
                             if $0 {
                                 defaultLocalization.modules.removeAll(where: { $0 == moduleType })
                                 defaultLocalization.modules.append(moduleType)
@@ -201,7 +194,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                             } else {
                                 defaultLocalization.modules.removeAll(where: { $0 == moduleType })
                             }
-                            onUpdateDefaultLocalization(defaultLocalization)
+                            component.defaultLocalization = defaultLocalization
                         })) {
                             Text(moduleType)
                         }

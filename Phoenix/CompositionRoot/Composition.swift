@@ -106,6 +106,12 @@ class Composition: ObservableObject {
         ) as UpdateFamilyUseCaseProtocol
     }
     
+    lazy var getComponentTitleUseCase = Factory { [unowned self] in
+        GetComponentTitleUseCase(
+            phoenixDocumentRepository: phoenixDocumentRepository()
+        ) as GetComponentTitleUseCaseProtocol
+    }
+    
     lazy var getSelectedComponentUseCase = Factory { [unowned self] in
         GetSelectedComponentUseCase(
             phoenixDocumentRepository: phoenixDocumentRepository(),

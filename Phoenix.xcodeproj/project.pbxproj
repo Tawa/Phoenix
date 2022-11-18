@@ -64,6 +64,7 @@
 		B24F6D91291D9862007170DD /* ComponentsFilterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */; };
 		B24F6D99291D9B6A007170DD /* Composition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D98291D9B6A007170DD /* Composition.swift */; };
 		B25621B0291E785C0093C8B9 /* GetSelectedComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25621AF291E785C0093C8B9 /* GetSelectedComponentUseCase.swift */; };
+		B258765C2927FBB200B30FC6 /* GetComponentTitleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B258765B2927FBB200B30FC6 /* GetComponentTitleUseCase.swift */; };
 		B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B266B0B428BA8BF900778F3A /* RelativeURLProvider */; };
 		B291BD2328CA83A0000D2149 /* DemoAppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = B291BD2228CA83A0000D2149 /* DemoAppFeature */; };
 		B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */; };
@@ -186,6 +187,7 @@
 		B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsFilterRepository.swift; sourceTree = "<group>"; };
 		B24F6D98291D9B6A007170DD /* Composition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Composition.swift; sourceTree = "<group>"; };
 		B25621AF291E785C0093C8B9 /* GetSelectedComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetSelectedComponentUseCase.swift; sourceTree = "<group>"; };
+		B258765B2927FBB200B30FC6 /* GetComponentTitleUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentTitleUseCase.swift; sourceTree = "<group>"; };
 		B26383E928D7773D00C9380E /* PhoenixRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PhoenixRelease.entitlements; sourceTree = "<group>"; };
 		B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+Features.swift"; sourceTree = "<group>"; };
 		B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencySheet.swift; sourceTree = "<group>"; };
@@ -483,6 +485,7 @@
 				B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */,
 				B236A600291DB715008D658E /* SelectPreviousComponentUseCase.swift */,
 				B2C50B1829237E4E00B9F6C7 /* UpdateFamilyUseCase.swift */,
+				B258765B2927FBB200B30FC6 /* GetComponentTitleUseCase.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -775,6 +778,7 @@
 				B236A5FD291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift in Sources */,
 				38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */,
 				B236A5FF291DB54B008D658E /* SelectNextComponentUseCase.swift in Sources */,
+				B258765C2927FBB200B30FC6 /* GetComponentTitleUseCase.swift in Sources */,
 				B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */,
 				B20883AD292442930082CF56 /* GetFamilySheetDataUseCase.swift in Sources */,
 				B2C50B172922F58100B9F6C7 /* SelectFamilyUseCase.swift in Sources */,

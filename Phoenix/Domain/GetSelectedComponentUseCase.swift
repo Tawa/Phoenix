@@ -19,7 +19,6 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
         } set: {
             phoenixDocumentRepository.update(component: $0)
         }
-
     }
     
     init(phoenixDocumentRepository: PhoenixDocumentRepositoryProtocol,
