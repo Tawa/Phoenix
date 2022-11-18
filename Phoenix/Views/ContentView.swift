@@ -124,14 +124,6 @@ struct ContentView: View {
                     }
                 }
             },
-            allDependenciesConfiguration: allDependenciesConfiguration(defaultDependencies: component.defaultDependencies),
-            allDependenciesSelectionValues: allDependenciesSelectionValues(forComponent: component),
-            onUpdateTargetTypeValue: {
-                document.updateDefaultdependencyForComponent(
-                    withName: component.name,
-                    packageType: $0,
-                    value: $1)
-            },
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
             },

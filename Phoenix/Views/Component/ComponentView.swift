@@ -12,6 +12,7 @@ DependencyContent: View,
 TargetType: Identifiable & Hashable,
 ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
 {
+    @EnvironmentObject var composition: Composition
     @Binding var component: Component
     let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
     let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
@@ -19,9 +20,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let platformsContent: () -> PlatformsContent
     let dependencies: [DependencyType]
     let dependencyView: (DependencyType) -> DependencyContent
-    let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
-    let allDependenciesSelectionValues: [String]
-    let onUpdateTargetTypeValue: (PackageTargetType, String?) -> Void
     let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
     let allTargetTypes: [IdentifiableWithSubtype<TargetType>]
@@ -42,9 +40,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         platformsContent: @escaping () -> PlatformsContent,
         dependencies: [DependencyType],
         dependencyView: @escaping (DependencyType) -> DependencyContent,
-        allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>],
-        allDependenciesSelectionValues: [String],
-        onUpdateTargetTypeValue: @escaping (PackageTargetType, String?) -> Void,
         onGenerateDemoAppProject: @escaping () -> Void,
         onRemove: @escaping () -> Void,
         allTargetTypes: [IdentifiableWithSubtype<TargetType>],
@@ -62,9 +57,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         self.platformsContent = platformsContent
         self.dependencies = dependencies
         self.dependencyView = dependencyView
-        self.allDependenciesConfiguration = allDependenciesConfiguration
-        self.allDependenciesSelectionValues = allDependenciesSelectionValues
-        self.onUpdateTargetTypeValue = onUpdateTargetTypeValue
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
         self.onRemove = onRemove
         self.allTargetTypes = allTargetTypes
@@ -114,11 +106,11 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                 }
                 
                 Group {
-                    DependencyView<PackageTargetType, String>(
+                    RelationView(
+                        defaultDependencies: $component.defaultDependencies,
                         title: "Default Dependencies",
-                        allTypes: allDependenciesConfiguration,
-                        allSelectionValues: allDependenciesSelectionValues,
-                        onUpdateTargetTypeValue: onUpdateTargetTypeValue)
+                        getRelationViewDataUseCase: composition.getRelationViewDataUseCase()
+                    )
                     Divider()
                 }
                 
