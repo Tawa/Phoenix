@@ -1,4 +1,5 @@
 import Factory
+import Component
 import PhoenixDocument
 import SwiftUI
 
@@ -65,6 +66,12 @@ class Composition: ObservableObject {
         ) as SelectComponentUseCaseProtocol
     }
     
+    lazy var getComponentWithNameUseCase = Factory { [unowned self] in
+        GetComponentWithNameUseCase(
+            phoenixDocumentRepository: phoenixDocumentRepository()
+        ) as GetComponentWithNameUseCaseProtocol
+    }
+    
     lazy var getSelectedFamilyUseCase = Factory { [unowned self] in
         GetSelectedFamilyUseCase(
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
@@ -78,6 +85,14 @@ class Composition: ObservableObject {
             getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase(),
             getProjectConfigurationUseCase: getProjectConfigurationUseCase()
         ) as GetRelationViewDataUseCaseProtocol
+    }
+    
+    lazy var getRelationViewDataWithNameUseCase = ParameterFactory { [unowned self] (name: Name) in
+        GetRelationViewDataWithNameUseCase(
+            getComponentWithNameUseCase: getComponentWithNameUseCase(),
+            getRelationViewDataUseCase: getRelationViewDataUseCase(),
+            name: name
+        ) as GetRelationViewDataWithNameUseCase
     }
     
     lazy var getAllDependenciesConfigurationUseCase = Factory { [unowned self] in

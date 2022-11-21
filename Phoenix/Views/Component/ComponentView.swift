@@ -4,11 +4,9 @@ import Component
 import SwiftUI
 import SwiftPackage
 
-struct ComponentView<LocalDependencyType, LocalDependencyContent, RemoteDependencyType, RemoteDependencyContent, TargetType, ResourcesType>: View
+struct ComponentView<RemoteDependencyType, RemoteDependencyContent, TargetType, ResourcesType>: View
 where
-LocalDependencyType: Identifiable,
 RemoteDependencyType: Identifiable,
-LocalDependencyContent: View,
 RemoteDependencyContent: View,
 TargetType: Identifiable & Hashable,
 ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
@@ -18,8 +16,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
     let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
     
-    let localDependencies: [LocalDependencyType]
-    let localDependencyView: (LocalDependencyType) -> LocalDependencyContent
     let remoteDependencies: [RemoteDependencyType]
     let remoteDependencyView: (RemoteDependencyType) -> RemoteDependencyContent
     let onGenerateDemoAppProject: () -> Void
@@ -39,8 +35,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
         getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
         getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
-        localDependencies: [LocalDependencyType],
-        localDependencyView: @escaping (LocalDependencyType) -> LocalDependencyContent,
         remoteDependencies: [RemoteDependencyType],
         remoteDependencyView: @escaping (RemoteDependencyType) -> RemoteDependencyContent,
         onGenerateDemoAppProject: @escaping () -> Void,
@@ -56,9 +50,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         
         self.getComponentTitleUseCase = getComponentTitleUseCase
         self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
-        
-        self.localDependencies = localDependencies
-        self.localDependencyView = localDependencyView
         
         self.remoteDependencies = remoteDependencies
         self.remoteDependencyView = remoteDependencyView
@@ -132,6 +123,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         section {
             Text("Default Localization: ")
             TextField("ex: en", text: $component.defaultLocalization.value.nonOptionalBinding).frame(width: 100)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
             VStack(alignment: .leading) {
                 ForEach(allModuleTypes.filter(isModuleTypeOn), id: \.self) { moduleType in
                     HStack {
@@ -186,10 +178,10 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     
     @ViewBuilder private func localDependenciesView() -> some View {
         Section {
-            ForEach(localDependencies) { localDependency in
+            ForEach($component.localDependencies) { localDependency in
                 HStack {
                     Divider()
-                    localDependencyView(localDependency)
+                    componentDependencyView(for: localDependency)
                 }
             }
         } header: {
@@ -219,6 +211,15 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
             }
         }
         Divider()
+    }
+    
+    @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
+        RelationView(
+            defaultDependencies: dependency.targetTypes,
+            title: getComponentTitleUseCase.title(forComponent: dependency.wrappedValue.name),
+            getRelationViewDataUseCase: composition.getRelationViewDataWithNameUseCase(dependency.wrappedValue.name),
+            onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
+        )
     }
     
     // MARK: - Helper Functions

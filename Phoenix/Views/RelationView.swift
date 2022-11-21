@@ -3,8 +3,8 @@ import Component
 import SwiftUI
 
 struct RelationViewData {
-    let types: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
-    let selectionValues: [String]
+    var types: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
+    var selectionValues: [String]
 }
 
 struct RelationSelectorView<DataType>: View where DataType: Hashable {
@@ -55,10 +55,14 @@ struct RelationView: View {
     let title: String
     let allTypes: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
     let allSelectionValues: [String]
+    let onRemove: (() -> Void)?
+    let onDuplicate: (() -> Void)?
 
     init(defaultDependencies: Binding<[PackageTargetType: String]>,
          title: String,
-         getRelationViewDataUseCase: GetRelationViewDataUseCaseProtocol
+         getRelationViewDataUseCase: GetRelationViewDataUseCaseProtocol,
+         onDuplicate: (() -> Void)? = nil,
+         onRemove: (() -> Void)? = nil
     ) {
         _defaultDependencies = defaultDependencies
         self.title = title
@@ -66,13 +70,21 @@ struct RelationView: View {
         let viewData = getRelationViewDataUseCase.viewData(defaultDependencies: defaultDependencies.wrappedValue)
         self.allTypes = viewData.types
         self.allSelectionValues = viewData.selectionValues
+        
+        self.onDuplicate = onDuplicate
+        self.onRemove = onRemove
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(title)
-                .bold()
-                .padding(.bottom)
+            HStack(alignment: .center) {
+                Text(title)
+                    .bold()
+                onDuplicate.map { Button(action: $0) { Image(systemName: "doc.on.doc") } }
+                onRemove.map { Button(action: $0) { Image(systemName: "trash") } }
+                Spacer()
+            }
+            .padding(.bottom)
             VStack {
                 ForEach(allTypes) { dependencyType in
                     HStack {

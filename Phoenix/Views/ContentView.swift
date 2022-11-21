@@ -111,8 +111,6 @@ struct ContentView: View {
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
             getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase(),
             getSelectedComponentUseCase: composition.getSelectedComponentUseCase(),
-            localDependencies: component.localDependencies,
-            localDependencyView: { componentDependencyView(forComponent: component, dependency: $0) },
             remoteDependencies: component.remoteDependencies,
             remoteDependencyView: { remoteDependencyView(forComponent: component, dependency: $0) },
             onGenerateDemoAppProject: {
