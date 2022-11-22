@@ -21,12 +21,6 @@ extension PhoenixDocument {
         allNames.contains(name)
     }
 
-    mutating func updateDefaultdependencyForComponent(withName name: Name, packageType: PackageTargetType, value: String?) {
-        getComponent(withName: name) { component in
-            component.defaultDependencies[packageType] = value
-        }
-    }
-
     func family(for name: Name) -> Family? {
         families.first(where: { name.family == $0.family.name })?.family
     }
@@ -51,20 +45,6 @@ extension PhoenixDocument {
             remoteDependencies.append(temp)
             remoteDependencies.sort()
             component.remoteDependencies = remoteDependencies
-        }
-    }
-
-    private mutating func get(dependency: ComponentDependency, componentWithName name: Name, _ completion: (inout ComponentDependency) -> Void) {
-        getComponent(withName: name) { component in
-            var localDependencies = component.localDependencies
-            guard
-                let index = localDependencies.firstIndex(of: dependency)
-            else { return }
-            var temp = localDependencies.remove(at: index)
-            completion(&temp)
-            localDependencies.append(temp)
-            localDependencies.sort()
-            component.localDependencies = localDependencies
         }
     }
 
@@ -161,44 +141,6 @@ extension PhoenixDocument {
         }
     }
 
-    mutating func setIOSVersionForComponent(withName name: Name, iOSVersion: IOSVersion) {
-        getComponent(withName: name) { $0.iOSVersion = iOSVersion }
-    }
-
-    mutating func removeIOSVersionForComponent(withName name: Name) {
-        getComponent(withName: name) { $0.iOSVersion = nil }
-    }
-
-    mutating func setMacOSVersionForComponent(withName name: Name, macOSVersion: MacOSVersion) {
-        getComponent(withName: name) { $0.macOSVersion = macOSVersion }
-    }
-
-    mutating func removeMacOSVersionForComponent(withName name: Name) {
-        getComponent(withName: name) { $0.macOSVersion = nil }
-    }
-
-    mutating func addModuleTypeForComponent(withName name: Name, moduleType: String) {
-        getComponent(withName: name) {
-            var modules = $0.modules
-            modules[moduleType] = .undefined
-            $0.modules = modules
-        }
-    }
-
-    mutating func removeModuleTypeForComponent(withName name: Name, moduleType: String) {
-        getComponent(withName: name) {
-            var modules = $0.modules
-            modules.removeValue(forKey: moduleType)
-            $0.modules = modules
-        }
-    }
-
-    mutating func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: String) {
-        getComponent(withName: name) {
-            $0.modules[moduleType] = libraryType
-        }
-    }
-
     mutating func removeComponent(withName name: Name) {
         guard
             let familyIndex = families.firstIndex(where: { $0.components.contains(where: { $0.name == name }) })
@@ -207,37 +149,12 @@ extension PhoenixDocument {
         families.removeAll(where: { $0.components.isEmpty })
     }
 
-    mutating func removeDependencyForComponent(withComponentName name: Name, componentDependency: ComponentDependency) {
-        getComponent(withName: name) {
-            var localDependencies = $0.localDependencies
-            localDependencies.removeAll(where: { $0 == componentDependency })
-            localDependencies.sort()
-            $0.localDependencies = localDependencies
-        }
-    }
-
     mutating func removeRemoteDependencyForComponent(withComponentName name: Name, dependency: RemoteDependency) {
         getComponent(withName: name) {
             var remoteDependencies = $0.remoteDependencies
             remoteDependencies.removeAll(where: { $0 == dependency })
             remoteDependencies.sort()
             $0.remoteDependencies = remoteDependencies
-        }
-    }
-    
-    mutating func update(defaultLocalization: DefaultLocalization, forComponentName name: Name) {
-        getComponent(withName: name) { component in
-            component.defaultLocalization = defaultLocalization
-        }
-    }
-
-    mutating func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: PackageTargetType, value: String?) {
-        get(dependency: dependency, componentWithName: name) { dependency in
-            if let value = value {
-                dependency.targetTypes[type] = value
-            } else {
-                dependency.targetTypes.removeValue(forKey: type)
-            }
         }
     }
 

@@ -204,16 +204,6 @@ struct ContentView: View {
         }, onDismiss: { viewModel.showingRemoteDependencySheet = false })
     }
     
-    func componentDependencyView(forComponent component: Component, dependency: ComponentDependency) -> some View {
-        DependencyView<PackageTargetType, String>(
-            title: document.title(for: dependency.name),
-            onSelection: { viewModel.selectedComponentName = dependency.name },
-            onRemove: { document.removeDependencyForComponent(withComponentName: component.name, componentDependency: dependency) },
-            allTypes: componentTypes(for: dependency, component: component),
-            allSelectionValues: allTargetTypes(forDependency: dependency).map { $0.title },
-            onUpdateTargetTypeValue: { document.updateModuleTypeForDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) })
-    }
-    
     func remoteDependencyView(forComponent component: Component, dependency: RemoteDependency) -> some View {
         RemoteDependencyView(
             name: dependency.name.name,

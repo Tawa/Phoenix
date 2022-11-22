@@ -6,7 +6,7 @@ import SwiftUI
 class PhoenixAppCompositionRoot: ObservableObject {
     var compositions: [String: Composition] = [:]
     
-    func composition(for document: Binding<PhoenixDocument>, url: URL?) -> Composition {
+    func composition(for document: Binding<PhoenixDocument>) -> Composition {
         let id = document.wrappedValue.id
         if let composition = compositions[id] {
             composition.phoenixDocumentRepository().bind(document: document)
@@ -32,10 +32,10 @@ struct PhoenixApp: App {
                     pbxProjSyncer: Container.pbxProjSyncer(),
                     filesURLDataStore: Container.filesURLDataStore(),
                     projectGenerator: Container.projectGenerator(),
-                    composition: compositionRoot.composition(for: file.$document, url: file.fileURL)
+                    composition: compositionRoot.composition(for: file.$document)
                 )
             )
-            .environmentObject(compositionRoot.composition(for: file.$document, url: file.fileURL))
+            .environmentObject(compositionRoot.composition(for: file.$document))
         }.windowToolbarStyle(.expanded)
     }
 }
