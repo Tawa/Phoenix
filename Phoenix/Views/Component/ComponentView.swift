@@ -171,7 +171,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
             RelationView(
                 defaultDependencies: $component.defaultDependencies,
                 title: "Default Dependencies",
-                getRelationViewDataUseCase: composition.getRelationViewDataUseCase()
+                getRelationViewDataUseCase: composition.getRelationViewDataToComponentUseCase(component.name)
             )
         }
     }
@@ -217,7 +217,7 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         RelationView(
             defaultDependencies: dependency.targetTypes,
             title: getComponentTitleUseCase.title(forComponent: dependency.wrappedValue.name),
-            getRelationViewDataUseCase: composition.getRelationViewDataWithNameUseCase(dependency.wrappedValue.name),
+            getRelationViewDataUseCase: composition.getRelationViewDataBetweenComponentsUseCase((component.name, dependency.wrappedValue.name)),
             onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
         )
     }

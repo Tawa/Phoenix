@@ -87,12 +87,21 @@ class Composition: ObservableObject {
         ) as GetRelationViewDataUseCaseProtocol
     }
     
-    lazy var getRelationViewDataWithNameUseCase = ParameterFactory { [unowned self] (name: Name) in
-        GetRelationViewDataWithNameUseCase(
+    lazy var getRelationViewDataBetweenComponentsUseCase = ParameterFactory { [unowned self] (fromName: Name, toName: Name) in
+        GetRelationViewDataBetweenComponentsUseCase(
+            getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase(),
             getComponentWithNameUseCase: getComponentWithNameUseCase(),
-            getRelationViewDataUseCase: getRelationViewDataUseCase(),
-            name: name
-        ) as GetRelationViewDataWithNameUseCase
+            fromName: fromName,
+            toName: toName
+        ) as GetRelationViewDataUseCaseProtocol
+    }
+    
+    lazy var getRelationViewDataToComponentUseCase = ParameterFactory { [unowned self] (toName: Name) in
+        GetRelationViewDataToComponentUseCase(
+            getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase(),
+            getComponentWithNameUseCase: getComponentWithNameUseCase(),
+            toName: toName
+        ) as GetRelationViewDataUseCaseProtocol
     }
     
     lazy var getAllDependenciesConfigurationUseCase = Factory { [unowned self] in
