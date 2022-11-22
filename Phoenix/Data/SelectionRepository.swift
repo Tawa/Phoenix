@@ -1,28 +1,33 @@
 import Combine
 import Component
+import Foundation
+
+struct SelectionPath {
+    var familyIndex: Int
+    var componentIndex: Int
+}
 
 protocol SelectionRepositoryProtocol {
-    var componentName: Name? { get }
-    var componentNamePublisher: AnyPublisher<Name?, Never> { get }
+    var selectionPathPublisher: AnyPublisher<SelectionPath?, Never> { get }
+    var selectionPath: SelectionPath? { get }
+    
+    func select(selectionPath: SelectionPath)
     
     var familyName: String? { get }
     var familyNamePublisher: AnyPublisher<String?, Never> { get }
-    
-    func select(name: Name)
-    
     func select(familyName: String)
     func deselectFamilyName()
 }
 
 class SelectionRepository: SelectionRepositoryProtocol {
-    var componentName: Name? = nil {
+    private var selectionPathSubject: CurrentValueSubject<SelectionPath?, Never> = .init(nil)
+    var selectionPathPublisher: AnyPublisher<SelectionPath?, Never> { selectionPathSubject.eraseToAnyPublisher() }
+    var selectionPath: SelectionPath? {
         didSet {
-            componentNameSubject.send(componentName)
+            selectionPathSubject.send(selectionPath)
         }
     }
-    private var componentNameSubject: CurrentValueSubject<Name?, Never> = .init(nil)
-    var componentNamePublisher: AnyPublisher<Name?, Never> { componentNameSubject.eraseToAnyPublisher() }
-    
+
     var familyName: String? = nil {
         didSet {
             familyNameSubject.send(familyName)
@@ -34,8 +39,8 @@ class SelectionRepository: SelectionRepositoryProtocol {
     init() {
     }
     
-    func select(name: Name) {
-        self.componentName = name
+    func select(selectionPath: SelectionPath) {
+        self.selectionPath = selectionPath
     }
     
     func select(familyName: String) {

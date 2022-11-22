@@ -244,20 +244,9 @@ private extension ViewModel {
     func subscribeToPublishers() {
         composition
             .selectionRepository()
-            .componentNamePublisher
-            .sink { [weak self] name in
-                guard self?.selectedComponentName != name else { return }
-                self?.selectedComponentName = name
-            }.store(in: &subscriptions)
-        
-        _selectedComponentName
-            .projectedValue
-            .compactMap { $0 }
-            .sink { [weak self] name in
-                guard let selectionRepository = self?.composition.selectionRepository(),
-                      selectionRepository.componentName != name
-                else { return }
-                selectionRepository.select(name: name)
+            .selectionPathPublisher
+            .sink { [weak self] selectionPath in
+                self?.selectedComponentName = self?.composition.getSelectedComponentUseCase().binding.wrappedValue.name
             }.store(in: &subscriptions)
         
         composition

@@ -141,7 +141,7 @@ class Composition: ObservableObject {
             phoenixDocumentRepository: phoenixDocumentRepository(),
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
             selectionRepository: selectionRepository()
-        )
+        ) as GetSelectedComponentUseCaseProtocol
     }
     
     lazy var selectNextComponentUseCase = Factory { [unowned self] in

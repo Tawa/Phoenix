@@ -188,18 +188,26 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                         componentDependencyView(for: localDependency)
                     }
                 }
+                if component.localDependencies.isEmpty {
+                    Text("No local dependencies")
+                }
             } else {
                 EmptyView()
             }
         } header: {
             HStack {
-                Image(systemName: showingLocalDependencies ? "chevron.down" : "chevron.forward")
+                Button {
+                    showingLocalDependencies.toggle()
+                } label: {
+                    HStack {
+                        Image(systemName: showingLocalDependencies ? "chevron.down" : "chevron.forward")
+                        Text("Local Dependencies")
+                    }
                     .font(.largeTitle.bold())
-                Text("Local Dependencies")
-                    .font(.largeTitle.bold())
+                }.buttonStyle(PlainButtonStyle())
                 Button(action: onShowDependencySheet) { Image(systemName: "plus") }
                     .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
-            }.onTapGesture { showingLocalDependencies.toggle() }
+            }
         }
         Divider()
     }
@@ -213,17 +221,25 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                         remoteDependencyView(remoteDependency)
                     }
                 }
+                if remoteDependencies.isEmpty {
+                    Text("No local dependencies")
+                }
             } else {
                 EmptyView()
             }
         } header: {
             HStack {
-                Image(systemName: showingRemoteDependencies ? "chevron.down" : "chevron.forward")
+                Button {
+                    showingRemoteDependencies.toggle()
+                } label: {
+                    HStack {
+                        Image(systemName: showingRemoteDependencies ? "chevron.down" : "chevron.forward")
+                        Text("Remote Dependencies")
+                    }
                     .font(.largeTitle.bold())
-                Text("Remote Dependencies")
-                    .font(.largeTitle.bold())
+                }.buttonStyle(PlainButtonStyle())
                 Button(action: onShowRemoteDependencySheet) { Image(systemName: "plus") }
-            }.onTapGesture { showingRemoteDependencies.toggle() }
+            }
         }
         Divider()
     }

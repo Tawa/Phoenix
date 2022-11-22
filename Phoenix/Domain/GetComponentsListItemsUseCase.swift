@@ -24,32 +24,35 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
     }
     
     var list: [ComponentsListSection] { map(getComponentsFamiliesUseCase.families,
-                                            selection: selectionRepository.componentName) }
+                                            selectionPath: selectionRepository.selectionPath) }
     var listPublisher: AnyPublisher<[ComponentsListSection], Never> {
         Publishers.CombineLatest(
             getComponentsFamiliesUseCase.familiesPublisher,
-            selectionRepository.componentNamePublisher
+            selectionRepository.selectionPathPublisher
         )
         .subscribe(on: DispatchQueue.global(qos: .background))
-        .map { (families, selection) in
-            self.map(families, selection: selection)
+        .map { (families, selectionPath) in
+            self.map(families, selectionPath: selectionPath)
         }
         .eraseToAnyPublisher()
     }
     
-    private func map(_ families: [ComponentsFamily], selection: Name?) -> [ComponentsListSection] {
+    private func map(_ families: [ComponentsFamily], selectionPath: SelectionPath?) -> [ComponentsListSection] {
         families
-            .compactMap { componentsFamily in
+            .enumerated()
+            .compactMap { componentsFamilyElement in
+                let componentsFamily = componentsFamilyElement.element
                 let section: ComponentsListSection = .init(
                     id: componentsFamily.family.id,
                     name: sectionTitle(forFamily: componentsFamily.family),
                     folderName: sectionFolderName(forFamily: componentsFamily.family),
-                    rows: componentsFamily.components.compactMap { component in
+                    rows: componentsFamily.components.enumerated().compactMap { componentElement in
+                        let component = componentElement.element
                         let name = componentName(component, for: componentsFamily.family)
                         return .init(
                             id: component.id,
                             name: name,
-                            isSelected: component.name == selection
+                            isSelected: componentsFamilyElement.offset == selectionPath?.familyIndex && componentElement.offset == selectionPath?.componentIndex
                         )
                     }
                 )

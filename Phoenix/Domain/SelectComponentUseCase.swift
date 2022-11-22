@@ -15,9 +15,15 @@ struct SelectComponentUseCase: SelectComponentUseCaseProtocol {
     }
     
     func select(id: String) {
-        phoenixDocumentRepository
-            .component(with: id)
-            .map(\.name)
-            .map(selectionRepository.select(name:))
+        let document = phoenixDocumentRepository.value
+        guard let component = document.families.flatMap(\.components).first(where: { $0.id == id }),
+              let familyIndex = document.families.firstIndex(where: { $0.family.name == component.name.family }),
+              let componentIndex = document.families[familyIndex].components.firstIndex(of: component)
+        else { return }
+        selectionRepository.select(
+            selectionPath: .init(
+                familyIndex: familyIndex,
+                componentIndex: componentIndex)
+        )
     }
 }

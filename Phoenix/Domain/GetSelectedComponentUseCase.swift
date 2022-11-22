@@ -15,7 +15,7 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
     var binding: Binding<Component> {
         Binding {
             getComponent(families: getComponentsFamiliesUseCase.families,
-                         selection: selectionRepository.componentName)
+                         selectionPath: selectionRepository.selectionPath)
         } set: {
             phoenixDocumentRepository.update(component: $0)
         }
@@ -29,12 +29,12 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
         self.selectionRepository = selectionRepository
     }
     
-    private func getComponent(families: [ComponentsFamily], selection: Name?) -> Component {
-        guard let selection,
-              let familyIndex = families.firstIndex(where: { $0.family.name == selection.family }),
-              let component = families[familyIndex].components.first(where: { $0.name == selection })
+    private func getComponent(families: [ComponentsFamily], selectionPath: SelectionPath?) -> Component {
+        guard let selectionPath,
+              selectionPath.familyIndex < families.count,
+              selectionPath.componentIndex < families[selectionPath.familyIndex].components.count
         else { return .default }
-        return component
+        return families[selectionPath.familyIndex].components[selectionPath.componentIndex]
     }
 }
 

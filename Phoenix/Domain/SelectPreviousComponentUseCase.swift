@@ -15,19 +15,22 @@ struct SelectPreviousComponentUseCase: SelectPreviousComponentUseCaseProtocol {
     }
     
     func perform() {
-        let components = getComponentsFamiliesUseCase
-            .families
-            .flatMap(\.components)
-        
-        guard !components.isEmpty else { return }
-
-        let selectedName = selectionRepository.componentName
-        if let index = components.firstIndex(where: { $0.name == selectedName }) {
-            let result = index > 0 ? (index - 1) : components.count-1
-            let name = components[result].name
-            selectionRepository.select(name: name)
-        } else if let last = components.last {
-            selectionRepository.select(name: last.name)
+        guard var selectionPath = selectionRepository.selectionPath
+        else {
+            selectionRepository.select(selectionPath: .init(familyIndex: 0, componentIndex: 0))
+            return
         }
+        let families = getComponentsFamiliesUseCase.families
+
+        selectionPath.componentIndex -= 1
+        if selectionPath.componentIndex < 0 {
+            if selectionPath.familyIndex > 0 {
+                selectionPath.familyIndex -= 1
+            } else {
+                selectionPath.familyIndex = families.count - 1
+            }
+            selectionPath.componentIndex = families[selectionPath.familyIndex].components.count - 1
+        }
+        selectionRepository.select(selectionPath: selectionPath)
     }
 }
