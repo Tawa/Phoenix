@@ -31,6 +31,9 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     private var title: String { getComponentTitleUseCase.title(forComponent: component.name) }
     private let allModuleTypes: [String]
     
+    @State private var showingLocalDependencies: Bool = false
+    @State private var showingRemoteDependencies: Bool = false
+
     init(
         getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
         getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
@@ -178,37 +181,49 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     
     @ViewBuilder private func localDependenciesView() -> some View {
         Section {
-            ForEach($component.localDependencies) { localDependency in
-                HStack {
-                    Divider()
-                    componentDependencyView(for: localDependency)
+            if showingLocalDependencies {
+                ForEach($component.localDependencies) { localDependency in
+                    HStack {
+                        Divider()
+                        componentDependencyView(for: localDependency)
+                    }
                 }
+            } else {
+                EmptyView()
             }
         } header: {
             HStack {
+                Image(systemName: showingLocalDependencies ? "chevron.down" : "chevron.forward")
+                    .font(.largeTitle.bold())
                 Text("Local Dependencies")
                     .font(.largeTitle.bold())
                 Button(action: onShowDependencySheet) { Image(systemName: "plus") }
                     .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
-            }
+            }.onTapGesture { showingLocalDependencies.toggle() }
         }
         Divider()
     }
     
     @ViewBuilder private func remoteDependenciesView() -> some View {
         Section {
-            ForEach(remoteDependencies) { remoteDependency in
-                HStack {
-                    Divider()
-                    remoteDependencyView(remoteDependency)
+            if showingRemoteDependencies {
+                ForEach(remoteDependencies) { remoteDependency in
+                    HStack {
+                        Divider()
+                        remoteDependencyView(remoteDependency)
+                    }
                 }
+            } else {
+                EmptyView()
             }
         } header: {
             HStack {
+                Image(systemName: showingRemoteDependencies ? "chevron.down" : "chevron.forward")
+                    .font(.largeTitle.bold())
                 Text("Remote Dependencies")
                     .font(.largeTitle.bold())
                 Button(action: onShowRemoteDependencySheet) { Image(systemName: "plus") }
-            }
+            }.onTapGesture { showingRemoteDependencies.toggle() }
         }
         Divider()
     }
