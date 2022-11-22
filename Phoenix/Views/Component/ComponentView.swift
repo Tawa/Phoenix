@@ -182,10 +182,12 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     @ViewBuilder private func localDependenciesView() -> some View {
         Section {
             if showingLocalDependencies {
-                ForEach($component.localDependencies) { localDependency in
-                    HStack {
-                        Divider()
-                        componentDependencyView(for: localDependency)
+                LazyVStack {
+                    ForEach($component.localDependencies) { localDependency in
+                        HStack {
+                            Divider()
+                            componentDependencyView(for: localDependency)
+                        }
                     }
                 }
                 if component.localDependencies.isEmpty {
@@ -215,10 +217,12 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     @ViewBuilder private func remoteDependenciesView() -> some View {
         Section {
             if showingRemoteDependencies {
-                ForEach(remoteDependencies) { remoteDependency in
-                    HStack {
-                        Divider()
-                        remoteDependencyView(remoteDependency)
+                LazyVStack {
+                    ForEach(remoteDependencies) { remoteDependency in
+                        HStack {
+                            Divider()
+                            remoteDependencyView(remoteDependency)
+                        }
                     }
                 }
                 if remoteDependencies.isEmpty {

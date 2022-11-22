@@ -4,6 +4,7 @@ import PhoenixDocument
 import SwiftUI
 
 protocol PhoenixDocumentRepositoryProtocol {
+    var componentsDictionary: [Name: SelectionPath] { get }
     var value: PhoenixDocument { get }
     var publisher: AnyPublisher<PhoenixDocument, Never> { get }
     
@@ -21,7 +22,24 @@ protocol PhoenixDocumentRepositoryProtocol {
 }
 
 class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
-    var document: Binding<PhoenixDocument>!
+    var componentsDictionaryHash: Int = 0
+    var componentsDictionary: [Name: SelectionPath] = [:]
+    var document: Binding<PhoenixDocument>! {
+        didSet {
+            guard componentsDictionaryHash != document.wrappedValue.hashValue
+            else { return }
+            componentsDictionaryHash = document.wrappedValue.hashValue
+            let start = Date()
+            for familyIndex in 0..<document.families.count {
+                for componentIndex in 0..<document.families[familyIndex].components.count {
+                    let selectionPath = SelectionPath(familyIndex: familyIndex,
+                                                      componentIndex: componentIndex)
+                    let componentName = document.wrappedValue.families[familyIndex].components[componentIndex].name
+                    componentsDictionary[componentName] = selectionPath
+                }
+            }
+        }
+    }
 
     var value: PhoenixDocument { document.wrappedValue }
     

@@ -12,10 +12,10 @@ struct GetComponentWithNameUseCase: GetComponentWithNameUseCaseProtocol {
     }
     
     func component(with name: Name) -> Component? {
-        phoenixDocumentRepository
+        guard let selectionPath = phoenixDocumentRepository.componentsDictionary[name]
+        else { return nil }
+        return phoenixDocumentRepository
             .value
-            .componentsFamilies
-            .flatMap(\.components)
-            .first(where: { $0.name == name })
+            .componentsFamilies[selectionPath.familyIndex].components[selectionPath.componentIndex]
     }
 }
