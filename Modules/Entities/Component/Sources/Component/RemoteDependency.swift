@@ -8,7 +8,19 @@ public struct RemoteDependency: Codable, Hashable, Identifiable, Comparable {
     public var version: ExternalDependencyVersion
     public var targetTypes: [PackageTargetType] = []
     
-    public var versionText: String { version.stringValue }
+    public var versionText: String {
+        get { version.stringValue }
+        set {
+            switch version {
+            case .branch:
+                version = .branch(name: newValue)
+            case .exact:
+                version = .exact(version: newValue)
+            case .from:
+                version = .from(version: newValue)
+            }
+        }
+    }
     
     public init(url: String,
                 name: ExternalDependencyName,

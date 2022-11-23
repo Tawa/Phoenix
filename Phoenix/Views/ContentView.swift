@@ -111,8 +111,6 @@ struct ContentView: View {
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
             getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase(),
             getSelectedComponentUseCase: composition.getSelectedComponentUseCase(),
-            remoteDependencies: component.remoteDependencies,
-            remoteDependencyView: { remoteDependencyView(forComponent: component, dependency: $0) },
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
             },
@@ -121,8 +119,7 @@ struct ContentView: View {
             onRemoveResourceWithId: { document.removeResource(withId: $0, forComponentWithName: component.name) },
             onAddResourceWithName: { document.addResource($0, forComponentWithName: component.name) },
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
-            onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true },
-            resourcesValueBinding: componentResourcesValueBinding(component: component)
+            onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
         )
         .frame(minWidth: 750)
     }
@@ -202,27 +199,6 @@ struct ContentView: View {
                                                                                                            value: version))
             viewModel.showingRemoteDependencySheet = false
         }, onDismiss: { viewModel.showingRemoteDependencySheet = false })
-    }
-    
-    func remoteDependencyView(forComponent component: Component, dependency: RemoteDependency) -> some View {
-        RemoteDependencyView(
-            name: dependency.name.name,
-            urlString: dependency.url,
-            allVersionsTypes: [
-                .init(title: "branch", value: ExternalDependencyVersion.branch(name: "main")),
-                .init(title: "exact", value: ExternalDependencyVersion.exact(version: "1.0.0")),
-                .init(title: "from", value: ExternalDependencyVersion.from(version: "1.0.0"))
-            ],
-            onSubmitVersionType: { updateVersion(for: dependency, version: $0) },
-            versionPlaceholder: versionPlaceholder(for: dependency),
-            versionTitle: dependency.version.title,
-            versionText: dependency.version.stringValue,
-            onSubmitVersionText: { document.updateVersionStringValueForRemoteDependency(withComponentName: component.name, dependency: dependency, stringValue: $0) },
-            allDependencyTypes: allDependencyTypes(component: component),
-            enabledTypes: enabledDependencyTypes(for: dependency, component: component),
-            onUpdateDependencyType: { document.updateModuleTypeForRemoteDependency(withComponentName: component.name, dependency: dependency, type: $0, value: $1) },
-            onRemove: { document.removeRemoteDependencyForComponent(withComponentName: component.name, dependency: dependency) }
-        )
     }
     
     @ViewBuilder
@@ -305,37 +281,8 @@ struct ContentView: View {
         }
     }
     
-    private func updateVersion(for dependency: RemoteDependency, version: ExternalDependencyVersion) {
-        guard let name = viewModel.selectedComponentName else { return }
-        document.updateVersionForRemoteDependency(withComponentName: name, dependency: dependency, version: version)
-    }
-    
-    private func versionPlaceholder(for dependency: RemoteDependency) -> String {
-        switch dependency.version {
-        case .from, .exact:
-            return "1.0.0"
-        case .branch:
-            return "main"
-        }
-    }
-    
     private func enabledDependencyTypes(for dependency: RemoteDependency, component: Component) -> [PackageTargetType] {
         allTargetTypes(forComponent: component).filter { dependency.targetTypes.contains($0.value) }.map { $0.value }
-    }
-    
-    private func componentResourcesValueBinding(component: Component) -> Binding<[DynamicTextFieldList<TargetResources.ResourcesType,
-                                                                                  PackageTargetType>.ValueContainer]> {
-        Binding(get: {
-            component.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType,
-                                                                       PackageTargetType>.ValueContainer in
-                return .init(id: resource.id,
-                             value: resource.folderName,
-                             menuOption: resource.type,
-                             targetTypes: resource.targets)
-            }
-        }, set: { document.updateResource($0.map {
-            return ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes) }, forComponentWithName: component.name)
-        })
     }
     
     private func allDependencyTypes(component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {

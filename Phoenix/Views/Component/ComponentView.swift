@@ -4,28 +4,19 @@ import Component
 import SwiftUI
 import SwiftPackage
 
-struct ComponentView<RemoteDependencyType, RemoteDependencyContent, TargetType, ResourcesType>: View
-where
-RemoteDependencyType: Identifiable,
-RemoteDependencyContent: View,
-TargetType: Identifiable & Hashable,
-ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
-{
+struct ComponentView: View {
     @EnvironmentObject var composition: Composition
     @Binding var component: Component
     let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
     let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
     
-    let remoteDependencies: [RemoteDependencyType]
-    let remoteDependencyView: (RemoteDependencyType) -> RemoteDependencyContent
     let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
-    let allTargetTypes: [IdentifiableWithSubtype<TargetType>]
+    let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
     let onRemoveResourceWithId: (String) -> Void
     let onAddResourceWithName: (String) -> Void
     let onShowDependencySheet: () -> Void
     let onShowRemoteDependencySheet: () -> Void
-    @Binding var resourcesValueBinding: [DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]
     
     // MARK: - Private
     private var title: String { getComponentTitleUseCase.title(forComponent: component.name) }
@@ -33,29 +24,23 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     
     @State private var showingLocalDependencies: Bool = false
     @State private var showingRemoteDependencies: Bool = false
-
+    
     init(
         getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
         getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
         getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
-        remoteDependencies: [RemoteDependencyType],
-        remoteDependencyView: @escaping (RemoteDependencyType) -> RemoteDependencyContent,
         onGenerateDemoAppProject: @escaping () -> Void,
         onRemove: @escaping () -> Void,
-        allTargetTypes: [IdentifiableWithSubtype<TargetType>],
+        allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>],
         onRemoveResourceWithId: @escaping (String) -> Void,
         onAddResourceWithName: @escaping (String) -> Void,
         onShowDependencySheet: @escaping () -> Void,
-        onShowRemoteDependencySheet: @escaping () -> Void,
-        resourcesValueBinding: Binding<[DynamicTextFieldList<ResourcesType, TargetType>.ValueContainer]>
+        onShowRemoteDependencySheet: @escaping () -> Void
     ) {
         _component = getSelectedComponentUseCase.binding
         
         self.getComponentTitleUseCase = getComponentTitleUseCase
         self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
-        
-        self.remoteDependencies = remoteDependencies
-        self.remoteDependencyView = remoteDependencyView
         
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
         self.onRemove = onRemove
@@ -64,7 +49,6 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         self.onAddResourceWithName = onAddResourceWithName
         self.onShowDependencySheet = onShowDependencySheet
         self.onShowRemoteDependencySheet = onShowRemoteDependencySheet
-        self._resourcesValueBinding = resourcesValueBinding
         
         self.allModuleTypes = getProjectConfigurationUseCase.value.packageConfigurations.map(\.name)
     }
@@ -76,14 +60,14 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
                 moduleTypesView()
                 defaultLocalizationView()
                 platformsContent()
-
+                
                 defaultDependenciesView()
                 localDependenciesView()
                 remoteDependenciesView()
                 
                 Section {
                     DynamicTextFieldList(
-                        values: $resourcesValueBinding,
+                        values: componentResourcesValueBinding,
                         allTargetTypes: allTargetTypes,
                         onRemoveValue: onRemoveResourceWithId,
                         newValuePlaceholder: "Resources",
@@ -218,15 +202,15 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         Section {
             if showingRemoteDependencies {
                 LazyVStack {
-                    ForEach(remoteDependencies) { remoteDependency in
+                    ForEach($component.remoteDependencies) { remoteDependency in
                         HStack {
                             Divider()
-                            remoteDependencyView(remoteDependency)
+                            remoteDependencyView(dependency: remoteDependency)
                         }
                     }
                 }
-                if remoteDependencies.isEmpty {
-                    Text("No local dependencies")
+                if component.remoteDependencies.isEmpty {
+                    Text("No remote dependencies")
                 }
             } else {
                 EmptyView()
@@ -257,6 +241,13 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
         )
     }
     
+    @ViewBuilder func remoteDependencyView(dependency: Binding<RemoteDependency>) -> some View {
+        RemoteDependencyView(
+            dependency: dependency,
+            allDependencyTypes: allTargetTypes,
+            onRemove: { component.remoteDependencies.removeAll(where: { $0 == dependency.wrappedValue }) })
+    }
+    
     // MARK: - Helper Functions
     @ViewBuilder private func section<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
         Section {
@@ -285,5 +276,22 @@ ResourcesType: CaseIterable & Hashable & Identifiable & RawRepresentable
     
     private func isModuleTypeOn(_ name: String) -> Bool {
         component.modules[name] != nil
+    }
+    
+    private var componentResourcesValueBinding: Binding<[DynamicTextFieldList<TargetResources.ResourcesType,
+                                                         PackageTargetType>.ValueContainer]> {
+        Binding(get: {
+            component.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType,
+                                                                       PackageTargetType>.ValueContainer in
+                return .init(id: resource.id,
+                             value: resource.folderName,
+                             menuOption: resource.type,
+                             targetTypes: resource.targets)
+            }
+        }, set: {
+            component.resources = $0.map {
+                ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes)
+            }
+        })
     }
 }

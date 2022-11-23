@@ -23,11 +23,6 @@ where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
             ForEach($values, id: \.self) { value in
                 VStack(alignment: .leading) {
                     HStack {
-                        Button(action: {
-                            onRemoveValue(value.id)
-                        }) {
-                            Text("Remove")
-                        }
                         CustomMenu(title: String(describing: value.menuOption.wrappedValue.rawValue),
                                    data: Array(MenuOption.allCases),
                                    onSelection: { value.wrappedValue.menuOption = $0 },
@@ -38,6 +33,13 @@ where MenuOption: RawRepresentable & CaseIterable & Hashable & Identifiable,
                                                                set: { textValues[value.id] = $0 }))
                             .foregroundColor(value.wrappedValue.value == textValues[value.id] ? nil : .red)
                             .onSubmit { value.wrappedValue.value = textValues[value.id] ?? "" }
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .frame(width: 150)
+                        Button(action: {
+                            onRemoveValue(value.id)
+                        }) {
+                            Image(systemName: "trash")
+                        }
                     }
                     ForEach(allTargetTypes) { targetType in
                         HStack {
