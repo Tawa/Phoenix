@@ -10,11 +10,11 @@ struct RelationViewData {
 struct RelationSelectorView<DataType>: View where DataType: Hashable {
     let title: String
     let dependencyName: String
-
+    
     let value: DataType?
     let allValues: [DataType]
     let onValueChange: (DataType?) -> Void
-
+    
     var body: some View {
         if allValues.count == 1 {
             Toggle(title,
@@ -57,7 +57,7 @@ struct RelationView: View {
     let allSelectionValues: [String]
     let onRemove: (() -> Void)?
     let onDuplicate: (() -> Void)?
-
+    
     init(defaultDependencies: Binding<[PackageTargetType: String]>,
          title: String,
          getRelationViewDataUseCase: GetRelationViewDataUseCaseProtocol,
@@ -66,7 +66,7 @@ struct RelationView: View {
     ) {
         _defaultDependencies = defaultDependencies
         self.title = title
-
+        
         let viewData = getRelationViewDataUseCase.viewData(defaultDependencies: defaultDependencies.wrappedValue)
         self.allTypes = viewData.types
         self.allSelectionValues = viewData.selectionValues
@@ -85,7 +85,7 @@ struct RelationView: View {
                 Spacer()
             }
             .padding(.bottom)
-            VStack {
+            LazyVStack {
                 ForEach(allTypes) { dependencyType in
                     HStack {
                         RelationSelectorView<String>(
@@ -94,7 +94,6 @@ struct RelationView: View {
                             value: dependencyType.selectedValue,
                             allValues: allSelectionValues,
                             onValueChange: { defaultDependencies[dependencyType.value] = $0 })
-
                         if let subtitle = dependencyType.subtitle,
                            let subvalue = dependencyType.subValue {
                             Divider()
@@ -112,3 +111,45 @@ struct RelationView: View {
         }.padding()
     }
 }
+    
+    struct RelationView_Previews: PreviewProvider {
+        struct GetRelationViewDataUseCaseMock: GetRelationViewDataUseCaseProtocol {
+            let relationViewData: RelationViewData
+            func viewData(defaultDependencies: [PackageTargetType : String]) -> RelationViewData {
+                relationViewData
+            }
+        }
+        
+        static var previews: some View {
+            RelationView(
+                defaultDependencies: .constant([:]),
+                title: "Title",
+                getRelationViewDataUseCase: GetRelationViewDataUseCaseMock(
+                    relationViewData: .init(
+                        types: [
+                            .init(title: "Contract",
+                                  subtitle: nil,
+                                  value: .init(name: "Contract", isTests: false),
+                                  subValue: nil,
+                                  selectedValue: nil,
+                                  selectedSubValue: nil),
+                            .init(title: "Implementation",
+                                  subtitle: "Test",
+                                  value: .init(name: "Implementation", isTests: false),
+                                  subValue: .init(name: "Implementation", isTests: true),
+                                  selectedValue: "Contract",
+                                  selectedSubValue: "Mock"),
+                            .init(title: "Mock",
+                                  subtitle: nil,
+                                  value: .init(name: "Mocks", isTests: false),
+                                  subValue: nil,
+                                  selectedValue: nil,
+                                  selectedSubValue: nil),
+                        ],
+                        selectionValues: ["Contract", "Implementation", "Mock"]
+                    )
+                )
+            )
+            .previewLayout(.fixed(width: 1000, height: 200))
+        }
+    }
