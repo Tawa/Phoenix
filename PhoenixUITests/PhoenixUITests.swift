@@ -45,6 +45,7 @@ final class PhoenixUITests: XCTestCase {
             .set(folderName: support)
             .clickDone()
             .selectComponent(named: navigator)
+            .clickLocalDependenciesButton()
             .selectDefaultDependenciesContractContractAndMock()
             .selectAndAssertContractAndMock(component: wordpressFeature,
                     andAddDependency: wordpressUseCases)

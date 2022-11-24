@@ -175,7 +175,9 @@ struct ComponentView: View {
                         Text("Local Dependencies")
                     }
                     .font(.largeTitle.bold())
-                }.buttonStyle(PlainButtonStyle())
+                }
+                .buttonStyle(PlainButtonStyle())
+                .with(accessibilityIdentifier: ComponentIdentifiers.localDependenciesButton)
                 Button(action: onShowDependencySheet) { Image(systemName: "plus") }
                     .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
             }
@@ -210,7 +212,9 @@ struct ComponentView: View {
                         Text("Remote Dependencies")
                     }
                     .font(.largeTitle.bold())
-                }.buttonStyle(PlainButtonStyle())
+                }
+                .buttonStyle(PlainButtonStyle())
+                .with(accessibilityIdentifier: ComponentIdentifiers.remoteDependenciesButton)
                 Button(action: onShowRemoteDependencySheet) { Image(systemName: "plus") }
             }
         }
