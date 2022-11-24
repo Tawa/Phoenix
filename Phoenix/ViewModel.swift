@@ -40,6 +40,7 @@ class ViewModel: ObservableObject {
     // MARK: - Update Button
     private var appUpdateVersionInfoSub: AnyCancellable? = nil
     @Published var appUpdateVersionInfo: AppVersionInfo? = nil
+    @Published var showingUpdatePopup: AppVersionInfo? = nil
     
     // MARK: - Sheets
     @Published var showingConfigurationPopup: Bool = false
@@ -90,6 +91,10 @@ class ViewModel: ObservableObject {
         
     func onConfigurationButton() {
         showingConfigurationPopup = true
+    }
+    
+    func onUpdateButton() {
+        showingUpdatePopup = appUpdateVersionInfo
     }
     
     func onAddButton() {
@@ -229,12 +234,9 @@ class ViewModel: ObservableObject {
         appUpdateVersionInfoSub = appVersionUpdateProvider
             .appVersionsPublisher()
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                
+            .sink { _ in
             } receiveValue: { appVersionInfos in
-                withAnimation {
-                    self.appUpdateVersionInfo = appVersionInfos.results.first
-                }
+                self.appUpdateVersionInfo = appVersionInfos.results.first
             }
     }
 }

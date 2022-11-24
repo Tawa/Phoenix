@@ -36,6 +36,6 @@ struct PhoenixApp: App {
                 )
             )
             .environmentObject(compositionRoot.composition(for: file.$document))
-        }.windowToolbarStyle(.expanded)
+        }
     }
 }

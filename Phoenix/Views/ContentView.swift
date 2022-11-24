@@ -1,3 +1,4 @@
+import AppVersionProviderContract
 import Component
 import DemoAppFeature
 import Factory
@@ -31,74 +32,65 @@ struct ContentView: View {
     
     var body: some View {
         return VStack(alignment: .leading, spacing: 0) {
-            toolbarViews()
-            Divider()
-            HSplitView {
-                componentsList()
-                
-                if let selectedComponentName = viewModel.selectedComponentName,
-                   let selectedComponent = document.getComponent(withName: selectedComponentName) {
-                    componentView(for: selectedComponent)
-                        .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
-                            dependencySheet(component: selectedComponent)
-                        }
-                        .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
-                            remoteDependencySheet(component: selectedComponent)
-                        }
-                } else {
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading) {
-                            Text("No Component Selected")
-                                .font(.title)
-                                .padding()
-                            Spacer()
-                        }
-                        Spacer()
-                    }.frame(minWidth: 750)
+            splitView(componentsList, detail: detailView)
+                .alert(item: $viewModel.alertState, content: { alertState in
+                    Alert(title: Text("Error"),
+                          message: Text(alertState.title),
+                          dismissButton: .default(Text("Ok")))
+                }).sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
+                    newComponentSheet(state: state)
+                }.sheet(isPresented: .constant(viewModel.selectedFamilyName != nil)) {
+                    FamilySheet(
+                        getSelectedFamilyUseCase: composition.getSelectedFamilyUseCase(),
+                        getFamilySheetDataUseCase: composition.getFamilySheetDataUseCase(),
+                        selectFamilyUseCase: composition.selectFamilyUseCase()
+                    )
+                }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
+                    ConfigurationView(getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase()) {
+                        viewModel.showingConfigurationPopup = false
+                    }.frame(minHeight: 800)
                 }
-            }.alert(item: $viewModel.alertState, content: { alertState in
-                Alert(title: Text("Error"),
-                      message: Text(alertState.title),
-                      dismissButton: .default(Text("Ok")))
-            }).sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
-                newComponentSheet(state: state)
-            }.sheet(isPresented: .constant(viewModel.selectedFamilyName != nil)) {
-                FamilySheet(
-                    getSelectedFamilyUseCase: composition.getSelectedFamilyUseCase(),
-                    getFamilySheetDataUseCase: composition.getFamilySheetDataUseCase(),
-                    selectFamilyUseCase: composition.selectFamilyUseCase()
-                )
-            }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
-                ConfigurationView(getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase()) {
-                    viewModel.showingConfigurationPopup = false
-                }.frame(minHeight: 800)
-            }
-            .sheet(item: $viewModel.demoAppFeatureData, content: { data in
-                Container.demoAppFeatureView(data)
-            })
-            .sheet(isPresented: $viewModel.showingGenerateSheet,
-                   onDismiss: viewModel.onDismissGenerateSheet,
-                   content: {
-                GenerateSheetView(
-                    viewModel: GenerateSheetViewModel(
-                        modulesPath: viewModel.modulesFolderURL?.path ?? "path/to/modules",
-                        xcodeProjectPath: viewModel.xcodeProjectURL?.path ?? "path/to/Project.xcodeproj",
-                        hasModulesPath: viewModel.modulesFolderURL != nil,
-                        hasXcodeProjectPath: viewModel.xcodeProjectURL != nil,
-                        isSkipXcodeProjectOn: viewModel.skipXcodeProject,
-                        onOpenModulesFolder: { viewModel.onOpenModulesFolder(fileURL: fileURL) },
-                        onOpenXcodeProject: { viewModel.onOpenXcodeProject(fileURL: fileURL) },
-                        onSkipXcodeProject: viewModel.onSkipXcodeProject,
-                        onGenerate: { viewModel.onGenerate(document: document, fileURL: fileURL) },
-                        onDismiss: viewModel.onDismissGenerateSheet)
-                )
-            })
+                .sheet(item: $viewModel.demoAppFeatureData, content: { data in
+                    Container.demoAppFeatureView(data)
+                })
+                .sheet(isPresented: $viewModel.showingGenerateSheet,
+                       onDismiss: viewModel.onDismissGenerateSheet,
+                       content: {
+                    GenerateSheetView(
+                        viewModel: GenerateSheetViewModel(
+                            modulesPath: viewModel.modulesFolderURL?.path ?? "path/to/modules",
+                            xcodeProjectPath: viewModel.xcodeProjectURL?.path ?? "path/to/Project.xcodeproj",
+                            hasModulesPath: viewModel.modulesFolderURL != nil,
+                            hasXcodeProjectPath: viewModel.xcodeProjectURL != nil,
+                            isSkipXcodeProjectOn: viewModel.skipXcodeProject,
+                            onOpenModulesFolder: { viewModel.onOpenModulesFolder(fileURL: fileURL) },
+                            onOpenXcodeProject: { viewModel.onOpenXcodeProject(fileURL: fileURL) },
+                            onSkipXcodeProject: viewModel.onSkipXcodeProject,
+                            onGenerate: { viewModel.onGenerate(document: document, fileURL: fileURL) },
+                            onDismiss: viewModel.onDismissGenerateSheet)
+                    )
+                })
+                .popover(item: $viewModel.showingUpdatePopup) { showingUpdatePopup in
+                    updateView(appVersionInfo: showingUpdatePopup)
+                }
         }
         .onAppear(perform: viewModel.checkForUpdate)
+        .toolbar(content: toolbarViews)
     }
     
     // MARK: - Views
-    func componentsList() -> some View {
+    @ViewBuilder private func splitView<Sidebar: View, Detail: View>(_ sidebar: () -> Sidebar, detail: () -> Detail) -> some View {
+        if #available(macOS 13.0, *) {
+            NavigationSplitView(sidebar: sidebar, detail: detailView)
+        } else {
+            HSplitView {
+                sidebar()
+                detail()
+            }
+        }
+    }
+    
+    @ViewBuilder private func componentsList() -> some View {
         VStack {
             FilterView(text: composition.getComponentsFilterUseCase().binding)
             ComponentsList(interactor: composition.componentsListInteractor())
@@ -106,7 +98,30 @@ struct ContentView: View {
         .frame(minWidth: 250)
     }
     
-    func componentView(for component: Component) -> some View {
+    @ViewBuilder private func detailView() -> some View {
+        if let selectedComponentName = viewModel.selectedComponentName,
+           let selectedComponent = document.getComponent(withName: selectedComponentName) {
+            componentView(for: selectedComponent)
+                .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
+                    dependencySheet(component: selectedComponent)
+                }
+                .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
+                    remoteDependencySheet(component: selectedComponent)
+                }
+        } else {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading) {
+                    Text("No Component Selected")
+                        .font(.title)
+                        .padding()
+                    Spacer()
+                }
+                Spacer()
+            }.frame(minWidth: 750)
+        }
+    }
+    
+    @ViewBuilder private func componentView(for component: Component) -> some View {
         ComponentView(
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
             getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase(),
@@ -123,8 +138,8 @@ struct ContentView: View {
         .frame(minWidth: 750)
     }
     
-    func newComponentSheet(state: ComponentPopupState) -> some View {
-        return NewComponentSheet(onSubmit: { name, familyName in
+    @ViewBuilder private func newComponentSheet(state: ComponentPopupState) -> some View {
+        NewComponentSheet(onSubmit: { name, familyName in
             let name = Name(given: name, family: familyName)
             switch state {
             case .new:
@@ -144,7 +159,7 @@ struct ContentView: View {
         })
     }
     
-    func dependencySheet(component: Component) -> some View {
+    @ViewBuilder private func dependencySheet(component: Component) -> some View {
         let familyName = document.getFamily(withName: component.name.family)?.name ?? ""
         let allFamilies = document.componentsFamilies.filter { !$0.family.excludedFamilies.contains(familyName) }
         let allNames = allFamilies.flatMap(\.components).map(\.name)
@@ -165,14 +180,14 @@ struct ContentView: View {
         }.sorted { lhs, rhs in
             lhs.name < rhs.name
         }
-        return ComponentDependenciesSheet(
+        ComponentDependenciesSheet(
             sections: sections,
             onDismiss: {
                 viewModel.showingDependencySheet = false
             }).frame(minHeight: 600)
     }
     
-    func remoteDependencySheet(component: Component) -> some View {
+    @ViewBuilder private func remoteDependencySheet(component: Component) -> some View {
         RemoteDependencySheet(onExternalSubmit: { remoteDependency in
             let urlString = remoteDependency.urlString
             
@@ -200,68 +215,77 @@ struct ContentView: View {
         }, onDismiss: { viewModel.showingRemoteDependencySheet = false })
     }
     
-    @ViewBuilder
-    private func toolbarViews() -> some View {
-        VStack(alignment: .leading) {
-            if let appUpdateVersion = viewModel.appUpdateVersionInfo {
-                VStack(alignment: .leading) {
-                    Text("Update v\(appUpdateVersion.version) is available.")
-                        .font(.title)
-                    Text("Release Notes: \(appUpdateVersion.releaseNotes)")
-                        .lineLimit(nil)
-                        .multilineTextAlignment(.leading)
-                    HStack {
-                        Link(destination: URL(
-                            string: "https://apps.apple.com/us/app/phoenix-app/id1626793172")!
-                        ) {
-                            Text("Update")
-                        }
-                        Button("Dismiss") {
-                            withAnimation {
-                                viewModel.appUpdateVersionInfo = nil
-                            }
-                        }.buttonStyle(.plain)
-                    }
-                }
-                .padding([.leading, .top, .trailing])
+    @ViewBuilder private func toolbarViews() -> some View {
+        ZStack {
+            Button(action: onUpArrow, label: {})
+                .opacity(0)
+                .keyboardShortcut(.upArrow, modifiers: [])
+            Button(action: onDownArrow, label: {})
+                .opacity(0)
+                .keyboardShortcut(.downArrow, modifiers: [])
+            
+            HStack {
+                toolbarLeadingItems()
+                toolbarTrailingItems()
             }
-            ZStack {
-                Button(action: onUpArrow, label: {})
-                    .opacity(0)
-                    .keyboardShortcut(.upArrow, modifiers: [])
-                Button(action: onDownArrow, label: {})
-                    .opacity(0)
-                    .keyboardShortcut(.downArrow, modifiers: [])
-                
-                HStack {
-                    Button(action: viewModel.onConfigurationButton) {
-                        Image(systemName: "wrench.and.screwdriver")
-                        Text("Configuration")
-                    }
-                    .keyboardShortcut(",", modifiers: [.command])
-                    .with(accessibilityIdentifier: ToolbarIdentifiers.configurationButton)
-                    Button(action: viewModel.onAddButton) {
-                        Image(systemName: "plus.circle.fill")
-                        Text("New Component")
-                    }
-                    .keyboardShortcut("A", modifiers: [.command, .shift])
-                    .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
-                    Spacer()
-                    
-                    Button(action: { viewModel.onGenerateSheetButton(fileURL: fileURL) }) {
-                        Image(systemName: "shippingbox.fill")
-                        Text("Generate")
-                    }.keyboardShortcut(.init("R"), modifiers: .command)
-                    Button(action: { viewModel.onGenerate(document: document, fileURL: fileURL) }) {
-                        Image(systemName: "play")
-                    }
-                    .disabled(viewModel.modulesFolderURL == nil || viewModel.xcodeProjectURL == nil)
-                    .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
-                }
-            }
-            .padding()
-            .background(Color.white.opacity(0.1))
         }
+    }
+    
+    @ViewBuilder private func toolbarLeadingItems() -> some View {
+        if let appUpdateVerdsionInfo = viewModel.appUpdateVersionInfo {
+            Button(action: viewModel.onUpdateButton) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundColor(.red)
+                Text("Update \(appUpdateVerdsionInfo.version) Available")
+            }
+        }
+        
+        Button(action: viewModel.onConfigurationButton) {
+            Image(systemName: "wrench.and.screwdriver")
+            Text("Configuration")
+        }
+        .keyboardShortcut(",", modifiers: [.command])
+        .with(accessibilityIdentifier: ToolbarIdentifiers.configurationButton)
+        Button(action: viewModel.onAddButton) {
+            Image(systemName: "plus.circle.fill")
+            Text("New Component")
+        }
+        .keyboardShortcut("A", modifiers: [.command, .shift])
+        .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
+    }
+
+    @ViewBuilder private func toolbarTrailingItems() -> some View {
+        Button(action: { viewModel.onGenerateSheetButton(fileURL: fileURL) }) {
+            Image(systemName: "shippingbox.fill")
+            Text("Generate")
+        }.keyboardShortcut(.init("R"), modifiers: .command)
+        Button(action: { viewModel.onGenerate(document: document, fileURL: fileURL) }) {
+            Image(systemName: "play")
+        }
+        .disabled(viewModel.modulesFolderURL == nil || viewModel.xcodeProjectURL == nil)
+        .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
+    }
+    
+    @ViewBuilder private func updateView(appVersionInfo: AppVersionInfo) -> some View {
+        VStack(alignment: .leading) {
+            Text("Update v\(appVersionInfo.version) is available.")
+                .font(.title)
+            Text("Release Notes: \(appVersionInfo.releaseNotes)")
+                .lineLimit(nil)
+                .multilineTextAlignment(.leading)
+            HStack {
+                Link(destination: URL(
+                    string: "https://apps.apple.com/us/app/phoenix-app/id1626793172")!
+                ) {
+                    Text("Update")
+                }
+                Button("Dismiss") {
+                    withAnimation {
+                        viewModel.showingUpdatePopup = nil
+                    }
+                }.buttonStyle(.plain)
+            }
+        }.padding()
     }
     
     // MARK: - Private

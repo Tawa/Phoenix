@@ -17,8 +17,7 @@ struct ResourcesView: View {
     private let newValuePlaceholder: String = "Resources"
     
     var body: some View {
-        Self._printChanges()
-        return VStack(alignment: .leading) {
+        VStack(alignment: .leading) {
             ForEach($resources, id: \.self) { $resource in
                 VStack(alignment: .leading) {
                     HStack {
