@@ -11,7 +11,7 @@
 		3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3810D8CC280990AF006E7EE3 /* ComponentsList.swift */; };
 		3810D8CF28099B82006E7EE3 /* ComponentListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */; };
 		3810D8D32809C555006E7EE3 /* FamilySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3810D8D22809C555006E7EE3 /* FamilySheet.swift */; };
-		381855762819CACD00BF6696 /* DynamicTextFieldList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381855752819CACD00BF6696 /* DynamicTextFieldList.swift */; };
+		381855762819CACD00BF6696 /* ResourcesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381855752819CACD00BF6696 /* ResourcesView.swift */; };
 		3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3853D1FF2839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift */; };
 		3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */; };
 		386DD8BF289E9C0A00E800B9 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = 386DD8BE289E9C0A00E800B9 /* Factory */; };
@@ -127,7 +127,7 @@
 		3810D8CC280990AF006E7EE3 /* ComponentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsList.swift; sourceTree = "<group>"; };
 		3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentListItem.swift; sourceTree = "<group>"; };
 		3810D8D22809C555006E7EE3 /* FamilySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilySheet.swift; sourceTree = "<group>"; };
-		381855752819CACD00BF6696 /* DynamicTextFieldList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DynamicTextFieldList.swift; path = Reusable/DynamicTextFieldList.swift; sourceTree = "<group>"; };
+		381855752819CACD00BF6696 /* ResourcesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ResourcesView.swift; path = Reusable/ResourcesView.swift; sourceTree = "<group>"; };
 		3853D1FF2839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableWithSubtypeAndValue.swift; sourceTree = "<group>"; };
 		3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencyFormView.swift; sourceTree = "<group>"; };
 		3873E5A02804C509000BCB03 /* Phoenix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Phoenix.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -386,7 +386,7 @@
 				3810D8CC280990AF006E7EE3 /* ComponentsList.swift */,
 				3880FEE72842216800ED0110 /* ConfigurationView.swift */,
 				3873E5A72804C509000BCB03 /* ContentView.swift */,
-				381855752819CACD00BF6696 /* DynamicTextFieldList.swift */,
+				381855752819CACD00BF6696 /* ResourcesView.swift */,
 				3810D8D22809C555006E7EE3 /* FamilySheet.swift */,
 				B216D3A02926EDC6005EDBB5 /* RelationView.swift */,
 				38E251322837EC73002FFA31 /* FilterView.swift */,
@@ -771,7 +771,7 @@
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
 				38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */,
 				388DA8A6281862630066086A /* CustomToggle.swift in Sources */,
-				381855762819CACD00BF6696 /* DynamicTextFieldList.swift in Sources */,
+				381855762819CACD00BF6696 /* ResourcesView.swift in Sources */,
 				B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
 				B236A5FD291DB2A9008D658E /* GetComponentsFamiliesUseCase.swift in Sources */,

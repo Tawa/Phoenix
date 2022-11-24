@@ -117,7 +117,6 @@ struct ContentView: View {
             onRemove: { interactor.onRemoveComponent(with: component.id, composition: composition) },
             allTargetTypes: allTargetTypes(forComponent: component),
             onRemoveResourceWithId: { document.removeResource(withId: $0, forComponentWithName: component.name) },
-            onAddResourceWithName: { document.addResource($0, forComponentWithName: component.name) },
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
         )

@@ -14,7 +14,6 @@ struct ComponentView: View {
     let onRemove: () -> Void
     let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
     let onRemoveResourceWithId: (String) -> Void
-    let onAddResourceWithName: (String) -> Void
     let onShowDependencySheet: () -> Void
     let onShowRemoteDependencySheet: () -> Void
     
@@ -33,7 +32,6 @@ struct ComponentView: View {
         onRemove: @escaping () -> Void,
         allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>],
         onRemoveResourceWithId: @escaping (String) -> Void,
-        onAddResourceWithName: @escaping (String) -> Void,
         onShowDependencySheet: @escaping () -> Void,
         onShowRemoteDependencySheet: @escaping () -> Void
     ) {
@@ -46,7 +44,6 @@ struct ComponentView: View {
         self.onRemove = onRemove
         self.allTargetTypes = allTargetTypes
         self.onRemoveResourceWithId = onRemoveResourceWithId
-        self.onAddResourceWithName = onAddResourceWithName
         self.onShowDependencySheet = onShowDependencySheet
         self.onShowRemoteDependencySheet = onShowRemoteDependencySheet
         
@@ -64,19 +61,7 @@ struct ComponentView: View {
                 defaultDependenciesView()
                 localDependenciesView()
                 remoteDependenciesView()
-                
-                Section {
-                    DynamicTextFieldList(
-                        values: componentResourcesValueBinding,
-                        allTargetTypes: allTargetTypes,
-                        onRemoveValue: onRemoveResourceWithId,
-                        newValuePlaceholder: "Resources",
-                        onNewValue: onAddResourceWithName)
-                } header: {
-                    Text("Resources")
-                        .font(.largeTitle.bold())
-                }
-                Divider()
+                resourcesView()
             }
             .padding()
         }
@@ -248,6 +233,16 @@ struct ComponentView: View {
             onRemove: { component.remoteDependencies.removeAll(where: { $0 == dependency.wrappedValue }) })
     }
     
+    @ViewBuilder func resourcesView() -> some View {
+        Section {
+            ResourcesView(resources: $component.resources, allTargetTypes: allTargetTypes)
+        } header: {
+            Text("Resources")
+                .font(.largeTitle.bold())
+        }
+        Divider()
+    }
+    
     // MARK: - Helper Functions
     @ViewBuilder private func section<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
         Section {
@@ -276,22 +271,5 @@ struct ComponentView: View {
     
     private func isModuleTypeOn(_ name: String) -> Bool {
         component.modules[name] != nil
-    }
-    
-    private var componentResourcesValueBinding: Binding<[DynamicTextFieldList<TargetResources.ResourcesType,
-                                                         PackageTargetType>.ValueContainer]> {
-        Binding(get: {
-            component.resources.map { resource -> DynamicTextFieldList<TargetResources.ResourcesType,
-                                                                       PackageTargetType>.ValueContainer in
-                return .init(id: resource.id,
-                             value: resource.folderName,
-                             menuOption: resource.type,
-                             targetTypes: resource.targets)
-            }
-        }, set: {
-            component.resources = $0.map {
-                ComponentResources(id: $0.id, folderName: $0.value, type: $0.menuOption, targets: $0.targetTypes)
-            }
-        })
     }
 }

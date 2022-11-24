@@ -1,6 +1,6 @@
 import Foundation
 public struct TargetResources: Codable, Hashable {
-    public enum ResourcesType: String, Codable, Hashable, Identifiable, CaseIterable{
+    public enum ResourcesType: String, Codable, Hashable, Identifiable, CaseIterable {
         public var id: Int { hashValue }
         case process
         case copy

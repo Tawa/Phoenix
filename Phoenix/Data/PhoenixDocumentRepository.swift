@@ -29,7 +29,6 @@ class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
             guard componentsDictionaryHash != document.wrappedValue.hashValue
             else { return }
             componentsDictionaryHash = document.wrappedValue.hashValue
-            let start = Date()
             for familyIndex in 0..<document.families.count {
                 for componentIndex in 0..<document.families[familyIndex].components.count {
                     let selectionPath = SelectionPath(familyIndex: familyIndex,
