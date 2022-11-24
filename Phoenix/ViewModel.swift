@@ -32,12 +32,15 @@ enum AlertState: Hashable, Identifiable {
 
 class ViewModel: ObservableObject {
     // MARK: - Selection
+    var subscriptions: Set<AnyCancellable> = .init()
+    let composition: Composition
     @Published var selectedComponentName: Name? = nil
     @Published var selectedFamilyName: String? = nil
     
     // MARK: - Update Button
     private var appUpdateVersionInfoSub: AnyCancellable? = nil
     @Published var appUpdateVersionInfo: AppVersionInfo? = nil
+    @Published var showingUpdatePopup: AppVersionInfo? = nil
     
     // MARK: - Sheets
     @Published var showingConfigurationPopup: Bool = false
@@ -63,12 +66,8 @@ class ViewModel: ObservableObject {
     }
     @Published var skipXcodeProject: Bool = false
 
-    // MARK: - Filters
-    @Published var componentsListFilter: String = ""
-    
     let appVersionUpdateProvider: AppVersionUpdateProviderProtocol
     let pbxProjSyncer: PBXProjectSyncerProtocol
-    let familyFolderNameProvider: FamilyFolderNameProviderProtocol
     let filesURLDataStore: FilesURLDataStoreProtocol
     let projectGenerator: ProjectGeneratorProtocol
     
@@ -77,24 +76,25 @@ class ViewModel: ObservableObject {
     init(
         appVersionUpdateProvider: AppVersionUpdateProviderProtocol,
         pbxProjSyncer: PBXProjectSyncerProtocol,
-        familyFolderNameProvider: FamilyFolderNameProviderProtocol,
         filesURLDataStore: FilesURLDataStoreProtocol,
-        projectGenerator: ProjectGeneratorProtocol
+        projectGenerator: ProjectGeneratorProtocol,
+        composition: Composition
     ) {
         self.appVersionUpdateProvider = appVersionUpdateProvider
         self.pbxProjSyncer = pbxProjSyncer
-        self.familyFolderNameProvider = familyFolderNameProvider
         self.filesURLDataStore = filesURLDataStore
         self.projectGenerator = projectGenerator
-    }
-    
-    // MARK: - FamilyFolderNameProvider
-    func folderName(forFamily family: String) -> String {
-        familyFolderNameProvider.folderName(forFamily: family)
+        self.composition = composition
+
+        subscribeToPublishers()
     }
         
     func onConfigurationButton() {
         showingConfigurationPopup = true
+    }
+    
+    func onUpdateButton() {
+        showingUpdatePopup = appUpdateVersionInfo
     }
     
     func onAddButton() {
@@ -153,10 +153,6 @@ class ViewModel: ObservableObject {
     
     func onDismissGenerateSheet() {
         showingGenerateSheet = false
-    }
-    
-    func onGenerateSheetGenerate(document: PhoenixDocument, fileURL: URL?) {
-        onGenerate(document: document, fileURL: fileURL)
     }
     
     func onGenerate(document: PhoenixDocument, fileURL: URL?) {
@@ -238,12 +234,42 @@ class ViewModel: ObservableObject {
         appUpdateVersionInfoSub = appVersionUpdateProvider
             .appVersionsPublisher()
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                
+            .sink { _ in
             } receiveValue: { appVersionInfos in
-                withAnimation {
-                    self.appUpdateVersionInfo = appVersionInfos.results.first
-                }
+                self.appUpdateVersionInfo = appVersionInfos.results.first
             }
+    }
+}
+
+// MARK: - Private
+private extension ViewModel {
+    func subscribeToPublishers() {
+        composition
+            .selectionRepository()
+            .selectionPathPublisher
+            .sink { [weak self] selectionPath in
+                self?.selectedComponentName = self?.composition.getSelectedComponentUseCase().binding.wrappedValue.name
+            }.store(in: &subscriptions)
+        
+        composition
+            .selectionRepository()
+            .familyNamePublisher
+            .sink { [weak self] familyName in
+                guard self?.selectedFamilyName != familyName else { return }
+                self?.selectedFamilyName = familyName
+            }.store(in: &subscriptions)
+        
+        _selectedFamilyName
+            .projectedValue
+            .sink { [weak self] familyName in
+                guard let selectionRepository = self?.composition.selectionRepository(),
+                      selectionRepository.familyName != familyName
+                else { return }
+                if let familyName = familyName {
+                    selectionRepository.select(familyName: familyName)
+                } else {
+                    selectionRepository.deselectFamilyName()
+                }
+            }.store(in: &subscriptions)
     }
 }

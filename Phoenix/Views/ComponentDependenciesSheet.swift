@@ -31,7 +31,7 @@ struct ComponentDependenciesSheet: View {
     var body: some View {
         VStack {
             VStack(alignment: .leading) {
-                FilterView(filter: $filter,
+                FilterView(text: $filter,
                            onSubmit: performSubmit)
                 .with(accessibilityIdentifier: DependenciesSheetIdentifiers.filter)
                 List {

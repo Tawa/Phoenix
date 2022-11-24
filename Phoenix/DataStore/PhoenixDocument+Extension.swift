@@ -21,28 +21,8 @@ extension PhoenixDocument {
         allNames.contains(name)
     }
 
-    mutating func component(withName name: Name, containsDependencyWithName dependencyName: Name) -> Bool {
-        var value: Bool = false
-        getComponent(withName: name) { component in
-            value = component.localDependencies.contains { $0.name == dependencyName }
-        }
-        return value
-    }
-    
-    mutating func updateDefaultdependencyForComponent(withName name: Name, packageType: PackageTargetType, value: String?) {
-        getComponent(withName: name) { component in
-            component.defaultDependencies[packageType] = value
-        }
-    }
-
     func family(for name: Name) -> Family? {
         families.first(where: { name.family == $0.family.name })?.family
-    }
-    
-    mutating func updateDefaultdependencyForFamily(named name: String, packageType: PackageTargetType, value: String?) {
-        getFamily(withName: name) { family in
-            family.defaultDependencies[packageType] = value
-        }
     }
 
     // MARK: - Private
@@ -54,38 +34,17 @@ extension PhoenixDocument {
         completion(&families[familyIndex].components[componentIndex])
     }
 
-    private mutating func getFamily(withName name: String, _ completion: (inout Family) -> Void) {
-        guard
-            let familyIndex = families.firstIndex(where: { $0.family.name == name })
-        else { return }
-        completion(&families[familyIndex].family)
-    }
-
     private mutating func get(remoteDependency: RemoteDependency, componentWithName name: Name, _ completion: (inout RemoteDependency) -> Void) {
         getComponent(withName: name) { component in
-            var dependencies = component.dependencies
+            var remoteDependencies = component.remoteDependencies
             guard
-                let index = dependencies.firstIndex(where: { $0 == .remote(remoteDependency) }),
-                case var .remote(temp) = dependencies.remove(at: index)
+                let index = remoteDependencies.firstIndex(of: remoteDependency)
             else { return }
+            var temp = remoteDependencies.remove(at: index)
             completion(&temp)
-            dependencies.append(.remote(temp))
-            dependencies.sort()
-            component.dependencies = dependencies
-        }
-    }
-
-    private mutating func get(dependency: ComponentDependency, componentWithName name: Name, _ completion: (inout ComponentDependency) -> Void) {
-        getComponent(withName: name) { component in
-            var dependencies = component.dependencies
-            guard
-                let index = dependencies.firstIndex(where: { $0 == .local(dependency) }),
-                case var .local(temp) = dependencies.remove(at: index)
-            else { return }
-            completion(&temp)
-            dependencies.append(.local(temp))
-            dependencies.sort()
-            component.dependencies = dependencies
+            remoteDependencies.append(temp)
+            remoteDependencies.sort()
+            component.remoteDependencies = remoteDependencies
         }
     }
 
@@ -126,7 +85,8 @@ extension PhoenixDocument {
                                      iOSVersion: template?.iOSVersion,
                                      macOSVersion: template?.macOSVersion,
                                      modules: template?.modules ?? moduleTypes,
-                                     dependencies: template?.dependencies ?? [],
+                                     localDependencies: template?.localDependencies ?? [],
+                                     remoteDependencies: template?.remoteDependencies ?? [],
                                      resources: template?.resources ?? [],
                                      defaultDependencies: [:])
         array.append(newComponent)
@@ -141,25 +101,6 @@ extension PhoenixDocument {
             familiesArray.append(componentsFamily)
             familiesArray.sort(by: { $0.family.name < $1.family.name })
             families = familiesArray
-        }
-    }
-
-    mutating func updateFamily(withName name: String, ignoresSuffix: Bool) {
-        getFamily(withName: name) { $0.ignoreSuffix = ignoresSuffix }
-    }
-
-    mutating func updateFamily(withName name: String, folder: String?) {
-        getFamily(withName: name) { $0.folder = folder?.isEmpty == true ? nil : folder }
-    }
-    
-    mutating func updateFamilyRule(withName name: String, otherFamilyName: String, enabled: Bool) {
-        getFamily(withName: name) { family in
-            if enabled {
-                family.excludedFamilies.removeAll(where: { otherFamilyName == $0 })
-            } else if !family.excludedFamilies.contains(otherFamilyName) {
-                family.excludedFamilies.append(otherFamilyName)
-                family.excludedFamilies.sort()
-            }
         }
     }
     
@@ -184,57 +125,19 @@ extension PhoenixDocument {
         }
         getComponent(withName: name) { component in
             targetTypes = targetTypes.filter { (key, _) in component.modules.contains(where: { $0.key == key.name }) }
-            var dependencies = component.dependencies
-            dependencies.append(.local(ComponentDependency(name: dependencyName, targetTypes: targetTypes)))
-            dependencies.sort()
-            component.dependencies = dependencies
+            var localDependencies = component.localDependencies
+            localDependencies.append(ComponentDependency(name: dependencyName, targetTypes: targetTypes))
+            localDependencies.sort()
+            component.localDependencies = localDependencies
         }
     }
 
     mutating func addRemoteDependencyToComponent(withName name: Name, dependency: RemoteDependency) {
         getComponent(withName: name) {
-            var dependencies = $0.dependencies
-            dependencies.append(.remote(dependency))
-            dependencies.sort()
-            $0.dependencies = dependencies
-        }
-    }
-
-    mutating func setIOSVersionForComponent(withName name: Name, iOSVersion: IOSVersion) {
-        getComponent(withName: name) { $0.iOSVersion = iOSVersion }
-    }
-
-    mutating func removeIOSVersionForComponent(withName name: Name) {
-        getComponent(withName: name) { $0.iOSVersion = nil }
-    }
-
-    mutating func setMacOSVersionForComponent(withName name: Name, macOSVersion: MacOSVersion) {
-        getComponent(withName: name) { $0.macOSVersion = macOSVersion }
-    }
-
-    mutating func removeMacOSVersionForComponent(withName name: Name) {
-        getComponent(withName: name) { $0.macOSVersion = nil }
-    }
-
-    mutating func addModuleTypeForComponent(withName name: Name, moduleType: String) {
-        getComponent(withName: name) {
-            var modules = $0.modules
-            modules[moduleType] = .undefined
-            $0.modules = modules
-        }
-    }
-
-    mutating func removeModuleTypeForComponent(withName name: Name, moduleType: String) {
-        getComponent(withName: name) {
-            var modules = $0.modules
-            modules.removeValue(forKey: moduleType)
-            $0.modules = modules
-        }
-    }
-
-    mutating func set(forComponentWithName name: Name, libraryType: LibraryType?, forModuleType moduleType: String) {
-        getComponent(withName: name) {
-            $0.modules[moduleType] = libraryType
+            var remoteDependencies = $0.remoteDependencies
+            remoteDependencies.append(dependency)
+            remoteDependencies.sort()
+            $0.remoteDependencies = remoteDependencies
         }
     }
 
@@ -246,37 +149,12 @@ extension PhoenixDocument {
         families.removeAll(where: { $0.components.isEmpty })
     }
 
-    mutating func removeDependencyForComponent(withComponentName name: Name, componentDependency: ComponentDependency) {
-        getComponent(withName: name) {
-            var dependencies = $0.dependencies
-            dependencies.removeAll(where: { $0 == .local(componentDependency) })
-            dependencies.sort()
-            $0.dependencies = dependencies
-        }
-    }
-
     mutating func removeRemoteDependencyForComponent(withComponentName name: Name, dependency: RemoteDependency) {
         getComponent(withName: name) {
-            var dependencies = $0.dependencies
-            dependencies.removeAll(where: { $0 == .remote(dependency) })
-            dependencies.sort()
-            $0.dependencies = dependencies
-        }
-    }
-    
-    mutating func update(defaultLocalization: DefaultLocalization, forComponentName name: Name) {
-        getComponent(withName: name) { component in
-            component.defaultLocalization = defaultLocalization
-        }
-    }
-
-    mutating func updateModuleTypeForDependency(withComponentName name: Name, dependency: ComponentDependency, type: PackageTargetType, value: String?) {
-        get(dependency: dependency, componentWithName: name) { dependency in
-            if let value = value {
-                dependency.targetTypes[type] = value
-            } else {
-                dependency.targetTypes.removeValue(forKey: type)
-            }
+            var remoteDependencies = $0.remoteDependencies
+            remoteDependencies.removeAll(where: { $0 == dependency })
+            remoteDependencies.sort()
+            $0.remoteDependencies = remoteDependencies
         }
     }
 

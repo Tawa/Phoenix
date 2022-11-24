@@ -1,30 +1,29 @@
 import SwiftUI
 
 struct FilterView: View {
-    @Binding var filter: String
+    @Binding var text: String
     var onSubmit: (() -> Void)? = nil
-
+    
+    init(text: Binding<String>,
+         onSubmit: (() -> Void)? = nil) {
+        _text = text
+        self.onSubmit = onSubmit
+    }
+    
     var body: some View {
         HStack {
-            TextField("Filter", text: $filter)
-                .onSubmit {
-                    onSubmit?()
-                }
-            if !filter.isEmpty {
-                Button(action: { filter = "" }, label: {
+            TextField("Filter",
+                      text: $text
+            )
+            .onSubmit {
+                onSubmit?()
+            }
+            if text.isEmpty == false {
+                Button(action: { text = "" }, label: {
                     Image(systemName: "clear.fill")
                 })
                 .aspectRatio(1, contentMode: .fit)
             }
         }.padding(16)
-    }
-}
-
-struct FilterView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            FilterView(filter: .constant(""))
-            FilterView(filter: .constant("DataStore"))
-        }
     }
 }

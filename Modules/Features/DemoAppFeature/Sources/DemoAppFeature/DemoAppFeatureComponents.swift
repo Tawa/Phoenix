@@ -127,7 +127,7 @@ class DemoAppFeatureInteractor {
             ) + "Demo"
             
             let result = try demoAppGenerator.generateDemoApp(named: name,
-                                                                 at: url)
+                                                              at: url)
             
             try pbxProjectSyncer.sync(document: getResultDocument(),
                                       at: ashFileURL,
@@ -135,7 +135,7 @@ class DemoAppFeatureInteractor {
         } catch {
             onError(error)
         }
-
+        
     }
     
     private func getResultDocument() -> PhoenixDocument {
@@ -172,7 +172,7 @@ class DemoAppFeatureInteractor {
         else { return }
         
         let family = componentsFamily.family
-
+        
         var alreadyExists = false
         for targetType in component.modules.keys {
             let title = packageNameProvider.packageName(forComponentName: component.name,
@@ -195,50 +195,54 @@ class DemoAppFeatureInteractor {
     
     func onAppear() {
         presenter.startLoadingList()
-
+        
         refreshSections()
         
         presenter.stopLoadingList()
     }
     
     private func refreshSections() {
-        let dependencySections: [DemoAppDependencySection] = document.families.map { componentsFamily in
-            let title = packageFolderNameProvider.folderName(for: componentsFamily.family)
-            
-            let rows: [DemoAppDependencyRow] = componentsFamily.components.map { component in
-                let rowTitle = packageNameProvider.packageName(forComponentName: component.name,
-                                                            of: componentsFamily.family,
-                                                            packageConfiguration: PackageConfiguration(name: "", appendPackageName: false, hasTests: false))
+        DispatchQueue.global(qos: .background).async { [self] in
+            let dependencySections: [DemoAppDependencySection] = document.families.map { componentsFamily in
+                let title = packageFolderNameProvider.folderName(for: componentsFamily.family)
                 
-                let subrows: [DemoAppDependencySubrow] = component.modules.keys.sorted().map { moduleType in
-                    let dependencySelection = DemoAppDependencySelection(
-                        title: packageNameProvider.packageName(
-                            forComponentName: component.name,
-                            of: componentsFamily.family,
-                            packageConfiguration: .init(name: "", appendPackageName: false, hasTests: false)),
-                        targetType: moduleType)
+                let rows: [DemoAppDependencyRow] = componentsFamily.components.map { component in
+                    let rowTitle = packageNameProvider.packageName(forComponentName: component.name,
+                                                                   of: componentsFamily.family,
+                                                                   packageConfiguration: PackageConfiguration(name: "", appendPackageName: false, hasTests: false))
                     
-                    return DemoAppDependencySubrow(title: moduleType,
-                                                   selected: self.selections.contains(dependencySelection),
-                                                   onToggleSelection: { [weak self] newValue in
-                        guard let self = self else { return }
-                        if newValue {
-                            self.selections.insert(dependencySelection)
-                        } else {
-                            self.selections.remove(dependencySelection)
-                        }
-                        self.refreshSections()
-                    })
+                    let subrows: [DemoAppDependencySubrow] = component.modules.keys.sorted().map { moduleType in
+                        let dependencySelection = DemoAppDependencySelection(
+                            title: packageNameProvider.packageName(
+                                forComponentName: component.name,
+                                of: componentsFamily.family,
+                                packageConfiguration: .init(name: "", appendPackageName: false, hasTests: false)),
+                            targetType: moduleType)
+                        
+                        return DemoAppDependencySubrow(title: moduleType,
+                                                       selected: self.selections.contains(dependencySelection),
+                                                       onToggleSelection: { [weak self] newValue in
+                            guard let self = self else { return }
+                            if newValue {
+                                self.selections.insert(dependencySelection)
+                            } else {
+                                self.selections.remove(dependencySelection)
+                            }
+                            self.refreshSections()
+                        })
+                    }
+                    
+                    return DemoAppDependencyRow(title: rowTitle,
+                                                subrows: subrows)
                 }
                 
-                return DemoAppDependencyRow(title: rowTitle,
-                                            subrows: subrows)
+                return DemoAppDependencySection(title: title,
+                                                rows: rows)
             }
-            
-            return DemoAppDependencySection(title: title,
-                                            rows: rows)
+            DispatchQueue.main.async { [self] in
+                presenter.update(dependencySections: dependencySections)
+            }
         }
-        presenter.update(dependencySections: dependencySections)
     }
     
     func onCancel() {
@@ -258,5 +262,5 @@ class DemoAppFeatureInteractor {
         openPanel.runModal()
         return openPanel.url
     }
-
+    
 }

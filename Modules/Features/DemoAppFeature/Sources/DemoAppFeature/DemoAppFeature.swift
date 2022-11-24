@@ -29,7 +29,7 @@ public struct DemoAppFeatureInput: Identifiable {
     
 }
 public struct DemoAppFeatureView: View {
-    @ObservedObject private var viewModel: DemoAppFeatureViewModel
+    @StateObject private var viewModel: DemoAppFeatureViewModel
     let dependency: Dependency
     let interactor: DemoAppFeatureInteractor
     
@@ -60,7 +60,7 @@ public struct DemoAppFeatureView: View {
             onError: data.onError
         )
         
-        self.viewModel = viewModel
+        _viewModel = .init(wrappedValue: viewModel)
     }
     
     public var body: some View {

@@ -1,3 +1,4 @@
+import Foundation
 import SwiftPackage
 
 public struct DefaultLocalization: Codable, Hashable {
@@ -12,31 +13,39 @@ public struct DefaultLocalization: Codable, Hashable {
 }
 
 public struct Component: Codable, Hashable, Identifiable {
-    public var id: Name { name }
+    public var id: String = UUID().uuidString
 
+    enum CodingKeys: CodingKey {
+        case name
+        case defaultLocalization
+        case iOSVersion
+        case macOSVersion
+        case modules
+        case dependencies
+        case localDependencies
+        case remoteDependencies
+        case resources
+        case defaultDependencies
+    }
+    
     public let name: Name
     public var defaultLocalization: DefaultLocalization
     public var iOSVersion: IOSVersion?
     public var macOSVersion: MacOSVersion?
     public var modules: [String: LibraryType]
-    public var dependencies: [ComponentDependencyType]
     public var resources: [ComponentResources]
     public var defaultDependencies: [PackageTargetType: String]
 
-    public var localDependencies: [ComponentDependency] {
-        dependencies.compactMap { componentDependencyType in
-            guard case let .local(dependency) = componentDependencyType
-            else { return nil }
-            return dependency
-        }
-    }
+    public var localDependencies: [ComponentDependency]
+    public var remoteDependencies: [RemoteDependency]
 
     public init(name: Name,
                 defaultLocalization: DefaultLocalization,
                 iOSVersion: IOSVersion?,
                 macOSVersion: MacOSVersion?,
                 modules: [String: LibraryType],
-                dependencies: [ComponentDependencyType],
+                localDependencies: [ComponentDependency],
+                remoteDependencies: [RemoteDependency],
                 resources: [ComponentResources],
                 defaultDependencies: [PackageTargetType: String]) {
         self.name = name
@@ -44,7 +53,8 @@ public struct Component: Codable, Hashable, Identifiable {
         self.iOSVersion = iOSVersion
         self.macOSVersion = macOSVersion
         self.modules = modules
-        self.dependencies = dependencies
+        self.localDependencies = localDependencies
+        self.remoteDependencies = remoteDependencies
         self.resources = resources
         self.defaultDependencies = defaultDependencies
     }
@@ -56,20 +66,23 @@ public struct Component: Codable, Hashable, Identifiable {
         iOSVersion = try container.decodeIfPresent(IOSVersion.self, forKey: .iOSVersion)
         macOSVersion = try container.decodeIfPresent(MacOSVersion.self, forKey: .macOSVersion)
         modules = try container.decode([String : LibraryType].self, forKey: .modules)
-        dependencies = try container.decode([ComponentDependencyType].self, forKey: .dependencies)
+        if let dependencies = try? container.decode([ComponentDependencyType].self, forKey: .dependencies) {
+            localDependencies = dependencies.compactMap { componentDependencyType in
+                guard case let .local(dependency) = componentDependencyType
+                else { return nil }
+                return dependency
+            }
+            remoteDependencies = dependencies.compactMap { componentDependencyType in
+                guard case let .remote(dependency) = componentDependencyType
+                else { return nil }
+                return dependency
+            }
+        } else {
+            localDependencies = try container.decodeIfPresent([ComponentDependency].self, forKey: .localDependencies) ?? []
+            remoteDependencies = try container.decodeIfPresent([RemoteDependency].self, forKey: .remoteDependencies) ?? []
+        }
         resources = try container.decode([ComponentResources].self, forKey: .resources)
         defaultDependencies = try container.decodeIfPresent([PackageTargetType : String].self, forKey: .defaultDependencies) ?? [:]
-    }
-    
-    enum CodingKeys: CodingKey {
-        case name
-        case defaultLocalization
-        case iOSVersion
-        case macOSVersion
-        case modules
-        case dependencies
-        case resources
-        case defaultDependencies
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -81,7 +94,8 @@ public struct Component: Codable, Hashable, Identifiable {
         try container.encodeIfPresent(iOSVersion, forKey: .iOSVersion)
         try container.encodeIfPresent(macOSVersion, forKey: .macOSVersion)
         try container.encode(modules, forKey: .modules)
-        try container.encode(dependencies, forKey: .dependencies)
+        try container.encode(localDependencies, forKey: .localDependencies)
+        try container.encode(remoteDependencies, forKey: .remoteDependencies)
         try container.encode(resources, forKey: .resources)
         if !defaultDependencies.isEmpty {
             try container.encodeSorted(dictionary: defaultDependencies, forKey: .defaultDependencies)

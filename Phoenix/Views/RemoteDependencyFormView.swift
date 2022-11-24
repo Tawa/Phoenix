@@ -31,15 +31,6 @@ enum VersionType: Identifiable, CaseIterable, Hashable {
             return "exact"
         }
     }
-
-    var placeholder: String {
-        switch self {
-        case .from, .exact:
-            return "1.0.0"
-        case .branch:
-            return "main"
-        }
-    }
 }
 
 struct RemoteDependencyFormResult {

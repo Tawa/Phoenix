@@ -1,6 +1,36 @@
 import AccessibilityIdentifiers
+import Factory
+import Combine
 import Component
+import ComponentDetailsProviderContract
 import SwiftUI
+
+extension Binding where Value == String? {
+    var nonOptionalBinding: Binding<String> {
+        Binding<String> {
+            wrappedValue ?? ""
+        } set: {
+            wrappedValue = $0.nilIfEmpty
+        }
+
+    }
+}
+
+extension String {
+    var nilIfEmpty: String? { isEmpty ? nil : self }
+}
+
+extension Binding where Value == Bool {
+    var toggled: Binding<Bool> {
+        Binding(get: { !wrappedValue },
+                set: { wrappedValue = !$0 })
+    }
+}
+
+struct FamilySheetData {
+    var family: Family
+    let rules: [FamilyRule]
+}
 
 struct FamilyRule: Identifiable {
     var id: String { name }
@@ -9,19 +39,36 @@ struct FamilyRule: Identifiable {
 }
 
 struct FamilySheet: View {
-    let name: String
-    let ignoreSuffix: Bool
-    let onUpdateSelectedFamily: (Bool) -> Void
-    let folderName: String
-    let onUpdateFolderName: (String?) -> Void
-    let defaultFolderName: String
-    let componentNameExample: String
-    let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
-    let allDependenciesSelectionValues: [String]
-    let onUpdateTargetTypeValue: (PackageTargetType, String?) -> Void
+    @EnvironmentObject var composition: Composition
+    @Binding var family: Family
     let rules: [FamilyRule]
-    let onUpdateFamilyRule: (String, Bool) -> Void
-    let onDismiss: () -> Void
+    
+    // MARK: - UseCases
+    let selectFamilyUseCase: SelectFamilyUseCaseProtocol
+    
+    // MARK: - Private
+    @Injected(Container.familyFolderNameProvider) private var familyFolderNameProvider
+    private var name: String { family.name }
+    private var defaultFolderName: String { familyFolderNameProvider.folderName(forFamily: family.name) }
+    private var componentNameExample: String { "Component\(family.ignoreSuffix ? "" : family.name)" }
+    private var folderName: Binding<String> { .init(get: { family.folder ?? "" }, set: { family.folder = $0.nilIfEmpty })}
+    private var appendFamilyName: Binding<Bool> {
+        Binding(get: { !family.ignoreSuffix },
+                set: { family.ignoreSuffix = !$0 })
+    }
+    
+    init(
+        getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol,
+        getFamilySheetDataUseCase: GetFamilySheetDataUseCaseProtocol,
+        selectFamilyUseCase: SelectFamilyUseCaseProtocol
+    ) {
+        _family = getSelectedFamilyUseCase.binding
+        
+        let familySheetData = getFamilySheetDataUseCase.value
+        self.rules = familySheetData.rules
+        
+        self.selectFamilyUseCase = selectFamilyUseCase
+    }
     
     var body: some View {
         ScrollView {
@@ -29,8 +76,7 @@ struct FamilySheet: View {
                 Text("Family: \(name)")
                     .font(.largeTitle)
                 
-                Toggle(isOn: Binding(get: { !ignoreSuffix },
-                                     set: { onUpdateSelectedFamily($0) })) {
+                Toggle(isOn: $family.ignoreSuffix.toggled) {
                     Text("Append Component Name with Family Name. ")
                         .bold()
                     + Text("\nExample: \(componentNameExample)")
@@ -40,35 +86,38 @@ struct FamilySheet: View {
                 HStack {
                     Text("Folder Name:")
                     TextField("Default: (\(defaultFolderName))",
-                              text: Binding(get: { folderName },
-                                            set: { onUpdateFolderName($0) }))
+                              text: folderName)
                     .with(accessibilityIdentifier: FamilySheetIdentifiers.folderNameTextField)
-                    Button(action: { onUpdateFolderName(nil) }) {
+                    Button(action: { family.folder = nil }) {
                         Text("Use Default")
                     }
                 }
                 
                 Spacer().frame(height: 30)
                 
-                DependencyView<PackageTargetType, String>(
-                    title: "Default Dependencies",
-                    allTypes: allDependenciesConfiguration,
-                    allSelectionValues: allDependenciesSelectionValues,
-                    onUpdateTargetTypeValue: onUpdateTargetTypeValue)
-                
+                RelationView(defaultDependencies: $family.defaultDependencies,
+                             title: "Default Dependencies",
+                             getRelationViewDataUseCase: composition.getRelationViewDataUseCase())
                 
                 VStack(alignment: .leading) {
                     Text("Allow ") + Text(name).bold() + Text(" components to be used in:")
                     ForEach(rules) { rule in
                         Toggle(rule.name,
                                isOn: Binding(get: { rule.enabled },
-                                             set: { onUpdateFamilyRule(rule.name, $0) })
+                                             set: { enabled in
+                            if enabled {
+                                family.excludedFamilies.removeAll(where: { rule.name == $0 })
+                            } else {
+                                family.excludedFamilies.append(rule.name)
+                                family.excludedFamilies.sort()
+                            }
+                        })
                         )
                     }
                 }
                 .padding()
                 
-                Button(action: onDismiss) {
+                Button(action: selectFamilyUseCase.deselect) {
                     Text("Done")
                 }
                 .keyboardShortcut(.cancelAction)

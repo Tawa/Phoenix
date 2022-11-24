@@ -77,11 +77,6 @@ struct NewComponentSheet: View {
             infoSheetModel = .init(text: error.localizedDescription)
         }
     }
-
-    private func onSheetOkayButton() {
-        focusField = nil
-        infoSheetModel = nil
-    }
 }
 
 struct NewComponentSheet_Previews: PreviewProvider {

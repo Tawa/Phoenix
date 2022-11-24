@@ -11,7 +11,8 @@ public struct AppVersions: Decodable {
 }
 
 // MARK: - Result
-public struct AppVersionInfo: Decodable {
+public struct AppVersionInfo: Decodable, Identifiable {
+    public var id: String { UUID().uuidString }
     public let version: String
     public let releaseNotes: String
     

@@ -1,16 +1,27 @@
 import AccessibilityIdentifiers
+import Combine
 import Component
+import Factory
 import SwiftUI
 
 struct ConfigurationView: View {
+    @EnvironmentObject var composition: Composition
     @Binding var configuration: ProjectConfiguration
     let columnWidth: CGFloat = 200
     let narrowColumnWidth: CGFloat = 100
     let rowHeight: CGFloat = 30
-    let allDependenciesConfiguration: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
     let onDismiss: () -> Void
     
     @FocusState private var focusedName: Int?
+    
+    init(
+        getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
+        onDismiss: @escaping () -> Void,
+        focusedName: Int? = nil) {
+            _configuration = getProjectConfigurationUseCase.binding
+            self.onDismiss = onDismiss
+            self.focusedName = focusedName
+        }
     
     @ViewBuilder
     func columnView<HeaderContent: View, RowContent: View>(
@@ -36,15 +47,12 @@ struct ConfigurationView: View {
                 Divider()
                 HStack {
                     Text("Swift Version")
-                    TextField("default: \(ProjectConfiguration.default.swiftVersion)", text: $configuration.swiftVersion)
+                    TextField("default: \(ProjectConfiguration.default.swiftVersion)",
+                              text: $configuration.swiftVersion)
                 }
                 HStack {
                     Text("Demo Apps Default Organization Identifier")
-                    TextField("com.myorganization.demoapp", text: Binding(get: {
-                        configuration.defaultOrganizationIdentifier ?? ""
-                    }, set: { newValue in
-                        configuration.defaultOrganizationIdentifier = newValue.isEmpty ? nil : newValue
-                    }))
+                    TextField("com.myorganization.demoapp", text: $configuration.defaultOrganizationIdentifier.nonOptionalBinding)
                 }
                 Divider()
                 HStack(spacing: 8) {
@@ -68,8 +76,7 @@ struct ConfigurationView: View {
                         }
                     } content: { index in
                         TextField("Folder Name",
-                                  text: .init(get: { configuration.packageConfigurations[index].containerFolderName ?? "" },
-                                              set: { configuration.packageConfigurations[index].containerFolderName = $0.isEmpty ? nil : $0 }))
+                                  text: $configuration.packageConfigurations[index].containerFolderName.nonOptionalBinding)
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 1, row: index))
                     }
                     columnView(width: narrowColumnWidth) {
@@ -89,8 +96,7 @@ struct ConfigurationView: View {
                         }
                     } content: { index in
                         TextField("Dependency Name",
-                                  text: .init(get: { configuration.packageConfigurations[index].internalDependency ?? "" },
-                                              set: { configuration.packageConfigurations[index].internalDependency = $0.isEmpty ? nil : $0 }))
+                                  text: $configuration.packageConfigurations[index].internalDependency.nonOptionalBinding)
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 2, row: index))
                     }
                     columnView {
@@ -105,27 +111,25 @@ struct ConfigurationView: View {
                 Button(action: onAddNew) {
                     Text("Add New Package")
                 }.padding(.horizontal)
-                .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.addNewButton)
+                    .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.addNewButton)
                 if configuration.packageConfigurations.count > 1 {
-                    DependencyView<PackageTargetType, String>(
-                        title: "Default Dependencies",
-                        allTypes: allDependenciesConfiguration,
-                        allSelectionValues: configuration.packageConfigurations.map(\.name),
-                        onUpdateTargetTypeValue: { packageTargetType, value in
-                            configuration.defaultDependencies[packageTargetType] = value
-                        })
+                    RelationView(defaultDependencies: $configuration.defaultDependencies,
+                                 title: "Default Dependencies",
+                                 getRelationViewDataUseCase: composition.getRelationViewDataUseCase())
                 }
                 Button(action: onDismiss) {
                     Text("Close")
                 }.padding(.horizontal)
-                .keyboardShortcut(.cancelAction)
-                .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.closeButton)
+                    .keyboardShortcut(.cancelAction)
+                    .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.closeButton)
                 Spacer()
             }.padding()
         }
-        .onDisappear { configuration.packageConfigurations.sort(by: { $0.name < $1.name }) }
+        .onDisappear {
+            configuration.packageConfigurations.sort(by: { $0.name < $1.name })
+        }
     }
-                        
+    
     private func removePackageConfiguration(at index: Int) {
         configuration.packageConfigurations.remove(at: index)
     }
