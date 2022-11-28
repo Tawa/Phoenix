@@ -89,6 +89,7 @@ public struct DemoAppFeatureView: View {
                     .font(.title)
                     .padding(2)
                 TextField("i,e: com.myorganization.demo", text: $viewModel.organizationIdentifier)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     .font(.title)
                 Spacer()
                 HStack {

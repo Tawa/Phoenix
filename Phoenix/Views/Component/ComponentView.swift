@@ -94,7 +94,8 @@ struct ComponentView: View {
     @ViewBuilder private func defaultLocalizationView() -> some View {
         section {
             Text("Default Localization: ")
-            TextField("ex: en", text: $component.defaultLocalization.value.nonOptionalBinding).frame(width: 100)
+            TextField("ex: en", text: $component.defaultLocalization.value.nonOptionalBinding)
+                .frame(width: 100)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             VStack(alignment: .leading) {
                 ForEach(allModuleTypes.filter(isModuleTypeOn), id: \.self) { moduleType in

@@ -4,13 +4,20 @@ import Foundation
 import SwiftUI
 
 protocol GetSelectedComponentUseCaseProtocol {
+    var value: Component { get }
     var binding: Binding<Component> { get }
+    var publisher: AnyPublisher<Component, Never> { get }
 }
 
 struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
     let phoenixDocumentRepository: PhoenixDocumentRepositoryProtocol
     let getComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol
     let selectionRepository: SelectionRepositoryProtocol
+    
+    var value: Component {
+        getComponent(families: getComponentsFamiliesUseCase.families,
+                     selectionPath: selectionRepository.selectionPath)
+    }
     
     var binding: Binding<Component> {
         Binding {
@@ -19,6 +26,17 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
         } set: {
             phoenixDocumentRepository.update(component: $0)
         }
+    }
+    
+    var publisher: AnyPublisher<Component, Never> {
+        Publishers.CombineLatest(
+            getComponentsFamiliesUseCase.familiesPublisher,
+            selectionRepository.selectionPathPublisher
+        )
+        .map { (families, selectionPath) in
+            self.getComponent(families: families, selectionPath: selectionPath)
+        }
+        .eraseToAnyPublisher()
     }
     
     init(phoenixDocumentRepository: PhoenixDocumentRepositoryProtocol,
@@ -30,18 +48,19 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
     }
     
     private func getComponent(families: [ComponentsFamily], selectionPath: SelectionPath?) -> Component {
-        guard let selectionPath,
-              selectionPath.familyIndex < families.count,
-              selectionPath.componentIndex < families[selectionPath.familyIndex].components.count
-        else { return .default }
-        return families[selectionPath.familyIndex].components[selectionPath.componentIndex]
+        guard
+            let selectionPath,
+            let familyIndex = families.firstIndex(where: { $0.family.name == selectionPath.name.family }),
+            let componentIndex = families[familyIndex].components.firstIndex(where: { $0.name == selectionPath.name })
+        else { return families.first?.components.first ?? .default  }
+        return families[familyIndex].components[componentIndex]
     }
 }
 
 private extension Component {
     static var `default`: Component {
         .init(
-            name: .init(given: "", family: ""),
+            name: .empty,
             defaultLocalization: .init(),
             iOSVersion: nil,
             macOSVersion: nil,

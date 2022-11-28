@@ -87,6 +87,7 @@ struct FamilySheet: View {
                     Text("Folder Name:")
                     TextField("Default: (\(defaultFolderName))",
                               text: folderName)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     .with(accessibilityIdentifier: FamilySheetIdentifiers.folderNameTextField)
                     Button(action: { family.folder = nil }) {
                         Text("Use Default")

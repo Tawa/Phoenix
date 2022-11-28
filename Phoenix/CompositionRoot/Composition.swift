@@ -42,8 +42,8 @@ class Composition: ObservableObject {
     lazy var getComponentsListItemsUseCase = Factory { [unowned self] in
         GetComponentsListItemsUseCase(
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
-            familyFolderNameProvider: Container.familyFolderNameProvider(),
-            selectionRepository: selectionRepository()
+            getSelectedComponentUseCase: getSelectedComponentUseCase(),
+            familyFolderNameProvider: Container.familyFolderNameProvider()
         ) as GetComponentsListItemsUseCaseProtocol
     }
     
@@ -156,14 +156,5 @@ class Composition: ObservableObject {
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
             selectionRepository: selectionRepository()
         ) as SelectPreviousComponentUseCaseProtocol
-    }
-
-    // MARK: - Presentation
-    lazy var componentsListInteractor = Factory { [unowned self] in
-        ComponentsListInteractor(
-            getComponentsListItemsUseCase: getComponentsListItemsUseCase(),
-            selectComponentUseCase: selectComponentUseCase(),
-            selectFamilyUseCase: selectFamilyUseCase()
-        )
     }
 }

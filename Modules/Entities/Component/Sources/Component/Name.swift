@@ -14,4 +14,6 @@ public struct Name: Codable, Hashable, Identifiable, Comparable {
     public static func <(lhs: Name, rhs: Name) -> Bool {
         lhs.full < rhs.full
     }
+    
+    public static var empty: Name { .init(given: "", family: "") }
 }

@@ -93,14 +93,16 @@ struct ContentView: View {
     @ViewBuilder private func componentsList() -> some View {
         VStack {
             FilterView(text: composition.getComponentsFilterUseCase().binding)
-            ComponentsList(interactor: composition.componentsListInteractor())
+            ComponentsList(sections: viewModel.componentsListSections)
         }
         .frame(minWidth: 250)
     }
     
     @ViewBuilder private func detailView() -> some View {
         if let selectedComponentName = viewModel.selectedComponentName,
-           let selectedComponent = document.getComponent(withName: selectedComponentName) {
+           composition.getSelectedComponentUseCase().value.name != .empty,
+           let selectedComponent = document.getComponent(withName: selectedComponentName),
+           selectedComponent.name != .empty {
             componentView(for: selectedComponent)
                 .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
                     dependencySheet(component: selectedComponent)

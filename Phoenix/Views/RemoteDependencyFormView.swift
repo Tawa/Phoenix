@@ -72,6 +72,7 @@ struct RemoteDependencyFormView: View {
                 .frame(width: labelsWidth)
                 TextField("ex: git@github.com:team/repo.git",
                           text: $urlString)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
             }
 
             HStack {
@@ -85,6 +86,7 @@ struct RemoteDependencyFormView: View {
                 .frame(width: labelsWidth)
 
                 TextField("1.0.0", text: $versionString)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
             }
 
 
@@ -99,9 +101,10 @@ struct RemoteDependencyFormView: View {
                 .frame(width: labelsWidth)
 
                 TextField("Name", text: $name)
-
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                 if case .product = productType {
                     TextField("Package", text: $package)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
             }
 

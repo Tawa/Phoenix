@@ -2,9 +2,10 @@ import Combine
 import Component
 import Foundation
 
-struct SelectionPath {
-    var familyIndex: Int
-    var componentIndex: Int
+struct SelectionPath: Equatable {
+//    var familyIndex: Int
+//    var componentIndex: Int
+    var name: Name
 }
 
 protocol SelectionRepositoryProtocol {
