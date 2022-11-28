@@ -100,7 +100,9 @@ struct ContentView: View {
     
     @ViewBuilder private func detailView() -> some View {
         if let selectedComponentName = viewModel.selectedComponentName,
-           let selectedComponent = document.getComponent(withName: selectedComponentName) {
+           composition.getSelectedComponentUseCase().value.name != .empty,
+           let selectedComponent = document.getComponent(withName: selectedComponentName),
+           selectedComponent.name != .empty {
             componentView(for: selectedComponent)
                 .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
                     dependencySheet(component: selectedComponent)

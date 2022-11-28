@@ -60,7 +60,7 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
 private extension Component {
     static var `default`: Component {
         .init(
-            name: .init(given: "", family: ""),
+            name: .empty,
             defaultLocalization: .init(),
             iOSVersion: nil,
             macOSVersion: nil,

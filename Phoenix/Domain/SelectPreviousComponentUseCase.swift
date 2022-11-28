@@ -17,7 +17,7 @@ struct SelectPreviousComponentUseCase: SelectPreviousComponentUseCaseProtocol {
     func perform() {
         guard let selectionPath = selectionRepository.selectionPath
         else {
-            selectionRepository.select(selectionPath: .init(name: .init(given: "", family: "")))
+            selectionRepository.select(selectionPath: .init(name: .empty))
             return
         }
         let families = getComponentsFamiliesUseCase.families
