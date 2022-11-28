@@ -3,8 +3,9 @@ import Component
 import Foundation
 
 struct SelectionPath: Equatable {
-    var familyIndex: Int
-    var componentIndex: Int
+//    var familyIndex: Int
+//    var componentIndex: Int
+    var name: Name
 }
 
 protocol SelectionRepositoryProtocol {

@@ -31,8 +31,7 @@ class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
             componentsDictionaryHash = document.wrappedValue.hashValue
             for familyIndex in 0..<document.families.count {
                 for componentIndex in 0..<document.families[familyIndex].components.count {
-                    let selectionPath = SelectionPath(familyIndex: familyIndex,
-                                                      componentIndex: componentIndex)
+                    let selectionPath = SelectionPath(name: document.families[familyIndex].components[componentIndex].wrappedValue.name)
                     let componentName = document.wrappedValue.families[familyIndex].components[componentIndex].name
                     componentsDictionary[componentName] = selectionPath
                 }

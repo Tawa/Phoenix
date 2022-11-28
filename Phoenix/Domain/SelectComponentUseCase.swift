@@ -22,8 +22,7 @@ struct SelectComponentUseCase: SelectComponentUseCaseProtocol {
         else { return }
         selectionRepository.select(
             selectionPath: .init(
-                familyIndex: familyIndex,
-                componentIndex: componentIndex)
+                name: document.families[familyIndex].components[componentIndex].name)
         )
     }
 }

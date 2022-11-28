@@ -12,32 +12,32 @@ protocol GetComponentsListItemsUseCaseProtocol {
 
 struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
     let getComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol
+    let getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol
     let familyFolderNameProvider: FamilyFolderNameProviderProtocol
-    let selectionRepository: SelectionRepositoryProtocol
-
+    
     init(getComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol,
-         familyFolderNameProvider: FamilyFolderNameProviderProtocol,
-         selectionRepository: SelectionRepositoryProtocol) {
+         getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
+         familyFolderNameProvider: FamilyFolderNameProviderProtocol) {
         self.getComponentsFamiliesUseCase = getComponentsFamiliesUseCase
+        self.getSelectedComponentUseCase = getSelectedComponentUseCase
         self.familyFolderNameProvider = familyFolderNameProvider
-        self.selectionRepository = selectionRepository
     }
     
     var list: [ComponentsListSection] { map(getComponentsFamiliesUseCase.families,
-                                            selectionPath: selectionRepository.selectionPath) }
+                                            selectedName: getSelectedComponentUseCase.value.name) }
     var listPublisher: AnyPublisher<[ComponentsListSection], Never> {
         Publishers.CombineLatest(
             getComponentsFamiliesUseCase.familiesPublisher,
-            selectionRepository.selectionPathPublisher
+            getSelectedComponentUseCase.publisher
         )
         .subscribe(on: DispatchQueue.global(qos: .background))
-        .map { (families, selectionPath) in
-            self.map(families, selectionPath: selectionPath)
+        .map { (families, component) in
+            self.map(families, selectedName: component.name)
         }
         .eraseToAnyPublisher()
     }
     
-    private func map(_ families: [ComponentsFamily], selectionPath: SelectionPath?) -> [ComponentsListSection] {
+    private func map(_ families: [ComponentsFamily], selectedName: Name?) -> [ComponentsListSection] {
         families
             .enumerated()
             .compactMap { componentsFamilyElement in
@@ -52,7 +52,7 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
                         return .init(
                             id: component.id,
                             name: name,
-                            isSelected: componentsFamilyElement.offset == selectionPath?.familyIndex && componentElement.offset == selectionPath?.componentIndex
+                            isSelected: componentElement.element.name == selectedName
                         )
                     }
                 )

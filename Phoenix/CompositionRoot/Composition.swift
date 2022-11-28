@@ -42,8 +42,8 @@ class Composition: ObservableObject {
     lazy var getComponentsListItemsUseCase = Factory { [unowned self] in
         GetComponentsListItemsUseCase(
             getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
-            familyFolderNameProvider: Container.familyFolderNameProvider(),
-            selectionRepository: selectionRepository()
+            getSelectedComponentUseCase: getSelectedComponentUseCase(),
+            familyFolderNameProvider: Container.familyFolderNameProvider()
         ) as GetComponentsListItemsUseCaseProtocol
     }
     

@@ -17,7 +17,7 @@ struct SelectPreviousComponentUseCase: SelectPreviousComponentUseCaseProtocol {
     func perform() {
         guard let selectionPath = selectionRepository.selectionPath
         else {
-            selectionRepository.select(selectionPath: .init(familyIndex: 0, componentIndex: 0))
+            selectionRepository.select(selectionPath: .init(name: .init(given: "", family: "")))
             return
         }
         let families = getComponentsFamiliesUseCase.families
@@ -26,8 +26,7 @@ struct SelectPreviousComponentUseCase: SelectPreviousComponentUseCaseProtocol {
             .flatMap { familyElement in
                 (0..<familyElement.element.components.count)
                     .map { index in
-                        SelectionPath(familyIndex: familyElement.offset,
-                                      componentIndex: index)
+                        SelectionPath(name: familyElement.element.components[index].name)
                     }
         }
         
