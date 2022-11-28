@@ -24,72 +24,27 @@ struct ComponentsListSection: Hashable, Identifiable {
     let rows: [ComponentsListRow]
 }
 
-class ComponentsListViewData: ObservableObject {
-    @Published var sections: [ComponentsListSection] = []
-    
-    init(sections: [ComponentsListSection]) {
-        self.sections = sections
-    }
-}
-
-class ComponentsListInteractor {
-    let getComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol
-    let selectComponentUseCase: SelectComponentUseCaseProtocol
-    let selectFamilyUseCase: SelectFamilyUseCaseProtocol
-    var viewData: ComponentsListViewData = .init(sections: [])
-    var subscription: AnyCancellable?
-    
-    init(getComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol,
-         selectComponentUseCase: SelectComponentUseCaseProtocol,
-         selectFamilyUseCase: SelectFamilyUseCaseProtocol) {
-        self.getComponentsListItemsUseCase = getComponentsListItemsUseCase
-        self.selectComponentUseCase = selectComponentUseCase
-        self.selectFamilyUseCase = selectFamilyUseCase
-
-        viewData = .init(sections: getComponentsListItemsUseCase.list)
-        subscription = getComponentsListItemsUseCase
-            .listPublisher
-            .filter { [weak self] in self?.viewData.sections != $0}
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] sections in
-                self?.viewData.sections = sections
-            })
-    }
-    
-    func select(id: String) {
-        selectComponentUseCase.select(id: id)
-    }
-    
-    func selectFamily(id: String) {
-        selectFamilyUseCase.select(id: id)
-    }
-}
-
 struct ComponentsList: View {
-    @ObservedObject var viewData: ComponentsListViewData
-    let interactor: ComponentsListInteractor
+    @EnvironmentObject var composition: Composition
     
-    init(interactor: ComponentsListInteractor) {
-        self.viewData = interactor.viewData
-        self.interactor = interactor
-    }
+    let sections: [ComponentsListSection]
     
     var body: some View {
         VStack(alignment: .leading) {
             List {
-                ForEach(viewData.sections) { section in
+                ForEach(sections) { section in
                     Section {
                         ForEach(section.rows) { row in
                             ComponentListItem(
                                 name: row.name,
                                 isSelected: row.isSelected,
-                                onSelect: { interactor.select(id: row.id) },
+                                onSelect: { composition.selectComponentUseCase().select(id: row.id) },
                                 onDuplicate: { }
                             )
                             .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
                         }
                     } header: {
-                        Button(action: { interactor.selectFamily(id: section.id) },
+                        Button(action: { composition.selectFamilyUseCase().select(id: section.id) },
                                label: {
                             HStack {
                                 Text(section.name)
@@ -116,7 +71,7 @@ struct ComponentsList: View {
     }
     
     private var numberOfComponentsString: String {
-        let totalRows = viewData.sections.flatMap(\.rows).count
+        let totalRows = sections.flatMap(\.rows).count
         if totalRows == 1 {
             return "1 component"
         } else {

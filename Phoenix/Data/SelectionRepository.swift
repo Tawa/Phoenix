@@ -2,7 +2,7 @@ import Combine
 import Component
 import Foundation
 
-struct SelectionPath {
+struct SelectionPath: Equatable {
     var familyIndex: Int
     var componentIndex: Int
 }

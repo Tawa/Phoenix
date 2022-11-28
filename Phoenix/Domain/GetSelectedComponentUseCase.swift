@@ -33,7 +33,7 @@ struct GetSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol {
         guard let selectionPath,
               selectionPath.familyIndex < families.count,
               selectionPath.componentIndex < families[selectionPath.familyIndex].components.count
-        else { return .default }
+        else { return families.first?.components.first ?? .default }
         return families[selectionPath.familyIndex].components[selectionPath.componentIndex]
     }
 }

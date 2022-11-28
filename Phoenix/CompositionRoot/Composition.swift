@@ -157,13 +157,4 @@ class Composition: ObservableObject {
             selectionRepository: selectionRepository()
         ) as SelectPreviousComponentUseCaseProtocol
     }
-
-    // MARK: - Presentation
-    lazy var componentsListInteractor = Factory { [unowned self] in
-        ComponentsListInteractor(
-            getComponentsListItemsUseCase: getComponentsListItemsUseCase(),
-            selectComponentUseCase: selectComponentUseCase(),
-            selectFamilyUseCase: selectFamilyUseCase()
-        )
-    }
 }

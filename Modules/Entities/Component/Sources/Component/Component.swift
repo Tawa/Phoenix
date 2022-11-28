@@ -13,7 +13,7 @@ public struct DefaultLocalization: Codable, Hashable {
 }
 
 public struct Component: Codable, Hashable, Identifiable {
-    public var id: String = UUID().uuidString
+    public let id: String = UUID().uuidString
 
     enum CodingKeys: CodingKey {
         case name

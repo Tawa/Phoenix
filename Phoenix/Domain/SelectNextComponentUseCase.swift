@@ -15,17 +15,27 @@ struct SelectNextComponentUseCase: SelectNextComponentUseCaseProtocol {
     }
     
     func perform() {
-        guard var selectionPath = selectionRepository.selectionPath
+        guard let selectionPath = selectionRepository.selectionPath
         else {
             selectionRepository.select(selectionPath: .init(familyIndex: 0, componentIndex: 0))
             return
         }
-        selectionPath.componentIndex += 1
         let families = getComponentsFamiliesUseCase.families
-        if selectionPath.componentIndex >= families[selectionPath.familyIndex].components.count {
-            selectionPath.familyIndex = (selectionPath.familyIndex + 1) % families.count
-            selectionPath.componentIndex = 0
+        let paths = families
+            .enumerated()
+            .flatMap { familyElement in
+                (0..<familyElement.element.components.count)
+                    .map { index in
+                        SelectionPath(familyIndex: familyElement.offset,
+                                      componentIndex: index)
+                    }
         }
-        selectionRepository.select(selectionPath: selectionPath)
+        
+        var index = paths.firstIndex(of: selectionPath) ?? -1
+        index += 1
+        if index >= paths.count {
+            index = 0
+        }
+        selectionRepository.select(selectionPath: paths[index])
     }
 }

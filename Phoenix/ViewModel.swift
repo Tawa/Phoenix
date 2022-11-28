@@ -36,6 +36,7 @@ class ViewModel: ObservableObject {
     let composition: Composition
     @Published var selectedComponentName: Name? = nil
     @Published var selectedFamilyName: String? = nil
+    @Published var componentsListSections: [ComponentsListSection] = []
     
     // MARK: - Update Button
     private var appUpdateVersionInfoSub: AnyCancellable? = nil
@@ -270,6 +271,14 @@ private extension ViewModel {
                 } else {
                     selectionRepository.deselectFamilyName()
                 }
+            }.store(in: &subscriptions)
+        
+        composition
+            .getComponentsListItemsUseCase()
+            .listPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] sections in
+                self?.componentsListSections = sections
             }.store(in: &subscriptions)
     }
 }

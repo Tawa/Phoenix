@@ -93,7 +93,7 @@ struct ContentView: View {
     @ViewBuilder private func componentsList() -> some View {
         VStack {
             FilterView(text: composition.getComponentsFilterUseCase().binding)
-            ComponentsList(interactor: composition.componentsListInteractor())
+            ComponentsList(sections: viewModel.componentsListSections)
         }
         .frame(minWidth: 250)
     }
