@@ -36,6 +36,7 @@ struct RemoteDependencyView: View {
                 TextField(versionPlaceholder,
                           text: .init(get: { dependency.versionText },
                                       set: { dependency.versionText = $0 }))
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 Spacer()
                     .frame(maxWidth: .infinity)
             }

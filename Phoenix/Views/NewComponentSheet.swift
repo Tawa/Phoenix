@@ -20,8 +20,7 @@ struct NewComponentSheet: View {
             VStack(spacing: 0) {
                 TextField("Given Name", text: $name)
                     .focused($focusField, equals: .given)
-                    .font(.largeTitle)
-                    .textFieldStyle(.plain)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     .with(accessibilityIdentifier: NewComponentSheetIdentifiers.givenNameTextField)
 
                 ZStack {
@@ -32,14 +31,14 @@ struct NewComponentSheet: View {
                     }
                     TextField("Family Name", text: $familyName)
                         .focused($focusField, equals: .family)
-                        .textFieldStyle(.plain)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
                         .onSubmit(onSubmitAction)
                         .onChange(of: focusField) { newValue in
                             guard newValue != .family else { return }
                             familyNameSuggestion(familyName).map { familyName = $0 }
                         }
                         .with(accessibilityIdentifier: NewComponentSheetIdentifiers.familyNameTextField)
-                }.font(.largeTitle)
+                }
 
                 Spacer().frame(height: 30)
                 HStack {

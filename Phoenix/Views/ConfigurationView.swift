@@ -49,10 +49,12 @@ struct ConfigurationView: View {
                     Text("Swift Version")
                     TextField("default: \(ProjectConfiguration.default.swiftVersion)",
                               text: $configuration.swiftVersion)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 HStack {
                     Text("Demo Apps Default Organization Identifier")
                     TextField("com.myorganization.demoapp", text: $configuration.defaultOrganizationIdentifier.nonOptionalBinding)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 Divider()
                 HStack(spacing: 8) {
@@ -66,6 +68,7 @@ struct ConfigurationView: View {
                         TextField("Name",
                                   text: $configuration.packageConfigurations[index].name)
                         .focused($focusedName, equals: index)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 0, row: index))
                     }.frame(minWidth: columnWidth)
                     columnView(width: columnWidth) {
@@ -77,6 +80,7 @@ struct ConfigurationView: View {
                     } content: { index in
                         TextField("Folder Name",
                                   text: $configuration.packageConfigurations[index].containerFolderName.nonOptionalBinding)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 1, row: index))
                     }
                     columnView(width: narrowColumnWidth) {
@@ -97,6 +101,7 @@ struct ConfigurationView: View {
                     } content: { index in
                         TextField("Dependency Name",
                                   text: $configuration.packageConfigurations[index].internalDependency.nonOptionalBinding)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 2, row: index))
                     }
                     columnView {

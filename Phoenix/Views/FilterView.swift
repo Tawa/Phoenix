@@ -15,6 +15,7 @@ struct FilterView: View {
             TextField("Filter",
                       text: $text
             )
+            .textFieldStyle(RoundedBorderTextFieldStyle())
             .onSubmit {
                 onSubmit?()
             }

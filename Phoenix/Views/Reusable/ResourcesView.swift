@@ -10,7 +10,6 @@ struct ResourcesView: View {
         var targetTypes: [PackageTargetType]
     }
     @Binding var resources: [ComponentResources]
-    @State private var textValues: [String: String] = [:]
     @State private var newFieldValue: String = ""
     let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
     
@@ -87,16 +86,8 @@ struct ResourcesView: View {
                 }
                 TextField(newValuePlaceholder,
                           text: $newFieldValue)
-                .font(.largeTitle)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
             }
         }
-    }
-    
-    private func refreshTextValues(with values: [ValueContainer]) {
-        let result = values.reduce(into: [String: String](), { partialResult, container in
-            partialResult[container.id] = container.value
-        })
-        
-        textValues = result
     }
 }
