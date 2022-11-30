@@ -126,14 +126,13 @@ struct ContentView: View {
     @ViewBuilder private func componentView(for component: Component) -> some View {
         ComponentView(
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
-            getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase(),
             getSelectedComponentUseCase: composition.getSelectedComponentUseCase(),
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
             },
             onRemove: { interactor.onRemoveComponent(with: component.id, composition: composition) },
             allTargetTypes: allTargetTypes(forComponent: component),
-            onRemoveResourceWithId: { document.removeResource(withId: $0, forComponentWithName: component.name) },
+            allModuleTypes: composition.getProjectConfigurationUseCase().value.packageConfigurations.map(\.name),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
         )
@@ -291,38 +290,10 @@ struct ContentView: View {
     }
     
     // MARK: - Private
-    private func componentTypes(for dependency: ComponentDependency, component: Component) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
-        allTargetTypes(forComponent: component).compactMap { targetType -> IdentifiableWithSubtypeAndSelection<PackageTargetType, String>? in
-            let selectedValue = dependency.targetTypes[targetType.value]
-            let selectedSubValue: String? = targetType.subValue.flatMap { dependency.targetTypes[$0] }
-            
-            return IdentifiableWithSubtypeAndSelection<PackageTargetType, String>(
-                title: targetType.title,
-                subtitle: targetType.subtitle,
-                value: targetType.value,
-                subValue: targetType.subValue,
-                selectedValue: selectedValue,
-                selectedSubValue: selectedSubValue)
-        }
-    }
-    
-    private func enabledDependencyTypes(for dependency: RemoteDependency, component: Component) -> [PackageTargetType] {
-        allTargetTypes(forComponent: component).filter { dependency.targetTypes.contains($0.value) }.map { $0.value }
-    }
-    
-    private func allDependencyTypes(component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
-        allTargetTypes(forComponent: component)
-    }
-    
     private func allTargetTypes(forComponent component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
         configurationTargetTypes().filter { target in
             component.modules.keys.contains(where: { $0.lowercased() == target.value.name.lowercased() })
         }
-    }
-    
-    private func allTargetTypes(forDependency dependency: ComponentDependency) -> [IdentifiableWithSubtype<PackageTargetType>] {
-        guard let component = document.getComponent(withName: dependency.name) else { return [] }
-        return allTargetTypes(forComponent: component)
     }
     
     private func configurationTargetTypes() -> [IdentifiableWithSubtype<PackageTargetType>] {
@@ -340,24 +311,5 @@ struct ContentView: View {
     
     private func onUpArrow() {
         composition.selectPreviousComponentUseCase().perform()
-    }
-    
-    func allDependenciesConfiguration(
-        defaultDependencies: [PackageTargetType: String]
-    ) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
-        let configuration = document.projectConfiguration
-        return configuration.packageConfigurations.map { packageConfiguration in
-            IdentifiableWithSubtypeAndSelection(
-                title: packageConfiguration.name,
-                subtitle: packageConfiguration.hasTests ? "Tests" : nil,
-                value: PackageTargetType(name: packageConfiguration.name, isTests: false),
-                subValue: packageConfiguration.hasTests ? PackageTargetType(name: packageConfiguration.name, isTests: true) : nil,
-                selectedValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: false)],
-                selectedSubValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: true)])
-        }
-    }
-    
-    func allDependenciesSelectionValues(forComponent component: Component) -> [String] {
-        component.modules.map(\.key).sorted()
     }
 }

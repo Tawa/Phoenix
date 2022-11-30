@@ -21,7 +21,7 @@ extension String {
 }
 
 extension Binding where Value == Bool {
-    var toggled: Binding<Bool> {
+    var inversed: Binding<Bool> {
         Binding(get: { !wrappedValue },
                 set: { wrappedValue = !$0 })
     }
@@ -52,10 +52,6 @@ struct FamilySheet: View {
     private var defaultFolderName: String { familyFolderNameProvider.folderName(forFamily: family.name) }
     private var componentNameExample: String { "Component\(family.ignoreSuffix ? "" : family.name)" }
     private var folderName: Binding<String> { .init(get: { family.folder ?? "" }, set: { family.folder = $0.nilIfEmpty })}
-    private var appendFamilyName: Binding<Bool> {
-        Binding(get: { !family.ignoreSuffix },
-                set: { family.ignoreSuffix = !$0 })
-    }
     
     init(
         getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol,
@@ -76,7 +72,7 @@ struct FamilySheet: View {
                 Text("Family: \(name)")
                     .font(.largeTitle)
                 
-                Toggle(isOn: $family.ignoreSuffix.toggled) {
+                Toggle(isOn: $family.ignoreSuffix.inversed) {
                     Text("Append Component Name with Family Name. ")
                         .bold()
                     + Text("\nExample: \(componentNameExample)")

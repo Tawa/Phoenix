@@ -34,20 +34,6 @@ extension PhoenixDocument {
         completion(&families[familyIndex].components[componentIndex])
     }
 
-    private mutating func get(remoteDependency: RemoteDependency, componentWithName name: Name, _ completion: (inout RemoteDependency) -> Void) {
-        getComponent(withName: name) { component in
-            var remoteDependencies = component.remoteDependencies
-            guard
-                let index = remoteDependencies.firstIndex(of: remoteDependency)
-            else { return }
-            var temp = remoteDependencies.remove(at: index)
-            completion(&temp)
-            remoteDependencies.append(temp)
-            remoteDependencies.sort()
-            component.remoteDependencies = remoteDependencies
-        }
-    }
-
     // MARK: - Document modifiers
     func getComponent(withName name: Name) -> Component? {
         guard
@@ -147,57 +133,5 @@ extension PhoenixDocument {
         else { return }
         families[familyIndex].components.removeAll(where: { $0.name == name })
         families.removeAll(where: { $0.components.isEmpty })
-    }
-
-    mutating func removeRemoteDependencyForComponent(withComponentName name: Name, dependency: RemoteDependency) {
-        getComponent(withName: name) {
-            var remoteDependencies = $0.remoteDependencies
-            remoteDependencies.removeAll(where: { $0 == dependency })
-            remoteDependencies.sort()
-            $0.remoteDependencies = remoteDependencies
-        }
-    }
-
-    mutating func updateModuleTypeForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, type: PackageTargetType, value: Bool) {
-        get(remoteDependency: dependency, componentWithName: name) { dependency in
-            let typeIndex = dependency.targetTypes.firstIndex(of: type)
-            if value && typeIndex == nil {
-                dependency.targetTypes.append(type)
-                dependency.targetTypes.sort()
-            } else if !value, let typeIndex = typeIndex {
-                dependency.targetTypes.remove(at: typeIndex)
-            }
-        }
-    }
-
-    mutating func updateVersionForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, version: ExternalDependencyVersion) {
-        get(remoteDependency: dependency, componentWithName: name) { $0.version = version }
-    }
-
-    mutating func updateVersionStringValueForRemoteDependency(withComponentName name: Name, dependency: RemoteDependency, stringValue: String) {
-        get(remoteDependency: dependency, componentWithName: name) { dependency in
-            switch dependency.version {
-            case .from:
-                dependency.version = .from(version: stringValue)
-            case .branch:
-                dependency.version = .branch(name: stringValue)
-            case .exact:
-                dependency.version = .exact(version: stringValue)
-            }
-        }
-    }
-
-    mutating func updateResource(_ resources: [ComponentResources], forComponentWithName name: Name) {
-        getComponent(withName: name) { $0.resources = resources }
-    }
-
-    mutating func addResource(_ folderName: String, forComponentWithName name: Name) {
-        getComponent(withName: name) { $0.resources.append(.init(folderName: folderName,
-                                                                 type: .process,
-                                                                 targets: [])) }
-    }
-
-    mutating func removeResource(withId id: String, forComponentWithName name: Name) {
-        getComponent(withName: name) { $0.resources.removeAll(where: { $0.id == id }) }
     }
 }

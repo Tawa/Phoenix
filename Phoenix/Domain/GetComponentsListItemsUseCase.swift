@@ -6,7 +6,6 @@ import SwiftUI
 import ComponentDetailsProviderContract
 
 protocol GetComponentsListItemsUseCaseProtocol {
-    var list: [ComponentsListSection] { get }
     var listPublisher: AnyPublisher<[ComponentsListSection], Never> { get }
 }
 
@@ -23,8 +22,6 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
         self.familyFolderNameProvider = familyFolderNameProvider
     }
     
-    var list: [ComponentsListSection] { map(getComponentsFamiliesUseCase.families,
-                                            selectedName: getSelectedComponentUseCase.value.name) }
     var listPublisher: AnyPublisher<[ComponentsListSection], Never> {
         Publishers.CombineLatest(
             getComponentsFamiliesUseCase.familiesPublisher,

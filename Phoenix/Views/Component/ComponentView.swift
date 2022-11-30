@@ -8,12 +8,10 @@ struct ComponentView: View {
     @EnvironmentObject var composition: Composition
     @Binding var component: Component
     let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
-    let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
     
     let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
     let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
-    let onRemoveResourceWithId: (String) -> Void
     let onShowDependencySheet: () -> Void
     let onShowRemoteDependencySheet: () -> Void
     
@@ -26,28 +24,25 @@ struct ComponentView: View {
     
     init(
         getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
-        getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
         getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
         onGenerateDemoAppProject: @escaping () -> Void,
         onRemove: @escaping () -> Void,
         allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>],
-        onRemoveResourceWithId: @escaping (String) -> Void,
+        allModuleTypes: [String],
         onShowDependencySheet: @escaping () -> Void,
         onShowRemoteDependencySheet: @escaping () -> Void
     ) {
         _component = getSelectedComponentUseCase.binding
         
         self.getComponentTitleUseCase = getComponentTitleUseCase
-        self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
         
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
         self.onRemove = onRemove
         self.allTargetTypes = allTargetTypes
-        self.onRemoveResourceWithId = onRemoveResourceWithId
         self.onShowDependencySheet = onShowDependencySheet
         self.onShowRemoteDependencySheet = onShowRemoteDependencySheet
         
-        self.allModuleTypes = getProjectConfigurationUseCase.value.packageConfigurations.map(\.name)
+        self.allModuleTypes = allModuleTypes
     }
     
     var body: some View {

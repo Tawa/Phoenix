@@ -11,8 +11,7 @@ protocol PhoenixDocumentRepositoryProtocol {
     func bind(document: Binding<PhoenixDocument>)
     
     func update(component: Component)
-    
-    func component(with id: String) -> Component?
+
     func deleteComponent(with id: String)
     func update(configuration: ProjectConfiguration)
     
@@ -74,10 +73,6 @@ class PhoenixDocumentRepository: PhoenixDocumentRepositoryProtocol {
             let componentIndex = value.componentsFamilies[familyIndex].components.firstIndex(where: { $0.name == component.name })
         else { return }
         document.wrappedValue.families[familyIndex].components[componentIndex] = component
-    }
-    
-    func component(with id: String) -> Component? {
-        value.componentsFamilies.flatMap(\.components).first(where: { $0.id == id })
     }
     
     func deleteComponent(with id: String) {
