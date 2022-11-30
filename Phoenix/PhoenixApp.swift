@@ -27,15 +27,8 @@ struct PhoenixApp: App {
             ContentView(
                 fileURL: file.fileURL,
                 document: file.$document,
-                viewModel: ViewModel(
-                    appVersionUpdateProvider: Container.appVersionUpdateProvider(),
-                    pbxProjSyncer: Container.pbxProjSyncer(),
-                    filesURLDataStore: Container.filesURLDataStore(),
-                    projectGenerator: Container.projectGenerator(),
-                    composition: compositionRoot.composition(for: file.$document)
-                )
+                composition: compositionRoot.composition(for: file.$document)
             )
-            .environmentObject(compositionRoot.composition(for: file.$document))
         }
     }
 }

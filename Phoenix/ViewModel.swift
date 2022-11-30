@@ -4,6 +4,7 @@ import Component
 import ComponentDetailsProviderContract
 import DemoAppFeature
 import DemoAppGeneratorContract
+import Factory
 import PackageGeneratorContract
 import PBXProjectSyncerContract
 import PhoenixDocument
@@ -33,7 +34,11 @@ enum AlertState: Hashable, Identifiable {
 class ViewModel: ObservableObject {
     // MARK: - Selection
     var subscriptions: Set<AnyCancellable> = .init()
-    let composition: Composition
+    var composition: Composition = .init(document: .constant(.init())) {
+        didSet {
+            subscribeToPublishers()
+        }
+    }
     @Published var selectedComponentName: Name? = nil
     @Published var selectedFamilyName: String? = nil
     @Published var componentsListSections: [ComponentsListSection] = []
@@ -67,24 +72,18 @@ class ViewModel: ObservableObject {
     }
     @Published var skipXcodeProject: Bool = false
 
-    let appVersionUpdateProvider: AppVersionUpdateProviderProtocol
-    let pbxProjSyncer: PBXProjectSyncerProtocol
-    let filesURLDataStore: FilesURLDataStoreProtocol
-    let projectGenerator: ProjectGeneratorProtocol
+    @Injected(Container.appVersionUpdateProvider)
+    var appVersionUpdateProvider: AppVersionUpdateProviderProtocol
+    @Injected(Container.pbxProjSyncer)
+    var pbxProjSyncer: PBXProjectSyncerProtocol
+    @Injected(Container.filesURLDataStore)
+    var filesURLDataStore: FilesURLDataStoreProtocol
+    @Injected(Container.projectGenerator)
+    var projectGenerator: ProjectGeneratorProtocol
     
     
     // MARK: - Initialiser
-    init(
-        appVersionUpdateProvider: AppVersionUpdateProviderProtocol,
-        pbxProjSyncer: PBXProjectSyncerProtocol,
-        filesURLDataStore: FilesURLDataStoreProtocol,
-        projectGenerator: ProjectGeneratorProtocol,
-        composition: Composition
-    ) {
-        self.appVersionUpdateProvider = appVersionUpdateProvider
-        self.pbxProjSyncer = pbxProjSyncer
-        self.filesURLDataStore = filesURLDataStore
-        self.projectGenerator = projectGenerator
+    init(composition: Composition) {
         self.composition = composition
 
         subscribeToPublishers()
@@ -239,6 +238,12 @@ class ViewModel: ObservableObject {
             } receiveValue: { appVersionInfos in
                 self.appUpdateVersionInfo = appVersionInfos.results.first
             }
+    }
+    
+    func reloadComponentsList() {
+        self.componentsListSections = composition
+            .getComponentsListItemsUseCase()
+            .list
     }
 }
 

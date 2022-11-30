@@ -15,7 +15,7 @@ class ContentViewInteractor {
 }
 
 struct ContentView: View {
-    @EnvironmentObject var composition: Composition
+    private var composition: Composition { viewModel.composition }
     
     var fileURL: URL?
     @Binding var document: PhoenixDocument
@@ -24,10 +24,10 @@ struct ContentView: View {
     
     init(fileURL: URL?,
          document: Binding<PhoenixDocument>,
-         viewModel: ViewModel) {
+         composition: Composition) {
         self.fileURL = fileURL
         self._document = document
-        self._viewModel = .init(wrappedValue: viewModel)
+        self._viewModel = .init(wrappedValue: .init(composition: composition))
     }
     
     var body: some View {
@@ -76,6 +76,7 @@ struct ContentView: View {
         }
         .onAppear(perform: viewModel.checkForUpdate)
         .toolbar(content: toolbarViews)
+        .environmentObject(viewModel.composition)
     }
     
     // MARK: - Views
@@ -149,6 +150,7 @@ struct ContentView: View {
                 try document.addNewComponent(withName: name, template: component)
             }
             viewModel.selectedComponentName = name
+            viewModel.reloadComponentsList()
             viewModel.showingNewComponentPopup = nil
         }, onDismiss: {
             viewModel.showingNewComponentPopup = nil
