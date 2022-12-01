@@ -15,11 +15,6 @@ struct SelectNextComponentUseCase: SelectNextComponentUseCaseProtocol {
     }
     
     func perform() {
-        guard let selectionPath = selectionRepository.selectionPath
-        else {
-            selectionRepository.select(selectionPath: .init(name: .empty))
-            return
-        }
         let families = getComponentsFamiliesUseCase.families
         let paths = families
             .enumerated()
@@ -30,11 +25,12 @@ struct SelectNextComponentUseCase: SelectNextComponentUseCaseProtocol {
                     }
         }
         
-        var index = paths.firstIndex(of: selectionPath) ?? -1
+        var index = paths.firstIndex(of: selectionRepository.selectionPath ?? .init(name: .empty)) ?? 0
         index += 1
         if index >= paths.count {
             index = 0
         }
+        print("Select \(index) - \(paths[index])")
         selectionRepository.select(selectionPath: paths[index])
     }
 }

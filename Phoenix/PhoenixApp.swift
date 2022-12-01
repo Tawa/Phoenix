@@ -30,5 +30,7 @@ struct PhoenixApp: App {
                 composition: compositionRoot.composition(for: file.$document)
             )
         }
+        .windowStyle(.titleBar)
+        .windowToolbarStyle(.expanded)
     }
 }

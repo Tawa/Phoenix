@@ -31,7 +31,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        return VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             splitView(componentsList, detail: detailView)
                 .alert(item: $viewModel.alertState, content: { alertState in
                     Alert(title: Text("Error"),
@@ -76,6 +76,7 @@ struct ContentView: View {
         }
         .onAppear(perform: viewModel.checkForUpdate)
         .toolbar(content: toolbarViews)
+        .frame(minWidth: 900)
         .environmentObject(viewModel.composition)
     }
     
@@ -83,6 +84,7 @@ struct ContentView: View {
     @ViewBuilder private func splitView<Sidebar: View, Detail: View>(_ sidebar: () -> Sidebar, detail: () -> Detail) -> some View {
         if #available(macOS 13.0, *) {
             NavigationSplitView(sidebar: sidebar, detail: detailView)
+                .navigationSplitViewColumnWidth(min: 750, ideal: 750, max: nil)
         } else {
             HSplitView {
                 sidebar()
@@ -92,11 +94,20 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func componentsList() -> some View {
-        VStack {
-            FilterView(text: composition.getComponentsFilterUseCase().binding)
-            ComponentsList(sections: viewModel.componentsListSections)
+        ZStack {
+            Button(action: onUpArrow, label: {})
+                .opacity(0)
+                .keyboardShortcut(.upArrow, modifiers: [])
+            Button(action: onDownArrow, label: {})
+                .opacity(0)
+                .keyboardShortcut(.downArrow, modifiers: [])
+            VStack {
+                FilterView(text: composition.getComponentsFilterUseCase().binding)
+                ComponentsList(sections: viewModel.componentsListSections)
+            }
         }
         .frame(minWidth: 250)
+            
     }
     
     @ViewBuilder private func detailView() -> some View {
@@ -120,7 +131,7 @@ struct ContentView: View {
                     Spacer()
                 }
                 Spacer()
-            }.frame(minWidth: 750)
+            }
         }
     }
     
@@ -137,7 +148,6 @@ struct ContentView: View {
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
         )
-        .frame(minWidth: 750)
     }
     
     @ViewBuilder private func newComponentSheet(state: ComponentPopupState) -> some View {
@@ -219,19 +229,9 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func toolbarViews() -> some View {
-        ZStack {
-            Button(action: onUpArrow, label: {})
-                .opacity(0)
-                .keyboardShortcut(.upArrow, modifiers: [])
-            Button(action: onDownArrow, label: {})
-                .opacity(0)
-                .keyboardShortcut(.downArrow, modifiers: [])
-            
-            HStack {
-                toolbarLeadingItems()
-                toolbarTrailingItems()
-            }
-        }
+        toolbarLeadingItems()
+        Spacer()
+        toolbarTrailingItems()
     }
     
     @ViewBuilder private func toolbarLeadingItems() -> some View {

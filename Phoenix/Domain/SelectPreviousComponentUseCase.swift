@@ -15,11 +15,6 @@ struct SelectPreviousComponentUseCase: SelectPreviousComponentUseCaseProtocol {
     }
     
     func perform() {
-        guard let selectionPath = selectionRepository.selectionPath
-        else {
-            selectionRepository.select(selectionPath: .init(name: .empty))
-            return
-        }
         let families = getComponentsFamiliesUseCase.families
         let paths = families
             .enumerated()
@@ -30,7 +25,7 @@ struct SelectPreviousComponentUseCase: SelectPreviousComponentUseCaseProtocol {
                     }
         }
         
-        var index = paths.firstIndex(of: selectionPath) ?? 0
+        var index = paths.firstIndex(of: selectionRepository.selectionPath ?? .init(name: .empty)) ?? 0
         index -= 1
         if index < 0 {
             index = paths.count - 1
