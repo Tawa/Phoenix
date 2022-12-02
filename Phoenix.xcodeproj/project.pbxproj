@@ -40,7 +40,6 @@
 		38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */; };
 		38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */; };
 		B20883AB29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20883AA29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift */; };
-		B20883AD292442930082CF56 /* GetFamilySheetDataUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20883AC292442930082CF56 /* GetFamilySheetDataUseCase.swift */; };
 		B21394D0291C76B30019BF2E /* PhoenixDocumentRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21394CF291C76B30019BF2E /* PhoenixDocumentRepository.swift */; };
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
 		B2142FDA2921954300EEB98B /* GetProjectConfigurationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */; };
@@ -69,8 +68,6 @@
 		B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */; };
 		B29FDC5A2905725B006A0007 /* RemoteDependencySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */; };
 		B2C50B172922F58100B9F6C7 /* SelectFamilyUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C50B162922F58100B9F6C7 /* SelectFamilyUseCase.swift */; };
-		B2C50B1929237E4E00B9F6C7 /* UpdateFamilyUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C50B1829237E4E00B9F6C7 /* UpdateFamilyUseCase.swift */; };
-		B2C50B1D29237F9B00B9F6C7 /* GetSelectedFamilyUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C50B1C29237F9B00B9F6C7 /* GetSelectedFamilyUseCase.swift */; };
 		B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */; };
 		B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5928BAC12200848D93 /* PackageGenerator */; };
 		B2CC2B5C28BAC21900848D93 /* PackageStringProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5B28BAC21900848D93 /* PackageStringProvider */; };
@@ -167,7 +164,6 @@
 		981295FCE3B52E97779A2186 /* DocumentCoder */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoder; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		B20883AA29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAllDependenciesConfigurationUseCase.swift; sourceTree = "<group>"; };
-		B20883AC292442930082CF56 /* GetFamilySheetDataUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFamilySheetDataUseCase.swift; sourceTree = "<group>"; };
 		B21394CF291C76B30019BF2E /* PhoenixDocumentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentRepository.swift; sourceTree = "<group>"; };
 		B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProjectConfigurationUseCase.swift; sourceTree = "<group>"; };
 		B216D3A02926EDC6005EDBB5 /* RelationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationView.swift; sourceTree = "<group>"; };
@@ -191,8 +187,6 @@
 		B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+Features.swift"; sourceTree = "<group>"; };
 		B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencySheet.swift; sourceTree = "<group>"; };
 		B2C50B162922F58100B9F6C7 /* SelectFamilyUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectFamilyUseCase.swift; sourceTree = "<group>"; };
-		B2C50B1829237E4E00B9F6C7 /* UpdateFamilyUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFamilyUseCase.swift; sourceTree = "<group>"; };
-		B2C50B1C29237F9B00B9F6C7 /* GetSelectedFamilyUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetSelectedFamilyUseCase.swift; sourceTree = "<group>"; };
 		B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesURLDataStore.swift; sourceTree = "<group>"; };
 		B2DEC000292C39470015147A /* GetComponentWithNameUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentWithNameUseCase.swift; sourceTree = "<group>"; };
 		B2E6318428F2BF5400C71866 /* FamilySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilySheet.swift; sourceTree = "<group>"; };
@@ -475,17 +469,14 @@
 				B216D3A429277BA2005EDBB5 /* GetComponentsFilterUseCase.swift */,
 				B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */,
 				B258765B2927FBB200B30FC6 /* GetComponentTitleUseCase.swift */,
-				B20883AC292442930082CF56 /* GetFamilySheetDataUseCase.swift */,
 				B2142FD92921954300EEB98B /* GetProjectConfigurationUseCase.swift */,
 				B216D3A22926F212005EDBB5 /* GetRelationViewDataUseCase.swift */,
 				B2DEC000292C39470015147A /* GetComponentWithNameUseCase.swift */,
 				B25621AF291E785C0093C8B9 /* GetSelectedComponentUseCase.swift */,
-				B2C50B1C29237F9B00B9F6C7 /* GetSelectedFamilyUseCase.swift */,
 				B240A5DC291D655B00815CC3 /* SelectComponentUseCase.swift */,
 				B2C50B162922F58100B9F6C7 /* SelectFamilyUseCase.swift */,
 				B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */,
 				B236A600291DB715008D658E /* SelectPreviousComponentUseCase.swift */,
-				B2C50B1829237E4E00B9F6C7 /* UpdateFamilyUseCase.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -753,7 +744,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B2C50B1929237E4E00B9F6C7 /* UpdateFamilyUseCase.swift in Sources */,
 				3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */,
 				38E0B2FD2815766E00B5992D /* PhoenixDocument+Extension.swift in Sources */,
 				B24F6D99291D9B6A007170DD /* Composition.swift in Sources */,
@@ -779,10 +769,8 @@
 				B236A5FF291DB54B008D658E /* SelectNextComponentUseCase.swift in Sources */,
 				B258765C2927FBB200B30FC6 /* GetComponentTitleUseCase.swift in Sources */,
 				B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */,
-				B20883AD292442930082CF56 /* GetFamilySheetDataUseCase.swift in Sources */,
 				B2C50B172922F58100B9F6C7 /* SelectFamilyUseCase.swift in Sources */,
 				B216D3A32926F212005EDBB5 /* GetRelationViewDataUseCase.swift in Sources */,
-				B2C50B1D29237F9B00B9F6C7 /* GetSelectedFamilyUseCase.swift in Sources */,
 				B25621B0291E785C0093C8B9 /* GetSelectedComponentUseCase.swift in Sources */,
 				B2142FDA2921954300EEB98B /* GetProjectConfigurationUseCase.swift in Sources */,
 				B216D3A12926EDC6005EDBB5 /* RelationView.swift in Sources */,

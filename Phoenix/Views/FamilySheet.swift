@@ -42,9 +42,7 @@ struct FamilySheet: View {
     @EnvironmentObject var composition: Composition
     @Binding var family: Family
     let rules: [FamilyRule]
-    
-    // MARK: - UseCases
-    let selectFamilyUseCase: SelectFamilyUseCaseProtocol
+    let onDismiss: () -> Void
     
     // MARK: - Private
     @Injected(Container.familyFolderNameProvider) private var familyFolderNameProvider
@@ -54,16 +52,13 @@ struct FamilySheet: View {
     private var folderName: Binding<String> { .init(get: { family.folder ?? "" }, set: { family.folder = $0.nilIfEmpty })}
     
     init(
-        getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol,
-        getFamilySheetDataUseCase: GetFamilySheetDataUseCaseProtocol,
-        selectFamilyUseCase: SelectFamilyUseCaseProtocol
+        family: Binding<Family>,
+        rules: [FamilyRule],
+        onDismiss: @escaping () -> Void
     ) {
-        _family = getSelectedFamilyUseCase.binding
-        
-        let familySheetData = getFamilySheetDataUseCase.value
-        self.rules = familySheetData.rules
-        
-        self.selectFamilyUseCase = selectFamilyUseCase
+        self._family = family
+        self.rules = rules
+        self.onDismiss = onDismiss
     }
     
     var body: some View {
@@ -114,7 +109,7 @@ struct FamilySheet: View {
                 }
                 .padding()
                 
-                Button(action: selectFamilyUseCase.deselect) {
+                Button(action: onDismiss) {
                     Text("Done")
                 }
                 .keyboardShortcut(.cancelAction)

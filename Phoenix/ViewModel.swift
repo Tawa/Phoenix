@@ -39,9 +39,33 @@ class ViewModel: ObservableObject {
             subscribeToPublishers()
         }
     }
+    
+    // MARK: - Selected Component
     @Published var selectedComponentName: Name? = nil
-    @Published var selectedFamilyName: String? = nil
+    
+    // MARK: - Components List
     @Published var componentsListFilter: String? = nil
+
+    // MARK: - Family Sheet
+    @Published var selectedFamilyName: String? = nil
+    func selectedFamily(document: Binding<PhoenixDocument>) -> Binding<Family>? {
+        guard
+            let selectedFamilyName,
+            let index = document.wrappedValue.families.firstIndex(where: { $0.family.name == selectedFamilyName })
+        else { return nil }
+        return Binding(
+            get: { document.wrappedValue.families[index].family },
+            set: { document.wrappedValue.families[index].family = $0 }
+        )
+    }
+    
+    func allRules(for family: Family, document: PhoenixDocument) -> [FamilyRule] {
+        document.families.map(\.family).map { otherFamily in
+            FamilyRule(
+                name: otherFamily.name,
+                enabled: !family.excludedFamilies.contains(where: { otherFamily.name == $0 }))
+        }
+    }
     
     // MARK: - Update Button
     private var appUpdateVersionInfoSub: AnyCancellable? = nil

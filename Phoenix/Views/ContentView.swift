@@ -39,11 +39,10 @@ struct ContentView: View {
                           dismissButton: .default(Text("Ok")))
                 }).sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
                     newComponentSheet(state: state)
-                }.sheet(isPresented: .constant(viewModel.selectedFamilyName != nil)) {
-                    FamilySheet(
-                        getSelectedFamilyUseCase: composition.getSelectedFamilyUseCase(),
-                        getFamilySheetDataUseCase: composition.getFamilySheetDataUseCase(),
-                        selectFamilyUseCase: composition.selectFamilyUseCase()
+                }.sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
+                    FamilySheet(family: family,
+                                rules: viewModel.allRules(for: family.wrappedValue, document: document),
+                                onDismiss: { viewModel.selectedFamilyName = nil }
                     )
                 }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
                     ConfigurationView(getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase()) {
