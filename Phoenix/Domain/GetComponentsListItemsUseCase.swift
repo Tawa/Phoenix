@@ -6,39 +6,40 @@ import SwiftUI
 import ComponentDetailsProviderContract
 
 protocol GetComponentsListItemsUseCaseProtocol {
-    var list: [ComponentsListSection] { get }
-    var listPublisher: AnyPublisher<[ComponentsListSection], Never> { get }
+    func componentsListSections(
+        _ families: [ComponentsFamily],
+        selectedName: Name?,
+        filter: String?
+    ) -> [ComponentsListSection]
 }
 
 struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
-    let getComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol
-    let getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol
     let familyFolderNameProvider: FamilyFolderNameProviderProtocol
     
-    init(getComponentsFamiliesUseCase: GetComponentsFamiliesUseCaseProtocol,
-         getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
-         familyFolderNameProvider: FamilyFolderNameProviderProtocol) {
-        self.getComponentsFamiliesUseCase = getComponentsFamiliesUseCase
-        self.getSelectedComponentUseCase = getSelectedComponentUseCase
+    init(familyFolderNameProvider: FamilyFolderNameProviderProtocol) {
         self.familyFolderNameProvider = familyFolderNameProvider
     }
     
-    var list: [ComponentsListSection] { map(getComponentsFamiliesUseCase.families,
-                                            selectedName: getSelectedComponentUseCase.value.name) }
-    var listPublisher: AnyPublisher<[ComponentsListSection], Never> {
-        Publishers.CombineLatest(
-            getComponentsFamiliesUseCase.familiesPublisher,
-            getSelectedComponentUseCase.publisher
-        )
-        .subscribe(on: DispatchQueue.global(qos: .background))
-        .map { (families, component) in
-            self.map(families, selectedName: component.name)
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    private func map(_ families: [ComponentsFamily], selectedName: Name?) -> [ComponentsListSection] {
+    func componentsListSections(
+        _ families: [ComponentsFamily],
+        selectedName: Name?,
+        filter: String?
+    ) -> [ComponentsListSection] {
         families
+            .compactMap { componentsFamily in
+                var componentsFamily = componentsFamily
+                componentsFamily.components = componentsFamily.components
+                    .filter { component in
+                        let name = componentName(component, for: componentsFamily.family)
+                        if let filter = filter?.lowercased(),
+                           !filter.isEmpty,
+                           !name.lowercased().contains(filter) {
+                            return false
+                        }
+                        return true
+                    }
+                return componentsFamily.components.isEmpty ? nil : componentsFamily
+            }
             .enumerated()
             .compactMap { componentsFamilyElement in
                 let componentsFamily = componentsFamilyElement.element

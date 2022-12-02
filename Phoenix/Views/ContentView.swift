@@ -102,8 +102,8 @@ struct ContentView: View {
                 .opacity(0)
                 .keyboardShortcut(.downArrow, modifiers: [])
             VStack {
-                FilterView(text: composition.getComponentsFilterUseCase().binding)
-                ComponentsList(sections: viewModel.componentsListSections)
+                FilterView(text: $viewModel.componentsListFilter.nonOptionalBinding)
+                ComponentsList(sections: viewModel.componentsListSections(document: document))
             }
         }
         .frame(minWidth: 250)
@@ -160,7 +160,6 @@ struct ContentView: View {
                 try document.addNewComponent(withName: name, template: component)
             }
             viewModel.selectedComponentName = name
-            viewModel.reloadComponentsList()
             viewModel.showingNewComponentPopup = nil
         }, onDismiss: {
             viewModel.showingNewComponentPopup = nil

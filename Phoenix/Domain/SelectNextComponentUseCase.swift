@@ -30,7 +30,6 @@ struct SelectNextComponentUseCase: SelectNextComponentUseCaseProtocol {
         if index >= paths.count {
             index = 0
         }
-        print("Select \(index) - \(paths[index])")
         selectionRepository.select(selectionPath: paths[index])
     }
 }

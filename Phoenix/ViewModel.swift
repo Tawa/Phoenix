@@ -41,7 +41,7 @@ class ViewModel: ObservableObject {
     }
     @Published var selectedComponentName: Name? = nil
     @Published var selectedFamilyName: String? = nil
-    @Published var componentsListSections: [ComponentsListSection] = []
+    @Published var componentsListFilter: String? = nil
     
     // MARK: - Update Button
     private var appUpdateVersionInfoSub: AnyCancellable? = nil
@@ -81,10 +81,14 @@ class ViewModel: ObservableObject {
     @Injected(Container.projectGenerator)
     var projectGenerator: ProjectGeneratorProtocol
     
+    let getComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol
+    
     
     // MARK: - Initialiser
     init(composition: Composition) {
         self.composition = composition
+        
+        self.getComponentsListItemsUseCase = composition.getComponentsListItemsUseCase()
 
         subscribeToPublishers()
     }
@@ -240,10 +244,12 @@ class ViewModel: ObservableObject {
             }
     }
     
-    func reloadComponentsList() {
-        self.componentsListSections = composition
-            .getComponentsListItemsUseCase()
-            .list
+    func componentsListSections(document: PhoenixDocument) -> [ComponentsListSection] {
+        getComponentsListItemsUseCase.componentsListSections(
+            document.families,
+            selectedName: selectedComponentName,
+            filter: componentsListFilter
+        )
     }
 }
 
@@ -276,14 +282,6 @@ private extension ViewModel {
                 } else {
                     selectionRepository.deselectFamilyName()
                 }
-            }.store(in: &subscriptions)
-        
-        composition
-            .getComponentsListItemsUseCase()
-            .listPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] sections in
-                self?.componentsListSections = sections
             }.store(in: &subscriptions)
     }
 }
