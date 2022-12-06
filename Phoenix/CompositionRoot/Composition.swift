@@ -17,21 +17,11 @@ class Composition: ObservableObject {
         ) as PhoenixDocumentRepositoryProtocol
     }
     
-    lazy var componentsFilterRepository = Factory(scope: .singleton) { [unowned self] in
-        ComponentsFilterRepository() as ComponentsFilterRepositoryProtocol
-    }
-    
     // MARK: - Domain
     lazy var getComponentsListItemsUseCase = Factory { [unowned self] in
         GetComponentsListItemsUseCase(
             familyFolderNameProvider: Container.familyFolderNameProvider()
         ) as GetComponentsListItemsUseCaseProtocol
-    }
-    
-    lazy var deleteComponentUseCase = Factory { [unowned self] in
-        DeleteComponentUseCase(
-            phoenixDocumentRepository: phoenixDocumentRepository()
-        ) as DeleteComponentUseCaseProtocol
     }
     
     lazy var getRelationViewDataUseCase = Factory { [unowned self] in

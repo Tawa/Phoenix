@@ -8,12 +8,6 @@ import SwiftUI
 import SwiftPackage
 import AccessibilityIdentifiers
 
-class ContentViewInteractor {
-    func onRemoveComponent(with id: String, composition: Composition) {
-        composition.deleteComponentUseCase().deleteComponent(with: id)
-    }
-}
-
 struct ContentView: View {
     private var composition: Composition { viewModel.composition }
     
@@ -24,7 +18,6 @@ struct ContentView: View {
         }
     }
     @StateObject var viewModel: ViewModel
-    let interactor: ContentViewInteractor = .init()
     
     init(fileURL: URL?,
          document: Binding<PhoenixDocument>,
@@ -149,7 +142,7 @@ struct ContentView: View {
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
             },
-            onRemove: { interactor.onRemoveComponent(with: component.id, composition: composition) },
+            onRemove: { document.removeComponent(withName: component.wrappedValue.name) },
             allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
             allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },

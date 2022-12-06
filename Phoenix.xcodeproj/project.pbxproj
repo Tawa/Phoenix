@@ -49,13 +49,10 @@
 		B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B22AFDA728B9528400C471A4 /* DemoAppGenerator */; };
 		B233D86528DBACFB0061BA7A /* ComponentDetailsProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B233D86428DBACFB0061BA7A /* ComponentDetailsProvider */; };
 		B233DB6B28EB5BC000243D58 /* PhoenixUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */; };
-		B236A5FB291DAED4008D658E /* DeleteComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236A5FA291DAED4008D658E /* DeleteComponentUseCase.swift */; };
 		B236A5FF291DB54B008D658E /* SelectNextComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */; };
 		B236A601291DB715008D658E /* SelectPreviousComponentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236A600291DB715008D658E /* SelectPreviousComponentUseCase.swift */; };
 		B23F1A1028D64A4C00933FC4 /* SwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = B23F1A0F28D64A4C00933FC4 /* SwiftPackage */; };
-		B240A5D8291D5D7D00815CC3 /* SelectionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5D7291D5D7D00815CC3 /* SelectionRepository.swift */; };
 		B240A5DB291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */; };
-		B24F6D91291D9862007170DD /* ComponentsFilterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */; };
 		B24F6D99291D9B6A007170DD /* Composition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24F6D98291D9B6A007170DD /* Composition.swift */; };
 		B258765C2927FBB200B30FC6 /* GetComponentTitleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B258765B2927FBB200B30FC6 /* GetComponentTitleUseCase.swift */; };
 		B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B266B0B428BA8BF900778F3A /* RelativeURLProvider */; };
@@ -65,7 +62,6 @@
 		B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */; };
 		B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5928BAC12200848D93 /* PackageGenerator */; };
 		B2CC2B5C28BAC21900848D93 /* PackageStringProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5B28BAC21900848D93 /* PackageStringProvider */; };
-		B2DEC001292C39470015147A /* GetComponentWithNameUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2DEC000292C39470015147A /* GetComponentWithNameUseCase.swift */; };
 		B2E6318528F2BF5400C71866 /* FamilySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E6318428F2BF5400C71866 /* FamilySheet.swift */; };
 		B2EFE83628ECC0CF005DBE78 /* ComponentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83528ECC0CF005DBE78 /* ComponentScreen.swift */; };
 		B2EFE83828ECC1AC005DBE78 /* DependenciesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83728ECC1AC005DBE78 /* DependenciesSheet.swift */; };
@@ -164,19 +160,15 @@
 		B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+AppVersion.swift"; sourceTree = "<group>"; };
 		B233DB6828EB5BC000243D58 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITests.swift; sourceTree = "<group>"; };
-		B236A5FA291DAED4008D658E /* DeleteComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteComponentUseCase.swift; sourceTree = "<group>"; };
 		B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNextComponentUseCase.swift; sourceTree = "<group>"; };
 		B236A600291DB715008D658E /* SelectPreviousComponentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPreviousComponentUseCase.swift; sourceTree = "<group>"; };
-		B240A5D7291D5D7D00815CC3 /* SelectionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionRepository.swift; sourceTree = "<group>"; };
 		B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentsListItemsUseCase.swift; sourceTree = "<group>"; };
-		B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsFilterRepository.swift; sourceTree = "<group>"; };
 		B24F6D98291D9B6A007170DD /* Composition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Composition.swift; sourceTree = "<group>"; };
 		B258765B2927FBB200B30FC6 /* GetComponentTitleUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentTitleUseCase.swift; sourceTree = "<group>"; };
 		B26383E928D7773D00C9380E /* PhoenixRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PhoenixRelease.entitlements; sourceTree = "<group>"; };
 		B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+Features.swift"; sourceTree = "<group>"; };
 		B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencySheet.swift; sourceTree = "<group>"; };
 		B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesURLDataStore.swift; sourceTree = "<group>"; };
-		B2DEC000292C39470015147A /* GetComponentWithNameUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetComponentWithNameUseCase.swift; sourceTree = "<group>"; };
 		B2E6318428F2BF5400C71866 /* FamilySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilySheet.swift; sourceTree = "<group>"; };
 		B2EFE83528ECC0CF005DBE78 /* ComponentScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentScreen.swift; sourceTree = "<group>"; };
 		B2EFE83728ECC1AC005DBE78 /* DependenciesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependenciesSheet.swift; sourceTree = "<group>"; };
@@ -397,8 +389,6 @@
 				3853D1FF2839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift */,
 				38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */,
 				B21394CF291C76B30019BF2E /* PhoenixDocumentRepository.swift */,
-				B240A5D7291D5D7D00815CC3 /* SelectionRepository.swift */,
-				B24F6D90291D9862007170DD /* ComponentsFilterRepository.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -451,12 +441,10 @@
 		B240A5D9291D5E4F00815CC3 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				B236A5FA291DAED4008D658E /* DeleteComponentUseCase.swift */,
 				B20883AA29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift */,
 				B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */,
 				B258765B2927FBB200B30FC6 /* GetComponentTitleUseCase.swift */,
 				B216D3A22926F212005EDBB5 /* GetRelationViewDataUseCase.swift */,
-				B2DEC000292C39470015147A /* GetComponentWithNameUseCase.swift */,
 				B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */,
 				B236A600291DB715008D658E /* SelectPreviousComponentUseCase.swift */,
 			);
@@ -758,15 +746,11 @@
 				38E251312837E96A002FFA31 /* PopoverView.swift in Sources */,
 				3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */,
 				B20883AB29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift in Sources */,
-				B240A5D8291D5D7D00815CC3 /* SelectionRepository.swift in Sources */,
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
 				B29FDC5A2905725B006A0007 /* RemoteDependencySheet.swift in Sources */,
-				B24F6D91291D9862007170DD /* ComponentsFilterRepository.swift in Sources */,
 				38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */,
-				B2DEC001292C39470015147A /* GetComponentWithNameUseCase.swift in Sources */,
 				3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */,
 				B21BF48D28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift in Sources */,
-				B236A5FB291DAED4008D658E /* DeleteComponentUseCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
