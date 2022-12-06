@@ -44,14 +44,14 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
             .compactMap { componentsFamilyElement in
                 let componentsFamily = componentsFamilyElement.element
                 let section: ComponentsListSection = .init(
-                    id: componentsFamily.family.id,
+                    id: componentsFamily.family.name,
                     name: sectionTitle(forFamily: componentsFamily.family),
                     folderName: sectionFolderName(forFamily: componentsFamily.family),
                     rows: componentsFamily.components.enumerated().compactMap { componentElement in
                         let component = componentElement.element
                         let name = componentName(component, for: componentsFamily.family)
                         return .init(
-                            id: component.id,
+                            id: component.name,
                             name: name,
                             isSelected: componentElement.element.name == selectedName
                         )

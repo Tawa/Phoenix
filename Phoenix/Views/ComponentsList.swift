@@ -1,13 +1,14 @@
 import AccessibilityIdentifiers
 import Combine
+import Component
 import SwiftUI
 
 struct ComponentsListRow: Hashable, Identifiable {
-    let id: String
+    let id: Name
     let name: String
     let isSelected: Bool
     
-    init(id: String,
+    init(id: Name,
          name: String,
          isSelected: Bool) {
         self.id = id
@@ -28,6 +29,8 @@ struct ComponentsList: View {
     @EnvironmentObject var composition: Composition
     
     let sections: [ComponentsListSection]
+    let onSelect: (Name) -> Void
+    let onSelectSection: (String) -> Void
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -38,13 +41,13 @@ struct ComponentsList: View {
                             ComponentListItem(
                                 name: row.name,
                                 isSelected: row.isSelected,
-                                onSelect: { composition.selectComponentUseCase().select(id: row.id) },
+                                onSelect: { onSelect(row.id) },
                                 onDuplicate: { }
                             )
                             .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
                         }
                     } header: {
-                        Button(action: { composition.selectFamilyUseCase().select(id: section.id) },
+                        Button(action: { onSelectSection(section.id) },
                                label: {
                             HStack {
                                 Text(section.name)

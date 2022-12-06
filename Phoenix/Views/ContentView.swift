@@ -42,7 +42,7 @@ struct ContentView: View {
                 }.sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
                     FamilySheet(family: family,
                                 rules: viewModel.allRules(for: family.wrappedValue, document: document),
-                                onDismiss: { viewModel.selectedFamilyName = nil }
+                                onDismiss: { viewModel.select(familyName: nil) }
                     )
                 }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
                     ConfigurationView(getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase()) {
@@ -102,7 +102,11 @@ struct ContentView: View {
                 .keyboardShortcut(.downArrow, modifiers: [])
             VStack {
                 FilterView(text: $viewModel.componentsListFilter.nonOptionalBinding)
-                ComponentsList(sections: viewModel.componentsListSections(document: document))
+                ComponentsList(
+                    sections: viewModel.componentsListSections(document: document),
+                    onSelect: viewModel.select(componentName:),
+                    onSelectSection: viewModel.select(familyName:)
+                )
             }
         }
         .frame(minWidth: 250)
@@ -110,16 +114,13 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func detailView() -> some View {
-        if let selectedComponentName = viewModel.selectedComponentName,
-           composition.getSelectedComponentUseCase().value.name != .empty,
-           let selectedComponent = document.getComponent(withName: selectedComponentName),
-           selectedComponent.name != .empty {
-            componentView(for: selectedComponent)
+        if let selectedComponentBinding = viewModel.selectedComponent(document: $document) {
+            componentView(for: selectedComponentBinding)
                 .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
-                    dependencySheet(component: selectedComponent)
+                    dependencySheet(component: selectedComponentBinding.wrappedValue)
                 }
                 .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
-                    remoteDependencySheet(component: selectedComponent)
+                    remoteDependencySheet(component: selectedComponentBinding.wrappedValue)
                 }
         } else {
             HStack(alignment: .top) {
@@ -134,15 +135,15 @@ struct ContentView: View {
         }
     }
     
-    @ViewBuilder private func componentView(for component: Component) -> some View {
+    @ViewBuilder private func componentView(for component: Binding<Component>) -> some View {
         ComponentView(
+            component: component,
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
-            getSelectedComponentUseCase: composition.getSelectedComponentUseCase(),
             onGenerateDemoAppProject: {
-                viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
+                viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
             },
             onRemove: { interactor.onRemoveComponent(with: component.id, composition: composition) },
-            allTargetTypes: allTargetTypes(forComponent: component),
+            allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
             allModuleTypes: composition.getProjectConfigurationUseCase().value.packageConfigurations.map(\.name),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
@@ -158,7 +159,7 @@ struct ContentView: View {
             case let .template(component):
                 try document.addNewComponent(withName: name, template: component)
             }
-            viewModel.selectedComponentName = name
+            viewModel.select(componentName: name)
             viewModel.showingNewComponentPopup = nil
         }, onDismiss: {
             viewModel.showingNewComponentPopup = nil

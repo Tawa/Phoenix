@@ -26,12 +26,6 @@ class Composition: ObservableObject {
     }
     
     // MARK: - Domain
-    lazy var getComponentsFilterUseCase = Factory { [unowned self] in
-        GetComponentsFilterUseCase(
-            componentsFilterRepository: componentsFilterRepository()
-        ) as GetComponentsFilterUseCaseProtocol
-    }
-    
     lazy var getComponentsFamiliesUseCase = Factory { [unowned self] in
         GetComponentsFamiliesUseCase(
             componentsFilterRepository: componentsFilterRepository(),
@@ -56,14 +50,7 @@ class Composition: ObservableObject {
             phoenixDocumentRepository: phoenixDocumentRepository()
         ) as DeleteComponentUseCaseProtocol
     }
-    
-    lazy var selectComponentUseCase = Factory { [unowned self] in
-        SelectComponentUseCase(
-            phoenixDocumentRepository: phoenixDocumentRepository(),
-            selectionRepository: selectionRepository()
-        ) as SelectComponentUseCaseProtocol
-    }
-    
+        
     lazy var getComponentWithNameUseCase = Factory { [unowned self] in
         GetComponentWithNameUseCase(
             phoenixDocumentRepository: phoenixDocumentRepository()
@@ -100,25 +87,10 @@ class Composition: ObservableObject {
         ) as GetAllDependenciesConfigurationUseCaseProtocol
     }
     
-    lazy var selectFamilyUseCase = Factory { [unowned self] in
-        SelectFamilyUseCase(
-            phoenixDocumentRepository: phoenixDocumentRepository(),
-            selectionRepository: selectionRepository()
-        ) as SelectFamilyUseCaseProtocol
-    }
-    
     lazy var getComponentTitleUseCase = Factory { [unowned self] in
         GetComponentTitleUseCase(
             phoenixDocumentRepository: phoenixDocumentRepository()
         ) as GetComponentTitleUseCaseProtocol
-    }
-    
-    lazy var getSelectedComponentUseCase = Factory { [unowned self] in
-        GetSelectedComponentUseCase(
-            phoenixDocumentRepository: phoenixDocumentRepository(),
-            getComponentsFamiliesUseCase: getComponentsFamiliesUseCase(),
-            selectionRepository: selectionRepository()
-        ) as GetSelectedComponentUseCaseProtocol
     }
     
     lazy var selectNextComponentUseCase = Factory { [unowned self] in

@@ -23,8 +23,8 @@ struct ComponentView: View {
     @State private var showingRemoteDependencies: Bool = false
     
     init(
+        component: Binding<Component>,
         getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
-        getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
         onGenerateDemoAppProject: @escaping () -> Void,
         onRemove: @escaping () -> Void,
         allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>],
@@ -32,7 +32,7 @@ struct ComponentView: View {
         onShowDependencySheet: @escaping () -> Void,
         onShowRemoteDependencySheet: @escaping () -> Void
     ) {
-        _component = getSelectedComponentUseCase.binding
+        self._component = component
         
         self.getComponentTitleUseCase = getComponentTitleUseCase
         

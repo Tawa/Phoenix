@@ -34,20 +34,33 @@ enum AlertState: Hashable, Identifiable {
 class ViewModel: ObservableObject {
     // MARK: - Selection
     var subscriptions: Set<AnyCancellable> = .init()
-    var composition: Composition = .init(document: .constant(.init())) {
-        didSet {
-            subscribeToPublishers()
-        }
-    }
+    var composition: Composition = .init(document: .constant(.init()))
     
     // MARK: - Selected Component
-    @Published var selectedComponentName: Name? = nil
+    @Published private(set) var selectedComponentName: Name? = nil
+    func select(componentName: Name) {
+        selectedComponentName = componentName
+    }
+    func selectedComponent(document: Binding<PhoenixDocument>) -> Binding<Component>? {
+        guard
+            let selectedComponentName,
+            let familyIndex = document.wrappedValue.families.firstIndex(where: { $0.family.name == selectedComponentName.family }),
+            let componentIndex = document.wrappedValue.families[familyIndex].components.firstIndex(where: { $0.name == selectedComponentName })
+        else { return nil }
+        return Binding(
+            get: { document.wrappedValue.families[familyIndex].components[componentIndex] },
+            set: { document.wrappedValue.families[familyIndex].components[componentIndex] = $0 }
+        )
+    }
     
     // MARK: - Components List
     @Published var componentsListFilter: String? = nil
 
     // MARK: - Family Sheet
-    @Published var selectedFamilyName: String? = nil
+    @Published private(set) var selectedFamilyName: String? = nil
+    func select(familyName: String?) {
+        selectedFamilyName = familyName
+    }
     func selectedFamily(document: Binding<PhoenixDocument>) -> Binding<Family>? {
         guard
             let selectedFamilyName,
@@ -113,8 +126,6 @@ class ViewModel: ObservableObject {
         self.composition = composition
         
         self.getComponentsListItemsUseCase = composition.getComponentsListItemsUseCase()
-
-        subscribeToPublishers()
     }
         
     func onConfigurationButton() {
@@ -274,38 +285,5 @@ class ViewModel: ObservableObject {
             selectedName: selectedComponentName,
             filter: componentsListFilter
         )
-    }
-}
-
-// MARK: - Private
-private extension ViewModel {
-    func subscribeToPublishers() {
-        composition
-            .selectionRepository()
-            .selectionPathPublisher
-            .sink { [weak self] selectionPath in
-                self?.selectedComponentName = self?.composition.getSelectedComponentUseCase().binding.wrappedValue.name
-            }.store(in: &subscriptions)
-        
-        composition
-            .selectionRepository()
-            .familyNamePublisher
-            .sink { [weak self] familyName in
-                guard self?.selectedFamilyName != familyName else { return }
-                self?.selectedFamilyName = familyName
-            }.store(in: &subscriptions)
-        
-        _selectedFamilyName
-            .projectedValue
-            .sink { [weak self] familyName in
-                guard let selectionRepository = self?.composition.selectionRepository(),
-                      selectionRepository.familyName != familyName
-                else { return }
-                if let familyName = familyName {
-                    selectionRepository.select(familyName: familyName)
-                } else {
-                    selectionRepository.deselectFamilyName()
-                }
-            }.store(in: &subscriptions)
     }
 }
