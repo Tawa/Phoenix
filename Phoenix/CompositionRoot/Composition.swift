@@ -33,12 +33,6 @@ class Composition: ObservableObject {
             phoenixDocumentRepository: phoenixDocumentRepository()
         ) as DeleteComponentUseCaseProtocol
     }
-        
-    lazy var getComponentWithNameUseCase = Factory { [unowned self] in
-        GetComponentWithNameUseCase(
-            phoenixDocumentRepository: phoenixDocumentRepository()
-        ) as GetComponentWithNameUseCaseProtocol
-    }
     
     lazy var getRelationViewDataUseCase = Factory { [unowned self] in
         GetRelationViewDataUseCase(
@@ -46,20 +40,18 @@ class Composition: ObservableObject {
         ) as GetRelationViewDataUseCaseProtocol
     }
     
-    lazy var getRelationViewDataBetweenComponentsUseCase = ParameterFactory { [unowned self] (fromName: Name, toName: Name) in
+    lazy var getRelationViewDataBetweenComponentsUseCase = ParameterFactory { [unowned self] (fromComponent: Component?, toComponent: Component?) in
         GetRelationViewDataBetweenComponentsUseCase(
             getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase(),
-            getComponentWithNameUseCase: getComponentWithNameUseCase(),
-            fromName: fromName,
-            toName: toName
+            fromComponent: fromComponent,
+            toComponent: toComponent
         ) as GetRelationViewDataUseCaseProtocol
     }
     
-    lazy var getRelationViewDataToComponentUseCase = ParameterFactory { [unowned self] (toName: Name) in
+    lazy var getRelationViewDataToComponentUseCase = ParameterFactory { [unowned self] (component: Component?) in
         GetRelationViewDataToComponentUseCase(
             getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase(),
-            getComponentWithNameUseCase: getComponentWithNameUseCase(),
-            toName: toName
+            component: component
         ) as GetRelationViewDataUseCaseProtocol
     }
     

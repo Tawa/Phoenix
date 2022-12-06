@@ -9,6 +9,7 @@ struct ComponentView: View {
     @Binding var component: Component
     let projectConfiguration: ProjectConfiguration
     let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
+    let componentNamed: (Name) -> Component?
     
     let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
@@ -27,6 +28,7 @@ struct ComponentView: View {
         component: Binding<Component>,
         projectConfiguration: ProjectConfiguration,
         getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
+        componentNamed: @escaping (Name) -> Component?,
         onGenerateDemoAppProject: @escaping () -> Void,
         onRemove: @escaping () -> Void,
         allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>],
@@ -36,8 +38,8 @@ struct ComponentView: View {
     ) {
         self._component = component
         self.projectConfiguration = projectConfiguration
-        
         self.getComponentTitleUseCase = getComponentTitleUseCase
+        self.componentNamed = componentNamed
         
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
         self.onRemove = onRemove
@@ -143,7 +145,7 @@ struct ComponentView: View {
                 defaultDependencies: $component.defaultDependencies,
                 projectConfiguration: projectConfiguration,
                 title: "Default Dependencies",
-                getRelationViewDataUseCase: composition.getRelationViewDataToComponentUseCase(component.name)
+                getRelationViewDataUseCase: composition.getRelationViewDataToComponentUseCase(component)
             )
         }
     }
@@ -226,7 +228,7 @@ struct ComponentView: View {
             defaultDependencies: dependency.targetTypes,
             projectConfiguration: projectConfiguration,
             title: getComponentTitleUseCase.title(forComponent: dependency.wrappedValue.name),
-            getRelationViewDataUseCase: composition.getRelationViewDataBetweenComponentsUseCase((component.name, dependency.wrappedValue.name)),
+            getRelationViewDataUseCase: composition.getRelationViewDataBetweenComponentsUseCase((component, componentNamed(dependency.wrappedValue.name))),
             onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
         )
     }

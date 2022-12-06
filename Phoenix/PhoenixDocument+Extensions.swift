@@ -19,11 +19,7 @@ extension PhoenixDocument: FileDocument {
             let phoenixDocumentFileWrappersDecoder = Container.phoenixDocumentFileWrappersDecoder()
             self = try phoenixDocumentFileWrappersDecoder.phoenixDocument(from: fileWrapper)
         } else {
-            guard let data = configuration.file.regularFileContents
-            else {
-                throw CocoaError(.fileReadCorruptFile)
-            }
-            self = try JSONDecoder().decode(PhoenixDocument.self, from: data)
+            throw CocoaError(.fileReadCorruptFile)
         }
     }
     

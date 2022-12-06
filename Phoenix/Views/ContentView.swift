@@ -145,6 +145,7 @@ struct ContentView: View {
             component: component,
             projectConfiguration: document.projectConfiguration,
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
+            componentNamed: document.component(named:),
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
             },
