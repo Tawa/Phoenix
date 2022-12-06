@@ -27,11 +27,6 @@ extension Binding where Value == Bool {
     }
 }
 
-struct FamilySheetData {
-    var family: Family
-    let rules: [FamilyRule]
-}
-
 struct FamilyRule: Identifiable {
     var id: String { name }
     let name: String
@@ -41,6 +36,7 @@ struct FamilyRule: Identifiable {
 struct FamilySheet: View {
     @EnvironmentObject var composition: Composition
     @Binding var family: Family
+    let projectConfiguration: ProjectConfiguration
     let rules: [FamilyRule]
     let onDismiss: () -> Void
     
@@ -53,10 +49,12 @@ struct FamilySheet: View {
     
     init(
         family: Binding<Family>,
+        projectConfiguration: ProjectConfiguration,
         rules: [FamilyRule],
         onDismiss: @escaping () -> Void
     ) {
         self._family = family
+        self.projectConfiguration = projectConfiguration
         self.rules = rules
         self.onDismiss = onDismiss
     }
@@ -88,6 +86,7 @@ struct FamilySheet: View {
                 Spacer().frame(height: 30)
                 
                 RelationView(defaultDependencies: $family.defaultDependencies,
+                             projectConfiguration: projectConfiguration,
                              title: "Default Dependencies",
                              getRelationViewDataUseCase: composition.getRelationViewDataUseCase())
                 

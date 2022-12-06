@@ -9,15 +9,15 @@ struct SelectionPath: Equatable {
 }
 
 protocol SelectionRepositoryProtocol {
-    var selectionPathPublisher: AnyPublisher<SelectionPath?, Never> { get }
-    var selectionPath: SelectionPath? { get }
-    
-    func select(selectionPath: SelectionPath)
-    
-    var familyName: String? { get }
-    var familyNamePublisher: AnyPublisher<String?, Never> { get }
-    func select(familyName: String)
-    func deselectFamilyName()
+//    var selectionPathPublisher: AnyPublisher<SelectionPath?, Never> { get }
+//    var selectionPath: SelectionPath? { get }
+//
+//    func select(selectionPath: SelectionPath)
+//
+//    var familyName: String? { get }
+//    var familyNamePublisher: AnyPublisher<String?, Never> { get }
+//    func select(familyName: String)
+//    func deselectFamilyName()
 }
 
 class SelectionRepository: SelectionRepositoryProtocol {

@@ -57,7 +57,9 @@ struct ComponentsList: View {
                                     return Text("(\(Image(systemName: "folder")) \(folderName))")
                                 }?.help("Folder Name")
                                 Image(systemName: "rectangle.and.pencil.and.ellipsis")
+                                Spacer()
                             }
+                            .contentShape(Rectangle())
                         })
                         .buttonStyle(.plain)
                         .padding(.vertical)

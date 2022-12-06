@@ -33,7 +33,6 @@ enum AlertState: Hashable, Identifiable {
 
 class ViewModel: ObservableObject {
     // MARK: - Selection
-    var subscriptions: Set<AnyCancellable> = .init()
     var composition: Composition = .init(document: .constant(.init()))
     
     // MARK: - Selected Component

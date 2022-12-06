@@ -1,23 +1,26 @@
 import Component
 
 protocol GetRelationViewDataUseCaseProtocol {
-    func viewData(defaultDependencies: [PackageTargetType: String]) -> RelationViewData
+    func viewData(
+        defaultDependencies: [PackageTargetType: String],
+        projectConfiguration: ProjectConfiguration
+    ) -> RelationViewData
 }
 
 struct GetRelationViewDataUseCase: GetRelationViewDataUseCaseProtocol {
     let getAllDependenciesConfigurationUseCase: GetAllDependenciesConfigurationUseCaseProtocol
-    let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
     
-    init(getAllDependenciesConfigurationUseCase: GetAllDependenciesConfigurationUseCaseProtocol,
-         getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol) {
+    init(getAllDependenciesConfigurationUseCase: GetAllDependenciesConfigurationUseCaseProtocol) {
         self.getAllDependenciesConfigurationUseCase = getAllDependenciesConfigurationUseCase
-        self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
     }
     
-    func viewData(defaultDependencies: [PackageTargetType : String]) -> RelationViewData {
+    func viewData(
+        defaultDependencies: [PackageTargetType : String],
+        projectConfiguration: ProjectConfiguration)
+    -> RelationViewData {
         .init(
             types: getAllDependenciesConfigurationUseCase.value(defaultDependencies: defaultDependencies),
-            selectionValues: getProjectConfigurationUseCase.value.packageConfigurations.map(\.name)
+            selectionValues: projectConfiguration.packageConfigurations.map(\.name)
         )
     }
 }
@@ -35,7 +38,8 @@ struct GetRelationViewDataToComponentUseCase: GetRelationViewDataUseCaseProtocol
         self.toName = toName
     }
     
-    func viewData(defaultDependencies: [PackageTargetType : String]) -> RelationViewData {
+    func viewData(defaultDependencies: [PackageTargetType : String],
+                  projectConfiguration: ProjectConfiguration) -> RelationViewData {
         .init(
             types: getAllDependenciesConfigurationUseCase.value(defaultDependencies: defaultDependencies),
             selectionValues: getComponentWithNameUseCase.component(with: toName)?.modules.keys.sorted() ?? []
@@ -59,7 +63,8 @@ struct GetRelationViewDataBetweenComponentsUseCase: GetRelationViewDataUseCasePr
         self.toName = toName
     }
     
-    func viewData(defaultDependencies: [PackageTargetType : String]) -> RelationViewData {
+    func viewData(defaultDependencies: [PackageTargetType : String],
+                  projectConfiguration: ProjectConfiguration) -> RelationViewData {
         let fromComponent = getComponentWithNameUseCase.component(with: fromName)
         let toComponent = getComponentWithNameUseCase.component(with: toName)
         

@@ -18,7 +18,11 @@ struct ContentView: View {
     private var composition: Composition { viewModel.composition }
     
     var fileURL: URL?
-    @Binding var document: PhoenixDocument
+    @Binding var document: PhoenixDocument {
+        didSet {
+            print("Document Updated")
+        }
+    }
     @StateObject var viewModel: ViewModel
     let interactor: ContentViewInteractor = .init()
     
@@ -41,11 +45,12 @@ struct ContentView: View {
                     newComponentSheet(state: state)
                 }.sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
                     FamilySheet(family: family,
+                                projectConfiguration: document.projectConfiguration,
                                 rules: viewModel.allRules(for: family.wrappedValue, document: document),
                                 onDismiss: { viewModel.select(familyName: nil) }
                     )
                 }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
-                    ConfigurationView(getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase()) {
+                    ConfigurationView(configuration: $document.projectConfiguration) {
                         viewModel.showingConfigurationPopup = false
                     }.frame(minHeight: 800)
                 }
@@ -138,13 +143,14 @@ struct ContentView: View {
     @ViewBuilder private func componentView(for component: Binding<Component>) -> some View {
         ComponentView(
             component: component,
+            projectConfiguration: document.projectConfiguration,
             getComponentTitleUseCase: composition.getComponentTitleUseCase(),
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
             },
             onRemove: { interactor.onRemoveComponent(with: component.id, composition: composition) },
             allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
-            allModuleTypes: composition.getProjectConfigurationUseCase().value.packageConfigurations.map(\.name),
+            allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
         )

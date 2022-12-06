@@ -15,10 +15,10 @@ struct ConfigurationView: View {
     @FocusState private var focusedName: Int?
     
     init(
-        getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
+        configuration: Binding<ProjectConfiguration>,
         onDismiss: @escaping () -> Void,
         focusedName: Int? = nil) {
-            _configuration = getProjectConfigurationUseCase.binding
+            self._configuration = configuration
             self.onDismiss = onDismiss
             self.focusedName = focusedName
         }
@@ -119,6 +119,7 @@ struct ConfigurationView: View {
                     .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.addNewButton)
                 if configuration.packageConfigurations.count > 1 {
                     RelationView(defaultDependencies: $configuration.defaultDependencies,
+                                 projectConfiguration: configuration,
                                  title: "Default Dependencies",
                                  getRelationViewDataUseCase: composition.getRelationViewDataUseCase())
                 }
