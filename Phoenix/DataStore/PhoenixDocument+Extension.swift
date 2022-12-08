@@ -5,24 +5,8 @@ import SwiftPackage
 
 extension PhoenixDocument {
     
-    func getFamily(withName name: String) -> Family? {
-        families.first(where: { $0.family.name == name })?.family
-    }
-    
-    var componentsFamilies: [ComponentsFamily] { families }
-    private var allNames: [Name] { componentsFamilies.flatMap { $0.components }.map(\.name) }
-    
-    func title(for name: Name) -> String {
-        let family = family(for: name)
-        return family?.ignoreSuffix == true ? name.given : name.given + name.family
-    }
-    
     func nameExists(name: Name) -> Bool {
-        allNames.contains(name)
-    }
-    
-    func family(for name: Name) -> Family? {
-        families.first(where: { name.family == $0.family.name })?.family
+        components.values.contains(where: { $0.name == name })
     }
     
     // MARK: - Private
@@ -35,13 +19,6 @@ extension PhoenixDocument {
     }
     
     // MARK: - Document modifiers
-    func getComponent(withName name: Name) -> Component? {
-        guard
-            let component = families.flatMap(\.components).first(where: { $0.name == name })
-        else { return nil }
-        return component
-    }
-    
     func allDependenciesConfiguration(
         defaultDependencies: [PackageTargetType: String]
     ) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
@@ -104,9 +81,9 @@ extension PhoenixDocument {
     }
     
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {
-        var defaultDependencies: [PackageTargetType: String] = getComponent(withName: dependencyName)?.defaultDependencies ?? [:]
+        var defaultDependencies: [PackageTargetType: String] = component(named: dependencyName)?.defaultDependencies ?? [:]
         if defaultDependencies.isEmpty {
-            defaultDependencies = getFamily(withName: dependencyName.family)?.defaultDependencies ?? [:]
+            defaultDependencies = family(named: dependencyName.family)?.defaultDependencies ?? [:]
         }
         if defaultDependencies.isEmpty {
             defaultDependencies = projectConfiguration.defaultDependencies

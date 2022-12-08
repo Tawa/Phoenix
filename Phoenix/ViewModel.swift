@@ -37,6 +37,12 @@ class ViewModel: ObservableObject {
     func select(componentName: Name) {
         selectedComponentName = componentName
     }
+    func selectNextComponent() {
+        
+    }
+    func selectPreviousComponent() {
+        
+    }
     func selectedComponent(document: Binding<PhoenixDocument>) -> Binding<Component>? {
         guard
             let selectedComponentName,

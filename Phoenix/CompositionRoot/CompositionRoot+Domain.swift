@@ -32,12 +32,4 @@ extension Container {
     static let getAllDependenciesConfigurationUseCase = Factory {
         GetAllDependenciesConfigurationUseCase() as GetAllDependenciesConfigurationUseCaseProtocol
     }
-    
-    static let selectNextComponentUseCase = Factory {
-        SelectNextComponentUseCase() as SelectNextComponentUseCaseProtocol
-    }
-
-    static let selectPreviousComponentUseCase = Factory {
-        SelectPreviousComponentUseCase() as SelectPreviousComponentUseCaseProtocol
-    }
 }

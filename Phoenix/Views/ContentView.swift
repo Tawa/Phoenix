@@ -160,15 +160,15 @@ struct ContentView: View {
             viewModel.showingNewComponentPopup = nil
         }, familyNameSuggestion: { familyName in
             guard !familyName.isEmpty else { return nil }
-            return document.componentsFamilies.first { componentFamily in
+            return document.families.first { componentFamily in
                 componentFamily.family.name.hasPrefix(familyName)
             }?.family.name
         })
     }
     
     @ViewBuilder private func dependencySheet(component: Component) -> some View {
-        let familyName = document.getFamily(withName: component.name.family)?.name ?? ""
-        let allFamilies = document.componentsFamilies.filter { !$0.family.excludedFamilies.contains(familyName) }
+        let familyName = document.family(named: component.name.family)?.name ?? ""
+        let allFamilies = document.families.filter { !$0.family.excludedFamilies.contains(familyName) }
         let allNames = allFamilies.flatMap(\.components).map(\.name)
         let filteredNames = Dictionary(grouping: allNames.filter { name in
             component.name != name && !component.localDependencies.contains { localDependency in
@@ -178,7 +178,7 @@ struct ContentView: View {
         let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
             partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
                                                                   rows: keyValue.value.map { name in
-                ComponentDependenciesListRow(name: document.title(for: name),
+                ComponentDependenciesListRow(name: document.title(forComponentNamed: name),
                                              onSelect: {
                     document.addDependencyToComponent(withName: component.name, dependencyName: name)
                     viewModel.showingDependencySheet = false
@@ -302,10 +302,10 @@ struct ContentView: View {
     }
     
     private func onDownArrow() {
-        Container.selectNextComponentUseCase().perform()
+        viewModel.selectNextComponent()
     }
     
     private func onUpArrow() {
-        Container.selectPreviousComponentUseCase().perform()
+        viewModel.selectPreviousComponent()
     }
 }
