@@ -7,7 +7,7 @@ import ComponentDetailsProviderContract
 
 protocol GetComponentsListItemsUseCaseProtocol {
     func componentsListSections(
-        _ families: [ComponentsFamily],
+        document: PhoenixDocument,
         selectedName: Name?,
         filter: String?
     ) -> [ComponentsListSection]
@@ -21,16 +21,17 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
     }
     
     func componentsListSections(
-        _ families: [ComponentsFamily],
+        document: PhoenixDocument,
         selectedName: Name?,
         filter: String?
     ) -> [ComponentsListSection] {
-        families
+        document
+            .families
             .compactMap { componentsFamily in
                 var componentsFamily = componentsFamily
                 componentsFamily.components = componentsFamily.components
                     .filter { component in
-                        let name = componentName(component, for: componentsFamily.family)
+                        let name = document.title(forComponentNamed: component.name)
                         if let filter = filter?.lowercased(),
                            !filter.isEmpty,
                            !name.lowercased().contains(filter) {

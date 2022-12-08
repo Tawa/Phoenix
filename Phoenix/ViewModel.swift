@@ -280,7 +280,7 @@ class ViewModel: ObservableObject {
     
     func componentsListSections(document: PhoenixDocument) -> [ComponentsListSection] {
         getComponentsListItemsUseCase.componentsListSections(
-            document.families,
+            document: document,
             selectedName: selectedComponentName,
             filter: componentsListFilter
         )

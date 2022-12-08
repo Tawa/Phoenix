@@ -8,7 +8,7 @@ struct ComponentView: View {
     @EnvironmentObject var composition: Composition
     @Binding var component: Component
     let projectConfiguration: ProjectConfiguration
-    let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
+    let titleForComponentNamed: (Name) -> String
     let componentNamed: (Name) -> Component?
     
     let onGenerateDemoAppProject: () -> Void
@@ -18,7 +18,7 @@ struct ComponentView: View {
     let onShowRemoteDependencySheet: () -> Void
     
     // MARK: - Private
-    private var title: String { getComponentTitleUseCase.title(forComponent: component.name) }
+    private var title: String { titleForComponentNamed(component.name) }
     private let allModuleTypes: [String]
     
     @State private var showingLocalDependencies: Bool = false
@@ -27,7 +27,7 @@ struct ComponentView: View {
     init(
         component: Binding<Component>,
         projectConfiguration: ProjectConfiguration,
-        getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
+        titleForComponentNamed: @escaping (Name) -> String,
         componentNamed: @escaping (Name) -> Component?,
         onGenerateDemoAppProject: @escaping () -> Void,
         onRemove: @escaping () -> Void,
@@ -38,7 +38,7 @@ struct ComponentView: View {
     ) {
         self._component = component
         self.projectConfiguration = projectConfiguration
-        self.getComponentTitleUseCase = getComponentTitleUseCase
+        self.titleForComponentNamed = titleForComponentNamed
         self.componentNamed = componentNamed
         
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
@@ -227,7 +227,7 @@ struct ComponentView: View {
         RelationView(
             defaultDependencies: dependency.targetTypes,
             projectConfiguration: projectConfiguration,
-            title: getComponentTitleUseCase.title(forComponent: dependency.wrappedValue.name),
+            title: titleForComponentNamed(dependency.wrappedValue.name),
             getRelationViewDataUseCase: composition.getRelationViewDataBetweenComponentsUseCase((component, componentNamed(dependency.wrappedValue.name))),
             onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
         )

@@ -51,12 +51,6 @@ class Composition: ObservableObject {
         ) as GetAllDependenciesConfigurationUseCaseProtocol
     }
     
-    lazy var getComponentTitleUseCase = Factory { [unowned self] in
-        GetComponentTitleUseCase(
-            phoenixDocumentRepository: phoenixDocumentRepository()
-        ) as GetComponentTitleUseCaseProtocol
-    }
-    
     lazy var selectNextComponentUseCase = Factory { [unowned self] in
         SelectNextComponentUseCase() as SelectNextComponentUseCaseProtocol
     }

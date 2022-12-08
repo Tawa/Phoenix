@@ -137,7 +137,7 @@ struct ContentView: View {
         ComponentView(
             component: component,
             projectConfiguration: document.projectConfiguration,
-            getComponentTitleUseCase: composition.getComponentTitleUseCase(),
+            titleForComponentNamed: document.title(forComponentNamed:),
             componentNamed: document.component(named:),
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
