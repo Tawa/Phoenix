@@ -4,19 +4,6 @@ import PhoenixDocument
 import SwiftUI
 
 class Composition: ObservableObject {
-    var document: Binding<PhoenixDocument>
-    
-    init(document: Binding<PhoenixDocument>) {
-        self.document = document
-    }
-    
-    // MARK: - Data
-    lazy var phoenixDocumentRepository = Factory(scope: .singleton) { [unowned self] in
-        PhoenixDocumentRepository(
-            document: document
-        ) as PhoenixDocumentRepositoryProtocol
-    }
-    
     // MARK: - Domain
     lazy var getComponentsListItemsUseCase = Factory { [unowned self] in
         GetComponentsListItemsUseCase(
@@ -46,9 +33,7 @@ class Composition: ObservableObject {
     }
     
     lazy var getAllDependenciesConfigurationUseCase = Factory { [unowned self] in
-        GetAllDependenciesConfigurationUseCase(
-            phoenixDocumentRepository: phoenixDocumentRepository()
-        ) as GetAllDependenciesConfigurationUseCaseProtocol
+        GetAllDependenciesConfigurationUseCase() as GetAllDependenciesConfigurationUseCaseProtocol
     }
     
     lazy var selectNextComponentUseCase = Factory { [unowned self] in

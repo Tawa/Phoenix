@@ -4,24 +4,21 @@ import Foundation
 
 protocol GetAllDependenciesConfigurationUseCaseProtocol {
     func value(
+        configuration: ProjectConfiguration,
         defaultDependencies: [PackageTargetType: String]
     ) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
 }
 
 struct GetAllDependenciesConfigurationUseCase: GetAllDependenciesConfigurationUseCaseProtocol {
-    let phoenixDocumentRepository: PhoenixDocumentRepositoryProtocol
     
     func value(
+        configuration: ProjectConfiguration,
         defaultDependencies: [PackageTargetType: String]
     ) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
         map(
-            configuration: phoenixDocumentRepository.value.projectConfiguration,
+            configuration: configuration,
             defaultDependencies: defaultDependencies
         )
-    }
-    
-    init(phoenixDocumentRepository: PhoenixDocumentRepositoryProtocol) {
-        self.phoenixDocumentRepository = phoenixDocumentRepository
     }
     
     private func map(

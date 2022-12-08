@@ -6,6 +6,7 @@ public struct PhoenixDocument: Hashable {
     public var families: [ComponentsFamily] {
         didSet {
             components = families.flatMap(\.components).reduce(into: [Name: Component](), { $0[$1.name] = $1 })
+            familiesDetails = families.map(\.family).reduce(into: [String: Family](), { $0[$1.name] = $1 })
         }
     }
     public var projectConfiguration: ProjectConfiguration

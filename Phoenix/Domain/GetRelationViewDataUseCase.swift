@@ -1,4 +1,5 @@
 import Component
+import PhoenixDocument
 
 protocol GetRelationViewDataUseCaseProtocol {
     func viewData(
@@ -19,7 +20,10 @@ struct GetRelationViewDataUseCase: GetRelationViewDataUseCaseProtocol {
         projectConfiguration: ProjectConfiguration)
     -> RelationViewData {
         .init(
-            types: getAllDependenciesConfigurationUseCase.value(defaultDependencies: defaultDependencies),
+            types: getAllDependenciesConfigurationUseCase.value(
+                configuration: projectConfiguration,
+                defaultDependencies: defaultDependencies
+            ),
             selectionValues: projectConfiguration.packageConfigurations.map(\.name)
         )
     }
@@ -38,7 +42,10 @@ struct GetRelationViewDataToComponentUseCase: GetRelationViewDataUseCaseProtocol
     func viewData(defaultDependencies: [PackageTargetType : String],
                   projectConfiguration: ProjectConfiguration) -> RelationViewData {
         .init(
-            types: getAllDependenciesConfigurationUseCase.value(defaultDependencies: defaultDependencies),
+            types: getAllDependenciesConfigurationUseCase.value(
+                configuration: projectConfiguration,
+                defaultDependencies: defaultDependencies
+            ),
             selectionValues: component?.modules.keys.sorted() ?? []
         )
     }
@@ -60,7 +67,10 @@ struct GetRelationViewDataBetweenComponentsUseCase: GetRelationViewDataUseCasePr
     func viewData(defaultDependencies: [PackageTargetType : String],
                   projectConfiguration: ProjectConfiguration) -> RelationViewData {
         let types = getAllDependenciesConfigurationUseCase
-            .value(defaultDependencies: defaultDependencies)
+            .value(
+                configuration: projectConfiguration,
+                defaultDependencies: defaultDependencies
+            )
             .filter { value in fromComponent?.modules.keys.contains(where: { value.value.name == $0 }) ?? false }
         
         return RelationViewData(

@@ -39,8 +39,6 @@
 		38E251332837EC73002FFA31 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E251322837EC73002FFA31 /* FilterView.swift */; };
 		38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */; };
 		38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */; };
-		B20883AB29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20883AA29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift */; };
-		B21394D0291C76B30019BF2E /* PhoenixDocumentRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21394CF291C76B30019BF2E /* PhoenixDocumentRepository.swift */; };
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
 		B216D3A12926EDC6005EDBB5 /* RelationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B216D3A02926EDC6005EDBB5 /* RelationView.swift */; };
 		B216D3A32926F212005EDBB5 /* GetRelationViewDataUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B216D3A22926F212005EDBB5 /* GetRelationViewDataUseCase.swift */; };
@@ -61,6 +59,7 @@
 		B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */; };
 		B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5928BAC12200848D93 /* PackageGenerator */; };
 		B2CC2B5C28BAC21900848D93 /* PackageStringProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5B28BAC21900848D93 /* PackageStringProvider */; };
+		B2E1D48029424C5500FF07DE /* GetAllDependenciesConfigurationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E1D47F29424C5500FF07DE /* GetAllDependenciesConfigurationUseCase.swift */; };
 		B2E6318528F2BF5400C71866 /* FamilySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E6318428F2BF5400C71866 /* FamilySheet.swift */; };
 		B2EFE83628ECC0CF005DBE78 /* ComponentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83528ECC0CF005DBE78 /* ComponentScreen.swift */; };
 		B2EFE83828ECC1AC005DBE78 /* DependenciesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83728ECC1AC005DBE78 /* DependenciesSheet.swift */; };
@@ -152,8 +151,6 @@
 		7630EE55C64753273E2BF13A /* SwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SwiftPackage; sourceTree = "<group>"; };
 		981295FCE3B52E97779A2186 /* DocumentCoder */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoder; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
-		B20883AA29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAllDependenciesConfigurationUseCase.swift; sourceTree = "<group>"; };
-		B21394CF291C76B30019BF2E /* PhoenixDocumentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixDocumentRepository.swift; sourceTree = "<group>"; };
 		B216D3A02926EDC6005EDBB5 /* RelationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationView.swift; sourceTree = "<group>"; };
 		B216D3A22926F212005EDBB5 /* GetRelationViewDataUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRelationViewDataUseCase.swift; sourceTree = "<group>"; };
 		B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+AppVersion.swift"; sourceTree = "<group>"; };
@@ -167,6 +164,7 @@
 		B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+Features.swift"; sourceTree = "<group>"; };
 		B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencySheet.swift; sourceTree = "<group>"; };
 		B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesURLDataStore.swift; sourceTree = "<group>"; };
+		B2E1D47F29424C5500FF07DE /* GetAllDependenciesConfigurationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetAllDependenciesConfigurationUseCase.swift; sourceTree = "<group>"; };
 		B2E6318428F2BF5400C71866 /* FamilySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilySheet.swift; sourceTree = "<group>"; };
 		B2EFE83528ECC0CF005DBE78 /* ComponentScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentScreen.swift; sourceTree = "<group>"; };
 		B2EFE83728ECC1AC005DBE78 /* DependenciesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependenciesSheet.swift; sourceTree = "<group>"; };
@@ -386,7 +384,6 @@
 				38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */,
 				3853D1FF2839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift */,
 				38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */,
-				B21394CF291C76B30019BF2E /* PhoenixDocumentRepository.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -439,7 +436,7 @@
 		B240A5D9291D5E4F00815CC3 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				B20883AA29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift */,
+				B2E1D47F29424C5500FF07DE /* GetAllDependenciesConfigurationUseCase.swift */,
 				B240A5DA291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift */,
 				B216D3A22926F212005EDBB5 /* GetRelationViewDataUseCase.swift */,
 				B236A5FE291DB54B008D658E /* SelectNextComponentUseCase.swift */,
@@ -715,6 +712,7 @@
 				38E0B2FD2815766E00B5992D /* PhoenixDocument+Extension.swift in Sources */,
 				B24F6D99291D9B6A007170DD /* Composition.swift in Sources */,
 				38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */,
+				B2E1D48029424C5500FF07DE /* GetAllDependenciesConfigurationUseCase.swift in Sources */,
 				3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilySheet.swift in Sources */,
 				38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */,
@@ -723,7 +721,6 @@
 				3810D8CF28099B82006E7EE3 /* ComponentListItem.swift in Sources */,
 				3873E5A62804C509000BCB03 /* PhoenixDocument+Extensions.swift in Sources */,
 				38E251332837EC73002FFA31 /* FilterView.swift in Sources */,
-				B21394D0291C76B30019BF2E /* PhoenixDocumentRepository.swift in Sources */,
 				3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */,
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
 				38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */,
@@ -741,7 +738,6 @@
 				B240A5DB291D5E6900815CC3 /* GetComponentsListItemsUseCase.swift in Sources */,
 				38E251312837E96A002FFA31 /* PopoverView.swift in Sources */,
 				3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */,
-				B20883AB29243F3F0082CF56 /* GetAllDependenciesConfigurationUseCase.swift in Sources */,
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
 				B29FDC5A2905725B006A0007 /* RemoteDependencySheet.swift in Sources */,
 				38BCCC952854A0C000E928CA /* CompositionRoot.swift in Sources */,

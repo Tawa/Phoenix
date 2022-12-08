@@ -33,7 +33,7 @@ enum AlertState: Hashable, Identifiable {
 
 class ViewModel: ObservableObject {
     // MARK: - Selection
-    var composition: Composition = .init(document: .constant(.init()))
+    var composition: Composition = .init()
     
     // MARK: - Selected Component
     @Published private(set) var selectedComponentName: Name? = nil
