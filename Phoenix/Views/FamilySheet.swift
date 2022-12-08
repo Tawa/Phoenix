@@ -34,7 +34,6 @@ struct FamilyRule: Identifiable {
 }
 
 struct FamilySheet: View {
-    @EnvironmentObject var composition: Composition
     @Binding var family: Family
     let projectConfiguration: ProjectConfiguration
     let rules: [FamilyRule]
@@ -88,7 +87,8 @@ struct FamilySheet: View {
                 RelationView(defaultDependencies: $family.defaultDependencies,
                              projectConfiguration: projectConfiguration,
                              title: "Default Dependencies",
-                             getRelationViewDataUseCase: composition.getRelationViewDataUseCase())
+                             getRelationViewDataUseCase: Container.getRelationViewDataUseCase()
+                )
                 
                 VStack(alignment: .leading) {
                     Text("Allow ") + Text(name).bold() + Text(" components to be used in:")

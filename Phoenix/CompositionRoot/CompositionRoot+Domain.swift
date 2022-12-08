@@ -1,23 +1,20 @@
-import Factory
 import Component
-import PhoenixDocument
-import SwiftUI
+import Factory
 
-class Composition: ObservableObject {
-    // MARK: - Domain
-    lazy var getComponentsListItemsUseCase = Factory { [unowned self] in
+extension Container {
+    static let getComponentsListItemsUseCase = Factory {
         GetComponentsListItemsUseCase(
-            familyFolderNameProvider: Container.familyFolderNameProvider()
+            familyFolderNameProvider: familyFolderNameProvider()
         ) as GetComponentsListItemsUseCaseProtocol
     }
     
-    lazy var getRelationViewDataUseCase = Factory { [unowned self] in
+    static let getRelationViewDataUseCase = Factory {
         GetRelationViewDataUseCase(
             getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase()
         ) as GetRelationViewDataUseCaseProtocol
     }
     
-    lazy var getRelationViewDataBetweenComponentsUseCase = ParameterFactory { [unowned self] (fromComponent: Component?, toComponent: Component?) in
+    static let getRelationViewDataBetweenComponentsUseCase = ParameterFactory { (fromComponent: Component?, toComponent: Component?) in
         GetRelationViewDataBetweenComponentsUseCase(
             getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase(),
             fromComponent: fromComponent,
@@ -25,22 +22,22 @@ class Composition: ObservableObject {
         ) as GetRelationViewDataUseCaseProtocol
     }
     
-    lazy var getRelationViewDataToComponentUseCase = ParameterFactory { [unowned self] (component: Component?) in
+    static let getRelationViewDataToComponentUseCase = ParameterFactory { (component: Component?) in
         GetRelationViewDataToComponentUseCase(
             getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase(),
             component: component
         ) as GetRelationViewDataUseCaseProtocol
     }
     
-    lazy var getAllDependenciesConfigurationUseCase = Factory { [unowned self] in
+    static let getAllDependenciesConfigurationUseCase = Factory {
         GetAllDependenciesConfigurationUseCase() as GetAllDependenciesConfigurationUseCaseProtocol
     }
     
-    lazy var selectNextComponentUseCase = Factory { [unowned self] in
+    static let selectNextComponentUseCase = Factory {
         SelectNextComponentUseCase() as SelectNextComponentUseCaseProtocol
     }
 
-    lazy var selectPreviousComponentUseCase = Factory { [unowned self] in
+    static let selectPreviousComponentUseCase = Factory {
         SelectPreviousComponentUseCase() as SelectPreviousComponentUseCaseProtocol
     }
 }

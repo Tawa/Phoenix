@@ -5,7 +5,6 @@ import Factory
 import SwiftUI
 
 struct ConfigurationView: View {
-    @EnvironmentObject var composition: Composition
     @Binding var configuration: ProjectConfiguration
     let columnWidth: CGFloat = 200
     let narrowColumnWidth: CGFloat = 100
@@ -121,7 +120,7 @@ struct ConfigurationView: View {
                     RelationView(defaultDependencies: $configuration.defaultDependencies,
                                  projectConfiguration: configuration,
                                  title: "Default Dependencies",
-                                 getRelationViewDataUseCase: composition.getRelationViewDataUseCase())
+                                 getRelationViewDataUseCase: Container.getRelationViewDataUseCase())
                 }
                 Button(action: onDismiss) {
                     Text("Close")

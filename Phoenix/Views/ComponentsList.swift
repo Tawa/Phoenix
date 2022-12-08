@@ -26,8 +26,6 @@ struct ComponentsListSection: Hashable, Identifiable {
 }
 
 struct ComponentsList: View {
-    @EnvironmentObject var composition: Composition
-    
     let sections: [ComponentsListSection]
     let onSelect: (Name) -> Void
     let onSelectSection: (String) -> Void

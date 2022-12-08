@@ -32,9 +32,6 @@ enum AlertState: Hashable, Identifiable {
 }
 
 class ViewModel: ObservableObject {
-    // MARK: - Selection
-    var composition: Composition = .init()
-    
     // MARK: - Selected Component
     @Published private(set) var selectedComponentName: Name? = nil
     func select(componentName: Name) {
@@ -117,15 +114,8 @@ class ViewModel: ObservableObject {
     @Injected(Container.projectGenerator)
     var projectGenerator: ProjectGeneratorProtocol
     
-    let getComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol
-    
-    
-    // MARK: - Initialiser
-    init(composition: Composition) {
-        self.composition = composition
-        
-        self.getComponentsListItemsUseCase = composition.getComponentsListItemsUseCase()
-    }
+    @Injected(Container.getComponentsListItemsUseCase)
+    private var getComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol
         
     func onConfigurationButton() {
         showingConfigurationPopup = true

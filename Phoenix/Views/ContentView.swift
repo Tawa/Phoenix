@@ -9,22 +9,18 @@ import SwiftPackage
 import AccessibilityIdentifiers
 
 struct ContentView: View {
-    private var composition: Composition { viewModel.composition }
-    
     var fileURL: URL?
     @Binding var document: PhoenixDocument {
         didSet {
             print("Document Updated")
         }
     }
-    @StateObject var viewModel: ViewModel
+    @StateObject var viewModel: ViewModel = .init()
     
     init(fileURL: URL?,
-         document: Binding<PhoenixDocument>,
-         composition: Composition) {
+         document: Binding<PhoenixDocument>) {
         self.fileURL = fileURL
         self._document = document
-        self._viewModel = .init(wrappedValue: .init(composition: composition))
     }
     
     var body: some View {
@@ -74,7 +70,6 @@ struct ContentView: View {
         .onAppear(perform: viewModel.checkForUpdate)
         .toolbar(content: toolbarViews)
         .frame(minWidth: 900)
-        .environmentObject(viewModel.composition)
     }
     
     // MARK: - Views
@@ -307,10 +302,10 @@ struct ContentView: View {
     }
     
     private func onDownArrow() {
-        composition.selectNextComponentUseCase().perform()
+        Container.selectNextComponentUseCase().perform()
     }
     
     private func onUpArrow() {
-        composition.selectPreviousComponentUseCase().perform()
+        Container.selectPreviousComponentUseCase().perform()
     }
 }

@@ -1,11 +1,11 @@
 import AccessibilityIdentifiers
 import Combine
 import Component
+import Factory
 import SwiftUI
 import SwiftPackage
 
 struct ComponentView: View {
-    @EnvironmentObject var composition: Composition
     @Binding var component: Component
     let projectConfiguration: ProjectConfiguration
     let titleForComponentNamed: (Name) -> String
@@ -145,7 +145,7 @@ struct ComponentView: View {
                 defaultDependencies: $component.defaultDependencies,
                 projectConfiguration: projectConfiguration,
                 title: "Default Dependencies",
-                getRelationViewDataUseCase: composition.getRelationViewDataToComponentUseCase(component)
+                getRelationViewDataUseCase: Container.getRelationViewDataToComponentUseCase(component)
             )
         }
     }
@@ -228,7 +228,7 @@ struct ComponentView: View {
             defaultDependencies: dependency.targetTypes,
             projectConfiguration: projectConfiguration,
             title: titleForComponentNamed(dependency.wrappedValue.name),
-            getRelationViewDataUseCase: composition.getRelationViewDataBetweenComponentsUseCase((component, componentNamed(dependency.wrappedValue.name))),
+            getRelationViewDataUseCase: Container.getRelationViewDataBetweenComponentsUseCase((component, componentNamed(dependency.wrappedValue.name))),
             onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
         )
     }

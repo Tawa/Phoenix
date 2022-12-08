@@ -7,11 +7,8 @@ import SwiftUI
 struct PhoenixApp: App {
     var body: some Scene {
         DocumentGroup(newDocument: PhoenixDocument()) { file in
-            ContentView(
-                fileURL: file.fileURL,
-                document: file.$document,
-                composition: Composition()
-            )
+            ContentView(fileURL: file.fileURL,
+                        document: file.$document)
         }
         .windowStyle(.titleBar)
         .windowToolbarStyle(.expanded)
