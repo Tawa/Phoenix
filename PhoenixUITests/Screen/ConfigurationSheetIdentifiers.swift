@@ -36,7 +36,7 @@ class ConfigurationSheet: Screen {
         let cell = textField(column: column, row: row)
         cell.click()
         cell.typeKey("a", modifierFlags: .command)
-        cell.typeText(text)
+        cell.enter(text: text)
         return self
     }
     

@@ -17,7 +17,7 @@ class FamilySheet: Screen {
     @discardableResult
     func set(folderName: String) -> FamilySheet {
         folderTextField.click()
-        folderTextField.typeText(folderName)
+        folderTextField.enter(text: folderName)
         return self
     }
     

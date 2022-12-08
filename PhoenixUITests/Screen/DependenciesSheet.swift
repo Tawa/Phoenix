@@ -13,7 +13,7 @@ class DependenciesSheet: Screen {
     @discardableResult
     func filter(text: String) -> DependenciesSheet {
         filter.click()
-        filter.typeText(text)
+        filter.enter(text: text)
         return self
     }
     
