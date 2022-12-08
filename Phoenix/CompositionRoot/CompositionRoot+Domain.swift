@@ -2,12 +2,6 @@ import Component
 import Factory
 
 extension Container {
-    static let getComponentsListItemsUseCase = Factory {
-        GetComponentsListItemsUseCase(
-            familyFolderNameProvider: familyFolderNameProvider()
-        ) as GetComponentsListItemsUseCaseProtocol
-    }
-    
     static let getRelationViewDataUseCase = Factory {
         GetRelationViewDataUseCase(
             getAllDependenciesConfigurationUseCase: getAllDependenciesConfigurationUseCase()

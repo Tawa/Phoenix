@@ -1,26 +1,16 @@
-import Combine
 import Component
-import Foundation
 import PhoenixDocument
-import SwiftUI
-import ComponentDetailsProviderContract
 
-protocol GetComponentsListItemsUseCaseProtocol {
-    func componentsListSections(
-        document: PhoenixDocument,
-        selectedName: Name?,
-        filter: String?
-    ) -> [ComponentsListSection]
-}
-
-struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
-    let familyFolderNameProvider: FamilyFolderNameProviderProtocol
-    
-    init(familyFolderNameProvider: FamilyFolderNameProviderProtocol) {
-        self.familyFolderNameProvider = familyFolderNameProvider
+extension ViewModel {
+    func componentsListSections(document: PhoenixDocument) -> [ComponentsListSection] {
+        componentsListSections(
+            document: document,
+            selectedName: selectedComponentName,
+            filter: componentsListFilter
+        )
     }
     
-    func componentsListSections(
+    private func componentsListSections(
         document: PhoenixDocument,
         selectedName: Name?,
         filter: String?
@@ -50,7 +40,7 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
                     folderName: sectionFolderName(forFamily: componentsFamily.family),
                     rows: componentsFamily.components.enumerated().compactMap { componentElement in
                         let component = componentElement.element
-                        let name = componentName(component, for: componentsFamily.family)
+                        let name = document.title(forComponentNamed: component.name)
                         return .init(
                             id: component.name,
                             name: name,
@@ -72,9 +62,5 @@ struct GetComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol {
         guard result != family.name
         else { return nil }
         return result
-    }
-    
-    private func componentName(_ component: Component, for family: Family) -> String {
-        family.ignoreSuffix == true ? component.name.given : component.name.given + component.name.family
     }
 }

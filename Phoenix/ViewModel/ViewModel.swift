@@ -113,15 +113,14 @@ class ViewModel: ObservableObject {
 
     @Injected(Container.appVersionUpdateProvider)
     var appVersionUpdateProvider: AppVersionUpdateProviderProtocol
-    @Injected(Container.pbxProjSyncer)
-    var pbxProjSyncer: PBXProjectSyncerProtocol
+    @Injected(Container.familyFolderNameProvider)
+    var familyFolderNameProvider: FamilyFolderNameProviderProtocol
     @Injected(Container.filesURLDataStore)
     var filesURLDataStore: FilesURLDataStoreProtocol
+    @Injected(Container.pbxProjSyncer)
+    var pbxProjSyncer: PBXProjectSyncerProtocol
     @Injected(Container.projectGenerator)
     var projectGenerator: ProjectGeneratorProtocol
-    
-    @Injected(Container.getComponentsListItemsUseCase)
-    private var getComponentsListItemsUseCase: GetComponentsListItemsUseCaseProtocol
         
     func onConfigurationButton() {
         showingConfigurationPopup = true
@@ -272,13 +271,5 @@ class ViewModel: ObservableObject {
             } receiveValue: { appVersionInfos in
                 self.appUpdateVersionInfo = appVersionInfos.results.first
             }
-    }
-    
-    func componentsListSections(document: PhoenixDocument) -> [ComponentsListSection] {
-        getComponentsListItemsUseCase.componentsListSections(
-            document: document,
-            selectedName: selectedComponentName,
-            filter: componentsListFilter
-        )
     }
 }
