@@ -122,7 +122,6 @@ struct ConfigurationView: View {
                 if configuration.packageConfigurations.count > 1 {
                     RelationView(
                         defaultDependencies: $configuration.defaultDependencies,
-                        projectConfiguration: configuration,
                         title: "Default Dependencies",
                         viewData: relationViewData
                     )

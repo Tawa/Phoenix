@@ -35,7 +35,6 @@ struct FamilyRule: Identifiable {
 
 struct FamilySheet: View {
     @Binding var family: Family
-    let projectConfiguration: ProjectConfiguration
     let relationViewData: RelationViewData
     let rules: [FamilyRule]
     let onDismiss: () -> Void
@@ -49,13 +48,11 @@ struct FamilySheet: View {
     
     init(
         family: Binding<Family>,
-        projectConfiguration: ProjectConfiguration,
         relationViewData: RelationViewData,
         rules: [FamilyRule],
         onDismiss: @escaping () -> Void
     ) {
         self._family = family
-        self.projectConfiguration = projectConfiguration
         self.relationViewData = relationViewData
         self.rules = rules
         self.onDismiss = onDismiss
@@ -88,7 +85,6 @@ struct FamilySheet: View {
                 Spacer().frame(height: 30)
                 
                 RelationView(defaultDependencies: $family.defaultDependencies,
-                             projectConfiguration: projectConfiguration,
                              title: "Default Dependencies",
                              viewData: relationViewData
                 )

@@ -19,20 +19,6 @@ extension PhoenixDocument {
     }
     
     // MARK: - Document modifiers
-    func allDependenciesConfiguration(
-        defaultDependencies: [PackageTargetType: String]
-    ) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
-        projectConfiguration.packageConfigurations.map { packageConfiguration in
-            IdentifiableWithSubtypeAndSelection(
-                title: packageConfiguration.name,
-                subtitle: packageConfiguration.hasTests ? "Tests" : nil,
-                value: PackageTargetType(name: packageConfiguration.name, isTests: false),
-                subValue: packageConfiguration.hasTests ? PackageTargetType(name: packageConfiguration.name, isTests: true) : nil,
-                selectedValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: false)],
-                selectedSubValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: true)])
-        }
-    }
-    
     mutating func addNewComponent(withName name: Name, template: Component? = nil) throws {
         if name.given.isEmpty {
             throw NSError(domain: "Given name cannot be empty", code: 500)

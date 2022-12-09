@@ -7,11 +7,9 @@ import SwiftPackage
 
 struct ComponentView: View {
     @Binding var component: Component
-    let projectConfiguration: ProjectConfiguration
     let relationViewData: RelationViewData
     let relationViewDataToComponentNamed: (Name, [PackageTargetType: String]) -> RelationViewData
     let titleForComponentNamed: (Name) -> String
-    let componentNamed: (Name) -> Component?
     
     let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
@@ -28,11 +26,9 @@ struct ComponentView: View {
     
     init(
         component: Binding<Component>,
-        projectConfiguration: ProjectConfiguration,
         relationViewData: RelationViewData,
         relationViewDataToComponentNamed: @escaping (Name, [PackageTargetType: String]) -> RelationViewData,
         titleForComponentNamed: @escaping (Name) -> String,
-        componentNamed: @escaping (Name) -> Component?,
         onGenerateDemoAppProject: @escaping () -> Void,
         onRemove: @escaping () -> Void,
         allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>],
@@ -41,11 +37,9 @@ struct ComponentView: View {
         onShowRemoteDependencySheet: @escaping () -> Void
     ) {
         self._component = component
-        self.projectConfiguration = projectConfiguration
         self.relationViewData = relationViewData
         self.relationViewDataToComponentNamed = relationViewDataToComponentNamed
         self.titleForComponentNamed = titleForComponentNamed
-        self.componentNamed = componentNamed
         
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
         self.onRemove = onRemove
@@ -149,7 +143,6 @@ struct ComponentView: View {
         section {
             RelationView(
                 defaultDependencies: $component.defaultDependencies,
-                projectConfiguration: projectConfiguration,
                 title: "Default Dependencies",
                 viewData: relationViewData
             )
@@ -232,7 +225,6 @@ struct ComponentView: View {
     @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
         RelationView(
             defaultDependencies: dependency.targetTypes,
-            projectConfiguration: projectConfiguration,
             title: titleForComponentNamed(dependency.wrappedValue.name),
             viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),
             onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }

@@ -37,24 +37,7 @@ class ViewModel: ObservableObject {
     func select(componentName: Name) {
         selectedComponentName = componentName
     }
-    func selectNextComponent() {
-        
-    }
-    func selectPreviousComponent() {
-        
-    }
-    func selectedComponent(document: Binding<PhoenixDocument>) -> Binding<Component>? {
-        guard
-            let selectedComponentName,
-            let familyIndex = document.wrappedValue.families.firstIndex(where: { $0.family.name == selectedComponentName.family }),
-            let componentIndex = document.wrappedValue.families[familyIndex].components.firstIndex(where: { $0.name == selectedComponentName })
-        else { return nil }
-        return Binding(
-            get: { document.wrappedValue.families[familyIndex].components[componentIndex] },
-            set: { document.wrappedValue.families[familyIndex].components[componentIndex] = $0 }
-        )
-    }
-    
+
     // MARK: - Components List
     @Published var componentsListFilter: String? = nil
 
@@ -62,24 +45,6 @@ class ViewModel: ObservableObject {
     @Published private(set) var selectedFamilyName: String? = nil
     func select(familyName: String?) {
         selectedFamilyName = familyName
-    }
-    func selectedFamily(document: Binding<PhoenixDocument>) -> Binding<Family>? {
-        guard
-            let selectedFamilyName,
-            let index = document.wrappedValue.families.firstIndex(where: { $0.family.name == selectedFamilyName })
-        else { return nil }
-        return Binding(
-            get: { document.wrappedValue.families[index].family },
-            set: { document.wrappedValue.families[index].family = $0 }
-        )
-    }
-    
-    func allRules(for family: Family, document: PhoenixDocument) -> [FamilyRule] {
-        document.families.map(\.family).map { otherFamily in
-            FamilyRule(
-                name: otherFamily.name,
-                enabled: !family.excludedFamilies.contains(where: { otherFamily.name == $0 }))
-        }
     }
     
     // MARK: - Update Button

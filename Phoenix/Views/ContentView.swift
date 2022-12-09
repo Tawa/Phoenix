@@ -30,7 +30,6 @@ struct ContentView: View {
                     newComponentSheet(state: state)
                 }.sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
                     FamilySheet(family: family,
-                                projectConfiguration: document.projectConfiguration,
                                 relationViewData: document.familyRelationViewData(familyName: family.wrappedValue.name),
                                 rules: viewModel.allRules(for: family.wrappedValue, document: document),
                                 onDismiss: { viewModel.select(familyName: nil) }
@@ -131,7 +130,6 @@ struct ContentView: View {
     @ViewBuilder private func componentView(for component: Binding<Component>) -> some View {
         ComponentView(
             component: component,
-            projectConfiguration: document.projectConfiguration,
             relationViewData: document.componentRelationViewData(componentName: component.wrappedValue.name),
             relationViewDataToComponentNamed: { dependencyName, selectedValues in
                 document.relationViewData(fromComponentName: component.wrappedValue.name,
@@ -139,7 +137,6 @@ struct ContentView: View {
                                           selectedValues: selectedValues)
             },
             titleForComponentNamed: document.title(forComponentNamed:),
-            componentNamed: document.component(named:),
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
             },
@@ -308,10 +305,10 @@ struct ContentView: View {
     }
     
     private func onDownArrow() {
-        viewModel.selectNextComponent()
+        viewModel.selectNextComponent(names: document.families.flatMap(\.components).map(\.name))
     }
     
     private func onUpArrow() {
-        viewModel.selectPreviousComponent()
+        viewModel.selectPreviousComponent(names: document.families.flatMap(\.components).map(\.name))
     }
 }
