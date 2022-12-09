@@ -10,11 +10,7 @@ import AccessibilityIdentifiers
 
 struct ContentView: View {
     var fileURL: URL?
-    @Binding var document: PhoenixDocument {
-        didSet {
-            print("Document Updated")
-        }
-    }
+    @Binding var document: PhoenixDocument
     @StateObject var viewModel: ViewModel = .init()
     
     init(fileURL: URL?,
@@ -35,11 +31,15 @@ struct ContentView: View {
                 }.sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
                     FamilySheet(family: family,
                                 projectConfiguration: document.projectConfiguration,
+                                relationViewData: document.familyRelationViewData(familyName: family.wrappedValue.name),
                                 rules: viewModel.allRules(for: family.wrappedValue, document: document),
                                 onDismiss: { viewModel.select(familyName: nil) }
                     )
                 }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
-                    ConfigurationView(configuration: $document.projectConfiguration) {
+                    ConfigurationView(
+                        configuration: $document.projectConfiguration,
+                        relationViewData: document.projectConfigurationRelationViewData()
+                    ) {
                         viewModel.showingConfigurationPopup = false
                     }.frame(minHeight: 800)
                 }
@@ -132,6 +132,12 @@ struct ContentView: View {
         ComponentView(
             component: component,
             projectConfiguration: document.projectConfiguration,
+            relationViewData: document.componentRelationViewData(componentName: component.wrappedValue.name),
+            relationViewDataToComponentNamed: { dependencyName, selectedValues in
+                document.relationViewData(fromComponentName: component.wrappedValue.name,
+                                          toComponentName: dependencyName,
+                                          selectedValues: selectedValues)
+            },
             titleForComponentNamed: document.title(forComponentNamed:),
             componentNamed: document.component(named:),
             onGenerateDemoAppProject: {

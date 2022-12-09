@@ -6,6 +6,7 @@ import SwiftUI
 
 struct ConfigurationView: View {
     @Binding var configuration: ProjectConfiguration
+    let relationViewData: RelationViewData
     let columnWidth: CGFloat = 200
     let narrowColumnWidth: CGFloat = 100
     let rowHeight: CGFloat = 30
@@ -15,9 +16,11 @@ struct ConfigurationView: View {
     
     init(
         configuration: Binding<ProjectConfiguration>,
+        relationViewData: RelationViewData,
         onDismiss: @escaping () -> Void,
         focusedName: Int? = nil) {
             self._configuration = configuration
+            self.relationViewData = relationViewData
             self.onDismiss = onDismiss
             self.focusedName = focusedName
         }
@@ -117,10 +120,12 @@ struct ConfigurationView: View {
                 }.padding(.horizontal)
                     .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.addNewButton)
                 if configuration.packageConfigurations.count > 1 {
-                    RelationView(defaultDependencies: $configuration.defaultDependencies,
-                                 projectConfiguration: configuration,
-                                 title: "Default Dependencies",
-                                 getRelationViewDataUseCase: Container.getRelationViewDataUseCase())
+                    RelationView(
+                        defaultDependencies: $configuration.defaultDependencies,
+                        projectConfiguration: configuration,
+                        title: "Default Dependencies",
+                        viewData: relationViewData
+                    )
                 }
                 Button(action: onDismiss) {
                     Text("Close")

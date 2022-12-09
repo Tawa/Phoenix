@@ -61,23 +61,19 @@ struct RelationView: View {
     init(defaultDependencies: Binding<[PackageTargetType: String]>,
          projectConfiguration: ProjectConfiguration,
          title: String,
-         getRelationViewDataUseCase: GetRelationViewDataUseCaseProtocol,
+         viewData: RelationViewData,
          onDuplicate: (() -> Void)? = nil,
          onRemove: (() -> Void)? = nil
     ) {
         _defaultDependencies = defaultDependencies
         self.title = title
-        
-        let viewData = getRelationViewDataUseCase.viewData(
-            defaultDependencies: defaultDependencies.wrappedValue,
-            projectConfiguration: projectConfiguration
-        )
         self.allTypes = viewData.types
         self.allSelectionValues = viewData.selectionValues
         
         self.onDuplicate = onDuplicate
         self.onRemove = onRemove
     }
+
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {

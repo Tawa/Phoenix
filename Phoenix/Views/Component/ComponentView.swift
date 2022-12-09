@@ -8,6 +8,8 @@ import SwiftPackage
 struct ComponentView: View {
     @Binding var component: Component
     let projectConfiguration: ProjectConfiguration
+    let relationViewData: RelationViewData
+    let relationViewDataToComponentNamed: (Name, [PackageTargetType: String]) -> RelationViewData
     let titleForComponentNamed: (Name) -> String
     let componentNamed: (Name) -> Component?
     
@@ -27,6 +29,8 @@ struct ComponentView: View {
     init(
         component: Binding<Component>,
         projectConfiguration: ProjectConfiguration,
+        relationViewData: RelationViewData,
+        relationViewDataToComponentNamed: @escaping (Name, [PackageTargetType: String]) -> RelationViewData,
         titleForComponentNamed: @escaping (Name) -> String,
         componentNamed: @escaping (Name) -> Component?,
         onGenerateDemoAppProject: @escaping () -> Void,
@@ -38,6 +42,8 @@ struct ComponentView: View {
     ) {
         self._component = component
         self.projectConfiguration = projectConfiguration
+        self.relationViewData = relationViewData
+        self.relationViewDataToComponentNamed = relationViewDataToComponentNamed
         self.titleForComponentNamed = titleForComponentNamed
         self.componentNamed = componentNamed
         
@@ -145,7 +151,7 @@ struct ComponentView: View {
                 defaultDependencies: $component.defaultDependencies,
                 projectConfiguration: projectConfiguration,
                 title: "Default Dependencies",
-                getRelationViewDataUseCase: Container.getRelationViewDataToComponentUseCase(component)
+                viewData: relationViewData
             )
         }
     }
@@ -228,7 +234,7 @@ struct ComponentView: View {
             defaultDependencies: dependency.targetTypes,
             projectConfiguration: projectConfiguration,
             title: titleForComponentNamed(dependency.wrappedValue.name),
-            getRelationViewDataUseCase: Container.getRelationViewDataBetweenComponentsUseCase((component, componentNamed(dependency.wrappedValue.name))),
+            viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),
             onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
         )
     }
