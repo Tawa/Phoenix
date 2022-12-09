@@ -85,8 +85,8 @@ struct \(name) {
         }
 
         let content: String = """
-import XCTest
 @testable import \(className)
+import XCTest
 
 final class \(name): XCTestCase {
     func testExample() throws {

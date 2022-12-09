@@ -6,11 +6,11 @@ protocol Toolbar: Screen {
 
 extension Toolbar {
     var configurationButton: XCUIElement {
-        Screen.app.buttons[ToolbarIdentifiers.configurationButton.identifier]
+        Screen.app.buttons[ToolbarIdentifiers.configurationButton.identifier].firstMatch
     }
     
     var newComponentButton: XCUIElement {
-        Screen.app.buttons[ToolbarIdentifiers.newComponentButton.identifier]
+        Screen.app.buttons[ToolbarIdentifiers.newComponentButton.identifier].firstMatch
     }
     
     @discardableResult

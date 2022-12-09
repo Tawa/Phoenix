@@ -3,12 +3,6 @@ import SwiftUI
 import SwiftPackage
 
 struct ResourcesView: View {
-    struct ValueContainer: Hashable, Identifiable {
-        let id: String
-        var value: String
-        var menuOption: TargetResources.ResourcesType
-        var targetTypes: [PackageTargetType]
-    }
     @Binding var resources: [ComponentResources]
     @State private var newFieldValue: String = ""
     let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]

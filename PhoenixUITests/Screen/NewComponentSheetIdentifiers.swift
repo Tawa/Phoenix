@@ -18,14 +18,14 @@ class NewComponentSheet: Screen {
     @discardableResult
     func type(givenName: String) -> NewComponentSheet {
         givenNameTextField.click()
-        givenNameTextField.typeText(givenName)
+        givenNameTextField.enter(text: givenName)
         return NewComponentSheet()
     }
     
     @discardableResult
     func type(familyName: String) -> NewComponentSheet {
         familyNameTextField.click()
-        familyNameTextField.typeText(familyName)
+        familyNameTextField.enter(text: familyName)
         return NewComponentSheet()
     }
     

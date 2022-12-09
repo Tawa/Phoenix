@@ -1,53 +1,59 @@
 import AccessibilityIdentifiers
 import Combine
 import Component
+import Factory
 import SwiftUI
 import SwiftPackage
 
 struct ComponentView: View {
-    @EnvironmentObject var composition: Composition
     @Binding var component: Component
-    let getComponentTitleUseCase: GetComponentTitleUseCaseProtocol
-    let getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol
+    let projectConfiguration: ProjectConfiguration
+    let relationViewData: RelationViewData
+    let relationViewDataToComponentNamed: (Name, [PackageTargetType: String]) -> RelationViewData
+    let titleForComponentNamed: (Name) -> String
+    let componentNamed: (Name) -> Component?
     
     let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
     let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
-    let onRemoveResourceWithId: (String) -> Void
     let onShowDependencySheet: () -> Void
     let onShowRemoteDependencySheet: () -> Void
     
     // MARK: - Private
-    private var title: String { getComponentTitleUseCase.title(forComponent: component.name) }
+    private var title: String { titleForComponentNamed(component.name) }
     private let allModuleTypes: [String]
     
     @State private var showingLocalDependencies: Bool = false
     @State private var showingRemoteDependencies: Bool = false
     
     init(
-        getComponentTitleUseCase: GetComponentTitleUseCaseProtocol,
-        getProjectConfigurationUseCase: GetProjectConfigurationUseCaseProtocol,
-        getSelectedComponentUseCase: GetSelectedComponentUseCaseProtocol,
+        component: Binding<Component>,
+        projectConfiguration: ProjectConfiguration,
+        relationViewData: RelationViewData,
+        relationViewDataToComponentNamed: @escaping (Name, [PackageTargetType: String]) -> RelationViewData,
+        titleForComponentNamed: @escaping (Name) -> String,
+        componentNamed: @escaping (Name) -> Component?,
         onGenerateDemoAppProject: @escaping () -> Void,
         onRemove: @escaping () -> Void,
         allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>],
-        onRemoveResourceWithId: @escaping (String) -> Void,
+        allModuleTypes: [String],
         onShowDependencySheet: @escaping () -> Void,
         onShowRemoteDependencySheet: @escaping () -> Void
     ) {
-        _component = getSelectedComponentUseCase.binding
-        
-        self.getComponentTitleUseCase = getComponentTitleUseCase
-        self.getProjectConfigurationUseCase = getProjectConfigurationUseCase
+        self._component = component
+        self.projectConfiguration = projectConfiguration
+        self.relationViewData = relationViewData
+        self.relationViewDataToComponentNamed = relationViewDataToComponentNamed
+        self.titleForComponentNamed = titleForComponentNamed
+        self.componentNamed = componentNamed
         
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
         self.onRemove = onRemove
         self.allTargetTypes = allTargetTypes
-        self.onRemoveResourceWithId = onRemoveResourceWithId
         self.onShowDependencySheet = onShowDependencySheet
         self.onShowRemoteDependencySheet = onShowRemoteDependencySheet
         
-        self.allModuleTypes = getProjectConfigurationUseCase.value.packageConfigurations.map(\.name)
+        self.allModuleTypes = allModuleTypes
     }
     
     var body: some View {
@@ -143,8 +149,9 @@ struct ComponentView: View {
         section {
             RelationView(
                 defaultDependencies: $component.defaultDependencies,
+                projectConfiguration: projectConfiguration,
                 title: "Default Dependencies",
-                getRelationViewDataUseCase: composition.getRelationViewDataToComponentUseCase(component.name)
+                viewData: relationViewData
             )
         }
     }
@@ -225,8 +232,9 @@ struct ComponentView: View {
     @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
         RelationView(
             defaultDependencies: dependency.targetTypes,
-            title: getComponentTitleUseCase.title(forComponent: dependency.wrappedValue.name),
-            getRelationViewDataUseCase: composition.getRelationViewDataBetweenComponentsUseCase((component.name, dependency.wrappedValue.name)),
+            projectConfiguration: projectConfiguration,
+            title: titleForComponentNamed(dependency.wrappedValue.name),
+            viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),
             onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
         )
     }

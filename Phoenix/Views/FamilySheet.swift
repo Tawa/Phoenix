@@ -21,15 +21,10 @@ extension String {
 }
 
 extension Binding where Value == Bool {
-    var toggled: Binding<Bool> {
+    var inversed: Binding<Bool> {
         Binding(get: { !wrappedValue },
                 set: { wrappedValue = !$0 })
     }
-}
-
-struct FamilySheetData {
-    var family: Family
-    let rules: [FamilyRule]
 }
 
 struct FamilyRule: Identifiable {
@@ -39,12 +34,11 @@ struct FamilyRule: Identifiable {
 }
 
 struct FamilySheet: View {
-    @EnvironmentObject var composition: Composition
     @Binding var family: Family
+    let projectConfiguration: ProjectConfiguration
+    let relationViewData: RelationViewData
     let rules: [FamilyRule]
-    
-    // MARK: - UseCases
-    let selectFamilyUseCase: SelectFamilyUseCaseProtocol
+    let onDismiss: () -> Void
     
     // MARK: - Private
     @Injected(Container.familyFolderNameProvider) private var familyFolderNameProvider
@@ -52,22 +46,19 @@ struct FamilySheet: View {
     private var defaultFolderName: String { familyFolderNameProvider.folderName(forFamily: family.name) }
     private var componentNameExample: String { "Component\(family.ignoreSuffix ? "" : family.name)" }
     private var folderName: Binding<String> { .init(get: { family.folder ?? "" }, set: { family.folder = $0.nilIfEmpty })}
-    private var appendFamilyName: Binding<Bool> {
-        Binding(get: { !family.ignoreSuffix },
-                set: { family.ignoreSuffix = !$0 })
-    }
     
     init(
-        getSelectedFamilyUseCase: GetSelectedFamilyUseCaseProtocol,
-        getFamilySheetDataUseCase: GetFamilySheetDataUseCaseProtocol,
-        selectFamilyUseCase: SelectFamilyUseCaseProtocol
+        family: Binding<Family>,
+        projectConfiguration: ProjectConfiguration,
+        relationViewData: RelationViewData,
+        rules: [FamilyRule],
+        onDismiss: @escaping () -> Void
     ) {
-        _family = getSelectedFamilyUseCase.binding
-        
-        let familySheetData = getFamilySheetDataUseCase.value
-        self.rules = familySheetData.rules
-        
-        self.selectFamilyUseCase = selectFamilyUseCase
+        self._family = family
+        self.projectConfiguration = projectConfiguration
+        self.relationViewData = relationViewData
+        self.rules = rules
+        self.onDismiss = onDismiss
     }
     
     var body: some View {
@@ -76,7 +67,7 @@ struct FamilySheet: View {
                 Text("Family: \(name)")
                     .font(.largeTitle)
                 
-                Toggle(isOn: $family.ignoreSuffix.toggled) {
+                Toggle(isOn: $family.ignoreSuffix.inversed) {
                     Text("Append Component Name with Family Name. ")
                         .bold()
                     + Text("\nExample: \(componentNameExample)")
@@ -97,8 +88,10 @@ struct FamilySheet: View {
                 Spacer().frame(height: 30)
                 
                 RelationView(defaultDependencies: $family.defaultDependencies,
+                             projectConfiguration: projectConfiguration,
                              title: "Default Dependencies",
-                             getRelationViewDataUseCase: composition.getRelationViewDataUseCase())
+                             viewData: relationViewData
+                )
                 
                 VStack(alignment: .leading) {
                     Text("Allow ") + Text(name).bold() + Text(" components to be used in:")
@@ -118,7 +111,7 @@ struct FamilySheet: View {
                 }
                 .padding()
                 
-                Button(action: selectFamilyUseCase.deselect) {
+                Button(action: onDismiss) {
                     Text("Done")
                 }
                 .keyboardShortcut(.cancelAction)

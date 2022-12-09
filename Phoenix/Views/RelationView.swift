@@ -59,21 +59,21 @@ struct RelationView: View {
     let onDuplicate: (() -> Void)?
     
     init(defaultDependencies: Binding<[PackageTargetType: String]>,
+         projectConfiguration: ProjectConfiguration,
          title: String,
-         getRelationViewDataUseCase: GetRelationViewDataUseCaseProtocol,
+         viewData: RelationViewData,
          onDuplicate: (() -> Void)? = nil,
          onRemove: (() -> Void)? = nil
     ) {
         _defaultDependencies = defaultDependencies
         self.title = title
-        
-        let viewData = getRelationViewDataUseCase.viewData(defaultDependencies: defaultDependencies.wrappedValue)
         self.allTypes = viewData.types
         self.allSelectionValues = viewData.selectionValues
         
         self.onDuplicate = onDuplicate
         self.onRemove = onRemove
     }
+
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -111,45 +111,3 @@ struct RelationView: View {
         }.padding()
     }
 }
-    
-    struct RelationView_Previews: PreviewProvider {
-        struct GetRelationViewDataUseCaseMock: GetRelationViewDataUseCaseProtocol {
-            let relationViewData: RelationViewData
-            func viewData(defaultDependencies: [PackageTargetType : String]) -> RelationViewData {
-                relationViewData
-            }
-        }
-        
-        static var previews: some View {
-            RelationView(
-                defaultDependencies: .constant([:]),
-                title: "Title",
-                getRelationViewDataUseCase: GetRelationViewDataUseCaseMock(
-                    relationViewData: .init(
-                        types: [
-                            .init(title: "Contract",
-                                  subtitle: nil,
-                                  value: .init(name: "Contract", isTests: false),
-                                  subValue: nil,
-                                  selectedValue: nil,
-                                  selectedSubValue: nil),
-                            .init(title: "Implementation",
-                                  subtitle: "Test",
-                                  value: .init(name: "Implementation", isTests: false),
-                                  subValue: .init(name: "Implementation", isTests: true),
-                                  selectedValue: "Contract",
-                                  selectedSubValue: "Mock"),
-                            .init(title: "Mock",
-                                  subtitle: nil,
-                                  value: .init(name: "Mocks", isTests: false),
-                                  subValue: nil,
-                                  selectedValue: nil,
-                                  selectedSubValue: nil),
-                        ],
-                        selectionValues: ["Contract", "Implementation", "Mock"]
-                    )
-                )
-            )
-            .previewLayout(.fixed(width: 1000, height: 200))
-        }
-    }

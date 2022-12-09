@@ -8,30 +8,19 @@ import SwiftUI
 import SwiftPackage
 import AccessibilityIdentifiers
 
-class ContentViewInteractor {
-    func onRemoveComponent(with id: String, composition: Composition) {
-        composition.deleteComponentUseCase().deleteComponent(with: id)
-    }
-}
-
 struct ContentView: View {
-    @EnvironmentObject var composition: Composition
-    
     var fileURL: URL?
     @Binding var document: PhoenixDocument
-    @StateObject var viewModel: ViewModel
-    let interactor: ContentViewInteractor = .init()
+    @StateObject var viewModel: ViewModel = .init()
     
     init(fileURL: URL?,
-         document: Binding<PhoenixDocument>,
-         viewModel: ViewModel) {
+         document: Binding<PhoenixDocument>) {
         self.fileURL = fileURL
         self._document = document
-        self._viewModel = .init(wrappedValue: viewModel)
     }
     
     var body: some View {
-        return VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             splitView(componentsList, detail: detailView)
                 .alert(item: $viewModel.alertState, content: { alertState in
                     Alert(title: Text("Error"),
@@ -39,14 +28,18 @@ struct ContentView: View {
                           dismissButton: .default(Text("Ok")))
                 }).sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
                     newComponentSheet(state: state)
-                }.sheet(isPresented: .constant(viewModel.selectedFamilyName != nil)) {
-                    FamilySheet(
-                        getSelectedFamilyUseCase: composition.getSelectedFamilyUseCase(),
-                        getFamilySheetDataUseCase: composition.getFamilySheetDataUseCase(),
-                        selectFamilyUseCase: composition.selectFamilyUseCase()
+                }.sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
+                    FamilySheet(family: family,
+                                projectConfiguration: document.projectConfiguration,
+                                relationViewData: document.familyRelationViewData(familyName: family.wrappedValue.name),
+                                rules: viewModel.allRules(for: family.wrappedValue, document: document),
+                                onDismiss: { viewModel.select(familyName: nil) }
                     )
                 }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
-                    ConfigurationView(getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase()) {
+                    ConfigurationView(
+                        configuration: $document.projectConfiguration,
+                        relationViewData: document.projectConfigurationRelationViewData()
+                    ) {
                         viewModel.showingConfigurationPopup = false
                     }.frame(minHeight: 800)
                 }
@@ -76,12 +69,14 @@ struct ContentView: View {
         }
         .onAppear(perform: viewModel.checkForUpdate)
         .toolbar(content: toolbarViews)
+        .frame(minWidth: 900)
     }
     
     // MARK: - Views
     @ViewBuilder private func splitView<Sidebar: View, Detail: View>(_ sidebar: () -> Sidebar, detail: () -> Detail) -> some View {
         if #available(macOS 13.0, *) {
             NavigationSplitView(sidebar: sidebar, detail: detailView)
+                .navigationSplitViewColumnWidth(min: 750, ideal: 750, max: nil)
         } else {
             HSplitView {
                 sidebar()
@@ -91,24 +86,34 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func componentsList() -> some View {
-        VStack {
-            FilterView(text: composition.getComponentsFilterUseCase().binding)
-            ComponentsList(sections: viewModel.componentsListSections)
+        ZStack {
+            Button(action: onUpArrow, label: {})
+                .opacity(0)
+                .keyboardShortcut(.upArrow, modifiers: [])
+            Button(action: onDownArrow, label: {})
+                .opacity(0)
+                .keyboardShortcut(.downArrow, modifiers: [])
+            VStack {
+                FilterView(text: $viewModel.componentsListFilter.nonOptionalBinding)
+                ComponentsList(
+                    sections: viewModel.componentsListSections(document: document),
+                    onSelect: viewModel.select(componentName:),
+                    onSelectSection: viewModel.select(familyName:)
+                )
+            }
         }
         .frame(minWidth: 250)
+            
     }
     
     @ViewBuilder private func detailView() -> some View {
-        if let selectedComponentName = viewModel.selectedComponentName,
-           composition.getSelectedComponentUseCase().value.name != .empty,
-           let selectedComponent = document.getComponent(withName: selectedComponentName),
-           selectedComponent.name != .empty {
-            componentView(for: selectedComponent)
+        if let selectedComponentBinding = viewModel.selectedComponent(document: $document) {
+            componentView(for: selectedComponentBinding)
                 .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
-                    dependencySheet(component: selectedComponent)
+                    dependencySheet(component: selectedComponentBinding.wrappedValue)
                 }
                 .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
-                    remoteDependencySheet(component: selectedComponent)
+                    remoteDependencySheet(component: selectedComponentBinding.wrappedValue)
                 }
         } else {
             HStack(alignment: .top) {
@@ -119,25 +124,31 @@ struct ContentView: View {
                     Spacer()
                 }
                 Spacer()
-            }.frame(minWidth: 750)
+            }
         }
     }
     
-    @ViewBuilder private func componentView(for component: Component) -> some View {
+    @ViewBuilder private func componentView(for component: Binding<Component>) -> some View {
         ComponentView(
-            getComponentTitleUseCase: composition.getComponentTitleUseCase(),
-            getProjectConfigurationUseCase: composition.getProjectConfigurationUseCase(),
-            getSelectedComponentUseCase: composition.getSelectedComponentUseCase(),
-            onGenerateDemoAppProject: {
-                viewModel.onGenerateDemoProject(for: component, from: document, fileURL: fileURL)
+            component: component,
+            projectConfiguration: document.projectConfiguration,
+            relationViewData: document.componentRelationViewData(componentName: component.wrappedValue.name),
+            relationViewDataToComponentNamed: { dependencyName, selectedValues in
+                document.relationViewData(fromComponentName: component.wrappedValue.name,
+                                          toComponentName: dependencyName,
+                                          selectedValues: selectedValues)
             },
-            onRemove: { interactor.onRemoveComponent(with: component.id, composition: composition) },
-            allTargetTypes: allTargetTypes(forComponent: component),
-            onRemoveResourceWithId: { document.removeResource(withId: $0, forComponentWithName: component.name) },
+            titleForComponentNamed: document.title(forComponentNamed:),
+            componentNamed: document.component(named:),
+            onGenerateDemoAppProject: {
+                viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
+            },
+            onRemove: { document.removeComponent(withName: component.wrappedValue.name) },
+            allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
+            allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
         )
-        .frame(minWidth: 750)
     }
     
     @ViewBuilder private func newComponentSheet(state: ComponentPopupState) -> some View {
@@ -149,21 +160,21 @@ struct ContentView: View {
             case let .template(component):
                 try document.addNewComponent(withName: name, template: component)
             }
-            viewModel.selectedComponentName = name
+            viewModel.select(componentName: name)
             viewModel.showingNewComponentPopup = nil
         }, onDismiss: {
             viewModel.showingNewComponentPopup = nil
         }, familyNameSuggestion: { familyName in
             guard !familyName.isEmpty else { return nil }
-            return document.componentsFamilies.first { componentFamily in
+            return document.families.first { componentFamily in
                 componentFamily.family.name.hasPrefix(familyName)
             }?.family.name
         })
     }
     
     @ViewBuilder private func dependencySheet(component: Component) -> some View {
-        let familyName = document.getFamily(withName: component.name.family)?.name ?? ""
-        let allFamilies = document.componentsFamilies.filter { !$0.family.excludedFamilies.contains(familyName) }
+        let familyName = document.family(named: component.name.family)?.name ?? ""
+        let allFamilies = document.families.filter { !$0.family.excludedFamilies.contains(familyName) }
         let allNames = allFamilies.flatMap(\.components).map(\.name)
         let filteredNames = Dictionary(grouping: allNames.filter { name in
             component.name != name && !component.localDependencies.contains { localDependency in
@@ -173,7 +184,7 @@ struct ContentView: View {
         let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
             partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
                                                                   rows: keyValue.value.map { name in
-                ComponentDependenciesListRow(name: document.title(for: name),
+                ComponentDependenciesListRow(name: document.title(forComponentNamed: name),
                                              onSelect: {
                     document.addDependencyToComponent(withName: component.name, dependencyName: name)
                     viewModel.showingDependencySheet = false
@@ -218,19 +229,9 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func toolbarViews() -> some View {
-        ZStack {
-            Button(action: onUpArrow, label: {})
-                .opacity(0)
-                .keyboardShortcut(.upArrow, modifiers: [])
-            Button(action: onDownArrow, label: {})
-                .opacity(0)
-                .keyboardShortcut(.downArrow, modifiers: [])
-            
-            HStack {
-                toolbarLeadingItems()
-                toolbarTrailingItems()
-            }
-        }
+        toolbarLeadingItems()
+        Spacer()
+        toolbarTrailingItems()
     }
     
     @ViewBuilder private func toolbarLeadingItems() -> some View {
@@ -291,38 +292,10 @@ struct ContentView: View {
     }
     
     // MARK: - Private
-    private func componentTypes(for dependency: ComponentDependency, component: Component) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
-        allTargetTypes(forComponent: component).compactMap { targetType -> IdentifiableWithSubtypeAndSelection<PackageTargetType, String>? in
-            let selectedValue = dependency.targetTypes[targetType.value]
-            let selectedSubValue: String? = targetType.subValue.flatMap { dependency.targetTypes[$0] }
-            
-            return IdentifiableWithSubtypeAndSelection<PackageTargetType, String>(
-                title: targetType.title,
-                subtitle: targetType.subtitle,
-                value: targetType.value,
-                subValue: targetType.subValue,
-                selectedValue: selectedValue,
-                selectedSubValue: selectedSubValue)
-        }
-    }
-    
-    private func enabledDependencyTypes(for dependency: RemoteDependency, component: Component) -> [PackageTargetType] {
-        allTargetTypes(forComponent: component).filter { dependency.targetTypes.contains($0.value) }.map { $0.value }
-    }
-    
-    private func allDependencyTypes(component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
-        allTargetTypes(forComponent: component)
-    }
-    
     private func allTargetTypes(forComponent component: Component) -> [IdentifiableWithSubtype<PackageTargetType>] {
         configurationTargetTypes().filter { target in
             component.modules.keys.contains(where: { $0.lowercased() == target.value.name.lowercased() })
         }
-    }
-    
-    private func allTargetTypes(forDependency dependency: ComponentDependency) -> [IdentifiableWithSubtype<PackageTargetType>] {
-        guard let component = document.getComponent(withName: dependency.name) else { return [] }
-        return allTargetTypes(forComponent: component)
     }
     
     private func configurationTargetTypes() -> [IdentifiableWithSubtype<PackageTargetType>] {
@@ -335,29 +308,10 @@ struct ContentView: View {
     }
     
     private func onDownArrow() {
-        composition.selectNextComponentUseCase().perform()
+        viewModel.selectNextComponent()
     }
     
     private func onUpArrow() {
-        composition.selectPreviousComponentUseCase().perform()
-    }
-    
-    func allDependenciesConfiguration(
-        defaultDependencies: [PackageTargetType: String]
-    ) -> [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>] {
-        let configuration = document.projectConfiguration
-        return configuration.packageConfigurations.map { packageConfiguration in
-            IdentifiableWithSubtypeAndSelection(
-                title: packageConfiguration.name,
-                subtitle: packageConfiguration.hasTests ? "Tests" : nil,
-                value: PackageTargetType(name: packageConfiguration.name, isTests: false),
-                subValue: packageConfiguration.hasTests ? PackageTargetType(name: packageConfiguration.name, isTests: true) : nil,
-                selectedValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: false)],
-                selectedSubValue: defaultDependencies[PackageTargetType(name: packageConfiguration.name, isTests: true)])
-        }
-    }
-    
-    func allDependenciesSelectionValues(forComponent component: Component) -> [String] {
-        component.modules.map(\.key).sorted()
+        viewModel.selectPreviousComponent()
     }
 }

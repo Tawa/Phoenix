@@ -4,6 +4,7 @@ import Component
 import ComponentDetailsProviderContract
 import DemoAppFeature
 import DemoAppGeneratorContract
+import Factory
 import PackageGeneratorContract
 import PBXProjectSyncerContract
 import PhoenixDocument
@@ -31,12 +32,55 @@ enum AlertState: Hashable, Identifiable {
 }
 
 class ViewModel: ObservableObject {
-    // MARK: - Selection
-    var subscriptions: Set<AnyCancellable> = .init()
-    let composition: Composition
-    @Published var selectedComponentName: Name? = nil
-    @Published var selectedFamilyName: String? = nil
-    @Published var componentsListSections: [ComponentsListSection] = []
+    // MARK: - Selected Component
+    @Published private(set) var selectedComponentName: Name? = nil
+    func select(componentName: Name) {
+        selectedComponentName = componentName
+    }
+    func selectNextComponent() {
+        
+    }
+    func selectPreviousComponent() {
+        
+    }
+    func selectedComponent(document: Binding<PhoenixDocument>) -> Binding<Component>? {
+        guard
+            let selectedComponentName,
+            let familyIndex = document.wrappedValue.families.firstIndex(where: { $0.family.name == selectedComponentName.family }),
+            let componentIndex = document.wrappedValue.families[familyIndex].components.firstIndex(where: { $0.name == selectedComponentName })
+        else { return nil }
+        return Binding(
+            get: { document.wrappedValue.families[familyIndex].components[componentIndex] },
+            set: { document.wrappedValue.families[familyIndex].components[componentIndex] = $0 }
+        )
+    }
+    
+    // MARK: - Components List
+    @Published var componentsListFilter: String? = nil
+
+    // MARK: - Family Sheet
+    @Published private(set) var selectedFamilyName: String? = nil
+    func select(familyName: String?) {
+        selectedFamilyName = familyName
+    }
+    func selectedFamily(document: Binding<PhoenixDocument>) -> Binding<Family>? {
+        guard
+            let selectedFamilyName,
+            let index = document.wrappedValue.families.firstIndex(where: { $0.family.name == selectedFamilyName })
+        else { return nil }
+        return Binding(
+            get: { document.wrappedValue.families[index].family },
+            set: { document.wrappedValue.families[index].family = $0 }
+        )
+    }
+    
+    func allRules(for family: Family, document: PhoenixDocument) -> [FamilyRule] {
+        document.families.map(\.family).map { otherFamily in
+            FamilyRule(
+                name: otherFamily.name,
+                enabled: !family.excludedFamilies.contains(where: { otherFamily.name == $0 }))
+        }
+    }
     
     // MARK: - Update Button
     private var appUpdateVersionInfoSub: AnyCancellable? = nil
@@ -67,28 +111,16 @@ class ViewModel: ObservableObject {
     }
     @Published var skipXcodeProject: Bool = false
 
-    let appVersionUpdateProvider: AppVersionUpdateProviderProtocol
-    let pbxProjSyncer: PBXProjectSyncerProtocol
-    let filesURLDataStore: FilesURLDataStoreProtocol
-    let projectGenerator: ProjectGeneratorProtocol
-    
-    
-    // MARK: - Initialiser
-    init(
-        appVersionUpdateProvider: AppVersionUpdateProviderProtocol,
-        pbxProjSyncer: PBXProjectSyncerProtocol,
-        filesURLDataStore: FilesURLDataStoreProtocol,
-        projectGenerator: ProjectGeneratorProtocol,
-        composition: Composition
-    ) {
-        self.appVersionUpdateProvider = appVersionUpdateProvider
-        self.pbxProjSyncer = pbxProjSyncer
-        self.filesURLDataStore = filesURLDataStore
-        self.projectGenerator = projectGenerator
-        self.composition = composition
-
-        subscribeToPublishers()
-    }
+    @Injected(Container.appVersionUpdateProvider)
+    var appVersionUpdateProvider: AppVersionUpdateProviderProtocol
+    @Injected(Container.familyFolderNameProvider)
+    var familyFolderNameProvider: FamilyFolderNameProviderProtocol
+    @Injected(Container.filesURLDataStore)
+    var filesURLDataStore: FilesURLDataStoreProtocol
+    @Injected(Container.pbxProjSyncer)
+    var pbxProjSyncer: PBXProjectSyncerProtocol
+    @Injected(Container.projectGenerator)
+    var projectGenerator: ProjectGeneratorProtocol
         
     func onConfigurationButton() {
         showingConfigurationPopup = true
@@ -239,46 +271,5 @@ class ViewModel: ObservableObject {
             } receiveValue: { appVersionInfos in
                 self.appUpdateVersionInfo = appVersionInfos.results.first
             }
-    }
-}
-
-// MARK: - Private
-private extension ViewModel {
-    func subscribeToPublishers() {
-        composition
-            .selectionRepository()
-            .selectionPathPublisher
-            .sink { [weak self] selectionPath in
-                self?.selectedComponentName = self?.composition.getSelectedComponentUseCase().binding.wrappedValue.name
-            }.store(in: &subscriptions)
-        
-        composition
-            .selectionRepository()
-            .familyNamePublisher
-            .sink { [weak self] familyName in
-                guard self?.selectedFamilyName != familyName else { return }
-                self?.selectedFamilyName = familyName
-            }.store(in: &subscriptions)
-        
-        _selectedFamilyName
-            .projectedValue
-            .sink { [weak self] familyName in
-                guard let selectionRepository = self?.composition.selectionRepository(),
-                      selectionRepository.familyName != familyName
-                else { return }
-                if let familyName = familyName {
-                    selectionRepository.select(familyName: familyName)
-                } else {
-                    selectionRepository.deselectFamilyName()
-                }
-            }.store(in: &subscriptions)
-        
-        composition
-            .getComponentsListItemsUseCase()
-            .listPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] sections in
-                self?.componentsListSections = sections
-            }.store(in: &subscriptions)
     }
 }
