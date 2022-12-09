@@ -274,7 +274,6 @@
 				38BCCC932854A0BA00E928CA /* CompositionRoot */,
 				38E2513B28392CE1002FFA31 /* Data */,
 				38E0B2FB2815765E00B5992D /* DataStore */,
-				B240A5D9291D5E4F00815CC3 /* Domain */,
 				B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */,
 				3873E5AE2804C50A000BCB03 /* Info.plist */,
 				3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */,
@@ -425,13 +424,6 @@
 				B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */,
 			);
 			path = PhoenixUITests;
-			sourceTree = "<group>";
-		};
-		B240A5D9291D5E4F00815CC3 /* Domain */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Domain;
 			sourceTree = "<group>";
 		};
 		B27B03FC291ED1DC0024551A /* Component */ = {
