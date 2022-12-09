@@ -1,9 +1,9 @@
 import XCTest
 
 final class PhoenixUITests: XCTestCase {
-
+    
     let screen = Screen()
-
+    
     override func setUp() {
         super.setUp()
         
@@ -27,7 +27,7 @@ final class PhoenixUITests: XCTestCase {
         let wordpressUseCases = wordpress + useCases
         let wordpressRepository = wordpress + repository
         let wordpressDataStore = wordpress + dataStore
-
+        
         screen
             .launch()
             .closeAllWindowsIfNecessary()
@@ -48,12 +48,12 @@ final class PhoenixUITests: XCTestCase {
             .clickLocalDependenciesButton()
             .selectDefaultDependenciesContractContractAndMock()
             .selectAndAssertContractAndMock(component: wordpressFeature,
-                    andAddDependency: wordpressUseCases)
+                                            andAddDependency: wordpressUseCases)
             .selectAndAssertContractContractAndMock(component: wordpressFeature,
                                                     andAddDependency: navigator)
             .selectAndAssertContractAndMock(component: wordpressUseCases,
-                    andAddDependency: wordpressRepository)
+                                            andAddDependency: wordpressRepository)
             .selectAndAssertContractAndMock(component: wordpressRepository,
-                    andAddDependency: networking, wordpressDataStore)
+                                            andAddDependency: networking, wordpressDataStore)
     }
 }

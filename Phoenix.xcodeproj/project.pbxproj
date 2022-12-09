@@ -50,6 +50,7 @@
 		B266B0B528BA8BF900778F3A /* RelativeURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B266B0B428BA8BF900778F3A /* RelativeURLProvider */; };
 		B291BD2328CA83A0000D2149 /* DemoAppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = B291BD2228CA83A0000D2149 /* DemoAppFeature */; };
 		B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */; };
+		B29BE1042943D37C00675860 /* ViewModel+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29BE1032943D37C00675860 /* ViewModel+Selection.swift */; };
 		B29FDC5A2905725B006A0007 /* RemoteDependencySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */; };
 		B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */; };
 		B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5928BAC12200848D93 /* PackageGenerator */; };
@@ -154,6 +155,7 @@
 		B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITests.swift; sourceTree = "<group>"; };
 		B26383E928D7773D00C9380E /* PhoenixRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PhoenixRelease.entitlements; sourceTree = "<group>"; };
 		B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+Features.swift"; sourceTree = "<group>"; };
+		B29BE1032943D37C00675860 /* ViewModel+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Selection.swift"; sourceTree = "<group>"; };
 		B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencySheet.swift; sourceTree = "<group>"; };
 		B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesURLDataStore.swift; sourceTree = "<group>"; };
 		B2E1D48429425CCB00FF07DE /* ViewModel+ComponentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+ComponentsList.swift"; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 			isa = PBXGroup;
 			children = (
 				38E2512A2837E163002FFA31 /* ViewModel.swift */,
+				B29BE1032943D37C00675860 /* ViewModel+Selection.swift */,
 				B2E1D48429425CCB00FF07DE /* ViewModel+ComponentsList.swift */,
 			);
 			path = ViewModel;
@@ -716,6 +719,7 @@
 				B2E1D48529425CCB00FF07DE /* ViewModel+ComponentsList.swift in Sources */,
 				388DA8A6281862630066086A /* CustomToggle.swift in Sources */,
 				381855762819CACD00BF6696 /* ResourcesView.swift in Sources */,
+				B29BE1042943D37C00675860 /* ViewModel+Selection.swift in Sources */,
 				B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
 				38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */,

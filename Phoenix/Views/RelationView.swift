@@ -59,7 +59,6 @@ struct RelationView: View {
     let onDuplicate: (() -> Void)?
     
     init(defaultDependencies: Binding<[PackageTargetType: String]>,
-         projectConfiguration: ProjectConfiguration,
          title: String,
          viewData: RelationViewData,
          onDuplicate: (() -> Void)? = nil,
