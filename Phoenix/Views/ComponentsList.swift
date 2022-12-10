@@ -82,3 +82,24 @@ struct ComponentsList: View {
         }
     }
 }
+
+struct ComponentsList_Previews: PreviewProvider {
+    static var previews: some View {
+        ComponentsList(
+            sections: [
+                ComponentsListSection(
+                    id: "id0",
+                    name: "Repositories",
+                    folderName: nil,
+                    rows: [
+                        ComponentsListRow(id: Name(given: "Home", family: "Repository"), name: "HomeRepository", isSelected: true),
+                        ComponentsListRow(id: Name(given: "Settings", family: "Repository"), name: "SettingsRepository", isSelected: false),
+                        ComponentsListRow(id: Name(given: "About", family: "Repository"), name: "AboutRepository", isSelected: false),
+                    ]
+                ),
+            ],
+            onSelect: { _ in },
+            onSelectSection: { _ in }
+        )
+    }
+}
