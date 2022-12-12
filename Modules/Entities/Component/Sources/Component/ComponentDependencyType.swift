@@ -16,7 +16,7 @@ public enum ComponentDependencyType: Codable, Hashable, Identifiable, Comparable
         case (.local(let lhsValue), .local(let rhsValue)):
             return lhsValue.id < rhsValue.id
         case (.remote(let lhsValue), .remote(let rhsValue)):
-            return lhsValue.id < rhsValue.id
+            return lhsValue.url < rhsValue.url
         case (.remote(_), .local(_)):
             return false
         case (.local(_), .remote(_)):
