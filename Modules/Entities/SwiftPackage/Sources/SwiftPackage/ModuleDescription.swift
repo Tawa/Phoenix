@@ -8,6 +8,14 @@ public enum ExternalDependencyName: Codable, Hashable, Identifiable {
             return name
         }
     }
+    public var package: String? {
+        switch self {
+        case .name:
+            return nil
+        case .product(_, let package):
+            return package
+        }
+    }
 
     case name(String)
     case product(name: String, package: String)

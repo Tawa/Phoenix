@@ -12,18 +12,13 @@ struct ConfigurationView: View {
     let rowHeight: CGFloat = 30
     let onDismiss: () -> Void
     
-    @FocusState private var focusedName: Int?
-    
-    init(
-        configuration: Binding<ProjectConfiguration>,
-        relationViewData: RelationViewData,
-        onDismiss: @escaping () -> Void,
-        focusedName: Int? = nil) {
-            self._configuration = configuration
-            self.relationViewData = relationViewData
-            self.onDismiss = onDismiss
-            self.focusedName = focusedName
-        }
+    init(configuration: Binding<ProjectConfiguration>,
+         relationViewData: RelationViewData,
+         onDismiss: @escaping () -> Void) {
+        self._configuration = configuration
+        self.relationViewData = relationViewData
+        self.onDismiss = onDismiss
+    }
     
     @ViewBuilder
     func columnView<HeaderContent: View, RowContent: View>(
@@ -69,7 +64,6 @@ struct ConfigurationView: View {
                     } content: { index in
                         TextField("Name",
                                   text: $configuration.packageConfigurations[index].name)
-                        .focused($focusedName, equals: index)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.textField(column: 0, row: index))
                     }.frame(minWidth: columnWidth)

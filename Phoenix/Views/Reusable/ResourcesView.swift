@@ -11,7 +11,7 @@ struct ResourcesView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            ForEach($resources, id: \.self) { $resource in
+            ForEach($resources) { $resource in
                 HStack {
                     Divider()
                     VStack(alignment: .leading) {

@@ -7,7 +7,7 @@ public enum ComponentResourcesType: String, Codable, Hashable {
 }
 
 public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
-    public let id: String
+    public let id: String = UUID().uuidString
     public var folderName: String
     public var type: TargetResources.ResourcesType
     public var targets: [PackageTargetType]
@@ -18,31 +18,12 @@ public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
         case targets
     }
 
-    public init(id: String = UUID().uuidString,
-                folderName: String,
+    public init(folderName: String,
                 type: TargetResources.ResourcesType,
                 targets: [PackageTargetType]) {
-        self.id = id
         self.folderName = folderName
         self.type = type
         self.targets = targets
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        id = UUID().uuidString
-        folderName = try container.decode(String.self, forKey: .folderName)
-        type = try container.decode(TargetResources.ResourcesType.self, forKey: .type)
-        targets = try container.decode([PackageTargetType].self, forKey: .targets)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(folderName, forKey: .folderName)
-        try container.encode(type, forKey: .type)
-        try container.encode(targets, forKey: .targets)
     }
 
     public static func <(lhs: ComponentResources, rhs: ComponentResources) -> Bool {

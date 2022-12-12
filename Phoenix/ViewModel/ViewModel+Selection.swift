@@ -8,7 +8,7 @@ extension ViewModel {
     func selectNextComponent(names: [Name]) {
         var names = names
         if let componentsListFilter {
-            names = names.filter { $0.full.lowercased().contains(componentsListFilter) }
+            names = names.filter { $0.full.lowercased().contains(componentsListFilter.lowercased()) }
         }
         guard let selectedComponentName,
               let index = names.firstIndex(of: selectedComponentName)
@@ -23,7 +23,7 @@ extension ViewModel {
     func selectPreviousComponent(names: [Name]) {
         var names = names
         if let componentsListFilter {
-            names = names.filter { $0.full.lowercased().contains(componentsListFilter) }
+            names = names.filter { $0.full.lowercased().contains(componentsListFilter.lowercased()) }
         }
         guard let selectedComponentName,
               let index = names.firstIndex(of: selectedComponentName)

@@ -18,21 +18,6 @@ final class ComponentDependencyTypeTests: XCTestCase {
         XCTAssertEqual(id, "GivenFamily")
     }
     
-    func testRemoveId() {
-        // Given
-        let componentDependencyType = ComponentDependencyType.remote(
-            RemoteDependency(url: "url",
-                             name: .name("Name"),
-                             value: .branch(name: "main"))
-        )
-        
-        // When
-        let id = componentDependencyType.id
-        
-        // Then
-        XCTAssertEqual(id, "url")
-    }
-    
     func testComparison() {
         // Given
         let localComponentDependencyType1 = ComponentDependencyType.local(
