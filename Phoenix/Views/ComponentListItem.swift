@@ -9,9 +9,9 @@ struct ComponentListItem: View {
     var body: some View {
         Button(action: onSelect) {
             ZStack(alignment: .leading) {
-                isSelected ? Color.gray : Color.clear
+                isSelected ? Color.accentColor : Color.clear
                 Text(name)
-                    .foregroundColor(isSelected ? Color.white : nil)
+                    .foregroundColor(Color.white)
                     .padding(8)
             }
             .contentShape(Rectangle())

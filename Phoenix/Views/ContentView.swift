@@ -8,10 +8,31 @@ import SwiftUI
 import SwiftPackage
 import AccessibilityIdentifiers
 
+enum ListSelection: String, Hashable, CaseIterable, Identifiable {
+    var id: String { rawValue }
+    var title: String { rawValue.capitalized }
+    var keyboardShortcut: KeyEquivalent {
+        switch self {
+        case .components:
+            return "1"
+//        case .remote:
+//            return "2"
+//        case .plugins:
+//            return "3"
+        }
+    }
+    
+    case components
+//    case remote
+//    case plugins
+}
+
 struct ContentView: View {
     var fileURL: URL?
     @Binding var document: PhoenixDocument
     @StateObject var viewModel: ViewModel = .init()
+    
+    @State private var listSelection: ListSelection = .components
     
     init(fileURL: URL?,
          document: Binding<PhoenixDocument>) {
@@ -21,7 +42,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            splitView(componentsList, detail: detailView)
+            splitView(sideView, detail: detailView)
                 .alert(item: $viewModel.alertState, content: { alertState in
                     Alert(title: Text("Error"),
                           message: Text(alertState.title),
@@ -84,7 +105,7 @@ struct ContentView: View {
         }
     }
     
-    @ViewBuilder private func componentsList() -> some View {
+    @ViewBuilder private func sideView() -> some View {
         ZStack {
             Button(action: onUpArrow, label: {})
                 .opacity(0)
@@ -92,17 +113,56 @@ struct ContentView: View {
             Button(action: onDownArrow, label: {})
                 .opacity(0)
                 .keyboardShortcut(.downArrow, modifiers: [])
+            if ListSelection.allCases.count > 1 {
+                ForEach(ListSelection.allCases) { selection in
+                    Button(action: { listSelection = selection }, label: {})
+                        .opacity(0)
+                        .keyboardShortcut(selection.keyboardShortcut, modifiers: .command)
+                }
+            }
+            
             VStack {
+                if ListSelection.allCases.count > 1 {
+                    Picker("", selection: $listSelection) {
+                        ForEach(ListSelection.allCases) { selection in
+                            Text(selection.title)
+                                .tag(selection)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding()
+                }
+                
+                switch listSelection {
+                case .components:
+                    componentsList()
+//                case .remote:
+//                    Text("Remove Components")
+//                    Spacer()
+//                case .plugins:
+//                    Text("Plugins Components")
+//                    Spacer()
+                }
                 FilterView(text: $viewModel.componentsListFilter.nonOptionalBinding)
-                ComponentsList(
-                    sections: viewModel.componentsListSections(document: document),
-                    onSelect: viewModel.select(componentName:),
-                    onSelectSection: viewModel.select(familyName:)
-                )
             }
         }
         .frame(minWidth: 250)
-            
+    }
+    
+    @ViewBuilder private func componentsList() -> some View {
+        VStack(alignment: .leading) {
+            Button(action: viewModel.onAddButton) {
+                Label("New Component", systemImage: "plus.circle.fill")
+            }
+            .keyboardShortcut("A", modifiers: [.command, .shift])
+            .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
+            .padding(.horizontal)
+            ComponentsList(
+                sections: viewModel.componentsListSections(document: document),
+                onSelect: viewModel.select(componentName:),
+                onSelectSection: viewModel.select(familyName:)
+            )
+        }
     }
     
     @ViewBuilder private func detailView() -> some View {
@@ -246,12 +306,6 @@ struct ContentView: View {
         }
         .keyboardShortcut(",", modifiers: [.command])
         .with(accessibilityIdentifier: ToolbarIdentifiers.configurationButton)
-        Button(action: viewModel.onAddButton) {
-            Image(systemName: "plus.circle.fill")
-            Text("New Component")
-        }
-        .keyboardShortcut("A", modifiers: [.command, .shift])
-        .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
     }
 
     @ViewBuilder private func toolbarTrailingItems() -> some View {
