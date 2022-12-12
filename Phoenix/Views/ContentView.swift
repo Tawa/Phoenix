@@ -9,22 +9,23 @@ import SwiftPackage
 import AccessibilityIdentifiers
 
 enum ListSelection: String, Hashable, CaseIterable, Identifiable {
+    static var allCases: [ListSelection] { [.components] }
     var id: String { rawValue }
     var title: String { rawValue.capitalized }
     var keyboardShortcut: KeyEquivalent {
         switch self {
         case .components:
             return "1"
-//        case .remote:
-//            return "2"
-//        case .plugins:
-//            return "3"
+        case .remote:
+            return "2"
+        case .plugins:
+            return "3"
         }
     }
     
     case components
-//    case remote
-//    case plugins
+    case remote
+    case plugins
 }
 
 struct ContentView: View {
@@ -130,18 +131,18 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    .padding()
+                    .padding(.leading, 8)
+                    .padding(.trailing, 16)
+                    .foregroundColor(.accentColor)
                 }
                 
                 switch listSelection {
                 case .components:
                     componentsList()
-//                case .remote:
-//                    Text("Remove Components")
-//                    Spacer()
-//                case .plugins:
-//                    Text("Plugins Components")
-//                    Spacer()
+                case .remote:
+                    remoteComponentsList()
+                case .plugins:
+                    pluginsList()
                 }
                 FilterView(text: $viewModel.componentsListFilter.nonOptionalBinding)
             }
@@ -162,6 +163,36 @@ struct ContentView: View {
                 onSelect: viewModel.select(componentName:),
                 onSelectSection: viewModel.select(familyName:)
             )
+        }
+    }
+    
+    @ViewBuilder private func remoteComponentsList() -> some View {
+        VStack(alignment: .leading) {
+            Button(action: viewModel.onAddButton) {
+                Label("New Remote Dependency", systemImage: "plus.circle.fill")
+            }
+            .keyboardShortcut("A", modifiers: [.command, .shift])
+            .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
+            .padding(.horizontal)
+            ScrollView {
+                
+            }
+            Spacer()
+        }
+    }
+    
+    @ViewBuilder private func pluginsList() -> some View {
+        VStack(alignment: .leading) {
+            Button(action: viewModel.onAddButton) {
+                Label("New Plugin", systemImage: "plus.circle.fill")
+            }
+            .keyboardShortcut("A", modifiers: [.command, .shift])
+            .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
+            .padding(.horizontal)
+            ScrollView {
+                
+            }
+            Spacer()
         }
     }
     
