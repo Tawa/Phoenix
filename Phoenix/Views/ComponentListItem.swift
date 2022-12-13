@@ -11,7 +11,7 @@ struct ComponentListItem: View {
             ZStack(alignment: .leading) {
                 isSelected ? Color.accentColor : Color.clear
                 Text(name)
-                    .foregroundColor(Color.white)
+                    .foregroundColor(isSelected ? Color.white : nil)
                     .padding(8)
             }
             .contentShape(Rectangle())
