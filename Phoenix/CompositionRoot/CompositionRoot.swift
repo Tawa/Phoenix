@@ -21,9 +21,7 @@ import SwiftPackage
 
 extension Container {
     static let phoenixDocumentFileWrappersDecoder = Factory {
-        PhoenixDocumentFileWrappersDecoder(
-            appVersionStringParser: Container.appVersionStringParser()
-        ) as PhoenixDocumentFileWrappersDecoderProtocol
+        PhoenixDocumentFileWrappersDecoder() as PhoenixDocumentFileWrappersDecoderProtocol
     }
 
     static let phoenixDocumentFileWrapperEncoder = Factory {

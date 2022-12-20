@@ -9,18 +9,21 @@ public struct PhoenixDocument: Hashable {
             familiesDetails = families.map(\.family).reduce(into: [String: Family](), { $0[$1.name] = $1 })
         }
     }
+    public var remoteComponents: [RemoteComponent]
     public var projectConfiguration: ProjectConfiguration
     
     public var components: [Name: Component]
     public var familiesDetails: [String: Family]
     
     public init(families: [ComponentsFamily] = [],
-         projectConfiguration: ProjectConfiguration = .default) {
+                remoteComponents: [RemoteComponent] = [],
+                projectConfiguration: ProjectConfiguration = .default) {
         self.families = families
+        self.remoteComponents = remoteComponents
+        self.projectConfiguration = projectConfiguration
+        
         self.components = families.flatMap(\.components).reduce(into: [Name: Component](), { $0[$1.name] = $1 })
         self.familiesDetails = families.map(\.family).reduce(into: [String: Family](), { $0[$1.name] = $1 })
-        
-        self.projectConfiguration = projectConfiguration
     }
     
     public func hash(into hasher: inout Hasher) {

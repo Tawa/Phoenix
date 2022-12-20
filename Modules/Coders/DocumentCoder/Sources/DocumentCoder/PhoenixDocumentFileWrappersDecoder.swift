@@ -1,7 +1,7 @@
-import PhoenixDocument
+import Component
 import DocumentCoderContract
 import Foundation
-import AppVersionProviderContract
+import PhoenixDocument
 
 enum PhoenixDocumentConstants {
     static let appVersionFileName: String = "appversion"
@@ -25,27 +25,42 @@ enum PhoenixDocumentError: LocalizedError {
 }
 
 public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDecoderProtocol {
-    private let appVersionStringParser: AppVersionStringParserProtocol
-
-    public init(appVersionStringParser: AppVersionStringParserProtocol) {
-        self.appVersionStringParser = appVersionStringParser
+    
+    public init() {
+        
     }
-
+    
     public func phoenixDocument(from fileWrapper: [String: FileWrapper]) throws -> PhoenixDocument {
-        guard let configurationFileWrapper = fileWrapper.values.first(where: { $0.preferredFilename == PhoenixDocumentConstants.appVersionFileName }),
-              let appVersionUTF8Data = configurationFileWrapper.regularFileContents,
-              let appVersionString = String(data: appVersionUTF8Data, encoding: .utf8),
-              let appVersion = appVersionStringParser.appVersion(from: appVersionString)
-        else { throw PhoenixDocumentError.versionNotFound }
+        let jsonDecoder = JSONDecoder()
+        let familyFolderWrappers = fileWrapper.values.filter(\.isDirectory)
+        var componentsFamilies = [ComponentsFamily]()
+        for familyFolderWrapper in familyFolderWrappers {
+            guard
+                let familyFileWrapper = familyFolderWrapper.fileWrappers?[PhoenixDocumentConstants.familyFileName],
+                let familyData = familyFileWrapper.regularFileContents,
+                let componentsWrappers = familyFolderWrapper.fileWrappers?.filter({ $0.value != familyFileWrapper })
+                    .filter({ $0.key.hasSuffix(PhoenixDocumentConstants.jsonFileExtension) }).map(\.value)
+            else { continue }
+            let family = try jsonDecoder.decode(Family.self, from: familyData)
+            let components = try componentsWrappers.compactMap(\.regularFileContents)
+                .map { try jsonDecoder.decode(Component.self, from: $0) }
+                .sorted(by: { $0.name < $1.name })
 
-        if appVersion.stringValue.hasPrefix("1.") {
-            return try PhoenixDocumentFileWrappersDecoder_1_0_0().phoenixDocument(from: fileWrapper)
-        } else if appVersion.stringValue.hasPrefix("2.") {
-            return try PhoenixDocumentFileWrappersDecoder_2_0_0().phoenixDocument(from: fileWrapper)
-        } else if appVersion.stringValue.hasPrefix("3.") {
-            return try PhoenixDocumentFileWrappersDecoder_3_0_0().phoenixDocument(from: fileWrapper)
+            guard !components.isEmpty else { continue }
+            componentsFamilies.append(.init(family: family, components: components))
         }
 
-        throw PhoenixDocumentError.versionUnsupported
+        let configurationFileWrapper = fileWrapper.values.filter { $0.preferredFilename == PhoenixDocumentConstants.configurationFileName }.first
+        let projectConfiguration: ProjectConfiguration = try configurationFileWrapper?.regularFileContents
+            .map({ try jsonDecoder.decode(ProjectConfiguration.self, from: $0) }) ?? .default
+
+        componentsFamilies.sort(by: { $0.family.name < $1.family.name })
+
+        return .init(
+            families: componentsFamilies,
+            remoteComponents: [],
+            projectConfiguration: projectConfiguration
+        )
     }
+
 }

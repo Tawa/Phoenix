@@ -9,7 +9,7 @@ import SwiftPackage
 import AccessibilityIdentifiers
 
 enum ListSelection: String, Hashable, CaseIterable, Identifiable {
-    static var allCases: [ListSelection] { [.components] }
+    static var allCases: [ListSelection] { [.components, .remote] }
     var id: String { rawValue }
     var title: String { rawValue.capitalized }
     var keyboardShortcut: KeyEquivalent {
@@ -175,7 +175,9 @@ struct ContentView: View {
             .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
             .padding(.horizontal)
             ScrollView {
-                
+                ForEach(document.remoteComponents) { remoteComponent in
+                    Text(remoteComponent.url)
+                }
             }
             Spacer()
         }
