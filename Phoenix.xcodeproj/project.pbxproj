@@ -353,26 +353,26 @@
 		38C7D144280888E800E2675B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				B27B03FC291ED1DC0024551A /* Component */,
 				38E0B2F92815702E00B5992D /* ComponentDependenciesSheet.swift */,
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
 				38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */,
 				3810D8CC280990AF006E7EE3 /* ComponentsList.swift */,
-				B2EDFE4C2955955E005BB99C /* RemoteComponentsList.swift */,
+				3810D8CA2809811F006E7EE3 /* ComponentView.swift */,
 				3880FEE72842216800ED0110 /* ConfigurationView.swift */,
 				3873E5A72804C509000BCB03 /* ContentView.swift */,
-				381855752819CACD00BF6696 /* ResourcesView.swift */,
+				B2EDFE542955AED3005BB99C /* ExternalDependencyNameView.swift */,
+				B2EDFE522955ACDF005BB99C /* ExternalDependencyVersionView.swift */,
 				3810D8D22809C555006E7EE3 /* FamilySheet.swift */,
-				B216D3A02926EDC6005EDBB5 /* RelationView.swift */,
 				38E251322837EC73002FFA31 /* FilterView.swift */,
 				38C7D1482808B35300E2675B /* NewComponentSheet.swift */,
 				B2EDFE5029559D60005BB99C /* NewRemoteComponentSheet.swift */,
 				38E251302837E96A002FFA31 /* PopoverView.swift */,
+				B216D3A02926EDC6005EDBB5 /* RelationView.swift */,
+				B2EDFE4C2955955E005BB99C /* RemoteComponentsList.swift */,
 				3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */,
 				B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */,
 				38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */,
-				B2EDFE542955AED3005BB99C /* ExternalDependencyNameView.swift */,
-				B2EDFE522955ACDF005BB99C /* ExternalDependencyVersionView.swift */,
+				381855752819CACD00BF6696 /* ResourcesView.swift */,
 				388DA8A4281862420066086A /* Reusable */,
 			);
 			path = Views;
@@ -440,14 +440,6 @@
 				B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */,
 			);
 			path = PhoenixUITests;
-			sourceTree = "<group>";
-		};
-		B27B03FC291ED1DC0024551A /* Component */ = {
-			isa = PBXGroup;
-			children = (
-				3810D8CA2809811F006E7EE3 /* ComponentView.swift */,
-			);
-			path = Component;
 			sourceTree = "<group>";
 		};
 		B291BD2428CA8440000D2149 /* Features */ = {
