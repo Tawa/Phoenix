@@ -28,8 +28,7 @@ struct RemoteComponentsList: View {
                     ComponentListItem(
                         name: row.name,
                         isSelected: row.isSelected,
-                        onSelect: { onSelect(row.id) },
-                        onDuplicate: { }
+                        onSelect: { onSelect(row.id) }
                     )
                     .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
                 }

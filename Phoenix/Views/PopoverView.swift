@@ -23,3 +23,13 @@ struct InfoSheet: View {
         .onSubmit(onOkayButton)
     }
 }
+
+extension View {
+    func infoSheet(model infoSheetModel: Binding<InfoSheetModel?>) -> some View {
+        sheet(item: infoSheetModel) { model in
+            InfoSheet(model: model) {
+                infoSheetModel.wrappedValue = nil
+            }
+        }
+    }
+}

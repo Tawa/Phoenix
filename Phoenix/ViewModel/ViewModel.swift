@@ -16,7 +16,7 @@ import UniformTypeIdentifiers
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }
     case new
-    case template(Component)
+    case remote
 }
 
 enum AlertState: Hashable, Identifiable {
@@ -102,8 +102,8 @@ class ViewModel: ObservableObject {
         showingNewComponentPopup = .new
     }
     
-    func onDuplicate(component: Component) {
-        showingNewComponentPopup = .template(component)
+    func onAddRemoteButton() {
+        showingNewComponentPopup = .remote
     }
     
     private func getFileURL(fileURL: URL?, _ completion: @escaping (URL) -> Void) {

@@ -66,6 +66,21 @@ extension PhoenixDocument {
         }
     }
     
+    mutating func addNewRemoteComponent(withURL url: String) throws {
+        guard !remoteComponents.contains(where: { remoteComponent in
+            remoteComponent.url == url
+        }) else {
+            throw NSError(domain: "Remote Component with url \"\(url)\" already added.", code: 503)
+        }
+        remoteComponents.append(
+            .init(id: url,
+                  url: url,
+                  version: .branch(name: "main"),
+                  names: []
+                 )
+        )
+    }
+    
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {
         var defaultDependencies: [PackageTargetType: String] = component(named: dependencyName)?.defaultDependencies ?? [:]
         if defaultDependencies.isEmpty {

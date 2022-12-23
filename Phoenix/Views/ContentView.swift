@@ -168,11 +168,11 @@ struct ContentView: View {
     
     @ViewBuilder private func remoteComponentsList() -> some View {
         VStack(alignment: .leading) {
-            Button(action: viewModel.onAddButton) {
+            Button(action: viewModel.onAddRemoteButton) {
                 Label("New Remote Dependency", systemImage: "plus.circle.fill")
             }
             .keyboardShortcut("A", modifiers: [.command, .shift])
-            .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
+            .with(accessibilityIdentifier: ToolbarIdentifiers.newRemoteComponentButton)
             .padding(.horizontal)
             RemoteComponentsList(
                 rows: viewModel.remoteComponentsListRows(document: document),
@@ -240,24 +240,30 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func newComponentSheet(state: ComponentPopupState) -> some View {
-        NewComponentSheet(onSubmit: { name, familyName in
-            let name = Name(given: name, family: familyName)
-            switch state {
-            case .new:
+        switch state {
+        case .new:
+            NewComponentSheet(onSubmit: { name, familyName in
+                let name = Name(given: name, family: familyName)
                 try document.addNewComponent(withName: name)
-            case let .template(component):
-                try document.addNewComponent(withName: name, template: component)
+                viewModel.select(componentName: name)
+                viewModel.showingNewComponentPopup = nil
+            }, onDismiss: {
+                viewModel.showingNewComponentPopup = nil
+            }, familyNameSuggestion: { familyName in
+                guard !familyName.isEmpty else { return nil }
+                return document.families.first { componentFamily in
+                    componentFamily.family.name.hasPrefix(familyName)
+                }?.family.name
+            })
+            
+        case .remote:
+            NewRemoteComponentSheet { url in
+                try document.addNewRemoteComponent(withURL: url)
+                viewModel.showingNewComponentPopup = nil
+            } onDismiss: {
+                viewModel.showingNewComponentPopup = nil
             }
-            viewModel.select(componentName: name)
-            viewModel.showingNewComponentPopup = nil
-        }, onDismiss: {
-            viewModel.showingNewComponentPopup = nil
-        }, familyNameSuggestion: { familyName in
-            guard !familyName.isEmpty else { return nil }
-            return document.families.first { componentFamily in
-                componentFamily.family.name.hasPrefix(familyName)
-            }?.family.name
-        })
+        }
     }
     
     @ViewBuilder private func dependencySheet(component: Component) -> some View {
@@ -338,7 +344,7 @@ struct ContentView: View {
         .keyboardShortcut(",", modifiers: [.command])
         .with(accessibilityIdentifier: ToolbarIdentifiers.configurationButton)
     }
-
+    
     @ViewBuilder private func toolbarTrailingItems() -> some View {
         Button(action: { viewModel.onGenerateSheetButton(fileURL: fileURL) }) {
             Image(systemName: "shippingbox.fill")
