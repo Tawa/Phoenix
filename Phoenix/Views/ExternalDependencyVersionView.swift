@@ -48,6 +48,7 @@ struct ExternalDependencyVersionView: View {
             TextField(versionPlaceholder,
                       text: versionText)
             .textFieldStyle(RoundedBorderTextFieldStyle())
+            .frame(width: 150)
             Spacer()
                 .frame(maxWidth: .infinity)
         }

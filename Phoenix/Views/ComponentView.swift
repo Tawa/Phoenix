@@ -251,7 +251,7 @@ struct ComponentView: View {
     // MARK: - Helper Functions
     @ViewBuilder private func section<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
         Section {
-            HStack(alignment: .top) {
+            HStack(alignment: .center) {
                 content()
             }
             Divider()

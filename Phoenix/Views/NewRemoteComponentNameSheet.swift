@@ -1,19 +1,16 @@
 import SwiftPackage
 import SwiftUI
 
-struct NewRemoteComponentSheet: View {
-    let onSubmit: (String, ExternalDependencyVersion) throws -> Void
+struct NewRemoteComponentNameSheet: View {
+    let onSubmit: (ExternalDependencyName) throws -> Void
     let onDismiss: () -> Void
     
-    @State private var url: String = ""
-    @State private var version: ExternalDependencyVersion = .branch(name: "main")
+    @State private var name: ExternalDependencyName = .name("")
     @State private var infoSheetModel: InfoSheetModel? = nil
 
     var body: some View {
         VStack {
-            TextField("URL", text: $url)
-                .textFieldStyle(.plain)
-            ExternalDependencyVersionView(version: $version)
+            ExternalDependencyNameView(name: $name)
             Spacer().frame(height: 30)
             HStack {
                 Button(action: onDismiss) {
@@ -34,7 +31,7 @@ struct NewRemoteComponentSheet: View {
     
     private func onSubmitAction() {
         do {
-            try onSubmit(url, version)
+            try onSubmit(name)
         } catch {
             infoSheetModel = .init(text: error.localizedDescription)
         }

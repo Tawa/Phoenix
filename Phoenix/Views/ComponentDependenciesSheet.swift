@@ -63,7 +63,6 @@ struct ComponentDependenciesSheet: View {
                 .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.ultraThinMaterial)
     }
     
     private var filteredSections: [ComponentDependenciesListSection] {

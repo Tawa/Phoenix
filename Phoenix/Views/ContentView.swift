@@ -205,6 +205,8 @@ struct ContentView: View {
                 .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
                     remoteDependencySheet(component: selectedComponentBinding.wrappedValue)
                 }
+        } else if let selectedRemoteComponentBinding = viewModel.selectedRemoteComponent(document: $document) {
+            remoteComponentView(for: selectedRemoteComponentBinding)
         } else {
             HStack(alignment: .top) {
                 VStack(alignment: .leading) {
@@ -236,6 +238,13 @@ struct ContentView: View {
             allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
+        )
+    }
+    
+    @ViewBuilder private func remoteComponentView(for remoteComponent: Binding<RemoteComponent>) -> some View {
+        RemoteComponentView(
+            remoteComponent: remoteComponent,
+            onRemove: { document.removeRemoteComponent(withURL: remoteComponent.wrappedValue.url) }
         )
     }
     

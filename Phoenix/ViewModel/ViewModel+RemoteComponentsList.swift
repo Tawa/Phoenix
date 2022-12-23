@@ -5,14 +5,14 @@ extension ViewModel {
     func remoteComponentsListRows(document: PhoenixDocument) -> [RemoteComponentsListRow] {
         remoteComponentsListRows(
             document: document,
-            selectedId: nil,
+            selectedURL: selection?.remoteComponentURL,
             filter: componentsListFilter
         )
     }
     
     func remoteComponentsListRows(
         document: PhoenixDocument,
-        selectedId: String?,
+        selectedURL: String?,
         filter: String?
     ) -> [RemoteComponentsListRow] {
         var remoteComponents = document.remoteComponents
@@ -32,7 +32,7 @@ extension ViewModel {
                 RemoteComponentsListRow(
                     id: remoteComponent.url,
                     name: remoteComponent.url,
-                    isSelected: remoteComponent.id == selectedId
+                    isSelected: remoteComponent.url == selectedURL
                 )
             }
     }

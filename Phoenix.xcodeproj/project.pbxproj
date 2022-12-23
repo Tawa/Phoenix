@@ -35,7 +35,7 @@
 		38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */; };
 		38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2512A2837E163002FFA31 /* ViewModel.swift */; };
 		38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */; };
-		38E251312837E96A002FFA31 /* PopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E251302837E96A002FFA31 /* PopoverView.swift */; };
+		38E251312837E96A002FFA31 /* InfoSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E251302837E96A002FFA31 /* InfoSheet.swift */; };
 		38E251332837EC73002FFA31 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E251322837EC73002FFA31 /* FilterView.swift */; };
 		38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */; };
 		38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */; };
@@ -64,6 +64,8 @@
 		B2EDFE5129559D61005BB99C /* NewRemoteComponentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE5029559D60005BB99C /* NewRemoteComponentSheet.swift */; };
 		B2EDFE532955ACDF005BB99C /* ExternalDependencyVersionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE522955ACDF005BB99C /* ExternalDependencyVersionView.swift */; };
 		B2EDFE552955AED3005BB99C /* ExternalDependencyNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE542955AED3005BB99C /* ExternalDependencyNameView.swift */; };
+		B2EDFE572955E802005BB99C /* RemoteComponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE562955E802005BB99C /* RemoteComponentView.swift */; };
+		B2EDFE592955ECBA005BB99C /* NewRemoteComponentNameSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE582955ECBA005BB99C /* NewRemoteComponentNameSheet.swift */; };
 		B2EFE83628ECC0CF005DBE78 /* ComponentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83528ECC0CF005DBE78 /* ComponentScreen.swift */; };
 		B2EFE83828ECC1AC005DBE78 /* DependenciesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83728ECC1AC005DBE78 /* DependenciesSheet.swift */; };
 		B2EFE83A28ECD0CE005DBE78 /* DependencyScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83928ECD0CE005DBE78 /* DependencyScreen.swift */; };
@@ -139,7 +141,7 @@
 		38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDependencyView.swift; sourceTree = "<group>"; };
 		38E2512A2837E163002FFA31 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentModuleTypeView.swift; sourceTree = "<group>"; };
-		38E251302837E96A002FFA31 /* PopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverView.swift; sourceTree = "<group>"; };
+		38E251302837E96A002FFA31 /* InfoSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSheet.swift; sourceTree = "<group>"; };
 		38E251322837EC73002FFA31 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableWithSubtype.swift; sourceTree = "<group>"; };
 		38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableWithTitle.swift; sourceTree = "<group>"; };
@@ -172,6 +174,8 @@
 		B2EDFE5029559D60005BB99C /* NewRemoteComponentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRemoteComponentSheet.swift; sourceTree = "<group>"; };
 		B2EDFE522955ACDF005BB99C /* ExternalDependencyVersionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalDependencyVersionView.swift; sourceTree = "<group>"; };
 		B2EDFE542955AED3005BB99C /* ExternalDependencyNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalDependencyNameView.swift; sourceTree = "<group>"; };
+		B2EDFE562955E802005BB99C /* RemoteComponentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteComponentView.swift; sourceTree = "<group>"; };
+		B2EDFE582955ECBA005BB99C /* NewRemoteComponentNameSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRemoteComponentNameSheet.swift; sourceTree = "<group>"; };
 		B2EFE83528ECC0CF005DBE78 /* ComponentScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentScreen.swift; sourceTree = "<group>"; };
 		B2EFE83728ECC1AC005DBE78 /* DependenciesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependenciesSheet.swift; sourceTree = "<group>"; };
 		B2EFE83928ECD0CE005DBE78 /* DependencyScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyScreen.swift; sourceTree = "<group>"; };
@@ -364,11 +368,13 @@
 				B2EDFE522955ACDF005BB99C /* ExternalDependencyVersionView.swift */,
 				3810D8D22809C555006E7EE3 /* FamilySheet.swift */,
 				38E251322837EC73002FFA31 /* FilterView.swift */,
+				38E251302837E96A002FFA31 /* InfoSheet.swift */,
 				38C7D1482808B35300E2675B /* NewComponentSheet.swift */,
+				B2EDFE582955ECBA005BB99C /* NewRemoteComponentNameSheet.swift */,
 				B2EDFE5029559D60005BB99C /* NewRemoteComponentSheet.swift */,
-				38E251302837E96A002FFA31 /* PopoverView.swift */,
 				B216D3A02926EDC6005EDBB5 /* RelationView.swift */,
 				B2EDFE4C2955955E005BB99C /* RemoteComponentsList.swift */,
+				B2EDFE562955E802005BB99C /* RemoteComponentView.swift */,
 				3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */,
 				B29FDC592905725B006A0007 /* RemoteDependencySheet.swift */,
 				38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */,
@@ -711,11 +717,13 @@
 			files = (
 				3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */,
 				B2EDFE532955ACDF005BB99C /* ExternalDependencyVersionView.swift in Sources */,
+				B2EDFE572955E802005BB99C /* RemoteComponentView.swift in Sources */,
 				B2E1D4892942A90B00FF07DE /* PhoenixDocument+RelationViewData.swift in Sources */,
 				B2EDFE552955AED3005BB99C /* ExternalDependencyNameView.swift in Sources */,
 				38E0B2FD2815766E00B5992D /* PhoenixDocument+Extension.swift in Sources */,
 				38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */,
 				3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */,
+				B2EDFE592955ECBA005BB99C /* NewRemoteComponentNameSheet.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilySheet.swift in Sources */,
 				38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */,
 				388DA8A8281863750066086A /* CustomMenu.swift in Sources */,
@@ -738,7 +746,7 @@
 				B216D3A12926EDC6005EDBB5 /* RelationView.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesSheet.swift in Sources */,
 				38C7D1492808B35300E2675B /* NewComponentSheet.swift in Sources */,
-				38E251312837E96A002FFA31 /* PopoverView.swift in Sources */,
+				38E251312837E96A002FFA31 /* InfoSheet.swift in Sources */,
 				3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */,
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
 				B29FDC5A2905725B006A0007 /* RemoteDependencySheet.swift in Sources */,
