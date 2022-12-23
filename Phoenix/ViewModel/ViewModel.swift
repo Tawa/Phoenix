@@ -33,16 +33,16 @@ enum AlertState: Hashable, Identifiable {
 
 enum ComponentSelection {
     case component(name: Name)
-    case remoteComponent(id: String)
+    case remoteComponent(url: String)
     
     var componentName: Name? {
         guard case .component(let name) = self else { return nil }
         return name
     }
     
-    var remoteComponentId: String? {
-        guard case .remoteComponent(let id) = self else { return nil }
-        return id
+    var remoteComponentURL: String? {
+        guard case .remoteComponent(let url) = self else { return nil }
+        return url
     }
 }
 
@@ -52,8 +52,8 @@ class ViewModel: ObservableObject {
     func select(componentName: Name) {
         selection = .component(name: componentName)
     }
-    func select(remoteComponentId: String) {
-        selection = .remoteComponent(id: remoteComponentId)
+    func select(remoteComponentURL: String) {
+        selection = .remoteComponent(url: remoteComponentURL)
     }
 
     // MARK: - Components List

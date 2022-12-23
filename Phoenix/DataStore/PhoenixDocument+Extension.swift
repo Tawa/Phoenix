@@ -72,13 +72,8 @@ extension PhoenixDocument {
         }) else {
             throw NSError(domain: "Remote Component with url \"\(url)\" already added.", code: 503)
         }
-        remoteComponents.append(
-            .init(id: url,
-                  url: url,
-                  version: version,
-                  names: []
-                 )
-        )
+        remoteComponents.append(RemoteComponent(url: url, version: version, names: []))
+        remoteComponents.sort(by: { $0.url < $1.url })
     }
     
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {

@@ -30,7 +30,7 @@ extension ViewModel {
         return remoteComponents
             .map { remoteComponent in
                 RemoteComponentsListRow(
-                    id: remoteComponent.id,
+                    id: remoteComponent.url,
                     name: remoteComponent.url,
                     isSelected: remoteComponent.id == selectedId
                 )

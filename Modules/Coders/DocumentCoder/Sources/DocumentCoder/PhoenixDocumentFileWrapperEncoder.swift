@@ -1,23 +1,25 @@
-import Foundation
 import AppVersionProviderContract
-import PhoenixDocument
+import Component
 import DocumentCoderContract
+import Foundation
+import PhoenixDocument
 
 public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncoderProtocol {
     private let currentAppVersionStringProvider: CurrentAppVersionStringProviderProtocol
+    let jsonEncoder: JSONEncoder
 
     public init(currentAppVersionStringProvider: CurrentAppVersionStringProviderProtocol) {
         self.currentAppVersionStringProvider = currentAppVersionStringProvider
-    }
 
-    public func fileWrapper(for document: PhoenixDocument) throws -> FileWrapper {
-        let jsonEncoder = JSONEncoder()
+        jsonEncoder = JSONEncoder()
         if #available(macOS 10.13, *) {
             jsonEncoder.outputFormatting = [.sortedKeys, .prettyPrinted]
         } else {
             jsonEncoder.outputFormatting = [.prettyPrinted]
         }
+    }
 
+    public func fileWrapper(for document: PhoenixDocument) throws -> FileWrapper {
         let mainFolderWrapper = FileWrapper(directoryWithFileWrappers: [:])
 
         if let appVersionString = currentAppVersionStringProvider.currentAppVersionString(),
@@ -27,11 +29,21 @@ public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncod
             mainFolderWrapper.addFileWrapper(appVersionFileWrapper)
         }
 
-        let configurationFolderWrapper = FileWrapper(regularFileWithContents: try jsonEncoder.encode(document.projectConfiguration))
+        try encode(projectConfiguration: document.projectConfiguration, mainFolderWrapper: mainFolderWrapper)
+        try encode(families: document.families, mainFolderWrapper: mainFolderWrapper)
+        try encode(remoteComponents: document.remoteComponents, mainFolderWrapper: mainFolderWrapper)
+        
+        return mainFolderWrapper
+    }
+
+    private func encode(projectConfiguration: ProjectConfiguration, mainFolderWrapper: FileWrapper) throws {
+        let configurationFolderWrapper = FileWrapper(regularFileWithContents: try jsonEncoder.encode(projectConfiguration))
         configurationFolderWrapper.preferredFilename = PhoenixDocumentConstants.configurationFileName
         mainFolderWrapper.addFileWrapper(configurationFolderWrapper)
-
-        for family in document.families {
+    }
+    
+    private func encode(families: [ComponentsFamily], mainFolderWrapper: FileWrapper) throws {
+        for family in families {
             let familyFolderWrapper = FileWrapper(directoryWithFileWrappers: [:])
             familyFolderWrapper.preferredFilename = family.family.name
 
@@ -46,7 +58,20 @@ public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncod
             }
             mainFolderWrapper.addFileWrapper(familyFolderWrapper)
         }
-
-        return mainFolderWrapper
+    }
+    
+    private func encode(remoteComponents: [RemoteComponent], mainFolderWrapper: FileWrapper) throws {
+        if !remoteComponents.isEmpty {
+            let remoteComponentsFolderWrapper = FileWrapper(directoryWithFileWrappers: [:])
+            remoteComponentsFolderWrapper.preferredFilename = PhoenixDocumentConstants.remoteComponentsFolderName
+            
+            for remoteComponent in remoteComponents {
+                let remoteComponentFileWrapper = FileWrapper(regularFileWithContents: try jsonEncoder.encode(remoteComponent))
+                let fileName = remoteComponent.url.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? remoteComponent.url
+                remoteComponentFileWrapper.preferredFilename = fileName + PhoenixDocumentConstants.jsonFileExtension
+                remoteComponentsFolderWrapper.addFileWrapper(remoteComponentFileWrapper)
+            }
+            mainFolderWrapper.addFileWrapper(remoteComponentsFolderWrapper)
+        }
     }
 }

@@ -46,6 +46,17 @@ extension ViewModel {
             set: { document.wrappedValue.families[familyIndex].components[componentIndex] = $0 }
         )
     }
+    
+    func selectedRemoteComponent(document: Binding<PhoenixDocument>) -> Binding<RemoteComponent>? {
+        guard
+            let selectedComponentURL = selection?.remoteComponentURL,
+            let remoteComponentIndex = document.wrappedValue.remoteComponents.firstIndex(where: { $0.url == selectedComponentURL })
+        else { return nil }
+        return Binding(
+            get: { document.wrappedValue.remoteComponents[remoteComponentIndex] },
+            set: { document.wrappedValue.remoteComponents[remoteComponentIndex] = $0 }
+        )
+    }
 
     // MARK: - Family
     func selectedFamily(document: Binding<PhoenixDocument>) -> Binding<Family>? {

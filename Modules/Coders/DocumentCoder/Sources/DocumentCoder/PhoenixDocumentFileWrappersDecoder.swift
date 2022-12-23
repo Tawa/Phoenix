@@ -8,6 +8,7 @@ enum PhoenixDocumentConstants {
     static let jsonFileExtension: String = ".json"
     static let configurationFileName: String = "config" + jsonFileExtension
     static let familyFileName: String = "family" + jsonFileExtension
+    static let remoteComponentsFolderName: String = "_remote"
 }
 
 enum PhoenixDocumentError: LocalizedError {
@@ -25,14 +26,17 @@ enum PhoenixDocumentError: LocalizedError {
 }
 
 public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDecoderProtocol {
+    let jsonDecoder: JSONDecoder
     
     public init() {
-        
+        jsonDecoder = JSONDecoder()
     }
     
     public func phoenixDocument(from fileWrapper: [String: FileWrapper]) throws -> PhoenixDocument {
-        let jsonDecoder = JSONDecoder()
-        let familyFolderWrappers = fileWrapper.values.filter(\.isDirectory)
+        
+        let familyFolderWrappers = fileWrapper.values
+            .filter(\.isDirectory)
+            .filter { $0.filename?.hasPrefix("_") == false }
         var componentsFamilies = [ComponentsFamily]()
         for familyFolderWrapper in familyFolderWrappers {
             guard
@@ -55,10 +59,18 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
             .map({ try jsonDecoder.decode(ProjectConfiguration.self, from: $0) }) ?? .default
 
         componentsFamilies.sort(by: { $0.family.name < $1.family.name })
+        
+        var remoteComponents: [RemoteComponent] = []
+        if let remoteComponentsFolderWrappers = fileWrapper.values
+            .first(where: { $0.filename == PhoenixDocumentConstants.remoteComponentsFolderName }),
+           let remoteComponentsWrappers = remoteComponentsFolderWrappers.fileWrappers?.values.compactMap(\.regularFileContents) {
+            remoteComponents = try remoteComponentsWrappers.map { try jsonDecoder.decode(RemoteComponent.self, from: $0) }
+                .sorted(by: { $0.url < $1.url })
+        }
 
         return .init(
             families: componentsFamilies,
-            remoteComponents: [],
+            remoteComponents: remoteComponents,
             projectConfiguration: projectConfiguration
         )
     }

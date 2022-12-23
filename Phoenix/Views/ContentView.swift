@@ -176,7 +176,7 @@ struct ContentView: View {
             .padding(.horizontal)
             RemoteComponentsList(
                 rows: viewModel.remoteComponentsListRows(document: document),
-                onSelect: viewModel.select(remoteComponentId:)
+                onSelect: viewModel.select(remoteComponentURL:)
             )
         }
     }
