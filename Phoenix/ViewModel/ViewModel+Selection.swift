@@ -10,7 +10,7 @@ extension ViewModel {
         if let componentsListFilter {
             names = names.filter { $0.full.lowercased().contains(componentsListFilter.lowercased()) }
         }
-        guard let selectedComponentName,
+        guard let selectedComponentName = selection?.componentName,
               let index = names.firstIndex(of: selectedComponentName)
         else {
             names.first.map(select(componentName:))
@@ -25,7 +25,7 @@ extension ViewModel {
         if let componentsListFilter {
             names = names.filter { $0.full.lowercased().contains(componentsListFilter.lowercased()) }
         }
-        guard let selectedComponentName,
+        guard let selectedComponentName = selection?.componentName,
               let index = names.firstIndex(of: selectedComponentName)
         else {
             names.last.map(select(componentName:))
@@ -37,7 +37,7 @@ extension ViewModel {
     
     func selectedComponent(document: Binding<PhoenixDocument>) -> Binding<Component>? {
         guard
-            let selectedComponentName,
+            let selectedComponentName = selection?.componentName,
             let familyIndex = document.wrappedValue.families.firstIndex(where: { $0.family.name == selectedComponentName.family }),
             let componentIndex = document.wrappedValue.families[familyIndex].components.firstIndex(where: { $0.name == selectedComponentName })
         else { return nil }

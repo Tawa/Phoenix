@@ -257,8 +257,8 @@ struct ContentView: View {
             })
             
         case .remote:
-            NewRemoteComponentSheet { url in
-                try document.addNewRemoteComponent(withURL: url)
+            NewRemoteComponentSheet { url, version in
+                try document.addNewRemoteComponent(withURL: url, version: version)
                 viewModel.showingNewComponentPopup = nil
             } onDismiss: {
                 viewModel.showingNewComponentPopup = nil

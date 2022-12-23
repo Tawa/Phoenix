@@ -31,14 +31,29 @@ enum AlertState: Hashable, Identifiable {
     }
 }
 
+enum ComponentSelection {
+    case component(name: Name)
+    case remoteComponent(id: String)
+    
+    var componentName: Name? {
+        guard case .component(let name) = self else { return nil }
+        return name
+    }
+    
+    var remoteComponentId: String? {
+        guard case .remoteComponent(let id) = self else { return nil }
+        return id
+    }
+}
+
 class ViewModel: ObservableObject {
     // MARK: - Selected Component
-    @Published private(set) var selectedComponentName: Name? = nil
+    @Published private(set) var selection: ComponentSelection? = nil
     func select(componentName: Name) {
-        selectedComponentName = componentName
+        selection = .component(name: componentName)
     }
     func select(remoteComponentId: String) {
-        
+        selection = .remoteComponent(id: remoteComponentId)
     }
 
     // MARK: - Components List

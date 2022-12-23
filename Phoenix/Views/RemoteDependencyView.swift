@@ -4,12 +4,6 @@ import SwiftUI
 
 struct RemoteDependencyView: View {
     @Binding var dependency: RemoteDependency
-
-    let allVersionsTypes: [IdentifiableWithTitle<ExternalDependencyVersion>] = [
-        .init(title: "branch", value: ExternalDependencyVersion.branch(name: "main")),
-        .init(title: "exact", value: ExternalDependencyVersion.exact(version: "1.0.0")),
-        .init(title: "from", value: ExternalDependencyVersion.from(version: "1.0.0"))
-    ]
     
     let allDependencyTypes: [IdentifiableWithSubtype<PackageTargetType>]
 
@@ -51,23 +45,7 @@ struct RemoteDependencyView: View {
                 TextField("Package", text: $dependency.packageText.nonOptionalBinding)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
             }
-
-            HStack {
-                Menu {
-                    ForEach(allVersionsTypes) { versionType in
-                        Button(versionType.title) { dependency.version = versionType.value }
-                    }
-                } label: {
-                    Text(dependency.version.title)
-                }
-                .frame(width: 100)
-                TextField(versionPlaceholder,
-                          text: .init(get: { dependency.versionText },
-                                      set: { dependency.versionText = $0 }))
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                Spacer()
-                    .frame(maxWidth: .infinity)
-            }
+            ExternalDependencyVersionView(version: $dependency.version)
             VStack {
                 ForEach(allDependencyTypes) { dependencyType in
                     HStack {
@@ -99,15 +77,5 @@ struct RemoteDependencyView: View {
             }
         }
         .padding()
-    }
-    
-    // MARK: - Private
-    private var versionPlaceholder: String {
-        switch dependency.version {
-        case .from, .exact:
-            return "1.0.0"
-        case .branch:
-            return "main"
-        }
     }
 }

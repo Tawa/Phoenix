@@ -66,7 +66,7 @@ extension PhoenixDocument {
         }
     }
     
-    mutating func addNewRemoteComponent(withURL url: String) throws {
+    mutating func addNewRemoteComponent(withURL url: String, version: ExternalDependencyVersion) throws {
         guard !remoteComponents.contains(where: { remoteComponent in
             remoteComponent.url == url
         }) else {
@@ -75,7 +75,7 @@ extension PhoenixDocument {
         remoteComponents.append(
             .init(id: url,
                   url: url,
-                  version: .branch(name: "main"),
+                  version: version,
                   names: []
                  )
         )
