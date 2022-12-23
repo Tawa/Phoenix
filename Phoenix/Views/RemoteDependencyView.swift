@@ -17,34 +17,7 @@ struct RemoteDependencyView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                 Button(action: onRemove) { Image(systemName: "trash") }
             }
-            HStack {
-                Menu {
-                    Button("Name") {
-                        dependency.name = .name(dependency.nameText)
-                    }
-                    Button("Name/Package") {
-                        dependency.name = .product(name: dependency.nameText, package: "")
-                    }
-                } label: {
-                    switch dependency.name {
-                    case .name:
-                        Text("Name")
-                    case .product:
-                        Text("Name/Package")
-                    }
-                }
-                .frame(width: 150)
-            }
-            switch dependency.name {
-            case .name:
-                TextField("Name", text: $dependency.nameText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-            case .product:
-                TextField("Name", text: $dependency.nameText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                TextField("Package", text: $dependency.packageText.nonOptionalBinding)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-            }
+            ExternalDependencyNameView(name: $dependency.name)
             ExternalDependencyVersionView(version: $dependency.version)
             VStack {
                 ForEach(allDependencyTypes) { dependencyType in
