@@ -78,7 +78,7 @@ struct ComponentsList: View {
         if totalRows == 1 {
             return "1 component"
         } else {
-            return "\(totalRows) component"
+            return "\(totalRows) components"
         }
     }
 }

@@ -37,6 +37,9 @@ class ViewModel: ObservableObject {
     func select(componentName: Name) {
         selectedComponentName = componentName
     }
+    func select(remoteComponentId: String) {
+        
+    }
 
     // MARK: - Components List
     @Published var componentsListFilter: String? = nil

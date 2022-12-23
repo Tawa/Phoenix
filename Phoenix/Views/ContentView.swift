@@ -174,12 +174,10 @@ struct ContentView: View {
             .keyboardShortcut("A", modifiers: [.command, .shift])
             .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
             .padding(.horizontal)
-            ScrollView {
-                ForEach(document.remoteComponents) { remoteComponent in
-                    Text(remoteComponent.url)
-                }
-            }
-            Spacer()
+            RemoteComponentsList(
+                rows: viewModel.remoteComponentsListRows(document: document),
+                onSelect: viewModel.select(remoteComponentId:)
+            )
         }
     }
     
