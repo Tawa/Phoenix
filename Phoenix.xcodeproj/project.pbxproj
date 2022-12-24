@@ -66,6 +66,8 @@
 		B2EDFE552955AED3005BB99C /* ExternalDependencyNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE542955AED3005BB99C /* ExternalDependencyNameView.swift */; };
 		B2EDFE572955E802005BB99C /* RemoteComponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE562955E802005BB99C /* RemoteComponentView.swift */; };
 		B2EDFE592955ECBA005BB99C /* NewRemoteComponentNameSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE582955ECBA005BB99C /* NewRemoteComponentNameSheet.swift */; };
+		B2EDFE5B2956EF0D005BB99C /* RemoteComponentDependenciesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE5A2956EF0D005BB99C /* RemoteComponentDependenciesSheet.swift */; };
+		B2EDFE5E2956F3DD005BB99C /* Array+RemoteComponent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EDFE5D2956F3DD005BB99C /* Array+RemoteComponent+Extensions.swift */; };
 		B2EFE83628ECC0CF005DBE78 /* ComponentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83528ECC0CF005DBE78 /* ComponentScreen.swift */; };
 		B2EFE83828ECC1AC005DBE78 /* DependenciesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83728ECC1AC005DBE78 /* DependenciesSheet.swift */; };
 		B2EFE83A28ECD0CE005DBE78 /* DependencyScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EFE83928ECD0CE005DBE78 /* DependencyScreen.swift */; };
@@ -176,6 +178,8 @@
 		B2EDFE542955AED3005BB99C /* ExternalDependencyNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalDependencyNameView.swift; sourceTree = "<group>"; };
 		B2EDFE562955E802005BB99C /* RemoteComponentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteComponentView.swift; sourceTree = "<group>"; };
 		B2EDFE582955ECBA005BB99C /* NewRemoteComponentNameSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRemoteComponentNameSheet.swift; sourceTree = "<group>"; };
+		B2EDFE5A2956EF0D005BB99C /* RemoteComponentDependenciesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteComponentDependenciesSheet.swift; sourceTree = "<group>"; };
+		B2EDFE5D2956F3DD005BB99C /* Array+RemoteComponent+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+RemoteComponent+Extensions.swift"; sourceTree = "<group>"; };
 		B2EFE83528ECC0CF005DBE78 /* ComponentScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentScreen.swift; sourceTree = "<group>"; };
 		B2EFE83728ECC1AC005DBE78 /* DependenciesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependenciesSheet.swift; sourceTree = "<group>"; };
 		B2EFE83928ECD0CE005DBE78 /* DependencyScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyScreen.swift; sourceTree = "<group>"; };
@@ -290,6 +294,7 @@
 				38BCCC932854A0BA00E928CA /* CompositionRoot */,
 				38E2513B28392CE1002FFA31 /* Data */,
 				38E0B2FB2815765E00B5992D /* DataStore */,
+				B2EDFE5C2956F3D1005BB99C /* Extensions */,
 				B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */,
 				3873E5AE2804C50A000BCB03 /* Info.plist */,
 				3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */,
@@ -358,6 +363,7 @@
 			isa = PBXGroup;
 			children = (
 				38E0B2F92815702E00B5992D /* ComponentDependenciesSheet.swift */,
+				B2EDFE5A2956EF0D005BB99C /* RemoteComponentDependenciesSheet.swift */,
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
 				38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */,
 				3810D8CC280990AF006E7EE3 /* ComponentsList.swift */,
@@ -465,6 +471,14 @@
 				B2EDFE4E295596D8005BB99C /* ViewModel+RemoteComponentsList.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B2EDFE5C2956F3D1005BB99C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B2EDFE5D2956F3DD005BB99C /* Array+RemoteComponent+Extensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		B2F407CD28EB8DD9007E7434 /* Screen */ = {
@@ -715,6 +729,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2EDFE5B2956EF0D005BB99C /* RemoteComponentDependenciesSheet.swift in Sources */,
 				3853D2002839320B005E2FAE /* IdentifiableWithSubtypeAndValue.swift in Sources */,
 				B2EDFE532955ACDF005BB99C /* ExternalDependencyVersionView.swift in Sources */,
 				B2EDFE572955E802005BB99C /* RemoteComponentView.swift in Sources */,
@@ -722,6 +737,7 @@
 				B2EDFE552955AED3005BB99C /* ExternalDependencyNameView.swift in Sources */,
 				38E0B2FD2815766E00B5992D /* PhoenixDocument+Extension.swift in Sources */,
 				38E0B2FF2815CC7D00B5992D /* RemoteDependencyView.swift in Sources */,
+				B2EDFE5E2956F3DD005BB99C /* Array+RemoteComponent+Extensions.swift in Sources */,
 				3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */,
 				B2EDFE592955ECBA005BB99C /* NewRemoteComponentNameSheet.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilySheet.swift in Sources */,

@@ -15,19 +15,8 @@ extension ViewModel {
         selectedURL: String?,
         filter: String?
     ) -> [RemoteComponentsListRow] {
-        var remoteComponents = document.remoteComponents
-        
-        if let filter = filter?.lowercased() {
-            remoteComponents = remoteComponents.filter { remoteComponent in
-                remoteComponent.url.lowercased().contains(filter) ||
-                remoteComponent.names.contains(where: { externalDependencyName in
-                    externalDependencyName.name.lowercased().contains(filter) ||
-                    externalDependencyName.package?.lowercased().contains(filter) ?? false
-                })
-            }
-        }
-        
-        return remoteComponents
+        document.remoteComponents
+            .filtered(filter)
             .map { remoteComponent in
                 RemoteComponentsListRow(
                     id: remoteComponent.url,

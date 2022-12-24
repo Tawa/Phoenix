@@ -29,46 +29,44 @@ struct ComponentDependenciesSheet: View {
     @State private var filter: String = ""
     
     var body: some View {
-        VStack {
-            VStack(alignment: .leading) {
-                FilterView(text: $filter,
-                           onSubmit: performSubmit)
-                .with(accessibilityIdentifier: DependenciesSheetIdentifiers.filter)
-                List {
-                    Text("Components:")
-                        .font(.largeTitle)
-                    ForEach(filteredSections) { section in
-                        Section {
-                            ForEach(section.rows) { row in
-                                Button {
-                                    row.onSelect()
-                                } label: {
-                                    Text(row.name)
-                                }
-                                .with(accessibilityIdentifier: DependenciesSheetIdentifiers.component(named: row.name))
+        VStack(spacing: 0) {
+            FilterView(text: $filter,
+                       onSubmit: performSubmit)
+            .with(accessibilityIdentifier: DependenciesSheetIdentifiers.filter)
+            .padding(.top)
+            List {
+                ForEach(filteredSections) { section in
+                    Section {
+                        ForEach(section.rows) { row in
+                            Button {
+                                row.onSelect()
+                            } label: {
+                                Text(row.name)
                             }
-                        } header: {
-                            Text(section.name)
-                                .font(.title)
+                            .padding(.leading, 2)
+                            .with(accessibilityIdentifier: DependenciesSheetIdentifiers.component(named: row.name))
                         }
+                    } header: {
+                        Text(section.name)
+                            .font(.title)
                     }
-                    Spacer()
                 }
-                .listStyle(SidebarListStyle())
-                .padding(.horizontal)
-            }.frame(width: 400)
-                .padding()
-            Button(action: onDismiss) { Text("Cancel") }
-                .keyboardShortcut(.cancelAction)
-                .padding()
+                Spacer()
+            }
+            .padding(.horizontal)
+            Button(action: onDismiss) {
+                Text("Cancel")
+            }
+            .keyboardShortcut(.cancelAction)
+            .padding()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(minWidth: 400)
     }
     
     private var filteredSections: [ComponentDependenciesListSection] {
-        sections
+        guard !filter.isEmpty else { return sections }
+        return sections
             .map { item -> ComponentDependenciesListSection in
-                if filter.isEmpty { return item }
                 var section = item
                 section.rows.removeAll(where: { !$0.name.lowercased().contains(filter.lowercased()) })
                 return section

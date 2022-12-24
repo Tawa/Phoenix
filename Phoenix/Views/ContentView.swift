@@ -304,31 +304,36 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func remoteDependencySheet(component: Component) -> some View {
-        RemoteDependencySheet(onExternalSubmit: { remoteDependency in
-            let urlString = remoteDependency.urlString
-            
-            let name: ExternalDependencyName
-            switch remoteDependency.productType {
-            case .name:
-                name = .name(remoteDependency.productName)
-            case .product:
-                name = .product(name: remoteDependency.productName, package: remoteDependency.productPackage)
-            }
-            
-            let version: ExternalDependencyVersion
-            switch remoteDependency.versionType {
-            case .from:
-                version = .from(version: remoteDependency.versionValue)
-            case .branch:
-                version = .branch(name: remoteDependency.versionValue)
-            case .exact:
-                version = .exact(version: remoteDependency.versionValue)
-            }
-            document.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
-                                                                                                           name: name,
-                                                                                                           value: version))
-            viewModel.showingRemoteDependencySheet = false
-        }, onDismiss: { viewModel.showingRemoteDependencySheet = false })
+        RemoteComponentDependenciesSheet(
+            rows: document.remoteComponents,
+            onSelect: { _ in },
+            onDismiss: { viewModel.showingRemoteDependencySheet = false }
+        )
+//        RemoteDependencySheet(onExternalSubmit: { remoteDependency in
+//            let urlString = remoteDependency.urlString
+//
+//            let name: ExternalDependencyName
+//            switch remoteDependency.productType {
+//            case .name:
+//                name = .name(remoteDependency.productName)
+//            case .product:
+//                name = .product(name: remoteDependency.productName, package: remoteDependency.productPackage)
+//            }
+//
+//            let version: ExternalDependencyVersion
+//            switch remoteDependency.versionType {
+//            case .from:
+//                version = .from(version: remoteDependency.versionValue)
+//            case .branch:
+//                version = .branch(name: remoteDependency.versionValue)
+//            case .exact:
+//                version = .exact(version: remoteDependency.versionValue)
+//            }
+//            document.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
+//                                                                                                           name: name,
+//                                                                                                           value: version))
+//            viewModel.showingRemoteDependencySheet = false
+//        }, onDismiss: { viewModel.showingRemoteDependencySheet = false })
     }
     
     @ViewBuilder private func toolbarViews() -> some View {
