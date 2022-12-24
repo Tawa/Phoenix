@@ -66,6 +66,23 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
            let remoteComponentsWrappers = remoteComponentsFolderWrappers.fileWrappers?.values.compactMap(\.regularFileContents) {
             remoteComponents = try remoteComponentsWrappers.map { try jsonDecoder.decode(RemoteComponent.self, from: $0) }
                 .sorted(by: { $0.url < $1.url })
+        } else {
+            remoteComponents = componentsFamilies
+                .flatMap(\.components)
+                .flatMap(\.remoteDependencies)
+                .reduce(into: [String: RemoteComponent](), { partialResult, remoteDependency in
+                    let key = remoteDependency.url
+                    var value = partialResult[key] ?? RemoteComponent(url: remoteDependency.url,
+                                                                      version: remoteDependency.version,
+                                                                      names: [remoteDependency.name])
+                    if !value.names.contains(remoteDependency.name) {
+                        value.names.append(remoteDependency.name)
+                        value.names.sort(by: { $0.name < $1.name })
+                    }
+                    partialResult[remoteDependency.url] = value
+                })
+                .map(\.value)
+                .sorted(by: { $0.url < $1.url })
         }
 
         return .init(

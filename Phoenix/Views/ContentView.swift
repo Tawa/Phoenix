@@ -410,10 +410,24 @@ struct ContentView: View {
     }
     
     private func onDownArrow() {
-        viewModel.selectNextComponent(names: document.families.flatMap(\.components).map(\.name))
+        switch listSelection {
+        case .components:
+            viewModel.selectNextComponent(names: document.families.flatMap(\.components).map(\.name))
+        case .remote:
+            viewModel.selectNextRemoteComponent(remoteComponents: document.remoteComponents)
+        case .plugins:
+            break
+        }
     }
     
     private func onUpArrow() {
-        viewModel.selectPreviousComponent(names: document.families.flatMap(\.components).map(\.name))
+        switch listSelection {
+        case .components:
+            viewModel.selectPreviousComponent(names: document.families.flatMap(\.components).map(\.name))
+        case .remote:
+            viewModel.selectPreviousRemoteComponent(remoteComponents: document.remoteComponents)
+        case .plugins:
+            break
+        }
     }
 }

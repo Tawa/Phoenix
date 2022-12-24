@@ -47,6 +47,31 @@ extension ViewModel {
         )
     }
     
+    // MARK: - RemoteComponent
+    func selectNextRemoteComponent(remoteComponents: [RemoteComponent]) {
+        let urls = remoteComponents.filtered(componentsListFilter).map(\.url)
+        guard let selectedURL = selection?.remoteComponentURL,
+              let index = urls.firstIndex(of: selectedURL)
+        else {
+            urls.first.map(select(remoteComponentURL:))
+            return
+        }
+        let nextIndex = (index + 1) % urls.count
+        select(remoteComponentURL: urls[nextIndex])
+    }
+    
+    func selectPreviousRemoteComponent(remoteComponents: [RemoteComponent]) {
+        let urls = remoteComponents.filtered(componentsListFilter).map(\.url)
+        guard let selectedURL = selection?.remoteComponentURL,
+              let index = urls.firstIndex(of: selectedURL)
+        else {
+            urls.last.map(select(remoteComponentURL:))
+            return
+        }
+        let previousIndex = index > 0 ? index - 1 : urls.count - 1
+        select(remoteComponentURL: urls[previousIndex])
+    }
+    
     func selectedRemoteComponent(document: Binding<PhoenixDocument>) -> Binding<RemoteComponent>? {
         guard
             let selectedComponentURL = selection?.remoteComponentURL,
