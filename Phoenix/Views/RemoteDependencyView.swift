@@ -6,9 +6,9 @@ struct RemoteDependencyView: View {
     @Binding var dependency: RemoteDependency
     
     let allDependencyTypes: [IdentifiableWithSubtype<PackageTargetType>]
-
+    
     let onRemove: () -> Void
-
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -19,36 +19,40 @@ struct RemoteDependencyView: View {
             }
             ExternalDependencyNameView(name: $dependency.name)
             ExternalDependencyVersionView(version: $dependency.version)
-            VStack {
-                ForEach(allDependencyTypes) { dependencyType in
-                    HStack {
-                        Toggle(isOn: .init(get: { dependency.targetTypes.contains(where: { dependencyType.value == $0 }) },
-                                           set: {
-                            if $0 {
-                                dependency.targetTypes.append(dependencyType.value)
-                            } else {
-                                dependency.targetTypes.removeAll(where: { $0 == dependencyType.value })
-                            }
-                        })) {
-                            Text(dependencyType.title)
-                        }
-                        if let subtitle = dependencyType.subtitle, let subvalue = dependencyType.subValue {
-                            Toggle(isOn: .init(get: { dependency.targetTypes.contains(where: { subvalue == $0 }) },
-                                               set: {
-                                if $0 {
-                                    dependency.targetTypes.append(subvalue)
-                                } else {
-                                    dependency.targetTypes.removeAll(where: { $0 == subvalue })
-                                }
-                            })) {
-                                Text(subtitle)
-                            }
-                        }
-                        Spacer()
-                    }
-                }
-            }
+            TargetTypesView(targetTypes: $dependency.targetTypes, allDependencyTypes: allDependencyTypes)
         }
         .padding()
+    }
+}
+
+struct RemoteDependencyView_Previews: PreviewProvider {
+    static var previews: some View {
+        RemoteDependencyView(
+            dependency: .constant(
+                .init(
+                    url: "git@github.com/repo",
+                    name: .name("Name"),
+                    value: .branch(name: "main")
+                )
+            ),
+            allDependencyTypes: [
+                .init(title: "Contract",
+                      subtitle: nil,
+                      value: .init(name: "Contract", isTests: false),
+                      subValue: nil
+                     ),
+                .init(title: "Implementation",
+                      subtitle: "Tests",
+                      value: .init(name: "Implementation", isTests: false),
+                      subValue: .init(name: "Implementation", isTests: true)
+                     ),
+                .init(title: "Mock",
+                      subtitle: nil,
+                      value: .init(name: "Mock", isTests: false),
+                      subValue: nil
+                     )
+            ],
+            onRemove: {}
+        )
     }
 }

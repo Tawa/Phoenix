@@ -38,7 +38,7 @@ public struct Component: Codable, Hashable, Identifiable {
     public var defaultDependencies: [PackageTargetType: String]
 
     public var localDependencies: [ComponentDependency]
-    public var remoteDependencies: [RemoteDependency]
+    private(set) public var remoteDependencies: [RemoteDependency]
     public var remoteComponentDependencies: [RemoteComponentDependency]
 
     public init(name: Name,

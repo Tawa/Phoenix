@@ -33,11 +33,23 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
     }
     
     public func phoenixDocument(from fileWrapper: [String: FileWrapper]) throws -> PhoenixDocument {
-        
+        var componentsFamilies = try decodeFamilies(fileWrapper: fileWrapper)
+        var remoteComponents = try decodeRemoteComponents(fileWrapper: fileWrapper, componentsFamilies: &componentsFamilies)
+        let projectConfiguration = try decodeConfiguration(fileWrapper: fileWrapper)
+
+        return .init(
+            families: componentsFamilies,
+            remoteComponents: remoteComponents,
+            projectConfiguration: projectConfiguration
+        )
+    }
+    
+    // MARK: - Private
+    private func decodeFamilies(fileWrapper: [String: FileWrapper]) throws -> [ComponentsFamily] {
+        var componentsFamilies = [ComponentsFamily]()
         let familyFolderWrappers = fileWrapper.values
             .filter(\.isDirectory)
             .filter { $0.filename?.hasPrefix("_") == false }
-        var componentsFamilies = [ComponentsFamily]()
         for familyFolderWrapper in familyFolderWrappers {
             guard
                 let familyFileWrapper = familyFolderWrapper.fileWrappers?[PhoenixDocumentConstants.familyFileName],
@@ -53,14 +65,14 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
             guard !components.isEmpty else { continue }
             componentsFamilies.append(.init(family: family, components: components))
         }
-
-        let configurationFileWrapper = fileWrapper.values.filter { $0.preferredFilename == PhoenixDocumentConstants.configurationFileName }.first
-        let projectConfiguration: ProjectConfiguration = try configurationFileWrapper?.regularFileContents
-            .map({ try jsonDecoder.decode(ProjectConfiguration.self, from: $0) }) ?? .default
-
         componentsFamilies.sort(by: { $0.family.name < $1.family.name })
         
+        return componentsFamilies
+    }
+    
+    private func decodeRemoteComponents(fileWrapper: [String: FileWrapper], componentsFamilies: inout [ComponentsFamily]) throws -> [RemoteComponent] {
         var remoteComponents: [RemoteComponent] = []
+        
         if let remoteComponentsFolderWrappers = fileWrapper.values
             .first(where: { $0.filename == PhoenixDocumentConstants.remoteComponentsFolderName }),
            let remoteComponentsWrappers = remoteComponentsFolderWrappers.fileWrappers?.values.compactMap(\.regularFileContents) {
@@ -83,13 +95,29 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
                 })
                 .map(\.value)
                 .sorted(by: { $0.url < $1.url })
+            
+            for i in 0..<componentsFamilies.count {
+                for j in 0..<componentsFamilies[i].components.count {
+                    componentsFamilies[i].components[j].remoteComponentDependencies = componentsFamilies[i].components[j].remoteDependencies
+                        .map { remoteDependency in
+                            RemoteComponentDependency(
+                                url: remoteDependency.url,
+                                targetTypes: [
+                                    remoteDependency.name: remoteDependency.targetTypes
+                                ]
+                            )
+                        }
+                    componentsFamilies[i].components[j].clearRemoteDependencies()
+                }
+            }
         }
-
-        return .init(
-            families: componentsFamilies,
-            remoteComponents: remoteComponents,
-            projectConfiguration: projectConfiguration
-        )
+        
+        return remoteComponents
     }
-
+    
+    private func decodeConfiguration(fileWrapper: [String: FileWrapper]) throws -> ProjectConfiguration {
+        let configurationFileWrapper = fileWrapper.values.filter { $0.preferredFilename == PhoenixDocumentConstants.configurationFileName }.first
+        return try configurationFileWrapper?.regularFileContents
+            .map({ try jsonDecoder.decode(ProjectConfiguration.self, from: $0) }) ?? .default
+    }
 }

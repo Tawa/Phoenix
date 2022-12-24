@@ -237,7 +237,8 @@ struct ContentView: View {
             allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
             allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
-            onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
+            onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true },
+            onSelectRemoteURL: viewModel.select(remoteComponentURL:)
         )
     }
     

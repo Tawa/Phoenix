@@ -16,6 +16,7 @@ struct ComponentView: View {
     let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
     let onShowDependencySheet: () -> Void
     let onShowRemoteDependencySheet: () -> Void
+    let onSelectRemoteURL: (String) -> Void
     
     // MARK: - Private
     private var title: String { titleForComponentNamed(component.name) }
@@ -34,7 +35,8 @@ struct ComponentView: View {
         allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>],
         allModuleTypes: [String],
         onShowDependencySheet: @escaping () -> Void,
-        onShowRemoteDependencySheet: @escaping () -> Void
+        onShowRemoteDependencySheet: @escaping () -> Void,
+        onSelectRemoteURL: @escaping (String) -> Void
     ) {
         self._component = component
         self.relationViewData = relationViewData
@@ -46,6 +48,7 @@ struct ComponentView: View {
         self.allTargetTypes = allTargetTypes
         self.onShowDependencySheet = onShowDependencySheet
         self.onShowRemoteDependencySheet = onShowRemoteDependencySheet
+        self.onSelectRemoteURL = onSelectRemoteURL
         
         self.allModuleTypes = allModuleTypes
     }
@@ -60,7 +63,7 @@ struct ComponentView: View {
                 
                 defaultDependenciesView()
                 localDependenciesView()
-                remoteDependenciesView()
+                remoteComponentDependenciesView()
                 resourcesView()
             }
             .padding()
@@ -186,18 +189,19 @@ struct ComponentView: View {
         Divider()
     }
     
-    @ViewBuilder private func remoteDependenciesView() -> some View {
+    @ViewBuilder private func remoteComponentDependenciesView() -> some View {
         Section {
             if showingRemoteDependencies {
                 LazyVStack {
-                    ForEach($component.remoteDependencies) { remoteDependency in
-                        HStack {
-                            Divider()
-                            remoteDependencyView(dependency: remoteDependency)
-                        }
+                    ForEach($component.remoteComponentDependencies) { remoteComponentDependency in
+                        RemoteComponentDependencyView(
+                            dependency: remoteComponentDependency,
+                            allDependencyTypes: allTargetTypes,
+                            onSelect: { onSelectRemoteURL(remoteComponentDependency.wrappedValue.url) }
+                        )
                     }
                 }
-                if component.remoteDependencies.isEmpty {
+                if component.remoteComponentDependencies.isEmpty {
                     Text("No remote dependencies")
                 }
             } else {
@@ -229,13 +233,6 @@ struct ComponentView: View {
             viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),
             onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
         )
-    }
-    
-    @ViewBuilder func remoteDependencyView(dependency: Binding<RemoteDependency>) -> some View {
-        RemoteDependencyView(
-            dependency: dependency,
-            allDependencyTypes: allTargetTypes,
-            onRemove: { component.remoteDependencies.removeAll(where: { $0 == dependency.wrappedValue }) })
     }
     
     @ViewBuilder func resourcesView() -> some View {
