@@ -323,13 +323,16 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func toolbarLeadingItems() -> some View {
-        if let appUpdateVerdsionInfo = viewModel.appUpdateVersionInfo {
-            Button(action: viewModel.onUpdateButton) {
-                Image(systemName: "info.circle.fill")
-                    .foregroundColor(.red)
-                Text("Update \(appUpdateVerdsionInfo.version) Available")
-            }
+        Button(action: viewModel.undoSelection) {
+            Image(systemName: "chevron.left")
         }
+        .keyboardShortcut("[", modifiers: [.command])
+        .disabled(viewModel.undoSelectionDisabled)
+        Button(action: viewModel.redoSelection) {
+            Image(systemName: "chevron.right")
+        }
+        .keyboardShortcut("]", modifiers: [.command])
+        .disabled(viewModel.redoSelectionDisabled)
         
         Button(action: viewModel.onConfigurationButton) {
             Image(systemName: "wrench.and.screwdriver")
@@ -337,6 +340,14 @@ struct ContentView: View {
         }
         .keyboardShortcut(",", modifiers: [.command])
         .with(accessibilityIdentifier: ToolbarIdentifiers.configurationButton)
+
+        if let appUpdateVerdsionInfo = viewModel.appUpdateVersionInfo {
+            Button(action: viewModel.onUpdateButton) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundColor(.red)
+                Text("Update \(appUpdateVerdsionInfo.version) Available")
+            }
+        }
     }
     
     @ViewBuilder private func toolbarTrailingItems() -> some View {
