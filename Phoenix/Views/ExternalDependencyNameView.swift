@@ -3,6 +3,7 @@ import SwiftPackage
 
 struct ExternalDependencyNameView: View {
     @Binding var name: ExternalDependencyName
+    var onRemove: (() -> Void)? = nil
 
     // MARK: - Private
     public var nameText: Binding<String> {
@@ -50,6 +51,11 @@ struct ExternalDependencyNameView: View {
                     }
                 }
                 .frame(width: 150)
+                if let onRemove {
+                    Button(action: onRemove) {
+                        Image(systemName: "trash")
+                    }
+                }
             }
             switch name {
             case .name:
@@ -67,11 +73,7 @@ struct ExternalDependencyNameView: View {
 
 struct ExternalDependencyNameView_Previews: PreviewProvider {
     static var previews: some View {
-        ExternalDependencyNameView(
-            name: .constant(.name("Name"))
-        )
-        ExternalDependencyNameView(
-            name: .constant(.product(name: "Name", package: "Package"))
-        )
+        ExternalDependencyNameView(name: .constant(.name("Name")), onRemove: {})
+        ExternalDependencyNameView(name: .constant(.product(name: "Name", package: "Package")), onRemove: {})
     }
 }

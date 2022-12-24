@@ -62,9 +62,8 @@ struct RemoteComponentView: View {
                 ForEach($remoteComponent.names) { name in
                     HStack {
                         Divider()
-                        ExternalDependencyNameView(name: name)
-                        Button(action: { remove(name: name.wrappedValue) }) {
-                            Image(systemName: "trash")
+                        ExternalDependencyNameView(name: name) {
+                            remove(name: name.wrappedValue)
                         }
                     }
                 }
