@@ -99,9 +99,15 @@ public struct Component: Codable, Hashable, Identifiable {
         try container.encodeIfPresent(iOSVersion, forKey: .iOSVersion)
         try container.encodeIfPresent(macOSVersion, forKey: .macOSVersion)
         try container.encode(modules, forKey: .modules)
-        try container.encode(localDependencies, forKey: .localDependencies)
-        try container.encode(remoteDependencies, forKey: .remoteDependencies)
-        try container.encode(remoteComponentDependencies, forKey: .remoteComponentDependencies)
+        if !localDependencies.isEmpty {
+            try container.encode(localDependencies, forKey: .localDependencies)
+        }
+        if !remoteDependencies.isEmpty {
+            try container.encode(remoteDependencies, forKey: .remoteDependencies)
+        }
+        if !remoteComponentDependencies.isEmpty {
+            try container.encode(remoteComponentDependencies, forKey: .remoteComponentDependencies)
+        }
         try container.encode(resources, forKey: .resources)
         if !defaultDependencies.isEmpty {
             try container.encodeSorted(dictionary: defaultDependencies, forKey: .defaultDependencies)

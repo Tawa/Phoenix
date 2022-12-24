@@ -197,7 +197,12 @@ struct ComponentView: View {
                         RemoteComponentDependencyView(
                             dependency: remoteComponentDependency,
                             allDependencyTypes: allTargetTypes,
-                            onSelect: { onSelectRemoteURL(remoteComponentDependency.wrappedValue.url) }
+                            onSelect: { onSelectRemoteURL(remoteComponentDependency.wrappedValue.url) },
+                            onRemove: {
+                                component.remoteComponentDependencies.removeAll(where: {
+                                    $0.url == remoteComponentDependency.wrappedValue.url
+                                })
+                            }
                         )
                     }
                 }

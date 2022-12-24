@@ -10,4 +10,10 @@ public struct RemoteComponentDependency: Codable, Hashable, Identifiable {
         self.url = url
         self.targetTypes = targetTypes
     }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(url, forKey: .url)
+        try container.encodeSorted(dictionary: targetTypes, forKey: .targetTypes)
+    }
 }

@@ -306,7 +306,11 @@ struct ContentView: View {
     
     @ViewBuilder private func remoteDependencySheet(component: Component) -> some View {
         RemoteComponentDependenciesSheet(
-            rows: document.remoteComponents,
+            rows: document.remoteComponents.filter { remoteComponent in
+                !component.remoteComponentDependencies.contains { remoteComponentDependency in
+                    remoteComponent.url == remoteComponentDependency.url
+                }
+            },
             onSelect: { _ in },
             onDismiss: { viewModel.showingRemoteDependencySheet = false }
         )

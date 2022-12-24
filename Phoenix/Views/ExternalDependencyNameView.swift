@@ -6,7 +6,7 @@ struct ExternalDependencyNameView: View {
     var onRemove: (() -> Void)? = nil
 
     // MARK: - Private
-    public var nameText: Binding<String> {
+    private var nameText: Binding<String> {
         .init {
             name.name
         } set: { newValue in
@@ -19,7 +19,7 @@ struct ExternalDependencyNameView: View {
         }
     }
 
-    public var packageText: Binding<String?> {
+    private var packageText: Binding<String?> {
         .init {
             name.package
         } set: { newValue in

@@ -6,6 +6,7 @@ struct RemoteComponentDependencyView: View {
     @Binding var dependency: RemoteComponentDependency
     let allDependencyTypes: [IdentifiableWithSubtype<PackageTargetType>]
     let onSelect: () -> Void
+    let onRemove: () -> Void
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -16,8 +17,11 @@ struct RemoteComponentDependencyView: View {
                 Button(action: onSelect) {
                     Text("Open")
                 }
+                Button(action: onRemove) {
+                    Image(systemName: "trash")
+                }
             }
-            ForEach(dependency.targetTypes.keys.sorted(by: { $0.name < $1.name })) { key in
+            ForEach(dependency.targetTypes.keys.sorted()) { key in
                 HStack {
                     Divider()
                     VStack(alignment: .leading) {
@@ -77,7 +81,8 @@ struct RemoteComponentDependencyView_Previews: PreviewProvider {
                       subValue: nil
                      )
             ],
-            onSelect: {}
+            onSelect: {},
+            onRemove: {}
         )
     }
 }
