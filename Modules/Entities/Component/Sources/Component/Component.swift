@@ -24,6 +24,7 @@ public struct Component: Codable, Hashable, Identifiable {
         case dependencies
         case localDependencies
         case remoteDependencies
+        case remoteComponentDependencies
         case resources
         case defaultDependencies
     }
@@ -38,6 +39,7 @@ public struct Component: Codable, Hashable, Identifiable {
 
     public var localDependencies: [ComponentDependency]
     public var remoteDependencies: [RemoteDependency]
+    public var remoteComponentDependencies: [RemoteComponentDependency]
 
     public init(name: Name,
                 defaultLocalization: DefaultLocalization,
@@ -46,6 +48,7 @@ public struct Component: Codable, Hashable, Identifiable {
                 modules: [String: LibraryType],
                 localDependencies: [ComponentDependency],
                 remoteDependencies: [RemoteDependency],
+                remoteComponentDependencies: [RemoteComponentDependency],
                 resources: [ComponentResources],
                 defaultDependencies: [PackageTargetType: String]) {
         self.name = name
@@ -55,6 +58,7 @@ public struct Component: Codable, Hashable, Identifiable {
         self.modules = modules
         self.localDependencies = localDependencies
         self.remoteDependencies = remoteDependencies
+        self.remoteComponentDependencies = remoteComponentDependencies
         self.resources = resources
         self.defaultDependencies = defaultDependencies
     }
@@ -81,6 +85,7 @@ public struct Component: Codable, Hashable, Identifiable {
             localDependencies = try container.decodeIfPresent([ComponentDependency].self, forKey: .localDependencies) ?? []
             remoteDependencies = try container.decodeIfPresent([RemoteDependency].self, forKey: .remoteDependencies) ?? []
         }
+        remoteComponentDependencies = try container.decodeIfPresent([RemoteComponentDependency].self, forKey: .remoteComponentDependencies) ?? []
         resources = try container.decode([ComponentResources].self, forKey: .resources)
         defaultDependencies = try container.decodeIfPresent([PackageTargetType : String].self, forKey: .defaultDependencies) ?? [:]
     }
@@ -96,9 +101,14 @@ public struct Component: Codable, Hashable, Identifiable {
         try container.encode(modules, forKey: .modules)
         try container.encode(localDependencies, forKey: .localDependencies)
         try container.encode(remoteDependencies, forKey: .remoteDependencies)
+        try container.encode(remoteComponentDependencies, forKey: .remoteComponentDependencies)
         try container.encode(resources, forKey: .resources)
         if !defaultDependencies.isEmpty {
             try container.encodeSorted(dictionary: defaultDependencies, forKey: .defaultDependencies)
         }
+    }
+    
+    public mutating func clearRemoteDependencies() {
+        remoteDependencies.removeAll(keepingCapacity: false)
     }
 }

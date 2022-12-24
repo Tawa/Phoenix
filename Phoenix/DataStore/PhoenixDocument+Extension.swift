@@ -19,7 +19,7 @@ extension PhoenixDocument {
     }
     
     // MARK: - Document modifiers
-    mutating func addNewComponent(withName name: Name, template: Component? = nil) throws {
+    mutating func addNewComponent(withName name: Name) throws {
         if name.given.isEmpty {
             throw NSError(domain: "Given name cannot be empty", code: 500)
         } else if name.family.isEmpty {
@@ -44,12 +44,13 @@ extension PhoenixDocument {
         
         let newComponent = Component(name: name,
                                      defaultLocalization: .init(),
-                                     iOSVersion: template?.iOSVersion,
-                                     macOSVersion: template?.macOSVersion,
-                                     modules: template?.modules ?? moduleTypes,
-                                     localDependencies: template?.localDependencies ?? [],
-                                     remoteDependencies: template?.remoteDependencies ?? [],
-                                     resources: template?.resources ?? [],
+                                     iOSVersion: nil,
+                                     macOSVersion: nil,
+                                     modules: moduleTypes,
+                                     localDependencies: [],
+                                     remoteDependencies: [],
+                                     remoteComponentDependencies: [],
+                                     resources: [],
                                      defaultDependencies: [:])
         array.append(newComponent)
         array.sort(by: { $0.name.full < $1.name.full })
@@ -101,15 +102,6 @@ extension PhoenixDocument {
             localDependencies.append(ComponentDependency(name: dependencyName, targetTypes: targetTypes))
             localDependencies.sort()
             component.localDependencies = localDependencies
-        }
-    }
-    
-    mutating func addRemoteDependencyToComponent(withName name: Name, dependency: RemoteDependency) {
-        getComponent(withName: name) {
-            var remoteDependencies = $0.remoteDependencies
-            remoteDependencies.append(dependency)
-            remoteDependencies.sort()
-            $0.remoteDependencies = remoteDependencies
         }
     }
     
