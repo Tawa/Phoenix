@@ -25,6 +25,6 @@ struct FilterView: View {
                 })
                 .aspectRatio(1, contentMode: .fit)
             }
-        }.padding(16)
+        }.padding([.leading, .bottom, .trailing])
     }
 }

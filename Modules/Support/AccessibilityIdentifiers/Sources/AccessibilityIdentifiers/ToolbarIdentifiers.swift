@@ -5,4 +5,5 @@ public enum ToolbarIdentifiers: String, AccessibilityIdentifiable {
     
     case configurationButton
     case newComponentButton
+    case newRemoteComponentButton
 }

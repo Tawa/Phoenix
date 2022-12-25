@@ -18,8 +18,9 @@ final class ComponentTests: XCTestCase {
                                            targetTypes: [:])
             ],
             remoteDependencies: [
-                RemoteDependency(url: "url", name: .name("name"), value: .branch(name: "main"))
+                RemoteDependency(url: "url", name: .name("name"), value: .branch(name: "main"), targetTypes: [])
             ],
+            remoteComponentDependencies: [],
             resources: [],
             defaultDependencies: [:])
         

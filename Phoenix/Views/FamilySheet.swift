@@ -117,6 +117,5 @@ struct FamilySheet: View {
             .padding()
         }
         .frame(minWidth: 600, maxWidth: .infinity, maxHeight: .infinity)
-        .background(.ultraThinMaterial)
     }
 }

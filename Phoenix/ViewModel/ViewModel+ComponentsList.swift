@@ -5,7 +5,7 @@ extension ViewModel {
     func componentsListSections(document: PhoenixDocument) -> [ComponentsListSection] {
         componentsListSections(
             document: document,
-            selectedName: selectedComponentName,
+            selectedName: selection?.componentName,
             filter: componentsListFilter
         )
     }

@@ -8,10 +8,32 @@ import SwiftUI
 import SwiftPackage
 import AccessibilityIdentifiers
 
+enum ListSelection: String, Hashable, CaseIterable, Identifiable {
+    static var allCases: [ListSelection] { [.components, .remote] }
+    var id: String { rawValue }
+    var title: String { rawValue.capitalized }
+    var keyboardShortcut: KeyEquivalent {
+        switch self {
+        case .components:
+            return "1"
+        case .remote:
+            return "2"
+        case .plugins:
+            return "3"
+        }
+    }
+    
+    case components
+    case remote
+    case plugins
+}
+
 struct ContentView: View {
     var fileURL: URL?
     @Binding var document: PhoenixDocument
     @StateObject var viewModel: ViewModel = .init()
+    
+    @State private var listSelection: ListSelection = .components
     
     init(fileURL: URL?,
          document: Binding<PhoenixDocument>) {
@@ -21,7 +43,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            splitView(componentsList, detail: detailView)
+            splitView(sideView, detail: detailView)
                 .alert(item: $viewModel.alertState, content: { alertState in
                     Alert(title: Text("Error"),
                           message: Text(alertState.title),
@@ -62,6 +84,9 @@ struct ContentView: View {
                             onDismiss: viewModel.onDismissGenerateSheet)
                     )
                 })
+                .sheet(isPresented: $viewModel.showingQuickSelectionSheet, content: {
+                    QuickSelectionSheet(rows: viewModel.quickSelectionRows(document: document))
+                })
                 .popover(item: $viewModel.showingUpdatePopup) { showingUpdatePopup in
                     updateView(appVersionInfo: showingUpdatePopup)
                 }
@@ -84,7 +109,7 @@ struct ContentView: View {
         }
     }
     
-    @ViewBuilder private func componentsList() -> some View {
+    @ViewBuilder private func sideView() -> some View {
         ZStack {
             Button(action: onUpArrow, label: {})
                 .opacity(0)
@@ -92,17 +117,89 @@ struct ContentView: View {
             Button(action: onDownArrow, label: {})
                 .opacity(0)
                 .keyboardShortcut(.downArrow, modifiers: [])
+            Button(action: { viewModel.showingQuickSelectionSheet = true }, label: {})
+                .opacity(0)
+                .keyboardShortcut("O", modifiers: [.command, .shift])
+            if ListSelection.allCases.count > 1 {
+                ForEach(ListSelection.allCases) { selection in
+                    Button(action: { listSelection = selection }, label: {})
+                        .opacity(0)
+                        .keyboardShortcut(selection.keyboardShortcut, modifiers: .command)
+                }
+            }
+            
             VStack {
+                if ListSelection.allCases.count > 1 {
+                    Picker("", selection: $listSelection) {
+                        ForEach(ListSelection.allCases) { selection in
+                            Text(selection.title)
+                                .tag(selection)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.leading, 8)
+                    .padding(.trailing, 16)
+                    .foregroundColor(.accentColor)
+                }
+                
+                switch listSelection {
+                case .components:
+                    componentsList()
+                case .remote:
+                    remoteComponentsList()
+                case .plugins:
+                    pluginsList()
+                }
                 FilterView(text: $viewModel.componentsListFilter.nonOptionalBinding)
-                ComponentsList(
-                    sections: viewModel.componentsListSections(document: document),
-                    onSelect: viewModel.select(componentName:),
-                    onSelectSection: viewModel.select(familyName:)
-                )
             }
         }
         .frame(minWidth: 250)
-            
+    }
+    
+    @ViewBuilder private func componentsList() -> some View {
+        VStack(alignment: .leading) {
+            Button(action: viewModel.onAddButton) {
+                Label("New Component", systemImage: "plus.circle.fill")
+            }
+            .keyboardShortcut("A", modifiers: [.command, .shift])
+            .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
+            .padding(.horizontal)
+            ComponentsList(
+                sections: viewModel.componentsListSections(document: document),
+                onSelect: viewModel.select(componentName:),
+                onSelectSection: viewModel.select(familyName:)
+            )
+        }
+    }
+    
+    @ViewBuilder private func remoteComponentsList() -> some View {
+        VStack(alignment: .leading) {
+            Button(action: viewModel.onAddRemoteButton) {
+                Label("New Remote Dependency", systemImage: "plus.circle.fill")
+            }
+            .keyboardShortcut("A", modifiers: [.command, .shift])
+            .with(accessibilityIdentifier: ToolbarIdentifiers.newRemoteComponentButton)
+            .padding(.horizontal)
+            RemoteComponentsList(
+                rows: viewModel.remoteComponentsListRows(document: document),
+                onSelect: viewModel.select(remoteComponentURL:)
+            )
+        }
+    }
+    
+    @ViewBuilder private func pluginsList() -> some View {
+        VStack(alignment: .leading) {
+            Button(action: viewModel.onAddButton) {
+                Label("New Plugin", systemImage: "plus.circle.fill")
+            }
+            .keyboardShortcut("A", modifiers: [.command, .shift])
+            .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
+            .padding(.horizontal)
+            ScrollView {
+                
+            }
+            Spacer()
+        }
     }
     
     @ViewBuilder private func detailView() -> some View {
@@ -114,6 +211,8 @@ struct ContentView: View {
                 .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
                     remoteDependencySheet(component: selectedComponentBinding.wrappedValue)
                 }
+        } else if let selectedRemoteComponentBinding = viewModel.selectedRemoteComponent(document: $document) {
+            remoteComponentView(for: selectedRemoteComponentBinding)
         } else {
             HStack(alignment: .top) {
                 VStack(alignment: .leading) {
@@ -144,29 +243,43 @@ struct ContentView: View {
             allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
             allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
-            onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true }
+            onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true },
+            onSelectRemoteURL: viewModel.select(remoteComponentURL:)
+        )
+    }
+    
+    @ViewBuilder private func remoteComponentView(for remoteComponent: Binding<RemoteComponent>) -> some View {
+        RemoteComponentView(
+            remoteComponent: remoteComponent,
+            onRemove: { document.removeRemoteComponent(withURL: remoteComponent.wrappedValue.url) }
         )
     }
     
     @ViewBuilder private func newComponentSheet(state: ComponentPopupState) -> some View {
-        NewComponentSheet(onSubmit: { name, familyName in
-            let name = Name(given: name, family: familyName)
-            switch state {
-            case .new:
+        switch state {
+        case .new:
+            NewComponentSheet(onSubmit: { name, familyName in
+                let name = Name(given: name, family: familyName)
                 try document.addNewComponent(withName: name)
-            case let .template(component):
-                try document.addNewComponent(withName: name, template: component)
+                viewModel.select(componentName: name)
+                viewModel.showingNewComponentPopup = nil
+            }, onDismiss: {
+                viewModel.showingNewComponentPopup = nil
+            }, familyNameSuggestion: { familyName in
+                guard !familyName.isEmpty else { return nil }
+                return document.families.first { componentFamily in
+                    componentFamily.family.name.hasPrefix(familyName)
+                }?.family.name
+            })
+            
+        case .remote:
+            NewRemoteComponentSheet { url, version in
+                try document.addNewRemoteComponent(withURL: url, version: version)
+                viewModel.showingNewComponentPopup = nil
+            } onDismiss: {
+                viewModel.showingNewComponentPopup = nil
             }
-            viewModel.select(componentName: name)
-            viewModel.showingNewComponentPopup = nil
-        }, onDismiss: {
-            viewModel.showingNewComponentPopup = nil
-        }, familyNameSuggestion: { familyName in
-            guard !familyName.isEmpty else { return nil }
-            return document.families.first { componentFamily in
-                componentFamily.family.name.hasPrefix(familyName)
-            }?.family.name
-        })
+        }
     }
     
     @ViewBuilder private func dependencySheet(component: Component) -> some View {
@@ -198,31 +311,15 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func remoteDependencySheet(component: Component) -> some View {
-        RemoteDependencySheet(onExternalSubmit: { remoteDependency in
-            let urlString = remoteDependency.urlString
-            
-            let name: ExternalDependencyName
-            switch remoteDependency.productType {
-            case .name:
-                name = .name(remoteDependency.productName)
-            case .product:
-                name = .product(name: remoteDependency.productName, package: remoteDependency.productPackage)
-            }
-            
-            let version: ExternalDependencyVersion
-            switch remoteDependency.versionType {
-            case .from:
-                version = .from(version: remoteDependency.versionValue)
-            case .branch:
-                version = .branch(name: remoteDependency.versionValue)
-            case .exact:
-                version = .exact(version: remoteDependency.versionValue)
-            }
-            document.addRemoteDependencyToComponent(withName: component.name, dependency: RemoteDependency(url: urlString,
-                                                                                                           name: name,
-                                                                                                           value: version))
-            viewModel.showingRemoteDependencySheet = false
-        }, onDismiss: { viewModel.showingRemoteDependencySheet = false })
+        RemoteComponentDependenciesSheet(
+            rows: document.remoteComponents.filter { remoteComponent in
+                !component.remoteComponentDependencies.contains { remoteComponentDependency in
+                    remoteComponent.url == remoteComponentDependency.url
+                }
+            },
+            onSelect: { _ in },
+            onDismiss: { viewModel.showingRemoteDependencySheet = false }
+        )
     }
     
     @ViewBuilder private func toolbarViews() -> some View {
@@ -232,13 +329,16 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func toolbarLeadingItems() -> some View {
-        if let appUpdateVerdsionInfo = viewModel.appUpdateVersionInfo {
-            Button(action: viewModel.onUpdateButton) {
-                Image(systemName: "info.circle.fill")
-                    .foregroundColor(.red)
-                Text("Update \(appUpdateVerdsionInfo.version) Available")
-            }
+        Button(action: viewModel.undoSelection) {
+            Image(systemName: "chevron.left")
         }
+        .keyboardShortcut("[", modifiers: [.command])
+        .disabled(viewModel.undoSelectionDisabled)
+        Button(action: viewModel.redoSelection) {
+            Image(systemName: "chevron.right")
+        }
+        .keyboardShortcut("]", modifiers: [.command])
+        .disabled(viewModel.redoSelectionDisabled)
         
         Button(action: viewModel.onConfigurationButton) {
             Image(systemName: "wrench.and.screwdriver")
@@ -246,14 +346,16 @@ struct ContentView: View {
         }
         .keyboardShortcut(",", modifiers: [.command])
         .with(accessibilityIdentifier: ToolbarIdentifiers.configurationButton)
-        Button(action: viewModel.onAddButton) {
-            Image(systemName: "plus.circle.fill")
-            Text("New Component")
-        }
-        .keyboardShortcut("A", modifiers: [.command, .shift])
-        .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
-    }
 
+        if let appUpdateVerdsionInfo = viewModel.appUpdateVersionInfo {
+            Button(action: viewModel.onUpdateButton) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundColor(.red)
+                Text("Update \(appUpdateVerdsionInfo.version) Available")
+            }
+        }
+    }
+    
     @ViewBuilder private func toolbarTrailingItems() -> some View {
         Button(action: { viewModel.onGenerateSheetButton(fileURL: fileURL) }) {
             Image(systemName: "shippingbox.fill")
@@ -305,10 +407,24 @@ struct ContentView: View {
     }
     
     private func onDownArrow() {
-        viewModel.selectNextComponent(names: document.families.flatMap(\.components).map(\.name))
+        switch listSelection {
+        case .components:
+            viewModel.selectNextComponent(names: document.families.flatMap(\.components).map(\.name))
+        case .remote:
+            viewModel.selectNextRemoteComponent(remoteComponents: document.remoteComponents)
+        case .plugins:
+            break
+        }
     }
     
     private func onUpArrow() {
-        viewModel.selectPreviousComponent(names: document.families.flatMap(\.components).map(\.name))
+        switch listSelection {
+        case .components:
+            viewModel.selectPreviousComponent(names: document.families.flatMap(\.components).map(\.name))
+        case .remote:
+            viewModel.selectPreviousRemoteComponent(remoteComponents: document.remoteComponents)
+        case .plugins:
+            break
+        }
     }
 }

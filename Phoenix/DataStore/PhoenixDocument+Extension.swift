@@ -19,7 +19,7 @@ extension PhoenixDocument {
     }
     
     // MARK: - Document modifiers
-    mutating func addNewComponent(withName name: Name, template: Component? = nil) throws {
+    mutating func addNewComponent(withName name: Name) throws {
         if name.given.isEmpty {
             throw NSError(domain: "Given name cannot be empty", code: 500)
         } else if name.family.isEmpty {
@@ -44,12 +44,13 @@ extension PhoenixDocument {
         
         let newComponent = Component(name: name,
                                      defaultLocalization: .init(),
-                                     iOSVersion: template?.iOSVersion,
-                                     macOSVersion: template?.macOSVersion,
-                                     modules: template?.modules ?? moduleTypes,
-                                     localDependencies: template?.localDependencies ?? [],
-                                     remoteDependencies: template?.remoteDependencies ?? [],
-                                     resources: template?.resources ?? [],
+                                     iOSVersion: nil,
+                                     macOSVersion: nil,
+                                     modules: moduleTypes,
+                                     localDependencies: [],
+                                     remoteDependencies: [],
+                                     remoteComponentDependencies: [],
+                                     resources: [],
                                      defaultDependencies: [:])
         array.append(newComponent)
         array.sort(by: { $0.name.full < $1.name.full })
@@ -64,6 +65,16 @@ extension PhoenixDocument {
             familiesArray.sort(by: { $0.family.name < $1.family.name })
             families = familiesArray
         }
+    }
+    
+    mutating func addNewRemoteComponent(withURL url: String, version: ExternalDependencyVersion) throws {
+        guard !remoteComponents.contains(where: { remoteComponent in
+            remoteComponent.url == url
+        }) else {
+            throw NSError(domain: "Remote Component with url \"\(url)\" already added.", code: 503)
+        }
+        remoteComponents.append(RemoteComponent(url: url, version: version, names: []))
+        remoteComponents.sort(by: { $0.url < $1.url })
     }
     
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {
@@ -94,20 +105,15 @@ extension PhoenixDocument {
         }
     }
     
-    mutating func addRemoteDependencyToComponent(withName name: Name, dependency: RemoteDependency) {
-        getComponent(withName: name) {
-            var remoteDependencies = $0.remoteDependencies
-            remoteDependencies.append(dependency)
-            remoteDependencies.sort()
-            $0.remoteDependencies = remoteDependencies
-        }
-    }
-    
     mutating func removeComponent(withName name: Name) {
         guard
             let familyIndex = families.firstIndex(where: { $0.components.contains(where: { $0.name == name }) })
         else { return }
         families[familyIndex].components.removeAll(where: { $0.name == name })
         families.removeAll(where: { $0.components.isEmpty })
+    }
+    
+    mutating func removeRemoteComponent(withURL url: String) {
+        remoteComponents.removeAll(where: { $0.url == url })
     }
 }

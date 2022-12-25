@@ -12,7 +12,8 @@ public struct ComponentPackagesProvider: ComponentPackagesProviderProtocol {
     public func packages(for component: Component,
                          of family: Family,
                          allFamilies: [Family],
-                         projectConfiguration: ProjectConfiguration) -> [PackageWithPath] {
+                         projectConfiguration: ProjectConfiguration,
+                         remoteComponents: [RemoteComponent]) -> [PackageWithPath] {
         projectConfiguration
             .packageConfigurations
             .filter { component.modules[$0.name] != nil }
@@ -21,7 +22,8 @@ public struct ComponentPackagesProvider: ComponentPackagesProviderProtocol {
                                                  of: family,
                                                  allFamilies: allFamilies,
                                                  packageConfiguration: packageConfiguration,
-                                                 projectConfiguration: projectConfiguration)
+                                                 projectConfiguration: projectConfiguration,
+                                                 remoteComponents: remoteComponents)
             }
     }
 }

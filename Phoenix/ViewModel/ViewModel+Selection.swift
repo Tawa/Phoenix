@@ -10,7 +10,7 @@ extension ViewModel {
         if let componentsListFilter {
             names = names.filter { $0.full.lowercased().contains(componentsListFilter.lowercased()) }
         }
-        guard let selectedComponentName,
+        guard let selectedComponentName = selection?.componentName,
               let index = names.firstIndex(of: selectedComponentName)
         else {
             names.first.map(select(componentName:))
@@ -25,7 +25,7 @@ extension ViewModel {
         if let componentsListFilter {
             names = names.filter { $0.full.lowercased().contains(componentsListFilter.lowercased()) }
         }
-        guard let selectedComponentName,
+        guard let selectedComponentName = selection?.componentName,
               let index = names.firstIndex(of: selectedComponentName)
         else {
             names.last.map(select(componentName:))
@@ -37,7 +37,7 @@ extension ViewModel {
     
     func selectedComponent(document: Binding<PhoenixDocument>) -> Binding<Component>? {
         guard
-            let selectedComponentName,
+            let selectedComponentName = selection?.componentName,
             let familyIndex = document.wrappedValue.families.firstIndex(where: { $0.family.name == selectedComponentName.family }),
             let componentIndex = document.wrappedValue.families[familyIndex].components.firstIndex(where: { $0.name == selectedComponentName })
         else { return nil }
@@ -46,7 +46,43 @@ extension ViewModel {
             set: { document.wrappedValue.families[familyIndex].components[componentIndex] = $0 }
         )
     }
-
+    
+    // MARK: - RemoteComponent
+    func selectNextRemoteComponent(remoteComponents: [RemoteComponent]) {
+        let urls = remoteComponents.filtered(componentsListFilter).map(\.url)
+        guard let selectedURL = selection?.remoteComponentURL,
+              let index = urls.firstIndex(of: selectedURL)
+        else {
+            urls.first.map(select(remoteComponentURL:))
+            return
+        }
+        let nextIndex = (index + 1) % urls.count
+        select(remoteComponentURL: urls[nextIndex])
+    }
+    
+    func selectPreviousRemoteComponent(remoteComponents: [RemoteComponent]) {
+        let urls = remoteComponents.filtered(componentsListFilter).map(\.url)
+        guard let selectedURL = selection?.remoteComponentURL,
+              let index = urls.firstIndex(of: selectedURL)
+        else {
+            urls.last.map(select(remoteComponentURL:))
+            return
+        }
+        let previousIndex = index > 0 ? index - 1 : urls.count - 1
+        select(remoteComponentURL: urls[previousIndex])
+    }
+    
+    func selectedRemoteComponent(document: Binding<PhoenixDocument>) -> Binding<RemoteComponent>? {
+        guard
+            let selectedComponentURL = selection?.remoteComponentURL,
+            let remoteComponentIndex = document.wrappedValue.remoteComponents.firstIndex(where: { $0.url == selectedComponentURL })
+        else { return nil }
+        return Binding(
+            get: { document.wrappedValue.remoteComponents[remoteComponentIndex] },
+            set: { document.wrappedValue.remoteComponents[remoteComponentIndex] = $0 }
+        )
+    }
+    
     // MARK: - Family
     func selectedFamily(document: Binding<PhoenixDocument>) -> Binding<Family>? {
         guard
@@ -65,5 +101,28 @@ extension ViewModel {
                 name: otherFamily.name,
                 enabled: !family.excludedFamilies.contains(where: { otherFamily.name == $0 }))
         }
+    }
+    
+    // MARK: - Quick Selection
+    func quickSelectionRows(document: PhoenixDocument) -> [QuickSelectionRow] {
+        document.families
+            .flatMap(\.components)
+            .map(\.name)
+            .map { name in
+                QuickSelectionRow(
+                    text: document.title(forComponentNamed: name),
+                    terms: [name.full.lowercased()]) { [weak self] in
+                        self?.select(componentName: name)
+                    }
+            } + document.remoteComponents
+            .map { remoteComponent in
+                QuickSelectionRow(
+                    text: remoteComponent.url,
+                    terms: [remoteComponent.url.lowercased()] +
+                    remoteComponent.names.map { $0.name.lowercased() } +
+                    remoteComponent.names.compactMap { $0.package?.lowercased() } ) { [weak self] in
+                        self?.select(remoteComponentURL: remoteComponent.url)
+                    }
+            }
     }
 }

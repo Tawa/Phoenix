@@ -31,46 +31,43 @@ struct ComponentsList: View {
     let onSelectSection: (String) -> Void
     
     var body: some View {
-        VStack(alignment: .leading) {
-            List {
-                ForEach(sections) { section in
-                    Section {
-                        ForEach(section.rows) { row in
-                            ComponentListItem(
-                                name: row.name,
-                                isSelected: row.isSelected,
-                                onSelect: { onSelect(row.id) },
-                                onDuplicate: { }
-                            )
-                            .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
-                        }
-                    } header: {
-                        Button(action: { onSelectSection(section.id) },
-                               label: {
-                            HStack {
-                                Text(section.name)
-                                    .font(.title)
-                                section.folderName.map { folderName -> Text? in
-                                    guard folderName != section.name else { return nil }
-                                    return Text("(\(Image(systemName: "folder")) \(folderName))")
-                                }?.help("Folder Name")
-                                Image(systemName: "rectangle.and.pencil.and.ellipsis")
-                                Spacer()
-                            }
-                            .contentShape(Rectangle())
-                        })
-                        .buttonStyle(.plain)
-                        .padding(.vertical)
-                        .with(accessibilityIdentifier: ComponentsListIdentifiers.familySettingsButton(named: section.name))
+        List {
+            ForEach(sections) { section in
+                Section {
+                    ForEach(section.rows) { row in
+                        ComponentListItem(
+                            name: row.name,
+                            isSelected: row.isSelected,
+                            onSelect: { onSelect(row.id) }
+                        )
+                        .with(accessibilityIdentifier: ComponentsListIdentifiers.component(named: row.name))
                     }
-                    Divider()
+                } header: {
+                    Button(action: { onSelectSection(section.id) },
+                           label: {
+                        HStack {
+                            Text(section.name)
+                                .font(.title)
+                            section.folderName.map { folderName -> Text? in
+                                guard folderName != section.name else { return nil }
+                                return Text("(\(Image(systemName: "folder")) \(folderName))")
+                            }?.help("Folder Name")
+                            Image(systemName: "rectangle.and.pencil.and.ellipsis")
+                            Spacer()
+                        }
+                        .contentShape(Rectangle())
+                    })
+                    .buttonStyle(.plain)
+                    .padding(.vertical)
+                    .with(accessibilityIdentifier: ComponentsListIdentifiers.familySettingsButton(named: section.name))
                 }
-                Text(numberOfComponentsString)
-                    .foregroundColor(.gray)
+                Divider()
             }
-            .frame(minHeight: 200, maxHeight: .infinity)
-            .listStyle(SidebarListStyle())
+            Text(numberOfComponentsString)
+                .foregroundColor(.gray)
         }
+        .frame(minHeight: 200, maxHeight: .infinity)
+        .listStyle(SidebarListStyle())
     }
     
     private var numberOfComponentsString: String {
@@ -78,7 +75,7 @@ struct ComponentsList: View {
         if totalRows == 1 {
             return "1 component"
         } else {
-            return "\(totalRows) component"
+            return "\(totalRows) components"
         }
     }
 }

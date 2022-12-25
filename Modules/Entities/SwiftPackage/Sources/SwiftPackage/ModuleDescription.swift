@@ -1,4 +1,4 @@
-public enum ExternalDependencyName: Codable, Hashable, Identifiable {
+public enum ExternalDependencyName: Codable, Hashable, Identifiable, Comparable {
     public var id: Int { hashValue }
     public var name: String {
         switch self {
