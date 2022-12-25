@@ -11,7 +11,7 @@ extension ComponentsList {
     }
     
     func familySettingsButton(named: String) -> XCUIElement {
-        Screen.app.staticTexts[ComponentsListIdentifiers.familySettingsButton(named: named).identifier]
+        Screen.app.buttons[ComponentsListIdentifiers.familySettingsButton(named: named).identifier]
     }
     
     @discardableResult
