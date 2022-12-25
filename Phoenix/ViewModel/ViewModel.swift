@@ -105,6 +105,7 @@ class ViewModel: ObservableObject {
     @Published var showingUpdatePopup: AppVersionInfo? = nil
     
     // MARK: - Sheets
+    @Published var showingQuickSelectionSheet: Bool = false
     @Published var showingConfigurationPopup: Bool = false
     @Published var showingNewComponentPopup: ComponentPopupState? = nil
     @Published var showingDependencySheet: Bool = false

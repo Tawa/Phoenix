@@ -82,7 +82,7 @@ extension ViewModel {
             set: { document.wrappedValue.remoteComponents[remoteComponentIndex] = $0 }
         )
     }
-
+    
     // MARK: - Family
     func selectedFamily(document: Binding<PhoenixDocument>) -> Binding<Family>? {
         guard
@@ -101,5 +101,28 @@ extension ViewModel {
                 name: otherFamily.name,
                 enabled: !family.excludedFamilies.contains(where: { otherFamily.name == $0 }))
         }
+    }
+    
+    // MARK: - Quick Selection
+    func quickSelectionRows(document: PhoenixDocument) -> [QuickSelectionRow] {
+        document.families
+            .flatMap(\.components)
+            .map(\.name)
+            .map { name in
+                QuickSelectionRow(
+                    text: document.title(forComponentNamed: name),
+                    terms: [name.full.lowercased()]) { [weak self] in
+                        self?.select(componentName: name)
+                    }
+            } + document.remoteComponents
+            .map { remoteComponent in
+                QuickSelectionRow(
+                    text: remoteComponent.url,
+                    terms: [remoteComponent.url.lowercased()] +
+                    remoteComponent.names.map { $0.name.lowercased() } +
+                    remoteComponent.names.compactMap { $0.package?.lowercased() } ) { [weak self] in
+                        self?.select(remoteComponentURL: remoteComponent.url)
+                    }
+            }
     }
 }

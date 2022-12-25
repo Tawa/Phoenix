@@ -84,6 +84,9 @@ struct ContentView: View {
                             onDismiss: viewModel.onDismissGenerateSheet)
                     )
                 })
+                .sheet(isPresented: $viewModel.showingQuickSelectionSheet, content: {
+                    QuickSelectionSheet(rows: viewModel.quickSelectionRows(document: document))
+                })
                 .popover(item: $viewModel.showingUpdatePopup) { showingUpdatePopup in
                     updateView(appVersionInfo: showingUpdatePopup)
                 }
@@ -114,6 +117,9 @@ struct ContentView: View {
             Button(action: onDownArrow, label: {})
                 .opacity(0)
                 .keyboardShortcut(.downArrow, modifiers: [])
+            Button(action: { viewModel.showingQuickSelectionSheet = true }, label: {})
+                .opacity(0)
+                .keyboardShortcut("O", modifiers: [.command, .shift])
             if ListSelection.allCases.count > 1 {
                 ForEach(ListSelection.allCases) { selection in
                     Button(action: { listSelection = selection }, label: {})
