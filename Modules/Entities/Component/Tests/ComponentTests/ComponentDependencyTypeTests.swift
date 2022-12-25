@@ -33,12 +33,14 @@ final class ComponentDependencyTypeTests: XCTestCase {
         let remoteComponentDependencyType1 = ComponentDependencyType.remote(
             RemoteDependency(url: "url1",
                              name: .name("Name"),
-                             value: .branch(name: "main"))
+                             value: .branch(name: "main"),
+                             targetTypes: [])
         )
         let remoteComponentDependencyType2 = ComponentDependencyType.remote(
             RemoteDependency(url: "url2",
                              name: .name("Name"),
-                             value: .branch(name: "main"))
+                             value: .branch(name: "main"),
+                             targetTypes: [])
         )
 
         // Then

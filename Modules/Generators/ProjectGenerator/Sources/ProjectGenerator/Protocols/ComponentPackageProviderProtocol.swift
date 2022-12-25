@@ -5,5 +5,6 @@ public protocol ComponentPackageProviderProtocol {
                  of family: Family,
                  allFamilies: [Family],
                  packageConfiguration: PackageConfiguration,
-                 projectConfiguration: ProjectConfiguration) -> PackageWithPath
+                 projectConfiguration: ProjectConfiguration,
+                 remoteComponents: [RemoteComponent]) -> PackageWithPath
 }

@@ -3,8 +3,34 @@ import ComponentDetailsProviderContract
 import SwiftPackage
 
 extension Component {
-    var allDependencies: [ComponentDependencyType] {
-        localDependencies.map(ComponentDependencyType.local) + remoteDependencies.map(ComponentDependencyType.remote)
+    func allDependencies(remoteComponents: [RemoteComponent]) -> [ComponentDependencyType] {
+        var allDependencies: [ComponentDependencyType] = localDependencies.map(ComponentDependencyType.local)
+        
+        let remoteDependencies: [RemoteDependency] = remoteComponentDependencies
+            .compactMap { remoteComponentDependency -> (RemoteComponent, [ExternalDependencyName : [PackageTargetType]])? in
+                let targetTypes = remoteComponentDependency.targetTypes.filter { element in
+                    !element.value.isEmpty
+                }
+                guard let remoteComponent = remoteComponents.first(where: {
+                    $0.url == remoteComponentDependency.url
+                })
+                else { return nil }
+                return (remoteComponent, targetTypes)
+            }
+            .flatMap { remoteComponent, targetTypes in
+                targetTypes.keys.map { name in
+                    RemoteDependency(
+                        url: remoteComponent.url,
+                        name: name,
+                        value: remoteComponent.version,
+                        targetTypes: targetTypes[name] ?? []
+                    )
+                }
+            }
+        
+        allDependencies.append(contentsOf: remoteDependencies.map(ComponentDependencyType.remote))
+        
+        return allDependencies
     }
 }
 
@@ -28,12 +54,12 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         self.packagePathProvider = packagePathProvider
     }
     
-    
     public func package(for component: Component,
                         of family: Family,
                         allFamilies: [Family],
                         packageConfiguration: PackageConfiguration,
-                        projectConfiguration: ProjectConfiguration) -> PackageWithPath {
+                        projectConfiguration: ProjectConfiguration,
+                        remoteComponents: [RemoteComponent]) -> PackageWithPath {
         let packageName = packageNameProvider.packageName(forComponentName: component.name,
                                                           of: family,
                                                           packageConfiguration: packageConfiguration)
@@ -42,28 +68,30 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         
         let packageTargetType = PackageTargetType(name: packageConfiguration.name, isTests: false)
         var dependencies: [Dependency] = []
-        var implementationDependencies: [Dependency] = component.allDependencies.sorted().compactMap { dependencyType -> Dependency? in
-            switch dependencyType {
-            case let .local(componentDependency):
-                guard
-                    let targetTypeString = componentDependency.targetTypes[packageTargetType],
-                    let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family }),
-                    let dependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == targetTypeString })
-                else { return nil }
-                return .module(path: packagePathProvider.path(for: componentDependency.name,
-                                                              of: dependencyFamily,
-                                                              packageConfiguration: dependencyConfiguration,
-                                                              relativeToConfiguration: packageConfiguration),
-                               name: packageNameProvider.packageName(forComponentName: componentDependency.name,
-                                                                     of: dependencyFamily,
-                                                                     packageConfiguration: dependencyConfiguration))
-            case let .remote(remoteDependency):
-                guard remoteDependency.targetTypes.contains(packageTargetType) else { return nil }
-                return .external(url: remoteDependency.url,
-                                 name: remoteDependency.name,
-                                 description: remoteDependency.version)
+        var implementationDependencies: [Dependency] = component.allDependencies(remoteComponents: remoteComponents)
+            .sorted()
+            .compactMap { dependencyType -> Dependency? in
+                switch dependencyType {
+                case let .local(componentDependency):
+                    guard
+                        let targetTypeString = componentDependency.targetTypes[packageTargetType],
+                        let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family }),
+                        let dependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == targetTypeString })
+                    else { return nil }
+                    return .module(path: packagePathProvider.path(for: componentDependency.name,
+                                                                  of: dependencyFamily,
+                                                                  packageConfiguration: dependencyConfiguration,
+                                                                  relativeToConfiguration: packageConfiguration),
+                                   name: packageNameProvider.packageName(forComponentName: componentDependency.name,
+                                                                         of: dependencyFamily,
+                                                                         packageConfiguration: dependencyConfiguration))
+                case let .remote(remoteDependency):
+                    guard remoteDependency.targetTypes.contains(packageTargetType) else { return nil }
+                    return .external(url: remoteDependency.url,
+                                     name: remoteDependency.name,
+                                     description: remoteDependency.version)
+                }
             }
-        }
         if let internalDependencyString = packageConfiguration.internalDependency,
            component.modules[internalDependencyString] != nil,
            let internalDependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == internalDependencyString }) {
@@ -90,28 +118,30 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         dependencies = implementationDependencies
         if packageConfiguration.hasTests {
             let packageTestsTargetType = PackageTargetType(name: packageConfiguration.name, isTests: true)
-            let testsDependencies: [Dependency] = component.allDependencies.sorted().compactMap { dependencyType -> Dependency? in
-                switch dependencyType {
-                case let .local(componentDependency):
-                    guard
-                        let targetTypeString = componentDependency.targetTypes[packageTestsTargetType],
-                        let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family }),
-                        let dependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == targetTypeString })
-                    else { return nil }
-                    return .module(path: packagePathProvider.path(for: componentDependency.name,
-                                                                  of: dependencyFamily,
-                                                                  packageConfiguration: dependencyConfiguration,
-                                                                  relativeToConfiguration: packageConfiguration),
-                                   name: packageNameProvider.packageName(forComponentName: componentDependency.name,
-                                                                         of: dependencyFamily,
-                                                                         packageConfiguration: dependencyConfiguration))
-                case let .remote(remoteDependency):
-                    guard remoteDependency.targetTypes.contains(packageTestsTargetType) else { return nil }
-                    return .external(url: remoteDependency.url,
-                                     name: remoteDependency.name,
-                                     description: remoteDependency.version)
+            let testsDependencies: [Dependency] = component.allDependencies(remoteComponents: remoteComponents)
+                .sorted()
+                .compactMap { dependencyType -> Dependency? in
+                    switch dependencyType {
+                    case let .local(componentDependency):
+                        guard
+                            let targetTypeString = componentDependency.targetTypes[packageTestsTargetType],
+                            let dependencyFamily = allFamilies.first(where: { $0.name == componentDependency.name.family }),
+                            let dependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == targetTypeString })
+                        else { return nil }
+                        return .module(path: packagePathProvider.path(for: componentDependency.name,
+                                                                      of: dependencyFamily,
+                                                                      packageConfiguration: dependencyConfiguration,
+                                                                      relativeToConfiguration: packageConfiguration),
+                                       name: packageNameProvider.packageName(forComponentName: componentDependency.name,
+                                                                             of: dependencyFamily,
+                                                                             packageConfiguration: dependencyConfiguration))
+                    case let .remote(remoteDependency):
+                        guard remoteDependency.targetTypes.contains(packageTestsTargetType) else { return nil }
+                        return .external(url: remoteDependency.url,
+                                         name: remoteDependency.name,
+                                         description: remoteDependency.version)
+                    }
                 }
-            }
             targets.append(
                 Target(name: packageName + "Tests",
                        dependencies: [Dependency.module(path: "", name: packageName)] + testsDependencies,

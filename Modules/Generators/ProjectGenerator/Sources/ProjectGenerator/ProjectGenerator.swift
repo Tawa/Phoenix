@@ -26,7 +26,8 @@ public struct ProjectGenerator: ProjectGeneratorProtocol {
                 componentPackagesProvider.packages(for: component,
                                                    of: family,
                                                    allFamilies: allFamilies,
-                                                   projectConfiguration: document.projectConfiguration)
+                                                   projectConfiguration: document.projectConfiguration,
+                                                   remoteComponents: document.remoteComponents)
             }
         }
         

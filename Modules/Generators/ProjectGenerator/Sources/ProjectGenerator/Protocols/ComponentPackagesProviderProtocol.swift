@@ -15,5 +15,6 @@ public protocol ComponentPackagesProviderProtocol {
     func packages(for component: Component,
                   of family: Family,
                   allFamilies: [Family],
-                  projectConfiguration: ProjectConfiguration) -> [PackageWithPath]
+                  projectConfiguration: ProjectConfiguration,
+                  remoteComponents: [RemoteComponent]) -> [PackageWithPath]
 }

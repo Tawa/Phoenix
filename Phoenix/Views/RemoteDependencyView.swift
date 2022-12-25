@@ -32,7 +32,8 @@ struct RemoteDependencyView_Previews: PreviewProvider {
                 .init(
                     url: "git@github.com/repo",
                     name: .name("Name"),
-                    value: .branch(name: "main")
+                    value: .branch(name: "main"),
+                    targetTypes: []
                 )
             ),
             allDependencyTypes: [
