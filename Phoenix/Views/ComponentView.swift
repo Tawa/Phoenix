@@ -16,6 +16,7 @@ struct ComponentView: View {
     let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
     let onShowDependencySheet: () -> Void
     let onShowRemoteDependencySheet: () -> Void
+    let onSelectComponentName: (Name) -> Void
     let onSelectRemoteURL: (String) -> Void
     
     // MARK: - Private
@@ -36,21 +37,21 @@ struct ComponentView: View {
         allModuleTypes: [String],
         onShowDependencySheet: @escaping () -> Void,
         onShowRemoteDependencySheet: @escaping () -> Void,
+        onSelectComponentName: @escaping (Name) -> Void,
         onSelectRemoteURL: @escaping (String) -> Void
     ) {
         self._component = component
         self.relationViewData = relationViewData
         self.relationViewDataToComponentNamed = relationViewDataToComponentNamed
         self.titleForComponentNamed = titleForComponentNamed
-        
         self.onGenerateDemoAppProject = onGenerateDemoAppProject
         self.onRemove = onRemove
         self.allTargetTypes = allTargetTypes
+        self.allModuleTypes = allModuleTypes
         self.onShowDependencySheet = onShowDependencySheet
         self.onShowRemoteDependencySheet = onShowRemoteDependencySheet
+        self.onSelectComponentName = onSelectComponentName
         self.onSelectRemoteURL = onSelectRemoteURL
-        
-        self.allModuleTypes = allModuleTypes
     }
     
     var body: some View {
@@ -236,6 +237,7 @@ struct ComponentView: View {
             defaultDependencies: dependency.targetTypes,
             title: titleForComponentNamed(dependency.wrappedValue.name),
             viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),
+            onSelect: { onSelectComponentName(dependency.wrappedValue.name) },
             onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
         )
     }
