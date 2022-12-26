@@ -241,11 +241,14 @@ struct ContentView: View {
             },
             onRemove: { document.removeComponent(withName: component.wrappedValue.name) },
             allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
-            allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true },
             onSelectComponentName: viewModel.select(componentName:),
-            onSelectRemoteURL: viewModel.select(remoteComponentURL:)
+            onSelectRemoteURL: viewModel.select(remoteComponentURL:),
+            allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name),
+            mentions: document.components.values.filter { otherComponent in
+                otherComponent.localDependencies.contains(where: { $0.name == component.wrappedValue.name })
+            }.map(\.name).sorted()
         )
     }
     
