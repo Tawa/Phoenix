@@ -34,7 +34,7 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
     
     public func phoenixDocument(from fileWrapper: [String: FileWrapper]) throws -> PhoenixDocument {
         var componentsFamilies = try decodeFamilies(fileWrapper: fileWrapper)
-        var remoteComponents = try decodeRemoteComponents(fileWrapper: fileWrapper, componentsFamilies: &componentsFamilies)
+        let remoteComponents = try decodeRemoteComponents(fileWrapper: fileWrapper, componentsFamilies: &componentsFamilies)
         let projectConfiguration = try decodeConfiguration(fileWrapper: fileWrapper)
 
         return .init(
