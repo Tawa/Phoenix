@@ -55,17 +55,20 @@ struct RelationView: View {
     let title: String
     let allTypes: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
     let allSelectionValues: [String]
+    let onSelect: (() -> Void)?
     let onRemove: (() -> Void)?
     
     init(defaultDependencies: Binding<[PackageTargetType: String]>,
          title: String,
          viewData: RelationViewData,
+         onSelect: (() -> Void)? = nil,
          onRemove: (() -> Void)? = nil
     ) {
         _defaultDependencies = defaultDependencies
         self.title = title
         self.allTypes = viewData.types
         self.allSelectionValues = viewData.selectionValues
+        self.onSelect = onSelect
         self.onRemove = onRemove
     }
 
@@ -75,6 +78,7 @@ struct RelationView: View {
             HStack(alignment: .center) {
                 Text(title)
                     .bold()
+                onSelect.map { Button(action: $0, label: { Text("Open") }) }
                 onRemove.map { Button(action: $0) { Image(systemName: "trash") } }
                 Spacer()
             }
