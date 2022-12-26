@@ -8,4 +8,5 @@ public enum IOSVersion: String, Codable, Hashable, CaseIterable, Identifiable {
     case v13
     case v14
     case v15
+    case v16
 }

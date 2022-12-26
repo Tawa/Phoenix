@@ -22,7 +22,6 @@ final class PhoenixUITests: XCTestCase {
         let navigator = "Navigator"
         let networking = "Networking"
         
-        
         let wordpressFeature = wordpress + feature
         let wordpressUseCases = wordpress + useCases
         let wordpressRepository = wordpress + repository

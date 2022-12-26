@@ -18,54 +18,37 @@ struct ComponentView: View {
     let onShowRemoteDependencySheet: () -> Void
     let onSelectComponentName: (Name) -> Void
     let onSelectRemoteURL: (String) -> Void
+    let allModuleTypes: [String]
+    let mentions: [Name]
     
     // MARK: - Private
     private var title: String { titleForComponentNamed(component.name) }
-    private let allModuleTypes: [String]
     
+    @State private var showingMentions: Bool = false
     @State private var showingLocalDependencies: Bool = false
     @State private var showingRemoteDependencies: Bool = false
-    
-    init(
-        component: Binding<Component>,
-        relationViewData: RelationViewData,
-        relationViewDataToComponentNamed: @escaping (Name, [PackageTargetType: String]) -> RelationViewData,
-        titleForComponentNamed: @escaping (Name) -> String,
-        onGenerateDemoAppProject: @escaping () -> Void,
-        onRemove: @escaping () -> Void,
-        allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>],
-        allModuleTypes: [String],
-        onShowDependencySheet: @escaping () -> Void,
-        onShowRemoteDependencySheet: @escaping () -> Void,
-        onSelectComponentName: @escaping (Name) -> Void,
-        onSelectRemoteURL: @escaping (String) -> Void
-    ) {
-        self._component = component
-        self.relationViewData = relationViewData
-        self.relationViewDataToComponentNamed = relationViewDataToComponentNamed
-        self.titleForComponentNamed = titleForComponentNamed
-        self.onGenerateDemoAppProject = onGenerateDemoAppProject
-        self.onRemove = onRemove
-        self.allTargetTypes = allTargetTypes
-        self.allModuleTypes = allModuleTypes
-        self.onShowDependencySheet = onShowDependencySheet
-        self.onShowRemoteDependencySheet = onShowRemoteDependencySheet
-        self.onSelectComponentName = onSelectComponentName
-        self.onSelectRemoteURL = onSelectRemoteURL
-    }
-    
+
     var body: some View {
         List {
-            VStack(alignment: .leading) {
-                headerView()
-                moduleTypesView()
-                defaultLocalizationView()
-                platformsContent()
-                
-                defaultDependenciesView()
-                localDependenciesView()
-                remoteComponentDependenciesView()
-                resourcesView()
+            headerView()
+            ZStack {
+                VStack(alignment: .leading) {
+                    moduleTypesView()
+                    defaultLocalizationView()
+                    platformsContent()
+                    
+                    defaultDependenciesView()
+                    localDependenciesView()
+                    remoteComponentDependenciesView()
+                    resourcesView()
+                }
+                HStack(alignment: .top) {
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        mentionsView()
+                        Spacer()
+                    }
+                }
             }
             .padding()
         }
@@ -83,6 +66,39 @@ struct ComponentView: View {
             Button(role: .destructive, action: onRemove) {
                 Image(systemName: "trash")
             }.help("Remove")
+        }
+    }
+    
+    @ViewBuilder private func mentionsView() -> some View {
+        VStack(alignment: .trailing) {
+            HStack {
+                Text("Mentions")
+                Image(systemName: "info.circle")
+                    .help("This is the list of components that depend on \(title).")
+            }
+            .contentShape(Rectangle())
+            .with(accessibilityIdentifier: ComponentIdentifiers.mentionsButton)
+            if showingMentions {
+                if mentions.isEmpty {
+                    Text("\(title) is not used in any other component.")
+                } else {
+                    ForEach(mentions, id: \.self) { name in
+                        Button {
+                            onSelectComponentName(name)
+                        } label: {
+                            Text(titleForComponentNamed(name))
+                        }
+                    }
+                }
+            }
+        }
+        .padding()
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .onHover { didEnter in
+            withAnimation(.easeOut(duration: 0.2)) {
+                showingMentions = didEnter
+            }
         }
     }
     
@@ -154,8 +170,10 @@ struct ComponentView: View {
     }
     
     @ViewBuilder private func localDependenciesView() -> some View {
-        Section {
-            if showingLocalDependencies {
+        expandableDependenciesSection(
+            title: "Local Dependencies",
+            isExpanded: $showingLocalDependencies,
+            accessibilityIdentifier: ComponentIdentifiers.localDependenciesButton) {
                 LazyVStack {
                     ForEach($component.localDependencies) { localDependency in
                         HStack {
@@ -167,32 +185,17 @@ struct ComponentView: View {
                 if component.localDependencies.isEmpty {
                     Text("No local dependencies")
                 }
-            } else {
-                EmptyView()
-            }
-        } header: {
-            HStack {
-                Button {
-                    showingLocalDependencies.toggle()
-                } label: {
-                    HStack {
-                        Image(systemName: showingLocalDependencies ? "chevron.down" : "chevron.forward")
-                        Text("Local Dependencies")
-                    }
-                    .font(.largeTitle.bold())
-                }
-                .buttonStyle(PlainButtonStyle())
-                .with(accessibilityIdentifier: ComponentIdentifiers.localDependenciesButton)
+            } accessoryContent: {
                 Button(action: onShowDependencySheet) { Image(systemName: "plus") }
                     .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
             }
-        }
-        Divider()
     }
     
     @ViewBuilder private func remoteComponentDependenciesView() -> some View {
-        Section {
-            if showingRemoteDependencies {
+        expandableDependenciesSection(
+            title: "Remote Dependencies",
+            isExpanded: $showingRemoteDependencies,
+            accessibilityIdentifier: ComponentIdentifiers.remoteDependenciesButton) {
                 LazyVStack {
                     ForEach($component.remoteComponentDependencies) { remoteComponentDependency in
                         RemoteComponentDependencyView(
@@ -210,26 +213,9 @@ struct ComponentView: View {
                 if component.remoteComponentDependencies.isEmpty {
                     Text("No remote dependencies")
                 }
-            } else {
-                EmptyView()
-            }
-        } header: {
-            HStack {
-                Button {
-                    showingRemoteDependencies.toggle()
-                } label: {
-                    HStack {
-                        Image(systemName: showingRemoteDependencies ? "chevron.down" : "chevron.forward")
-                        Text("Remote Dependencies")
-                    }
-                    .font(.largeTitle.bold())
-                }
-                .buttonStyle(PlainButtonStyle())
-                .with(accessibilityIdentifier: ComponentIdentifiers.remoteDependenciesButton)
+            } accessoryContent: {
                 Button(action: onShowRemoteDependencySheet) { Image(systemName: "plus") }
             }
-        }
-        Divider()
     }
     
     @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
@@ -262,6 +248,56 @@ struct ComponentView: View {
         }
     }
     
+    @ViewBuilder private func expandableSection<Title: View, Content: View, AccessoryContent: View>(
+        isExpanded: Binding<Bool>,
+        accessibilityIdentifier: AccessibilityIdentifiable,
+        @ViewBuilder title: @escaping () -> Title,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder accessoryContent: @escaping () -> AccessoryContent = { EmptyView() }
+    ) -> some View {
+        Section {
+            if isExpanded.wrappedValue {
+                content()
+            } else {
+                EmptyView()
+            }
+        } header: {
+            HStack {
+                Button {
+                    isExpanded.wrappedValue.toggle()
+                } label: {
+                    title()
+                }
+                .buttonStyle(PlainButtonStyle())
+                .with(accessibilityIdentifier: accessibilityIdentifier)
+                accessoryContent()
+            }
+        }
+        Divider()
+    }
+    
+    @ViewBuilder private func expandableDependenciesSection<Content: View, AccessoryContent: View>(
+        title: String,
+        isExpanded: Binding<Bool>,
+        accessibilityIdentifier: AccessibilityIdentifiable,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder accessoryContent: @escaping () -> AccessoryContent
+    ) -> some View {
+        expandableSection(
+            isExpanded: isExpanded,
+            accessibilityIdentifier: accessibilityIdentifier,
+            title: {
+                HStack {
+                    Image(systemName: isExpanded.wrappedValue ? "chevron.down" : "chevron.forward")
+                    Text(title)
+                }
+                .font(.largeTitle.bold())
+            },
+            content: content,
+            accessoryContent: accessoryContent
+        )
+    }
+
     private func iOSPlatformMenuTitle(forComponent component: Component) -> String {
         if let iOSVersion = component.iOSVersion {
             return ".iOS(.\(iOSVersion))"
