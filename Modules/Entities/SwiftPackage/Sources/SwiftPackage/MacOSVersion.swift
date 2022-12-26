@@ -9,4 +9,5 @@ public enum MacOSVersion: String, Codable, Hashable, CaseIterable, Identifiable 
     case v10_15
     case v11
     case v12
+    case v13
 }
