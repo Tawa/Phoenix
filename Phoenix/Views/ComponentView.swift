@@ -154,8 +154,10 @@ struct ComponentView: View {
     }
     
     @ViewBuilder private func localDependenciesView() -> some View {
-        Section {
-            if showingLocalDependencies {
+        expandableSection(
+            title: "Local Dependencies",
+            isExpanded: $showingLocalDependencies,
+            accessibilityIdentifier: ComponentIdentifiers.localDependenciesButton) {
                 LazyVStack {
                     ForEach($component.localDependencies) { localDependency in
                         HStack {
@@ -167,32 +169,17 @@ struct ComponentView: View {
                 if component.localDependencies.isEmpty {
                     Text("No local dependencies")
                 }
-            } else {
-                EmptyView()
-            }
-        } header: {
-            HStack {
-                Button {
-                    showingLocalDependencies.toggle()
-                } label: {
-                    HStack {
-                        Image(systemName: showingLocalDependencies ? "chevron.down" : "chevron.forward")
-                        Text("Local Dependencies")
-                    }
-                    .font(.largeTitle.bold())
-                }
-                .buttonStyle(PlainButtonStyle())
-                .with(accessibilityIdentifier: ComponentIdentifiers.localDependenciesButton)
+            } accessoryContent: {
                 Button(action: onShowDependencySheet) { Image(systemName: "plus") }
                     .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
             }
-        }
-        Divider()
     }
     
     @ViewBuilder private func remoteComponentDependenciesView() -> some View {
-        Section {
-            if showingRemoteDependencies {
+        expandableSection(
+            title: "Remote Dependencies",
+            isExpanded: $showingRemoteDependencies,
+            accessibilityIdentifier: ComponentIdentifiers.remoteDependenciesButton) {
                 LazyVStack {
                     ForEach($component.remoteComponentDependencies) { remoteComponentDependency in
                         RemoteComponentDependencyView(
@@ -210,26 +197,9 @@ struct ComponentView: View {
                 if component.remoteComponentDependencies.isEmpty {
                     Text("No remote dependencies")
                 }
-            } else {
-                EmptyView()
-            }
-        } header: {
-            HStack {
-                Button {
-                    showingRemoteDependencies.toggle()
-                } label: {
-                    HStack {
-                        Image(systemName: showingRemoteDependencies ? "chevron.down" : "chevron.forward")
-                        Text("Remote Dependencies")
-                    }
-                    .font(.largeTitle.bold())
-                }
-                .buttonStyle(PlainButtonStyle())
-                .with(accessibilityIdentifier: ComponentIdentifiers.remoteDependenciesButton)
+            } accessoryContent: {
                 Button(action: onShowRemoteDependencySheet) { Image(systemName: "plus") }
             }
-        }
-        Divider()
     }
     
     @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
@@ -260,6 +230,38 @@ struct ComponentView: View {
             }
             Divider()
         }
+    }
+    
+    @ViewBuilder private func expandableSection<Content: View, AccessoryContent: View>(
+        title: String,
+        isExpanded: Binding<Bool>,
+        accessibilityIdentifier: AccessibilityIdentifiable,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder accessoryContent: @escaping () -> AccessoryContent
+    ) -> some View {
+        Section {
+            if isExpanded.wrappedValue {
+                content()
+            } else {
+                EmptyView()
+            }
+        } header: {
+            HStack {
+                Button {
+                    isExpanded.wrappedValue.toggle()
+                } label: {
+                    HStack {
+                        Image(systemName: isExpanded.wrappedValue ? "chevron.down" : "chevron.forward")
+                        Text(title)
+                    }
+                    .font(.largeTitle.bold())
+                }
+                .buttonStyle(PlainButtonStyle())
+                .with(accessibilityIdentifier: ComponentIdentifiers.remoteDependenciesButton)
+                accessoryContent()
+            }
+        }
+        Divider()
     }
     
     private func iOSPlatformMenuTitle(forComponent component: Component) -> String {
