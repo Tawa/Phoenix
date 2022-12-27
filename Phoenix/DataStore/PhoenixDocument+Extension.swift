@@ -105,6 +105,17 @@ extension PhoenixDocument {
         }
     }
     
+    mutating func addRemoteDependencyToComponent(withName name: Name, dependencyURL: String) {
+        getComponent(withName: name) { component in
+            component.remoteComponentDependencies.append(
+                RemoteComponentDependency(
+                    url: dependencyURL,
+                    targetTypes: [:]
+                )
+            )
+        }
+    }
+    
     mutating func removeComponent(withName name: Name) {
         guard
             let familyIndex = families.firstIndex(where: { $0.components.contains(where: { $0.name == name }) })

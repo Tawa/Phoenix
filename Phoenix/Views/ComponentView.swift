@@ -7,6 +7,7 @@ import SwiftPackage
 
 struct ComponentView: View {
     @Binding var component: Component
+    let remoteDependencies: [String: RemoteComponent]
     let relationViewData: RelationViewData
     let relationViewDataToComponentNamed: (Name, [PackageTargetType: String]) -> RelationViewData
     let titleForComponentNamed: (Name) -> String
@@ -200,6 +201,7 @@ struct ComponentView: View {
                     ForEach($component.remoteComponentDependencies) { remoteComponentDependency in
                         RemoteComponentDependencyView(
                             dependency: remoteComponentDependency,
+                            remoteDependency: remoteDependencies[remoteComponentDependency.wrappedValue.url],
                             allDependencyTypes: allTargetTypes,
                             onSelect: { onSelectRemoteURL(remoteComponentDependency.wrappedValue.url) },
                             onRemove: {

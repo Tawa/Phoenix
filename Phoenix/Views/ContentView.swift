@@ -229,6 +229,9 @@ struct ContentView: View {
     @ViewBuilder private func componentView(for component: Binding<Component>) -> some View {
         ComponentView(
             component: component,
+            remoteDependencies: document.remoteComponents.reduce(into: [String: RemoteComponent](), { partialResult, remoteComponent in
+                partialResult[remoteComponent.url] = remoteComponent
+            }),
             relationViewData: document.componentRelationViewData(componentName: component.wrappedValue.name),
             relationViewDataToComponentNamed: { dependencyName, selectedValues in
                 document.relationViewData(fromComponentName: component.wrappedValue.name,
@@ -321,7 +324,10 @@ struct ContentView: View {
                     remoteComponent.url == remoteComponentDependency.url
                 }
             },
-            onSelect: { _ in },
+            onSelect: { remoteComponent in
+                document.addRemoteDependencyToComponent(withName: component.name, dependencyURL: remoteComponent.url)
+                viewModel.showingRemoteDependencySheet = false
+            },
             onDismiss: { viewModel.showingRemoteDependencySheet = false }
         )
     }

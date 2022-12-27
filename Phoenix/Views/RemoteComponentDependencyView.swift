@@ -4,6 +4,7 @@ import SwiftUI
 
 struct RemoteComponentDependencyView: View {
     @Binding var dependency: RemoteComponentDependency
+    let remoteDependency: RemoteComponent?
     let allDependencyTypes: [IdentifiableWithSubtype<PackageTargetType>]
     let onSelect: () -> Void
     let onRemove: () -> Void
@@ -21,7 +22,7 @@ struct RemoteComponentDependencyView: View {
                     Image(systemName: "trash")
                 }
             }
-            ForEach(dependency.targetTypes.keys.sorted()) { key in
+            ForEach(remoteDependency?.names ?? []) { key in
                 HStack {
                     Divider()
                     VStack(alignment: .leading) {
@@ -64,7 +65,9 @@ struct RemoteComponentDependencyView_Previews: PreviewProvider {
                             .init(name: "Implementation", isTests: true)
                         ]
                     ])
-            ), allDependencyTypes: [
+            ),
+            remoteDependency: nil,
+            allDependencyTypes: [
                 .init(title: "Contract",
                       subtitle: nil,
                       value: .init(name: "Contract", isTests: false),
