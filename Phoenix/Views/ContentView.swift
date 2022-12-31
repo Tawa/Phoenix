@@ -258,7 +258,12 @@ struct ContentView: View {
     @ViewBuilder private func remoteComponentView(for remoteComponent: Binding<RemoteComponent>) -> some View {
         RemoteComponentView(
             remoteComponent: remoteComponent,
-            onRemove: { document.removeRemoteComponent(withURL: remoteComponent.wrappedValue.url) }
+            onRemove: { document.removeRemoteComponent(withURL: remoteComponent.wrappedValue.url) },
+            mentions: document.components.values.filter { component in
+                component.remoteComponentDependencies.contains(where: { $0.url == remoteComponent.wrappedValue.url })
+            }.map(\.name).sorted(),
+            titleForComponentNamed: document.title(forComponentNamed:),
+            onSelectComponentName: viewModel.select(componentName:)
         )
     }
     

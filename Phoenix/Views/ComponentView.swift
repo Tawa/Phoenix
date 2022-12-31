@@ -28,11 +28,12 @@ struct ComponentView: View {
     @State private var showingMentions: Bool = false
     @State private var showingLocalDependencies: Bool = false
     @State private var showingRemoteDependencies: Bool = false
+    @State private var showingResources: Bool = false
 
     var body: some View {
         List {
             headerView()
-            ZStack {
+            ZStack(alignment: .topTrailing) {
                 VStack(alignment: .leading) {
                     moduleTypesView()
                     defaultLocalizationView()
@@ -43,15 +44,8 @@ struct ComponentView: View {
                     remoteComponentDependenciesView()
                     resourcesView()
                 }
-                HStack(alignment: .top) {
-                    Spacer()
-                    VStack(alignment: .trailing) {
-                        mentionsView()
-                        Spacer()
-                    }
-                }
+                mentionsView()
             }
-            .padding()
         }
     }
     // MARK: - Subviews
@@ -71,36 +65,13 @@ struct ComponentView: View {
     }
     
     @ViewBuilder private func mentionsView() -> some View {
-        VStack(alignment: .trailing) {
-            HStack {
-                Text("Mentions")
-                Image(systemName: "info.circle")
-                    .help("This is the list of components that depend on \(title).")
-            }
-            .contentShape(Rectangle())
-            .with(accessibilityIdentifier: ComponentIdentifiers.mentionsButton)
-            if showingMentions {
-                if mentions.isEmpty {
-                    Text("\(title) is not used in any other component.")
-                } else {
-                    ForEach(mentions, id: \.self) { name in
-                        Button {
-                            onSelectComponentName(name)
-                        } label: {
-                            Text(titleForComponentNamed(name))
-                        }
-                    }
-                }
-            }
-        }
-        .padding()
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-        .onHover { didEnter in
-            withAnimation(.easeOut(duration: 0.2)) {
-                showingMentions = didEnter
-            }
-        }
+        MentionsView(
+            showing: $showingMentions,
+            mentions: mentions,
+            title: titleForComponentNamed(component.name),
+            titleForComponentNamed: titleForComponentNamed,
+            onSelectComponentName: onSelectComponentName
+        )
     }
     
     @ViewBuilder private func moduleTypesView() -> some View {
@@ -231,13 +202,11 @@ struct ComponentView: View {
     }
     
     @ViewBuilder func resourcesView() -> some View {
-        Section {
+        expandableDependenciesSection(title: "Resources",
+                                      isExpanded: $showingResources,
+                                      accessibilityIdentifier: ComponentIdentifiers.resourcesButton) {
             ResourcesView(resources: $component.resources, allTargetTypes: allTargetTypes)
-        } header: {
-            Text("Resources")
-                .font(.largeTitle.bold())
         }
-        Divider()
     }
     
     // MARK: - Helper Functions
@@ -283,7 +252,7 @@ struct ComponentView: View {
         isExpanded: Binding<Bool>,
         accessibilityIdentifier: AccessibilityIdentifiable,
         @ViewBuilder content: @escaping () -> Content,
-        @ViewBuilder accessoryContent: @escaping () -> AccessoryContent
+        @ViewBuilder accessoryContent: @escaping () -> AccessoryContent = { EmptyView() }
     ) -> some View {
         expandableSection(
             isExpanded: isExpanded,

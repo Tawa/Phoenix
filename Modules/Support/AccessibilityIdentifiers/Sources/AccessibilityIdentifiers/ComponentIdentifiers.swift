@@ -7,4 +7,5 @@ public enum ComponentIdentifiers: String, AccessibilityIdentifiable {
     case localDependenciesButton
     case remoteDependenciesButton
     case mentionsButton
+    case resourcesButton
 }
