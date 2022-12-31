@@ -59,7 +59,13 @@ struct RemoteComponentView: View {
     @ViewBuilder private func namesView() -> some View {
         section {
             VStack(alignment: .leading) {
-                Text("Names/Packages:")
+                HStack {
+                    Text("Names/Packages:")
+                        .bold()
+                    Button(action: onAddName) {
+                        Image(systemName: "plus")
+                    }
+                }
                 if remoteComponent.names.isEmpty {
                     Text("No Names/Packages added yet.")
                         .italic()
@@ -72,9 +78,6 @@ struct RemoteComponentView: View {
                             remove(name: name.wrappedValue)
                         }
                     }
-                }
-                Button(action: onAddName) {
-                    Text("Add")
                 }
             }
         }

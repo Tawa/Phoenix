@@ -36,10 +36,6 @@ struct MentionsView: View {
         .padding()
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 8))
-        .onHover { didEnter in
-            withAnimation(.easeOut(duration: 0.2)) {
-                showing = didEnter
-            }
-        }
+        .onHover { showing = $0 }
     }
 }

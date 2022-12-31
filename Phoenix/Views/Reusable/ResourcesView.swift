@@ -67,7 +67,7 @@ struct ResourcesView: View {
                     .padding()
                 }
             }
-            HStack {
+            HStack(spacing: 0) {
                 Button(action: {
                     let folderName = newFieldValue.isEmpty ? newValuePlaceholder : newFieldValue
                     resources.append(
@@ -79,8 +79,9 @@ struct ResourcesView: View {
                     )
                     newFieldValue = ""
                 }) {
-                    Text("Add")
+                    Image(systemName: "plus")
                 }
+                .padding(.leading, 2)
                 TextField(newValuePlaceholder,
                           text: $newFieldValue)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
