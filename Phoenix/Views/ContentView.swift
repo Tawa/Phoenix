@@ -240,28 +240,32 @@ struct ContentView: View {
     
     @ViewBuilder private func contentView() -> some View {
         HSplitView {
-            if let selectedComponentBinding = viewModel.selectedComponent(document: $document) {
-                componentView(for: selectedComponentBinding)
-                    .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
-                        dependencySheet(component: selectedComponentBinding.wrappedValue)
-                    }
-                    .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
-                        remoteDependencySheet(component: selectedComponentBinding.wrappedValue)
-                    }
-            } else if let selectedRemoteComponentBinding = viewModel.selectedRemoteComponent(document: $document) {
-                remoteComponentView(for: selectedRemoteComponentBinding)
-            } else {
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading) {
-                        Text("No Component Selected")
-                            .font(.title)
-                            .padding()
+            Group {
+                if let selectedComponentBinding = viewModel.selectedComponent(document: $document) {
+                    componentView(for: selectedComponentBinding)
+                        .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
+                            dependencySheet(component: selectedComponentBinding.wrappedValue)
+                        }
+                        .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
+                            remoteDependencySheet(component: selectedComponentBinding.wrappedValue)
+                        }
+                } else if let selectedRemoteComponentBinding = viewModel.selectedRemoteComponent(document: $document) {
+                    remoteComponentView(for: selectedRemoteComponentBinding)
+                } else {
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading) {
+                            Text("No Component Selected")
+                                .font(.title)
+                                .padding()
+                            Spacer()
+                        }
                         Spacer()
                     }
-                    Spacer()
                 }
             }
+            .frame(minWidth: 700)
             detailView()
+                .frame(minWidth: 200)
         }
     }
     
@@ -308,7 +312,6 @@ struct ContentView: View {
                 titleForComponentNamed: document.title(forComponentNamed:),
                 onSelectComponentName: viewModel.select(componentName:)
             )
-            .frame(minWidth: 200, maxWidth: 400)
         }
     }
     
