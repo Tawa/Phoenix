@@ -7,15 +7,13 @@ struct RemoteComponentView: View {
     let onRemove: () -> Void
     
     @State private var showingNamePopup: Bool = false
+    @State private var showingMentions: Bool = false
     
     var body: some View {
         List {
-            VStack(alignment: .leading) {
-                headerView()
-                versionView()
-                namesView()
-            }
-            .padding()
+            headerView()
+            versionView()
+            namesView()
         }
         .sheet(isPresented: $showingNamePopup) {
             NewRemoteComponentNameSheet { name in
@@ -53,7 +51,13 @@ struct RemoteComponentView: View {
     @ViewBuilder private func namesView() -> some View {
         section {
             VStack(alignment: .leading) {
-                Text("Names/Packages:")
+                HStack {
+                    Text("Names/Packages:")
+                        .bold()
+                    Button(action: onAddName) {
+                        Image(systemName: "plus")
+                    }
+                }
                 if remoteComponent.names.isEmpty {
                     Text("No Names/Packages added yet.")
                         .italic()
@@ -66,9 +70,6 @@ struct RemoteComponentView: View {
                             remove(name: name.wrappedValue)
                         }
                     }
-                }
-                Button(action: onAddName) {
-                    Text("Add")
                 }
             }
         }
@@ -83,7 +84,7 @@ struct RemoteComponentView: View {
             Divider()
         }
     }
-
+    
     private func onAddName() {
         showingNamePopup = true
     }
