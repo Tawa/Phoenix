@@ -20,12 +20,10 @@ struct ComponentView: View {
     let onSelectComponentName: (Name) -> Void
     let onSelectRemoteURL: (String) -> Void
     let allModuleTypes: [String]
-    let mentions: [Name]
     
     // MARK: - Private
     private var title: String { titleForComponentNamed(component.name) }
     
-    @State private var showingMentions: Bool = false
     @State private var showingLocalDependencies: Bool = false
     @State private var showingRemoteDependencies: Bool = false
     @State private var showingResources: Bool = false
@@ -33,21 +31,17 @@ struct ComponentView: View {
     var body: some View {
         List {
             headerView()
-            ZStack(alignment: .topTrailing) {
-                VStack(alignment: .leading) {
-                    moduleTypesView()
-                    defaultLocalizationView()
-                    platformsContent()
-                    
-                    defaultDependenciesView()
-                    localDependenciesView()
-                    remoteComponentDependenciesView()
-                    resourcesView()
-                }
-                mentionsView()
-            }
+            moduleTypesView()
+            defaultLocalizationView()
+            platformsContent()
+            
+            defaultDependenciesView()
+            localDependenciesView()
+            remoteComponentDependenciesView()
+            resourcesView()
         }
     }
+    
     // MARK: - Subviews
     @ViewBuilder private func headerView() -> some View {
         section {
@@ -62,16 +56,6 @@ struct ComponentView: View {
                 Image(systemName: "trash")
             }.help("Remove")
         }
-    }
-    
-    @ViewBuilder private func mentionsView() -> some View {
-        MentionsView(
-            showing: $showingMentions,
-            mentions: mentions,
-            title: titleForComponentNamed(component.name),
-            titleForComponentNamed: titleForComponentNamed,
-            onSelectComponentName: onSelectComponentName
-        )
     }
     
     @ViewBuilder private func moduleTypesView() -> some View {

@@ -8,20 +8,12 @@ struct RemoteComponentView: View {
     
     @State private var showingNamePopup: Bool = false
     @State private var showingMentions: Bool = false
-    let mentions: [Name]
-    let titleForComponentNamed: (Name) -> String
-    let onSelectComponentName: (Name) -> Void
-
+    
     var body: some View {
         List {
             headerView()
-            ZStack(alignment: .topTrailing) {
-                VStack(alignment: .leading) {
-                    versionView()
-                    namesView()
-                }
-                mentionsView()
-            }
+            versionView()
+            namesView()
         }
         .sheet(isPresented: $showingNamePopup) {
             NewRemoteComponentNameSheet { name in
@@ -83,17 +75,6 @@ struct RemoteComponentView: View {
         }
     }
     
-    @ViewBuilder private func mentionsView() -> some View {
-        MentionsView(
-            showing: $showingMentions,
-            mentions: mentions,
-            title: remoteComponent.url,
-            titleForComponentNamed: titleForComponentNamed,
-            onSelectComponentName: onSelectComponentName,
-            alignment: .leading
-        )
-    }
-    
     // MARK: - Helper Functions
     @ViewBuilder private func section<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
         Section {
@@ -103,7 +84,7 @@ struct RemoteComponentView: View {
             Divider()
         }
     }
-
+    
     private func onAddName() {
         showingNamePopup = true
     }

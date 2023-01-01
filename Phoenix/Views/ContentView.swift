@@ -28,12 +28,46 @@ enum ListSelection: String, Hashable, CaseIterable, Identifiable {
     case plugins
 }
 
+enum InspectorSelection: String, Hashable, CaseIterable, Identifiable {
+    var id: String { rawValue }
+    
+    case none
+    case mentions
+    
+    mutating func toggle() {
+        switch self {
+        case .none:
+            self = .mentions
+        case .mentions:
+            self = .none
+        }
+    }
+}
+
+@available(macOS 13.0, *)
+struct SplitView<Sidebar: View, Content: View>: View {
+    @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
+    
+    let sidebar: () -> Sidebar
+    let content: () -> Content
+    
+    var body: some View {
+        NavigationSplitView {
+            sidebar()
+                .navigationSplitViewColumnWidth(min: 200, ideal: 300, max: nil)
+        } detail: {
+            content()
+        }
+    }
+}
+
 struct ContentView: View {
     var fileURL: URL?
     @Binding var document: PhoenixDocument
     @StateObject var viewModel: ViewModel = .init()
     
     @State private var listSelection: ListSelection = .components
+    @State private var inspectorSelection: InspectorSelection = .none
     
     init(fileURL: URL?,
          document: Binding<PhoenixDocument>) {
@@ -43,7 +77,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            splitView(sideView, detail: detailView)
+            splitView(sidebar: sideView, content: contentView)
                 .alert(item: $viewModel.alertState, content: { alertState in
                     Alert(title: Text("Error"),
                           message: Text(alertState.title),
@@ -97,14 +131,16 @@ struct ContentView: View {
     }
     
     // MARK: - Views
-    @ViewBuilder private func splitView<Sidebar: View, Detail: View>(_ sidebar: () -> Sidebar, detail: () -> Detail) -> some View {
+    @ViewBuilder private func splitView<Sidebar: View, Content: View>(
+        sidebar: @escaping () -> Sidebar,
+        content: @escaping () -> Content
+    ) -> some View {
         if #available(macOS 13.0, *) {
-            NavigationSplitView(sidebar: sidebar, detail: detailView)
-                .navigationSplitViewColumnWidth(min: 750, ideal: 750, max: nil)
+            SplitView(sidebar: sidebar, content: content)
         } else {
             HSplitView {
                 sidebar()
-                detail()
+                content()
             }
         }
     }
@@ -202,27 +238,30 @@ struct ContentView: View {
         }
     }
     
-    @ViewBuilder private func detailView() -> some View {
-        if let selectedComponentBinding = viewModel.selectedComponent(document: $document) {
-            componentView(for: selectedComponentBinding)
-                .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
-                    dependencySheet(component: selectedComponentBinding.wrappedValue)
-                }
-                .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
-                    remoteDependencySheet(component: selectedComponentBinding.wrappedValue)
-                }
-        } else if let selectedRemoteComponentBinding = viewModel.selectedRemoteComponent(document: $document) {
-            remoteComponentView(for: selectedRemoteComponentBinding)
-        } else {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading) {
-                    Text("No Component Selected")
-                        .font(.title)
-                        .padding()
+    @ViewBuilder private func contentView() -> some View {
+        HSplitView {
+            if let selectedComponentBinding = viewModel.selectedComponent(document: $document) {
+                componentView(for: selectedComponentBinding)
+                    .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
+                        dependencySheet(component: selectedComponentBinding.wrappedValue)
+                    }
+                    .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
+                        remoteDependencySheet(component: selectedComponentBinding.wrappedValue)
+                    }
+            } else if let selectedRemoteComponentBinding = viewModel.selectedRemoteComponent(document: $document) {
+                remoteComponentView(for: selectedRemoteComponentBinding)
+            } else {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading) {
+                        Text("No Component Selected")
+                            .font(.title)
+                            .padding()
+                        Spacer()
+                    }
                     Spacer()
                 }
-                Spacer()
             }
+            detailView()
         }
     }
     
@@ -248,23 +287,51 @@ struct ContentView: View {
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true },
             onSelectComponentName: viewModel.select(componentName:),
             onSelectRemoteURL: viewModel.select(remoteComponentURL:),
-            allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name),
-            mentions: document.components.values.filter { otherComponent in
-                otherComponent.localDependencies.contains(where: { $0.name == component.wrappedValue.name })
-            }.map(\.name).sorted()
+            allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name)
         )
     }
     
     @ViewBuilder private func remoteComponentView(for remoteComponent: Binding<RemoteComponent>) -> some View {
         RemoteComponentView(
             remoteComponent: remoteComponent,
-            onRemove: { document.removeRemoteComponent(withURL: remoteComponent.wrappedValue.url) },
-            mentions: document.components.values.filter { component in
-                component.remoteComponentDependencies.contains(where: { $0.url == remoteComponent.wrappedValue.url })
-            }.map(\.name).sorted(),
-            titleForComponentNamed: document.title(forComponentNamed:),
-            onSelectComponentName: viewModel.select(componentName:)
+            onRemove: { document.removeRemoteComponent(withURL: remoteComponent.wrappedValue.url) }
         )
+    }
+    
+    @ViewBuilder private func detailView() -> some View {
+        if inspectorSelection == .none || viewModel.selection == nil {
+            EmptyView()
+        } else {
+            MentionsView(
+                mentions: mentionsViewMentions(),
+                title: mentionsViewTitle(),
+                titleForComponentNamed: document.title(forComponentNamed:),
+                onSelectComponentName: viewModel.select(componentName:)
+            )
+            .frame(minWidth: 200, maxWidth: 400)
+        }
+    }
+    
+    private func mentionsViewTitle() -> String {
+        switch viewModel.selection {
+        case let .component(name):
+            return document.title(forComponentNamed: name)
+        case let .remoteComponent(url):
+            return url
+        case .none:
+            return ""
+        }
+    }
+    
+    private func mentionsViewMentions() -> [Name] {
+        switch viewModel.selection {
+        case let .component(name):
+            return document.mentions(forName: name)
+        case let .remoteComponent(url):
+            return document.mentions(forURL: url)
+        case .none:
+            return []
+        }
     }
     
     @ViewBuilder private func newComponentSheet(state: ComponentPopupState) -> some View {
@@ -381,6 +448,10 @@ struct ContentView: View {
         }
         .disabled(viewModel.modulesFolderURL == nil || viewModel.xcodeProjectURL == nil)
         .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
+        Button(action: { inspectorSelection.toggle() }) {
+            Image(systemName: "sidebar.trailing")
+        }
+        .keyboardShortcut(.init("0"), modifiers: [.command, .option])
     }
     
     @ViewBuilder private func updateView(appVersionInfo: AppVersionInfo) -> some View {
