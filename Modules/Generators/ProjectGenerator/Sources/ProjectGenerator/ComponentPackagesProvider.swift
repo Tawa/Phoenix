@@ -1,5 +1,5 @@
-import Component
 import ComponentDetailsProviderContract
+import PhoenixDocument
 import SwiftPackage
 
 public struct ComponentPackagesProvider: ComponentPackagesProviderProtocol {

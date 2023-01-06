@@ -11,14 +11,14 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../../Contracts/Providers/ComponentDetailsProviderContract"),
-        .package(path: "../../Entities/Component")
+        .package(path: "../../Entities/PhoenixDocument")
     ],
     targets: [
         .target(
             name: "ComponentDetailsProvider",
             dependencies: [
                 "ComponentDetailsProviderContract",
-                "Component"
+                "PhoenixDocument"
             ]
         ),
         .testTarget(

@@ -1,4 +1,4 @@
-import Component
+import PhoenixDocument
 
 public protocol PackagePathProviderProtocol {
     func path(for name: Name,

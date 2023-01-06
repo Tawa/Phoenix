@@ -1,4 +1,3 @@
-import Component
 import SwiftUI
 import PhoenixDocument
 

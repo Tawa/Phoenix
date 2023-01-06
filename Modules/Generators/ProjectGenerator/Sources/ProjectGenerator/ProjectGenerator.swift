@@ -1,4 +1,3 @@
-import Component
 import ComponentDetailsProviderContract
 import Foundation
 import PackageGeneratorContract

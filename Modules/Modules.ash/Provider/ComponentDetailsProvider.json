@@ -3,7 +3,7 @@
     {
       "name" : {
         "family" : "Entity",
-        "given" : "Component"
+        "given" : "PhoenixDocument"
       },
       "targetTypes" : [
         {

@@ -1,8 +1,8 @@
 import AccessibilityIdentifiers
 import Factory
 import Combine
-import Component
 import ComponentDetailsProviderContract
+import PhoenixDocument
 import SwiftUI
 
 extension Binding where Value == String? {

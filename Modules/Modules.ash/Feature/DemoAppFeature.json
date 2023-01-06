@@ -15,19 +15,6 @@
     },
     {
       "name" : {
-        "family" : "Entity",
-        "given" : "Component"
-      },
-      "targetTypes" : [
-        {
-          "isTests" : false,
-          "name" : "Implementation"
-        },
-        "Implementation"
-      ]
-    },
-    {
-      "name" : {
         "family" : "Generator",
         "given" : "DemoApp"
       },

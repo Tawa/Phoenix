@@ -16,7 +16,6 @@ let package = Package(
         .package(path: "../../Contracts/Generators/DemoAppGeneratorContract"),
         .package(path: "../../Contracts/Providers/ComponentDetailsProviderContract"),
         .package(path: "../../Contracts/Syncers/PBXProjectSyncerContract"),
-        .package(path: "../../Entities/Component"),
         .package(path: "../../Entities/PhoenixDocument")
     ],
     targets: [
@@ -26,7 +25,6 @@ let package = Package(
                 "DemoAppGeneratorContract",
                 "ComponentDetailsProviderContract",
                 "PBXProjectSyncerContract",
-                "Component",
                 "PhoenixDocument"
             ]
         ),

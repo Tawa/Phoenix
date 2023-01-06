@@ -1,4 +1,3 @@
-import Component
 import Foundation
 import PhoenixDocument
 import SwiftPackage

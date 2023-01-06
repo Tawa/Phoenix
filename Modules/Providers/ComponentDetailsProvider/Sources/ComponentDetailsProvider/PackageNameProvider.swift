@@ -1,5 +1,5 @@
-import Component
 import ComponentDetailsProviderContract
+import PhoenixDocument
 
 public struct PackageNameProvider: PackageNameProviderProtocol {
     public init() {

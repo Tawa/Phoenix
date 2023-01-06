@@ -1,4 +1,3 @@
-import Component
 import Foundation
 
 public struct PhoenixDocument: Hashable {

@@ -1,4 +1,4 @@
-import Component
+import PhoenixDocument
 import SwiftUI
 
 struct RemoteComponentDependenciesSheet: View {

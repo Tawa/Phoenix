@@ -153,7 +153,6 @@
 		38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableWithTitle.swift; sourceTree = "<group>"; };
 		3AC25B88077E4AB50EB60A99 /* AccessibilityIdentifiers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AccessibilityIdentifiers; sourceTree = "<group>"; };
 		3AC871CD675846430EFB4047 /* PackageStringProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageStringProvider; sourceTree = "<group>"; };
-		3D6F0CF1BBFF0E5372C2771E /* Component */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Component; sourceTree = "<group>"; };
 		4B57167F7F7325C28B04EF58 /* DemoAppGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGeneratorContract; sourceTree = "<group>"; };
 		51991ED64782A59B5A9A0E7F /* RelativeURLProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProvider; sourceTree = "<group>"; };
 		5669FA7E1C90B8D304C1121D /* ProjectGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectGenerator; sourceTree = "<group>"; };
@@ -426,7 +425,6 @@
 			children = (
 				C195694B44FA2BCE8C9153F2 /* PhoenixDocument */,
 				7630EE55C64753273E2BF13A /* SwiftPackage */,
-				3D6F0CF1BBFF0E5372C2771E /* Component */,
 			);
 			path = Entities;
 			sourceTree = "<group>";

@@ -1,6 +1,6 @@
 import AccessibilityIdentifiers
 import Combine
-import Component
+import PhoenixDocument
 import SwiftUI
 
 struct RemoteComponentsListRow: Hashable, Identifiable {

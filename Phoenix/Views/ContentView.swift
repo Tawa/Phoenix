@@ -1,5 +1,4 @@
 import AppVersionProviderContract
-import Component
 import DemoAppFeature
 import Factory
 import PhoenixDocument
