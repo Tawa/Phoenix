@@ -1,26 +1,22 @@
 {
-  "dependencies" : [
+  "localDependencies" : [
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Entity",
-            "given" : "Component"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Contract"
-            },
-            "Implementation",
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Implementation"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Entity",
+        "given" : "Component"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Contract"
+        },
+        "Implementation",
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Implementation"
+      ]
     }
   ],
   "modules" : {

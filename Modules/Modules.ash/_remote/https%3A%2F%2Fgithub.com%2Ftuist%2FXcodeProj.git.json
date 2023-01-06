@@ -1,0 +1,15 @@
+{
+  "names" : [
+    {
+      "name" : {
+        "_0" : "XcodeProj"
+      }
+    }
+  ],
+  "url" : "https:\/\/github.com\/tuist\/XcodeProj.git",
+  "version" : {
+    "from" : {
+      "version" : "8.8.0"
+    }
+  }
+}
