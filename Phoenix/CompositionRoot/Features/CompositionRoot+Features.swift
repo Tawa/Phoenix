@@ -2,6 +2,7 @@ import DemoAppFeature
 import Factory
 
 extension Container {
+    // DemoAppFeature
     static let demoAppFeatureView = ParameterFactory { (data: DemoAppFeatureInput) in
         DemoAppFeatureView(
             data: data,

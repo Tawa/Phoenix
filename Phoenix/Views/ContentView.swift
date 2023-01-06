@@ -2,7 +2,7 @@ import AppVersionProviderContract
 import DemoAppFeature
 import Factory
 import PhoenixDocument
-import PhoenixViews
+import GenerateFeature
 import SwiftUI
 import SwiftPackage
 import AccessibilityIdentifiers

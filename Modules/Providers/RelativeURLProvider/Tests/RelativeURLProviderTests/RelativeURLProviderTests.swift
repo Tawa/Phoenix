@@ -5,14 +5,14 @@ final class RelativeURLProviderTests: XCTestCase {
 
     func testExample() throws {
         // Given
-        let folderURL: URL = .init(string: "/Users/tn/Work/ios/Demos/Features")!
-        let relativeURL: URL = .init(string: "Users/tn/Work/ios/HelloFresh/Modules/Modules.ash/")!
+        let folderURL: URL = .init(string: "/Users/tn/Projects/Phoenix/Demos/Features")!
+        let relativeURL: URL = .init(string: "Users/tn/Projects/Phoenix/Phoenix/Modules/Modules.ash/")!
         
         let sut = RelativeURLProvider()
 
         // When
         let path = sut.path(for: folderURL, relativeURL: relativeURL)
         // Then
-        XCTAssertEqual(path, "../../HelloFresh/Modules")
+        XCTAssertEqual(path, "../../Phoenix/Modules")
      }
 }

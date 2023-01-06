@@ -42,7 +42,6 @@
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
 		B216D3A12926EDC6005EDBB5 /* RelationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B216D3A02926EDC6005EDBB5 /* RelationView.swift */; };
 		B21BF48D28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */; };
-		B224D9AC28C3CCA300997F80 /* PhoenixViews in Frameworks */ = {isa = PBXBuildFile; productRef = B224D9AB28C3CCA300997F80 /* PhoenixViews */; };
 		B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B22AFDA728B9528400C471A4 /* DemoAppGenerator */; };
 		B233D86528DBACFB0061BA7A /* ComponentDetailsProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B233D86428DBACFB0061BA7A /* ComponentDetailsProvider */; };
 		B233DB6B28EB5BC000243D58 /* PhoenixUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */; };
@@ -51,6 +50,7 @@
 		B291BD2328CA83A0000D2149 /* DemoAppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = B291BD2228CA83A0000D2149 /* DemoAppFeature */; };
 		B291BD2628CA844A000D2149 /* CompositionRoot+Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = B291BD2528CA844A000D2149 /* CompositionRoot+Features.swift */; };
 		B29BE1042943D37C00675860 /* ViewModel+Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29BE1032943D37C00675860 /* ViewModel+Selection.swift */; };
+		B2B1856B2968C35A00D1257E /* GenerateFeature in Frameworks */ = {isa = PBXBuildFile; productRef = B2B1856A2968C35A00D1257E /* GenerateFeature */; };
 		B2BD9D3C29602A570048D505 /* MentionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BD9D3B29602A570048D505 /* MentionsView.swift */; };
 		B2BD9D3E296188530048D505 /* PhoenixDocument+Mentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BD9D3D296188530048D505 /* PhoenixDocument+Mentions.swift */; };
 		B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */; };
@@ -119,6 +119,7 @@
 		11412F894C62710EEE3CAAA9 /* DemoAppGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGenerator; sourceTree = "<group>"; };
 		1F90EE55889EB973A1F4A83A /* RelativeURLProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProviderContract; sourceTree = "<group>"; };
 		29DC1384DF456B933D03EBA9 /* AppVersionProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProviderContract; sourceTree = "<group>"; };
+		2B0CA06482809DF6A85E8004 /* GenerateFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GenerateFeature; sourceTree = "<group>"; };
 		3810D8CA2809811F006E7EE3 /* ComponentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentView.swift; sourceTree = "<group>"; };
 		3810D8CC280990AF006E7EE3 /* ComponentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsList.swift; sourceTree = "<group>"; };
 		3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentListItem.swift; sourceTree = "<group>"; };
@@ -197,7 +198,6 @@
 		B2F407CE28EB94CC007E7434 /* ComponentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsList.swift; sourceTree = "<group>"; };
 		B4F18C5B17A0862878E78D80 /* ComponentDetailsProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ComponentDetailsProviderContract; sourceTree = "<group>"; };
 		B544253829AAED80892BA404 /* DemoAppFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppFeature; sourceTree = "<group>"; };
-		B7248711AB2A2870AED7550A /* PhoenixViews */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PhoenixViews; sourceTree = "<group>"; };
 		B86CEB09DA099F6F8731087F /* PackageGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageGeneratorContract; sourceTree = "<group>"; };
 		BFB2D12C51FEFD765929B0F5 /* PBXProjectSyncerContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PBXProjectSyncerContract; sourceTree = "<group>"; };
 		C195694B44FA2BCE8C9153F2 /* PhoenixDocument */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PhoenixDocument; sourceTree = "<group>"; };
@@ -222,10 +222,10 @@
 				B233D86528DBACFB0061BA7A /* ComponentDetailsProvider in Frameworks */,
 				386DD8BF289E9C0A00E800B9 /* Factory in Frameworks */,
 				B291BD2328CA83A0000D2149 /* DemoAppFeature in Frameworks */,
-				B224D9AC28C3CCA300997F80 /* PhoenixViews in Frameworks */,
 				B2CC2B5C28BAC21900848D93 /* PackageStringProvider in Frameworks */,
 				B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */,
 				38BCCC9228549BAE00E928CA /* AppVersionProvider in Frameworks */,
+				B2B1856B2968C35A00D1257E /* GenerateFeature in Frameworks */,
 				B22AFDA828B9528400C471A4 /* DemoAppGenerator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -252,6 +252,7 @@
 			isa = PBXGroup;
 			children = (
 				B544253829AAED80892BA404 /* DemoAppFeature */,
+				2B0CA06482809DF6A85E8004 /* GenerateFeature */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -528,7 +529,6 @@
 				6CBAA998ADC664891BFEE809 /* Generators */,
 				E66D986E49EF92A54A4D6C86 /* Providers */,
 				86377C62E848559EB015C968 /* Syncers */,
-				E791D6E4F0686CF12D3E24DC /* Views */,
 				1AD6768A622340C75953B258 /* Support */,
 			);
 			path = Modules;
@@ -575,14 +575,6 @@
 			path = Providers;
 			sourceTree = "<group>";
 		};
-		E791D6E4F0686CF12D3E24DC /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				B7248711AB2A2870AED7550A /* PhoenixViews */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -610,12 +602,12 @@
 				B2CC2B5928BAC12200848D93 /* PackageGenerator */,
 				B2CC2B5B28BAC21900848D93 /* PackageStringProvider */,
 				B2F5B85428C143A600282672 /* PBXProjectSyncer */,
-				B224D9AB28C3CCA300997F80 /* PhoenixViews */,
 				B213A90C28C7CA13005AFC91 /* ProjectGenerator */,
 				B291BD2228CA83A0000D2149 /* DemoAppFeature */,
 				B23F1A0F28D64A4C00933FC4 /* SwiftPackage */,
 				B233D86428DBACFB0061BA7A /* ComponentDetailsProvider */,
 				B2F407C328EB8136007E7434 /* AccessibilityIdentifiers */,
+				B2B1856A2968C35A00D1257E /* GenerateFeature */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -1188,10 +1180,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = ProjectGenerator;
 		};
-		B224D9AB28C3CCA300997F80 /* PhoenixViews */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = PhoenixViews;
-		};
 		B22AFDA728B9528400C471A4 /* DemoAppGenerator */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DemoAppGenerator;
@@ -1211,6 +1199,10 @@
 		B291BD2228CA83A0000D2149 /* DemoAppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DemoAppFeature;
+		};
+		B2B1856A2968C35A00D1257E /* GenerateFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GenerateFeature;
 		};
 		B2CC2B5928BAC12200848D93 /* PackageGenerator */ = {
 			isa = XCSwiftPackageProductDependency;
