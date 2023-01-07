@@ -42,6 +42,7 @@ public class GenerateSheetViewModel: ObservableObject {
     var ashFileURLGetter: LocalFileURLGetter
     var xcodeProjURLGetter: LocalFileURLGetter
     var filesURLDataStore: FilesURLDataStoreProtocol
+    var fileAccessValidator: FileAccessValidatorProtocol
     
     func onOpenModulesFolder() {
         ashFileURLGetter.getUrl().map { modulesURL = $0 }
@@ -60,8 +61,16 @@ public class GenerateSheetViewModel: ObservableObject {
     }
     
     func onAppear() {
-        filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).map { modulesURL = $0 }
-        filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL).map { xcodeProjectURL = $0 }
+        filesURLDataStore.getModulesFolderURL(forFileURL: fileURL)
+            .map {
+                guard fileAccessValidator.hasAccess(to: $0) else { return }
+                modulesURL = $0
+            }
+        filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL)
+            .map {
+                guard fileAccessValidator.hasAccess(to: $0) else { return }
+                xcodeProjectURL = $0
+            }
     }
     
     public init(
@@ -74,5 +83,6 @@ public class GenerateSheetViewModel: ObservableObject {
         ashFileURLGetter = AshFileURLGetter(fileURL: fileURL)
         xcodeProjURLGetter = XcodeProjURLGetter(fileURL: fileURL)
         filesURLDataStore = FilesURLDataStore(dictionaryCache: UserDefaults.standard)
+        fileAccessValidator = FileAccessValidator()
     }
 }
