@@ -6,8 +6,18 @@ public class GenerateSheetViewModel: ObservableObject {
     let onDismiss: () -> Void
 
     // MARK: - Paths
-    @Published private(set) var modulesURL: URL? = nil
-    @Published private(set) var xcodeProjectURL: URL? = nil
+    @Published private(set) var modulesURL: URL? = nil {
+        didSet {
+            guard let modulesURL else { return }
+            filesURLDataStore.set(modulesFolderURL: modulesURL, forFileURL: fileURL)
+        }
+    }
+    @Published private(set) var xcodeProjectURL: URL? = nil {
+        didSet {
+            guard let xcodeProjectURL else { return }
+            filesURLDataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
+        }
+    }
     
     let modulesPathPlaceholder: String = "path/to/modules"
     let xcodeProjectPathPlaceholder: String = "path/to/Project.xcodeproj"
@@ -28,9 +38,10 @@ public class GenerateSheetViewModel: ObservableObject {
         return true
     }
     
-    // MARK: - Private
+    // File URLs Managers
     var ashFileURLGetter: LocalFileURLGetter
     var xcodeProjURLGetter: LocalFileURLGetter
+    var filesURLDataStore: FilesURLDataStoreProtocol
     
     func onOpenModulesFolder() {
         ashFileURLGetter.getUrl().map { modulesURL = $0 }
@@ -48,6 +59,11 @@ public class GenerateSheetViewModel: ObservableObject {
         
     }
     
+    func onAppear() {
+        filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).map { modulesURL = $0 }
+        filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL).map { xcodeProjectURL = $0 }
+    }
+    
     public init(
         fileURL: URL,
         onDismiss: @escaping () -> Void
@@ -57,5 +73,6 @@ public class GenerateSheetViewModel: ObservableObject {
 
         ashFileURLGetter = AshFileURLGetter(fileURL: fileURL)
         xcodeProjURLGetter = XcodeProjURLGetter(fileURL: fileURL)
+        filesURLDataStore = FilesURLDataStore(dictionaryCache: UserDefaults.standard)
     }
 }

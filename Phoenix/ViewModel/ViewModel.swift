@@ -133,8 +133,6 @@ class ViewModel: ObservableObject {
     var appVersionUpdateProvider: AppVersionUpdateProviderProtocol
     @Injected(Container.familyFolderNameProvider)
     var familyFolderNameProvider: FamilyFolderNameProviderProtocol
-    @Injected(Container.filesURLDataStore)
-    var filesURLDataStore: FilesURLDataStoreProtocol
     @Injected(Container.pbxProjSyncer)
     var pbxProjSyncer: PBXProjectSyncerProtocol
     @Injected(Container.projectGenerator)

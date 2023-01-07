@@ -52,6 +52,7 @@ public struct GenerateSheetView: View {
         }
         .padding()
         .frame(minWidth: 500)
+        .onAppear(perform: viewModel.onAppear)
     }
     
     private var isGenerateEnabled: Bool {

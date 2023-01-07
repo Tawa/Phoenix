@@ -106,12 +106,6 @@ extension Container {
     static let demoAppNameProvider = Factory {
         DemoAppNameProvider() as DemoAppNameProviderProtocol
     }
-        
-    static let filesURLDataStore = Factory {
-        FilesURLDataStore(
-            dictionaryCache: UserDefaults.standard
-        ) as FilesURLDataStoreProtocol
-    }
     
     static let relativeURLProvider = Factory {
         RelativeURLProvider() as RelativeURLProviderProtocol
