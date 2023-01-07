@@ -1,43 +1,35 @@
 {
-  "dependencies" : [
+  "localDependencies" : [
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Provider",
-            "given" : "PackageString"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Contract"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Provider",
+        "given" : "PackageString"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
     },
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Entity",
-            "given" : "SwiftPackage"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Contract"
-            },
-            "Implementation",
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Implementation"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Entity",
+        "given" : "SwiftPackage"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Contract"
+        },
+        "Implementation",
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Implementation"
+      ]
     }
   ],
   "modules" : {

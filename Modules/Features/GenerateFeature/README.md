@@ -1,3 +1,3 @@
-# Component
+# GenerateFeature
 
 A description of this package.

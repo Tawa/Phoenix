@@ -1,7 +1,7 @@
 import AccessibilityIdentifiers
 import Combine
-import Component
 import Factory
+import PhoenixDocument
 import SwiftUI
 import SwiftPackage
 

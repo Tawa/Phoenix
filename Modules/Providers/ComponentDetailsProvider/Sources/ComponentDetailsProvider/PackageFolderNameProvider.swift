@@ -1,5 +1,5 @@
-import Component
 import ComponentDetailsProviderContract
+import PhoenixDocument
 
 public struct PackageFolderNameProvider: PackageFolderNameProviderProtocol {
     public let defaultFolderNameProvider: FamilyFolderNameProviderProtocol

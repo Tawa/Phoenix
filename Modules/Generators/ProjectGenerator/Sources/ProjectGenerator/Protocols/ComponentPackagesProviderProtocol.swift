@@ -1,4 +1,4 @@
-import Component
+import PhoenixDocument
 import SwiftPackage
 
 public struct PackageWithPath: Equatable {

@@ -1,4 +1,4 @@
-import Component
+import PhoenixDocument
 
 public protocol DemoAppNameProviderProtocol {
     func demoAppName(for component: Component, family: Family) -> String

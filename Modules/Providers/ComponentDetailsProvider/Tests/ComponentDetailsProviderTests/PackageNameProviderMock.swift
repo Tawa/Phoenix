@@ -1,6 +1,6 @@
-import Component
-import ComponentDetailsProviderContract
 @testable import ComponentDetailsProvider
+import ComponentDetailsProviderContract
+import PhoenixDocument
 
 struct PackageNameProviderMock: PackageNameProviderProtocol {
     var value: String

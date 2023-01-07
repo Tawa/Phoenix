@@ -2,30 +2,25 @@
   "localDependencies" : [
     {
       "name" : {
-        "family" : "Entity",
-        "given" : "PhoenixDocument"
+        "family" : "Generator",
+        "given" : "Project"
       },
       "targetTypes" : [
         {
           "isTests" : false,
-          "name" : "Contract"
-        },
-        "Implementation",
-        {
-          "isTests" : false,
           "name" : "Implementation"
         },
-        "Implementation"
+        "Contract"
       ]
     }
   ],
+  "macOSVersion" : "v12",
   "modules" : {
-    "Contract" : "undefined",
     "Implementation" : "undefined"
   },
   "name" : {
-    "family" : "Provider",
-    "given" : "ComponentDetails"
+    "family" : "Feature",
+    "given" : "Generate"
   },
   "resources" : [
 

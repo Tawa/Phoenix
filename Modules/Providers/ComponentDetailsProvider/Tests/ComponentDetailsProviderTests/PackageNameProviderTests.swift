@@ -1,5 +1,5 @@
-import Component
 @testable import ComponentDetailsProvider
+import PhoenixDocument
 import XCTest
 
 class PackageNameProviderTests: XCTestCase {

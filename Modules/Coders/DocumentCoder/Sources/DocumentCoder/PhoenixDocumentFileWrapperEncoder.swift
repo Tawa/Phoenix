@@ -1,5 +1,4 @@
 import AppVersionProviderContract
-import Component
 import DocumentCoderContract
 import Foundation
 import PhoenixDocument

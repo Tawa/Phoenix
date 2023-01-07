@@ -1,4 +1,4 @@
-@testable import Component
+@testable import PhoenixDocument
 import XCTest
 
 final class ComponentDependencyTests: XCTestCase {

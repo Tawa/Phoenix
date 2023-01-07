@@ -1,60 +1,48 @@
 {
-  "dependencies" : [
+  "localDependencies" : [
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Provider",
-            "given" : "ComponentDetails"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Contract"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Provider",
+        "given" : "ComponentDetails"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
     },
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Generator",
-            "given" : "Package"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Contract"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Generator",
+        "given" : "Package"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
     },
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Entity",
-            "given" : "PhoenixDocument"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Contract"
-            },
-            "Implementation",
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Implementation"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Entity",
+        "given" : "PhoenixDocument"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Contract"
+        },
+        "Implementation",
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Implementation"
+      ]
     }
   ],
   "modules" : {

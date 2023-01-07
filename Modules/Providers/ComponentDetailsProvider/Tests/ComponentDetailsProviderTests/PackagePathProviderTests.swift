@@ -1,7 +1,7 @@
-import Component
-import ComponentDetailsProviderContract
-import XCTest
 @testable import ComponentDetailsProvider
+import ComponentDetailsProviderContract
+import PhoenixDocument
+import XCTest
 
 extension PackageConfiguration {
     static var contract: PackageConfiguration = .init(name: "Contract",

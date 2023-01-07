@@ -1,9 +1,8 @@
 import AppVersionProviderContract
-import Component
 import DemoAppFeature
 import Factory
 import PhoenixDocument
-import PhoenixViews
+import GenerateFeature
 import SwiftUI
 import SwiftPackage
 import AccessibilityIdentifiers
@@ -40,23 +39,6 @@ enum InspectorSelection: String, Hashable, CaseIterable, Identifiable {
             self = .mentions
         case .mentions:
             self = .none
-        }
-    }
-}
-
-@available(macOS 13.0, *)
-struct SplitView<Sidebar: View, Content: View>: View {
-    @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
-    
-    let sidebar: () -> Sidebar
-    let content: () -> Content
-    
-    var body: some View {
-        NavigationSplitView {
-            sidebar()
-                .navigationSplitViewColumnWidth(min: 200, ideal: 300, max: nil)
-        } detail: {
-            content()
         }
     }
 }
@@ -136,7 +118,7 @@ struct ContentView: View {
         content: @escaping () -> Content
     ) -> some View {
         if #available(macOS 13.0, *) {
-            SplitView(sidebar: sidebar, content: content)
+            NavigationSplitView(sidebar: sidebar, detail: content)
         } else {
             HSplitView {
                 sidebar()

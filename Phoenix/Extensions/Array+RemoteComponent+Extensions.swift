@@ -1,4 +1,4 @@
-import Component
+import PhoenixDocument
 
 extension Array where Element == RemoteComponent {
     func filtered(_ filter: String?) -> Self {

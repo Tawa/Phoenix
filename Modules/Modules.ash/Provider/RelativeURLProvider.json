@@ -1,7 +1,4 @@
 {
-  "dependencies" : [
-
-  ],
   "modules" : {
     "Contract" : "undefined",
     "Implementation" : "undefined"

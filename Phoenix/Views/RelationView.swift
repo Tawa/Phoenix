@@ -1,5 +1,5 @@
 import AccessibilityIdentifiers
-import Component
+import PhoenixDocument
 import SwiftUI
 
 struct RelationViewData {

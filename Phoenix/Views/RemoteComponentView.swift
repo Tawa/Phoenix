@@ -1,4 +1,4 @@
-import Component
+import PhoenixDocument
 import SwiftPackage
 import SwiftUI
 
@@ -7,7 +7,6 @@ struct RemoteComponentView: View {
     let onRemove: () -> Void
     
     @State private var showingNamePopup: Bool = false
-    @State private var showingMentions: Bool = false
     
     var body: some View {
         List {

@@ -1,89 +1,56 @@
 {
-  "dependencies" : [
+  "localDependencies" : [
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Provider",
-            "given" : "ComponentDetails"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Contract"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Provider",
+        "given" : "ComponentDetails"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
     },
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Entity",
-            "given" : "Component"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Implementation"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Generator",
+        "given" : "DemoApp"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
     },
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Generator",
-            "given" : "DemoApp"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Contract"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Syncer",
+        "given" : "PBXProject"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
     },
     {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Syncer",
-            "given" : "PBXProject"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Contract"
-          ]
-        }
-      }
-    },
-    {
-      "local" : {
-        "_0" : {
-          "name" : {
-            "family" : "Entity",
-            "given" : "PhoenixDocument"
-          },
-          "targetTypes" : [
-            {
-              "isTests" : false,
-              "name" : "Implementation"
-            },
-            "Implementation"
-          ]
-        }
-      }
+      "name" : {
+        "family" : "Entity",
+        "given" : "PhoenixDocument"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Implementation"
+      ]
     }
   ],
   "macOSVersion" : "v12",

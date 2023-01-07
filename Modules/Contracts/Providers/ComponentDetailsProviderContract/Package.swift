@@ -10,13 +10,13 @@ let package = Package(
             targets: ["ComponentDetailsProviderContract"])
     ],
     dependencies: [
-        .package(path: "../../../Entities/Component")
+        .package(path: "../../../Entities/PhoenixDocument")
     ],
     targets: [
         .target(
             name: "ComponentDetailsProviderContract",
             dependencies: [
-                "Component"
+                "PhoenixDocument"
             ]
         )
     ]
