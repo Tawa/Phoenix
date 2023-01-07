@@ -9,13 +9,13 @@ public class GenerateSheetViewModel: ObservableObject {
     @Published private(set) var modulesURL: URL? = nil {
         didSet {
             guard let modulesURL else { return }
-            filesURLDataStore.set(modulesFolderURL: modulesURL, forFileURL: fileURL)
+            dataStore.set(modulesFolderURL: modulesURL, forFileURL: fileURL)
         }
     }
     @Published private(set) var xcodeProjectURL: URL? = nil {
         didSet {
             guard let xcodeProjectURL else { return }
-            filesURLDataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
+            dataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
         }
     }
     
@@ -29,7 +29,11 @@ public class GenerateSheetViewModel: ObservableObject {
     var hasXcodeProjectPath: Bool { xcodeProjectURL != nil }
     
     // MARK: - Generate
-    @Published var isSkipXcodeProjectOn: Bool = false
+    @Published var isSkipXcodeProjectOn: Bool = false {
+        didSet {
+            dataStore.set(shouldSkipXcodeProject: isSkipXcodeProjectOn, forFileURL: fileURL)
+        }
+    }
     var isGenerateEnabled: Bool {
         guard
             hasModulesPath,
@@ -41,7 +45,7 @@ public class GenerateSheetViewModel: ObservableObject {
     // File URLs Managers
     var ashFileURLGetter: LocalFileURLGetter
     var xcodeProjURLGetter: LocalFileURLGetter
-    var filesURLDataStore: FilesURLDataStoreProtocol
+    var dataStore: GenerateFeatureDataStoreProtocol
     var fileAccessValidator: FileAccessValidatorProtocol
     
     func onOpenModulesFolder() {
@@ -52,25 +56,22 @@ public class GenerateSheetViewModel: ObservableObject {
         xcodeProjURLGetter.getUrl().map { xcodeProjectURL = $0 }
     }
     
-    func onSkipXcodeProject() {
-        
-    }
-    
     func onGenerate() {
         
     }
     
     func onAppear() {
-        filesURLDataStore.getModulesFolderURL(forFileURL: fileURL)
+        dataStore.getModulesFolderURL(forFileURL: fileURL)
             .map {
                 guard fileAccessValidator.hasAccess(to: $0) else { return }
                 modulesURL = $0
             }
-        filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL)
+        dataStore.getXcodeProjectURL(forFileURL: fileURL)
             .map {
                 guard fileAccessValidator.hasAccess(to: $0) else { return }
                 xcodeProjectURL = $0
             }
+        isSkipXcodeProjectOn = dataStore.getShouldSkipXcodeProject(forFileURL: fileURL)
     }
     
     public init(
@@ -82,7 +83,7 @@ public class GenerateSheetViewModel: ObservableObject {
 
         ashFileURLGetter = AshFileURLGetter(fileURL: fileURL)
         xcodeProjURLGetter = XcodeProjURLGetter(fileURL: fileURL)
-        filesURLDataStore = FilesURLDataStore(dictionaryCache: UserDefaults.standard)
+        dataStore = GenerateFeatureDataStore(dictionaryCache: UserDefaults.standard)
         fileAccessValidator = FileAccessValidator()
     }
 }
