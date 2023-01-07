@@ -1,41 +1,61 @@
+import SwiftUI
 import Foundation
 
-public struct GenerateSheetViewModel {
-    let modulesPath: String
-    let xcodeProjectPath: String
-    
-    let hasModulesPath: Bool
-    let hasXcodeProjectPath: Bool
-    let isSkipXcodeProjectOn: Bool
-
-    let onOpenModulesFolder: () -> Void
-    let onOpenXcodeProject: () -> Void
-    let onSkipXcodeProject: (Bool) -> Void
-    
-    let onGenerate: () -> Void
+public class GenerateSheetViewModel: ObservableObject {
+    let fileURL: URL
     let onDismiss: () -> Void
+
+    // MARK: - Paths
+    @Published private(set) var modulesURL: URL? = nil
+    @Published private(set) var xcodeProjectURL: URL? = nil
+    
+    let modulesPathPlaceholder: String = "path/to/modules"
+    let xcodeProjectPathPlaceholder: String = "path/to/Project.xcodeproj"
+    
+    var modulesPathText: String { modulesURL?.path ?? modulesPathPlaceholder }
+    var xcodeProjectPathText: String { xcodeProjectURL?.path ?? xcodeProjectPathPlaceholder }
+    
+    var hasModulesPath: Bool { modulesURL != nil }
+    var hasXcodeProjectPath: Bool { xcodeProjectURL != nil }
+    
+    // MARK: - Generate
+    @Published var isSkipXcodeProjectOn: Bool = false
+    var isGenerateEnabled: Bool {
+        guard
+            hasModulesPath,
+            hasXcodeProjectPath || isSkipXcodeProjectOn
+        else { return false }
+        return true
+    }
+    
+    // MARK: - Private
+    var ashFileURLGetter: LocalFileURLGetter
+    var xcodeProjURLGetter: LocalFileURLGetter
+    
+    func onOpenModulesFolder() {
+        ashFileURLGetter.getUrl().map { modulesURL = $0 }
+    }
+    
+    func onOpenXcodeProject() {
+        xcodeProjURLGetter.getUrl().map { xcodeProjectURL = $0 }
+    }
+    
+    func onSkipXcodeProject() {
+        
+    }
+    
+    func onGenerate() {
+        
+    }
     
     public init(
-        modulesPath: String,
-        xcodeProjectPath: String,
-        hasModulesPath: Bool,
-        hasXcodeProjectPath: Bool,
-        isSkipXcodeProjectOn: Bool,
-        onOpenModulesFolder: @escaping () -> Void,
-        onOpenXcodeProject: @escaping () -> Void,
-        onSkipXcodeProject: @escaping (Bool) -> Void,
-        onGenerate: @escaping () -> Void,
+        fileURL: URL,
         onDismiss: @escaping () -> Void
     ) {
-        self.modulesPath = modulesPath
-        self.xcodeProjectPath = xcodeProjectPath
-        self.hasModulesPath = hasModulesPath
-        self.hasXcodeProjectPath = hasXcodeProjectPath
-        self.isSkipXcodeProjectOn = isSkipXcodeProjectOn
-        self.onOpenModulesFolder = onOpenModulesFolder
-        self.onOpenXcodeProject = onOpenXcodeProject
-        self.onSkipXcodeProject = onSkipXcodeProject
-        self.onGenerate = onGenerate
+        self.fileURL = fileURL
         self.onDismiss = onDismiss
+
+        ashFileURLGetter = AshFileURLGetter(fileURL: fileURL)
+        xcodeProjURLGetter = XcodeProjURLGetter(fileURL: fileURL)
     }
 }

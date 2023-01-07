@@ -1,10 +1,10 @@
 import SwiftUI
 
 public struct GenerateSheetView: View {
-    let viewModel: GenerateSheetViewModel
+    @StateObject var viewModel: GenerateSheetViewModel
     
-    public init(viewModel: GenerateSheetViewModel) {
-        self.viewModel = viewModel
+    public init(fileURL: URL, onDismiss: @escaping () -> Void) {
+        _viewModel = .init(wrappedValue: GenerateSheetViewModel(fileURL: fileURL, onDismiss: onDismiss))
     }
     
     public var body: some View {
@@ -16,7 +16,7 @@ public struct GenerateSheetView: View {
                         Text("Modules Folder")
                     }
                     HStack {
-                        Text(viewModel.modulesPath)
+                        Text(viewModel.modulesPathText)
                             .opacity(viewModel.hasModulesPath ? 1 : 0.2)
                         Spacer()
                     }
@@ -28,20 +28,16 @@ public struct GenerateSheetView: View {
                     HStack {
                         Image(systemName: "wrench.and.screwdriver")
                         Text("Xcode Project")
-                        Toggle("Skip this step", isOn: Binding(get: {
-                            viewModel.isSkipXcodeProjectOn
-                        }, set: { newValue in
-                            self.viewModel.onSkipXcodeProject(newValue)
-                        }))
+                        Toggle("Skip this step", isOn: $viewModel.isSkipXcodeProjectOn)
                     }
                     HStack {
-                        Text(viewModel.xcodeProjectPath)
+                        Text(viewModel.xcodeProjectPathText)
                             .opacity(xcodeProjectPathOpaticy)
                         Spacer()
                     }
                 }
             }.buttonStyle(.plain)
-
+            
             HStack {
                 Button(action: viewModel.onGenerate) {
                     Text("Generate")
@@ -76,18 +72,8 @@ public struct GenerateSheetView: View {
 struct GenerateSheetView_Previews: PreviewProvider {
     static var previews: some View {
         GenerateSheetView(
-            viewModel: GenerateSheetViewModel(
-                modulesPath: "path/to/modules",
-                xcodeProjectPath: "path/to/Project.xcodeproj",
-                hasModulesPath: true,
-                hasXcodeProjectPath: false,
-                isSkipXcodeProjectOn: false,
-                onOpenModulesFolder: {},
-                onOpenXcodeProject: {},
-                onSkipXcodeProject: { _ in },
-                onGenerate: {},
-                onDismiss: {}
-            )
+            fileURL: URL(string: "path/to/modules.ash")!,
+            onDismiss: {}
         )
     }
 }

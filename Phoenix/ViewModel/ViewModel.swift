@@ -4,6 +4,7 @@ import ComponentDetailsProviderContract
 import DemoAppFeature
 import DemoAppGeneratorContract
 import Factory
+import GenerateFeature
 import PackageGeneratorContract
 import PBXProjectSyncerContract
 import PhoenixDocument
@@ -110,23 +111,23 @@ class ViewModel: ObservableObject {
     @Published var showingDependencySheet: Bool = false
     @Published var showingRemoteDependencySheet: Bool = false
     @Published var alertState: AlertState? = nil
-    @Published var showingGenerateSheet: Bool = false
+    @Published var generateFeatureInput: GenerateFeatureInput? = nil
     @Published var demoAppFeatureData: DemoAppFeatureInput? = nil
-    @Published var modulesFolderURL: URL? = nil {
-        didSet {
-//            if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
-//                filesURLDataStore.set(modulesFolderURL: modulesFolderURL, forFileURL: fileURL)
-//            }
-        }
-    }
-    @Published var xcodeProjectURL: URL? = nil {
-        didSet {
-//            if let fileURL = fileURL, let xcodeProjectURL = xcodeProjectURL {
-//                filesURLDataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
-//            }
-        }
-    }
-    @Published var skipXcodeProject: Bool = false
+//    @Published var modulesFolderURL: URL? = nil {
+//        didSet {
+////            if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
+////                filesURLDataStore.set(modulesFolderURL: modulesFolderURL, forFileURL: fileURL)
+////            }
+//        }
+//    }
+//    @Published var xcodeProjectURL: URL? = nil {
+//        didSet {
+////            if let fileURL = fileURL, let xcodeProjectURL = xcodeProjectURL {
+////                filesURLDataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
+////            }
+//        }
+//    }
+//    @Published var skipXcodeProject: Bool = false
 
     @Injected(Container.appVersionUpdateProvider)
     var appVersionUpdateProvider: AppVersionUpdateProviderProtocol
@@ -171,90 +172,66 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func onOpenModulesFolder(fileURL: URL?) {
-        getAccessToURL(file: false, fileURL: fileURL) { url in
-            if url.lastPathComponent.hasSuffix(".ash") {
-                self.modulesFolderURL = url.deletingLastPathComponent()
-            } else {
-                self.modulesFolderURL = url
-            }
-        }
-    }
-    
-    func onOpenXcodeProject(fileURL: URL?) {
-        getAccessToURL(file: true, fileURL: fileURL) { url in
-            self.xcodeProjectURL = url
-        }
-    }
-    
-    func onSkipXcodeProject(_ skip: Bool) {
-        skipXcodeProject = skip
-    }
-    
     func onGenerateSheetButton(fileURL: URL?) {
         getFileURL(fileURL: fileURL) { fileURL in
-            if self.modulesFolderURL == nil,
-               FileManager.default.isDeletableFile(atPath: fileURL.path) {
-                self.modulesFolderURL = fileURL.deletingLastPathComponent()
-            }
-            self.showingGenerateSheet = true
+            self.generateFeatureInput = .init(fileURL: fileURL)
         }
     }
     
     func onDismissGenerateSheet() {
-        showingGenerateSheet = false
+        generateFeatureInput = nil
     }
     
     func onGenerate(document: PhoenixDocument, fileURL: URL?) {
-        getFileURL(fileURL: fileURL) { fileURL in
-            self.onGenerate(document: document, nonOptionalFileURL: fileURL)
-        }
+//        getFileURL(fileURL: fileURL) { fileURL in
+//            self.onGenerate(document: document, nonOptionalFileURL: fileURL)
+//        }
     }
-    func onGenerate(document: PhoenixDocument, nonOptionalFileURL: URL) {
-        guard let modulesFolderURL = modulesFolderURL else {
-            alertState = .errorString("Could not find path for modules folder.")
-            return
-        }
-        showingGenerateSheet = false
-        do {
-            try projectGenerator.generate(document: document, folderURL: modulesFolderURL)
-        } catch {
-            alertState = .errorString("Error generating project: \(error)")
-        }
-        
-        guard !skipXcodeProject else { return }
-        generateXcodeProject(for: document, fileURL: nonOptionalFileURL)
-    }
+//    func onGenerate(document: PhoenixDocument, nonOptionalFileURL: URL) {
+//        guard let modulesFolderURL = modulesFolderURL else {
+//            alertState = .errorString("Could not find path for modules folder.")
+//            return
+//        }
+//        generateFeatureInput = nil
+//        do {
+//            try projectGenerator.generate(document: document, folderURL: modulesFolderURL)
+//        } catch {
+//            alertState = .errorString("Error generating project: \(error)")
+//        }
+//
+//        guard !skipXcodeProject else { return }
+//        generateXcodeProject(for: document, fileURL: nonOptionalFileURL)
+//    }
 
-    private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL?) {
-        guard let xcodeProjectURL = xcodeProjectURL else { return }
-        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL, fileURL: fileURL)
-    }
+//    private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL?) {
+//        guard let xcodeProjectURL = xcodeProjectURL else { return }
+//        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL, fileURL: fileURL)
+//    }
     
     func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, fileURL: URL?) {
-        if let fileURL = fileURL {
-            modulesFolderURL = filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).flatMap { url in
-                guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
-                return url
-            }
-            xcodeProjectURL = filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL).flatMap { url in
-                guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
-                return url
-            }
-        }
-
-        getFileURL(fileURL: fileURL) { fileURL in
-            self.demoAppFeatureData = .init(
-                component: component,
-                document: document,
-                ashFileURL: fileURL,
-                onDismiss: { [weak self] in
-                    self?.demoAppFeatureData = nil
-                },
-                onError: { error in
-                    self.alertState = .errorString(error.localizedDescription)
-                })
-        }
+//        if let fileURL = fileURL {
+//            modulesFolderURL = filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).flatMap { url in
+//                guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
+//                return url
+//            }
+//            xcodeProjectURL = filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL).flatMap { url in
+//                guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
+//                return url
+//            }
+//        }
+//
+//        getFileURL(fileURL: fileURL) { fileURL in
+//            self.demoAppFeatureData = .init(
+//                component: component,
+//                document: document,
+//                ashFileURL: fileURL,
+//                onDismiss: { [weak self] in
+//                    self?.demoAppFeatureData = nil
+//                },
+//                onError: { error in
+//                    self.alertState = .errorString(error.localizedDescription)
+//                })
+//        }
     }
     
     func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL, fileURL: URL?) {
