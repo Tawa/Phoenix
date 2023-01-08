@@ -234,17 +234,6 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "PhoenixViewsTests"
-               BuildableName = "PhoenixViewsTests"
-               BlueprintName = "PhoenixViewsTests"
-               ReferencedContainer = "container:Modules/Views/PhoenixViews">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ProjectGeneratorTests"
                BuildableName = "ProjectGeneratorTests"
                BlueprintName = "ProjectGeneratorTests"
@@ -278,21 +267,20 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ComponentTests"
-               BuildableName = "ComponentTests"
-               BlueprintName = "ComponentTests"
-               ReferencedContainer = "container:Modules/Entities/Component">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ComponentDetailsProviderTests"
                BuildableName = "ComponentDetailsProviderTests"
                BlueprintName = "ComponentDetailsProviderTests"
                ReferencedContainer = "container:Modules/Providers/ComponentDetailsProvider">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "GenerateFeatureTests"
+               BuildableName = "GenerateFeatureTests"
+               BlueprintName = "GenerateFeatureTests"
+               ReferencedContainer = "container:Modules/Features/GenerateFeature">
             </BuildableReference>
          </TestableReference>
       </Testables>
