@@ -13,13 +13,15 @@ let package = Package(
             targets: ["GenerateFeature"])
     ],
     dependencies: [
-        .package(path: "../../Contracts/Generators/ProjectGeneratorContract")
+        .package(path: "../../Contracts/Generators/ProjectGeneratorContract"),
+        .package(path: "../../Entities/PhoenixDocument")
     ],
     targets: [
         .target(
             name: "GenerateFeature",
             dependencies: [
-                "ProjectGeneratorContract"
+                "ProjectGeneratorContract",
+                "PhoenixDocument"
             ]
         ),
         .testTarget(

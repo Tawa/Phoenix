@@ -2,12 +2,12 @@ import AppKit
 import Foundation
 
 struct AshFileURLGetter: LocalFileURLGetter {
-    let fileURL: URL
+    let fileURL: URL?
 
     func getUrl() -> URL? {
         let openPanel = NSOpenPanel()
         
-        openPanel.directoryURL = fileURL.deletingLastPathComponent()
+        openPanel.directoryURL = fileURL?.deletingLastPathComponent()
         openPanel.allowsMultipleSelection = false
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = true

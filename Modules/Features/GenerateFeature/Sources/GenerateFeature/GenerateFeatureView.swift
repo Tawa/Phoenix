@@ -1,114 +1,211 @@
+import PBXProjectSyncerContract
+import PhoenixDocument
+import ProjectGeneratorContract
 import SwiftUI
 
-struct AlertSheetModel: Identifiable {
-    let id: String = UUID().uuidString
-    let text: String
-}
-
-struct AlertSheet: View {
-    let model: AlertSheetModel
-    let onOkayButton: () -> Void
+public struct GenerateFeatureDependencies {
+    let projectGenerator: ProjectGeneratorProtocol
+    let pbxProjectSyncer: PBXProjectSyncerProtocol
     
-    var body: some View {
-        VStack(alignment: .center) {
-            Text(model.text)
-                .font(.largeTitle)
-            Button(action: onOkayButton) {
-                Text("Ok")
-            }.keyboardShortcut(.defaultAction)
-        }
-        .frame(maxWidth:  .infinity, maxHeight: .infinity)
-        .padding()
-        .background(.ultraThinMaterial)
-        .onSubmit(onOkayButton)
-    }
-}
-
-extension View {
-    func alertSheet(model alertSheetModel: Binding<AlertSheetModel?>) -> some View {
-        sheet(item: alertSheetModel) { model in
-            AlertSheet(model: model) {
-                alertSheetModel.wrappedValue = nil
-            }
-        }
+    public init(projectGenerator: ProjectGeneratorProtocol,
+                pbxProjectSyncer: PBXProjectSyncerProtocol) {
+        self.projectGenerator = projectGenerator
+        self.pbxProjectSyncer = pbxProjectSyncer
     }
 }
 
 class GenerateFeatureViewModel: ObservableObject {
     @Published var generateFeatureInput: GenerateFeatureInput? = nil
     @Published var alert: AlertSheetModel? = nil
+    let fileURL: URL?
     
-    func onGenerate(fileURL: URL?) {
+    let projectGenerator: ProjectGeneratorProtocol
+    let pbxProjectSyncer: PBXProjectSyncerProtocol
+    
+    // MARK: - Paths
+    @Published private(set) var modulesURL: URL? = nil {
+        didSet {
+            guard let fileURL, let modulesURL else { return }
+            dataStore.set(modulesFolderURL: modulesURL, forFileURL: fileURL)
+        }
+    }
+    @Published private(set) var xcodeProjectURL: URL? = nil {
+        didSet {
+            guard let fileURL, let xcodeProjectURL else { return }
+            dataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
+        }
+    }
+    
+    let modulesPathPlaceholder: String = "path/to/modules"
+    let xcodeProjectPathPlaceholder: String = "path/to/Project.xcodeproj"
+    
+    var modulesPathText: String { modulesURL?.path ?? modulesPathPlaceholder }
+    var xcodeProjectPathText: String { xcodeProjectURL?.path ?? xcodeProjectPathPlaceholder }
+    
+    var hasModulesPath: Bool { modulesURL != nil }
+    var hasXcodeProjectPath: Bool { xcodeProjectURL != nil }
+    
+    // MARK: - Generate
+    @Published var isSkipXcodeProjectOn: Bool = false {
+        didSet {
+            guard let fileURL else { return }
+            dataStore.set(shouldSkipXcodeProject: isSkipXcodeProjectOn, forFileURL: fileURL)
+        }
+    }
+    var isGenerateEnabled: Bool {
+        guard
+            fileURL != nil,
+            hasModulesPath,
+            hasXcodeProjectPath || isSkipXcodeProjectOn
+        else { return false }
+        return true
+    }
+    
+    // File URLs Managers
+    var ashFileURLGetter: LocalFileURLGetter
+    var xcodeProjURLGetter: LocalFileURLGetter
+    var dataStore: GenerateFeatureDataStoreProtocol
+    var fileAccessValidator: FileAccessValidatorProtocol
+    
+    public init(fileURL: URL?,
+                dependencies: GenerateFeatureDependencies) {
+        self.fileURL = fileURL
+        
+        ashFileURLGetter = AshFileURLGetter(fileURL: fileURL)
+        xcodeProjURLGetter = XcodeProjURLGetter(fileURL: fileURL)
+        dataStore = GenerateFeatureDataStore(dictionaryCache: UserDefaults.standard)
+        fileAccessValidator = FileAccessValidator()
+        
+        projectGenerator = dependencies.projectGenerator
+        pbxProjectSyncer = dependencies.pbxProjectSyncer
+
+        guard let fileURL else { return }
+        dataStore.getModulesFolderURL(forFileURL: fileURL)
+            .map {
+                guard fileAccessValidator.hasAccess(to: $0) else { return }
+                modulesURL = $0
+            }
+        dataStore.getXcodeProjectURL(forFileURL: fileURL)
+            .map {
+                guard fileAccessValidator.hasAccess(to: $0) else { return }
+                xcodeProjectURL = $0
+            }
+        isSkipXcodeProjectOn = dataStore.getShouldSkipXcodeProject(forFileURL: fileURL)
+    }
+
+    func onOpenModulesFolder() {
+        ashFileURLGetter.getUrl().map { modulesURL = $0 }
+    }
+    
+    func onOpenXcodeProject() {
+        xcodeProjURLGetter.getUrl().map { xcodeProjectURL = $0 }
+    }
+    
+    func onSkipXcodeProject(_ value: Bool) {
+        isSkipXcodeProjectOn = value
+    }
+    
+    func onGenerate(document: PhoenixDocument) {
+        getFileURL { fileURL in
+            self.onGenerate(document: document, fileURL: fileURL)
+        }
+    }
+    
+    func onGenerateSheet() {
+        getFileURL { fileURL in
+            self.generateFeatureInput = .init(fileURL: fileURL)
+        }
+    }
+    
+    // MARK: - Private
+    private func getFileURL(_ completion: (URL) -> Void) {
         guard let fileURL else {
             alert = .init(text: "File should be saved first")
             return
         }
-        generateFeatureInput = .init(fileURL: fileURL)
+        completion(fileURL)
     }
     
-    func isGenerateEnabled(fileURL: URL?) -> Bool {
-        guard let fileURL else { return false }
-        return true
+    private func onGenerate(document: PhoenixDocument, fileURL: URL) {
+        guard let modulesURL = modulesURL else {
+            alert = .init(text: "Could not find path for modules folder.")
+            return
+        }
+        do {
+            try projectGenerator.generate(document: document, folderURL: modulesURL)
+        } catch {
+            alert = .init(text: "Error generating project: \(error)")
+        }
+        
+        guard !isSkipXcodeProjectOn else { return }
+        generateXcodeProject(for: document, fileURL: fileURL)
+    }
+
+    private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL) {
+        guard let xcodeProjectURL = xcodeProjectURL else {
+            alert = .init(text: "Xcode Project URL missing")
+            return
+        }
+        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL, fileURL: fileURL)
     }
     
-    //    func onGenerate(document: PhoenixDocument, fileURL: URL?) {
-    //        getFileURL(fileURL: fileURL) { fileURL in
-    //            self.onGenerate(document: document, nonOptionalFileURL: fileURL)
-    //        }
-    //    }
-    //    func onGenerate(document: PhoenixDocument, nonOptionalFileURL: URL) {
-    //        guard let modulesFolderURL = modulesFolderURL else {
-    //            alertState = .errorString("Could not find path for modules folder.")
-    //            return
-    //        }
-    //        generateFeatureInput = nil
-    //        do {
-    //            try projectGenerator.generate(document: document, folderURL: modulesFolderURL)
-    //        } catch {
-    //            alertState = .errorString("Error generating project: \(error)")
-    //        }
-    //
-    //        guard !skipXcodeProject else { return }
-    //        generateXcodeProject(for: document, fileURL: nonOptionalFileURL)
-    //    }
-    
-    //    private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL?) {
-    //        guard let xcodeProjectURL = xcodeProjectURL else { return }
-    //        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL, fileURL: fileURL)
-    //    }
-    
+    private func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL, fileURL: URL) {
+        do {
+            try pbxProjectSyncer.sync(document: document, at: fileURL, withProjectAt: xcodeFileURL)
+        } catch {
+            alert = .init(text: "Error syncing xcode project: \(error)")
+        }
+    }
 }
 
 public struct GenerateFeatureView: View {
-    @StateObject private var viewModel: GenerateFeatureViewModel = .init()
-    let fileURL: URL?
+    @StateObject private var viewModel: GenerateFeatureViewModel
+    let getDocument: () -> PhoenixDocument
     
-    public init(fileURL: URL?) {
-        self.fileURL = fileURL
+    public init(
+        fileURL: URL?,
+        getDocument: @escaping @autoclosure () -> PhoenixDocument,
+        dependencies: GenerateFeatureDependencies
+    ) {
+        self._viewModel = .init(wrappedValue: .init(
+            fileURL: fileURL,
+            dependencies: dependencies
+        ))
+        self.getDocument = getDocument
     }
     
     public var body: some View {
-        Button(action: { viewModel.onGenerate(fileURL: fileURL) }) {
+        Button(action: viewModel.onGenerateSheet) {
             Image(systemName: "shippingbox.fill")
             Text("Generate")
         }
         .keyboardShortcut(.init("R"), modifiers: .command)
         .sheet(item: $viewModel.generateFeatureInput, content: { data in
-            GenerateSheetView(fileURL: data.fileURL) {
-                viewModel.generateFeatureInput = nil
-            }
+            GenerateSheetView(
+                viewModel: .init(
+                    modulesPath: viewModel.modulesPathText,
+                    xcodeProjectPath: viewModel.xcodeProjectPathText,
+                    hasModulesPath: viewModel.hasModulesPath,
+                    hasXcodeProjectPath: viewModel.hasXcodeProjectPath,
+                    isSkipXcodeProjectOn: viewModel.isSkipXcodeProjectOn,
+                    onOpenModulesFolder: viewModel.onOpenModulesFolder,
+                    onOpenXcodeProject: viewModel.onOpenXcodeProject,
+                    onSkipXcodeProject: viewModel.onSkipXcodeProject,
+                    onGenerate: onGenerate,
+                    onDismiss: { viewModel.generateFeatureInput = nil }
+                )
+            )
         })
         .alertSheet(model: $viewModel.alert)
-        Button(action: { /*viewModel.onGenerate(document: document, fileURL: fileURL)*/ }) {
+        Button(action: onGenerate) {
             Image(systemName: "play")
         }
-        .disabled(!viewModel.isGenerateEnabled(fileURL: fileURL))
+        .disabled(!viewModel.isGenerateEnabled)
         .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
     }
-}
-
-struct GenerateFeatureView_Previews: PreviewProvider {
-    static var previews: some View {
-        GenerateFeatureView(fileURL: nil)
+            
+    // MARK: - Private
+    private func onGenerate() {
+        viewModel.onGenerate(document: getDocument())
     }
 }

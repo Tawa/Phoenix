@@ -1,10 +1,10 @@
 import SwiftUI
 
 public struct GenerateSheetView: View {
-    @StateObject var viewModel: GenerateSheetViewModel
+    let viewModel: GenerateSheetViewModel
     
-    public init(fileURL: URL, onDismiss: @escaping () -> Void) {
-        _viewModel = .init(wrappedValue: GenerateSheetViewModel(fileURL: fileURL, onDismiss: onDismiss))
+    public init(viewModel: GenerateSheetViewModel) {
+        self.viewModel = viewModel
     }
     
     public var body: some View {
@@ -16,7 +16,7 @@ public struct GenerateSheetView: View {
                         Text("Modules Folder")
                     }
                     HStack {
-                        Text(viewModel.modulesPathText)
+                        Text(viewModel.modulesPath)
                             .opacity(viewModel.hasModulesPath ? 1 : 0.2)
                         Spacer()
                     }
@@ -28,16 +28,20 @@ public struct GenerateSheetView: View {
                     HStack {
                         Image(systemName: "wrench.and.screwdriver")
                         Text("Xcode Project")
-                        Toggle("Skip this step", isOn: $viewModel.isSkipXcodeProjectOn)
+                        Toggle("Skip this step", isOn: Binding(get: {
+                            viewModel.isSkipXcodeProjectOn
+                        }, set: { newValue in
+                            self.viewModel.onSkipXcodeProject(newValue)
+                        }))
                     }
                     HStack {
-                        Text(viewModel.xcodeProjectPathText)
+                        Text(viewModel.xcodeProjectPath)
                             .opacity(xcodeProjectPathOpaticy)
                         Spacer()
                     }
                 }
             }.buttonStyle(.plain)
-            
+
             HStack {
                 Button(action: viewModel.onGenerate) {
                     Text("Generate")
@@ -52,7 +56,6 @@ public struct GenerateSheetView: View {
         }
         .padding()
         .frame(minWidth: 500)
-        .onAppear(perform: viewModel.onAppear)
     }
     
     private var isGenerateEnabled: Bool {
@@ -73,8 +76,18 @@ public struct GenerateSheetView: View {
 struct GenerateSheetView_Previews: PreviewProvider {
     static var previews: some View {
         GenerateSheetView(
-            fileURL: URL(string: "path/to/modules.ash")!,
-            onDismiss: {}
+            viewModel: GenerateSheetViewModel(
+                modulesPath: "path/to/modules",
+                xcodeProjectPath: "path/to/Project.xcodeproj",
+                hasModulesPath: true,
+                hasXcodeProjectPath: false,
+                isSkipXcodeProjectOn: false,
+                onOpenModulesFolder: {},
+                onOpenXcodeProject: {},
+                onSkipXcodeProject: { _ in },
+                onGenerate: {},
+                onDismiss: {}
+            )
         )
     }
 }

@@ -375,7 +375,6 @@ struct ContentView: View {
     @ViewBuilder private func toolbarViews() -> some View {
         toolbarLeadingItems()
         Spacer()
-        GenerateFeatureView(fileURL: fileURL)
         toolbarTrailingItems()
     }
     
@@ -408,6 +407,14 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func toolbarTrailingItems() -> some View {
+        GenerateFeatureView(
+            fileURL: fileURL,
+            getDocument: document,
+            dependencies: GenerateFeatureDependencies(
+                projectGenerator: Container.projectGenerator(),
+                pbxProjectSyncer: Container.pbxProjSyncer()
+            )
+        )
         Button(action: { inspectorSelection.toggle() }) {
             Image(systemName: "sidebar.trailing")
         }
