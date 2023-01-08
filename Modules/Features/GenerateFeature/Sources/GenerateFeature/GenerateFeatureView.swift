@@ -67,6 +67,8 @@ class GenerateFeatureViewModel: ObservableObject {
     var dataStore: GenerateFeatureDataStoreProtocol
     var fileAccessValidator: FileAccessValidatorProtocol
     
+    private var generationStart: Date? = nil
+    
     public init(fileURL: URL?,
                 dependencies: GenerateFeatureDependencies) {
         self.fileURL = fileURL
@@ -127,34 +129,55 @@ class GenerateFeatureViewModel: ObservableObject {
     }
     
     private func onGenerate(document: PhoenixDocument, fileURL: URL) {
+        generationStart = .now
         guard let modulesURL = modulesURL else {
             alert = .init(text: "Could not find path for modules folder.")
+            generateFeatureInput = nil
             return
         }
         do {
             try projectGenerator.generate(document: document, folderURL: modulesURL)
+            if !isSkipXcodeProjectOn {
+                try generateXcodeProject(for: document, fileURL: fileURL)
+            }
+            displaySuccessMessage(
+                count: document.families
+                    .flatMap(\.components)
+                    .flatMap(\.modules.keys)
+                    .count
+            )
         } catch {
             alert = .init(text: "Error generating project: \(error)")
         }
-        
-        guard !isSkipXcodeProjectOn else { return }
-        generateXcodeProject(for: document, fileURL: fileURL)
+        generateFeatureInput = nil
     }
 
-    private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL) {
+    private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL) throws {
         guard let xcodeProjectURL = xcodeProjectURL else {
             alert = .init(text: "Xcode Project URL missing")
+            generateFeatureInput = nil
             return
         }
-        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL, fileURL: fileURL)
+        try onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL, fileURL: fileURL)
     }
     
-    private func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL, fileURL: URL) {
-        do {
-            try pbxProjectSyncer.sync(document: document, at: fileURL, withProjectAt: xcodeFileURL)
-        } catch {
-            alert = .init(text: "Error syncing xcode project: \(error)")
+    private func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL, fileURL: URL) throws {
+        try pbxProjectSyncer.sync(document: document, at: fileURL, withProjectAt: xcodeFileURL)
+    }
+    
+    private func displaySuccessMessage(count: Int) {
+        var successMessage: String = "Success"
+        successMessage += "\n"
+        successMessage += "Generated \(count) \(count == 1 ? "package" : "packages")"
+        if let generationStart {
+            let formatter = DateComponentsFormatter()
+            formatter.allowedUnits = [.hour, .minute, .second]
+            formatter.unitsStyle = .full
+            if let duration = formatter.string(from: generationStart, to: Date()) {
+                successMessage += " in \(duration)"
+            }
         }
+        alert = .init(text: successMessage)
     }
 }
 
