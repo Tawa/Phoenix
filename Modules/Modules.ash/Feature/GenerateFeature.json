@@ -2,6 +2,32 @@
   "localDependencies" : [
     {
       "name" : {
+        "family" : "Syncer",
+        "given" : "PBXProject"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
+    },
+    {
+      "name" : {
+        "family" : "Entity",
+        "given" : "PhoenixDocument"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Implementation"
+      ]
+    },
+    {
+      "name" : {
         "family" : "Generator",
         "given" : "Project"
       },

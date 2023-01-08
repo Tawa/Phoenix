@@ -53,7 +53,6 @@
 		B2B1856B2968C35A00D1257E /* GenerateFeature in Frameworks */ = {isa = PBXBuildFile; productRef = B2B1856A2968C35A00D1257E /* GenerateFeature */; };
 		B2BD9D3C29602A570048D505 /* MentionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BD9D3B29602A570048D505 /* MentionsView.swift */; };
 		B2BD9D3E296188530048D505 /* PhoenixDocument+Mentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BD9D3D296188530048D505 /* PhoenixDocument+Mentions.swift */; };
-		B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */; };
 		B2CC2B5A28BAC12200848D93 /* PackageGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5928BAC12200848D93 /* PackageGenerator */; };
 		B2CC2B5C28BAC21900848D93 /* PackageStringProvider in Frameworks */ = {isa = PBXBuildFile; productRef = B2CC2B5B28BAC21900848D93 /* PackageStringProvider */; };
 		B2E1D48529425CCB00FF07DE /* ViewModel+ComponentsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E1D48429425CCB00FF07DE /* ViewModel+ComponentsList.swift */; };
@@ -171,7 +170,6 @@
 		B29BE1032943D37C00675860 /* ViewModel+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Selection.swift"; sourceTree = "<group>"; };
 		B2BD9D3B29602A570048D505 /* MentionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentionsView.swift; sourceTree = "<group>"; };
 		B2BD9D3D296188530048D505 /* PhoenixDocument+Mentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhoenixDocument+Mentions.swift"; sourceTree = "<group>"; };
-		B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesURLDataStore.swift; sourceTree = "<group>"; };
 		B2E1D48429425CCB00FF07DE /* ViewModel+ComponentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+ComponentsList.swift"; sourceTree = "<group>"; };
 		B2E1D48629425E8700FF07DE /* XCUIElement+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+Extensions.swift"; sourceTree = "<group>"; };
 		B2E1D4882942A90B00FF07DE /* PhoenixDocument+RelationViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhoenixDocument+RelationViewData.swift"; sourceTree = "<group>"; };
@@ -303,7 +301,6 @@
 				38E2513B28392CE1002FFA31 /* Data */,
 				38E0B2FB2815765E00B5992D /* DataStore */,
 				B2EDFE5C2956F3D1005BB99C /* Extensions */,
-				B2C6310E28D39F7E00029B7F /* FilesURLDataStore.swift */,
 				3873E5AE2804C50A000BCB03 /* Info.plist */,
 				3873E5AF2804C50A000BCB03 /* Phoenix.entitlements */,
 				3873E5A32804C509000BCB03 /* PhoenixApp.swift */,
@@ -764,7 +761,6 @@
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
 				B2EDFE5129559D61005BB99C /* NewRemoteComponentSheet.swift in Sources */,
 				38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */,
-				B2C6310F28D39F7E00029B7F /* FilesURLDataStore.swift in Sources */,
 				B216D3A12926EDC6005EDBB5 /* RelationView.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesSheet.swift in Sources */,
 				38C7D1492808B35300E2675B /* NewComponentSheet.swift in Sources */,
