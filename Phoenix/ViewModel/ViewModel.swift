@@ -111,7 +111,6 @@ class ViewModel: ObservableObject {
     @Published var showingDependencySheet: Bool = false
     @Published var showingRemoteDependencySheet: Bool = false
     @Published var alertState: AlertState? = nil
-    @Published var generateFeatureInput: GenerateFeatureInput? = nil
     @Published var demoAppFeatureData: DemoAppFeatureInput? = nil
 //    @Published var modulesFolderURL: URL? = nil {
 //        didSet {
@@ -133,10 +132,6 @@ class ViewModel: ObservableObject {
     var appVersionUpdateProvider: AppVersionUpdateProviderProtocol
     @Injected(Container.familyFolderNameProvider)
     var familyFolderNameProvider: FamilyFolderNameProviderProtocol
-    @Injected(Container.pbxProjSyncer)
-    var pbxProjSyncer: PBXProjectSyncerProtocol
-    @Injected(Container.projectGenerator)
-    var projectGenerator: ProjectGeneratorProtocol
         
     func onConfigurationButton() {
         showingConfigurationPopup = true
@@ -154,59 +149,15 @@ class ViewModel: ObservableObject {
         showingNewComponentPopup = .remote
     }
     
-    private func getFileURL(fileURL: URL?, _ completion: @escaping (URL) -> Void) {
-        guard let fileURL = fileURL else {
-            alertState = .errorString("File must be saved before packages can be generated.")
-            return
-        }
-        completion(fileURL)
-    }
-    
-    private func getAccessToURL(file: Bool, fileURL: URL?, completion: @escaping (URL) -> Void) {
-        getFileURL(fileURL: fileURL) { fileURL in
-            if let url = self.openFolderSelection(at: fileURL, chooseFiles: file) {
-                completion(url)
-            }
-        }
-    }
-    
-    func onGenerateSheetButton(fileURL: URL?) {
-        getFileURL(fileURL: fileURL) { fileURL in
-            self.generateFeatureInput = .init(fileURL: fileURL)
-        }
-    }
-    
-    func onDismissGenerateSheet() {
-        generateFeatureInput = nil
-    }
-    
-    func onGenerate(document: PhoenixDocument, fileURL: URL?) {
-//        getFileURL(fileURL: fileURL) { fileURL in
-//            self.onGenerate(document: document, nonOptionalFileURL: fileURL)
-//        }
-    }
-//    func onGenerate(document: PhoenixDocument, nonOptionalFileURL: URL) {
-//        guard let modulesFolderURL = modulesFolderURL else {
-//            alertState = .errorString("Could not find path for modules folder.")
+//    private func getFileURL(fileURL: URL?, _ completion: @escaping (URL) -> Void) {
+//        guard let fileURL = fileURL else {
+//            alertState = .errorString("File must be saved before packages can be generated.")
 //            return
 //        }
-//        generateFeatureInput = nil
-//        do {
-//            try projectGenerator.generate(document: document, folderURL: modulesFolderURL)
-//        } catch {
-//            alertState = .errorString("Error generating project: \(error)")
-//        }
-//
-//        guard !skipXcodeProject else { return }
-//        generateXcodeProject(for: document, fileURL: nonOptionalFileURL)
-//    }
-
-//    private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL?) {
-//        guard let xcodeProjectURL = xcodeProjectURL else { return }
-//        onSyncPBXProj(for: document, xcodeFileURL: xcodeProjectURL, fileURL: fileURL)
+//        completion(fileURL)
 //    }
     
-    func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, fileURL: URL?) {
+//    func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, fileURL: URL?) {
 //        if let fileURL = fileURL {
 //            modulesFolderURL = filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).flatMap { url in
 //                guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
@@ -230,30 +181,7 @@ class ViewModel: ObservableObject {
 //                    self.alertState = .errorString(error.localizedDescription)
 //                })
 //        }
-    }
-    
-    func onSyncPBXProj(for document: PhoenixDocument, xcodeFileURL: URL, fileURL: URL?) {
-        getFileURL(fileURL: fileURL) { fileURL in
-            do {
-                try self.pbxProjSyncer.sync(document: document, at: fileURL, withProjectAt: xcodeFileURL)
-            } catch {
-                self.alertState = .errorString(error.localizedDescription)
-            }
-        }
-    }
-    
-    private func openFolderSelection(at fileURL: URL?, chooseFiles: Bool) -> URL? {
-        let openPanel = NSOpenPanel()
-        openPanel.directoryURL = fileURL?.deletingLastPathComponent()
-        openPanel.allowsMultipleSelection = false
-        openPanel.canChooseDirectories = !chooseFiles
-        openPanel.canChooseFiles = chooseFiles
-        openPanel.canCreateDirectories = true
-        openPanel.allowedContentTypes = []
-        
-        openPanel.runModal()
-        return openPanel.url
-    }
+//    }
     
     func checkForUpdate() {
         appUpdateVersionInfoSub = appVersionUpdateProvider

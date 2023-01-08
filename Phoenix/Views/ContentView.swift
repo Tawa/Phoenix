@@ -83,12 +83,6 @@ struct ContentView: View {
                 .sheet(item: $viewModel.demoAppFeatureData, content: { data in
                     Container.demoAppFeatureView(data)
                 })
-                .sheet(item: $viewModel.generateFeatureInput, content: { data in
-                    GenerateSheetView(
-                        fileURL: data.fileURL,
-                        onDismiss: viewModel.onDismissGenerateSheet
-                    )
-                })
                 .sheet(isPresented: $viewModel.showingQuickSelectionSheet, content: {
                     QuickSelectionSheet(rows: viewModel.quickSelectionRows(document: document))
                 })
@@ -254,7 +248,7 @@ struct ContentView: View {
             },
             titleForComponentNamed: document.title(forComponentNamed:),
             onGenerateDemoAppProject: {
-                viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
+//                viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
             },
             onRemove: { document.removeComponent(withName: component.wrappedValue.name) },
             allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
@@ -381,6 +375,7 @@ struct ContentView: View {
     @ViewBuilder private func toolbarViews() -> some View {
         toolbarLeadingItems()
         Spacer()
+        GenerateFeatureView(fileURL: fileURL)
         toolbarTrailingItems()
     }
     
@@ -413,15 +408,6 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func toolbarTrailingItems() -> some View {
-        Button(action: { viewModel.onGenerateSheetButton(fileURL: fileURL) }) {
-            Image(systemName: "shippingbox.fill")
-            Text("Generate")
-        }.keyboardShortcut(.init("R"), modifiers: .command)
-//        Button(action: { viewModel.onGenerate(document: document, fileURL: fileURL) }) {
-//            Image(systemName: "play")
-//        }
-//        .disabled(viewModel.modulesFolderURL == nil || viewModel.xcodeProjectURL == nil)
-//        .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
         Button(action: { inspectorSelection.toggle() }) {
             Image(systemName: "sidebar.trailing")
         }
