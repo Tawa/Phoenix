@@ -14,7 +14,11 @@ There are plans to use Github Releases to publish Phoenix updates.
 Documentation can be found under the Wiki page [here](https://github.com/Tawa/Phoenix/wiki/)
 
 - [How it works](https://github.com/Tawa/Phoenix/wiki/How-it-works)
-This section covers the different moving parts of the app.
+> This section covers the different moving parts of the app.
+- [Generating The Packages](https://github.com/Tawa/Phoenix/wiki/Generating-The-Packages)
+> This section covers how you can generate and maintain your Swift Packages.
+- [Generating Demo App Xcode Projects](https://github.com/Tawa/Phoenix/wiki/Generating-Demo-App-Xcode-Projects)
+> This section explains what Demo Apps are for and how to use Phoenix to generate them.
 
 ## Contribute
 If you're interested in contributing to Phoenix, please head to the [contribute](https://github.com/Tawa/Phoenix/wiki/Contribute) page under the Wiki to find out how to be involved.
