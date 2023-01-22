@@ -143,4 +143,23 @@ class ViewModel: ObservableObject {
                 self.appUpdateVersionInfo = appVersionInfos.results.first
             }
     }
+    
+    func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, fileURL: URL?) {
+        guard let fileURL else {
+            alertState = .errorString("File should be saved first")
+            return
+        }
+        
+        self.demoAppFeatureData = .init(
+            component: component,
+            document: document,
+            ashFileURL: fileURL,
+            onDismiss: { [weak self] in
+                self?.demoAppFeatureData = nil
+            },
+            onError: { [weak self] error in
+                self?.alertState = .errorString(error.localizedDescription)
+            }
+        )
+    }
 }
