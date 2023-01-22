@@ -1,9 +1,9 @@
 import SwiftUI
 
-public struct GenerateSheetView: View {
+struct GenerateSheetView: View {
     let viewModel: GenerateSheetViewModel
     
-    public init(viewModel: GenerateSheetViewModel) {
+    init(viewModel: GenerateSheetViewModel) {
         self.viewModel = viewModel
     }
     
