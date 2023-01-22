@@ -248,7 +248,7 @@ struct ContentView: View {
             },
             titleForComponentNamed: document.title(forComponentNamed:),
             onGenerateDemoAppProject: {
-//                viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
+                viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
             },
             onRemove: { document.removeComponent(withName: component.wrappedValue.name) },
             allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),

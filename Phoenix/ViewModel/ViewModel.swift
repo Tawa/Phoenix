@@ -112,21 +112,6 @@ class ViewModel: ObservableObject {
     @Published var showingRemoteDependencySheet: Bool = false
     @Published var alertState: AlertState? = nil
     @Published var demoAppFeatureData: DemoAppFeatureInput? = nil
-//    @Published var modulesFolderURL: URL? = nil {
-//        didSet {
-////            if let fileURL = fileURL, let modulesFolderURL = modulesFolderURL {
-////                filesURLDataStore.set(modulesFolderURL: modulesFolderURL, forFileURL: fileURL)
-////            }
-//        }
-//    }
-//    @Published var xcodeProjectURL: URL? = nil {
-//        didSet {
-////            if let fileURL = fileURL, let xcodeProjectURL = xcodeProjectURL {
-////                filesURLDataStore.set(xcodeProjectURL: xcodeProjectURL, forFileURL: fileURL)
-////            }
-//        }
-//    }
-//    @Published var skipXcodeProject: Bool = false
 
     @Injected(Container.appVersionUpdateProvider)
     var appVersionUpdateProvider: AppVersionUpdateProviderProtocol
@@ -148,41 +133,7 @@ class ViewModel: ObservableObject {
     func onAddRemoteButton() {
         showingNewComponentPopup = .remote
     }
-    
-//    private func getFileURL(fileURL: URL?, _ completion: @escaping (URL) -> Void) {
-//        guard let fileURL = fileURL else {
-//            alertState = .errorString("File must be saved before packages can be generated.")
-//            return
-//        }
-//        completion(fileURL)
-//    }
-    
-//    func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, fileURL: URL?) {
-//        if let fileURL = fileURL {
-//            modulesFolderURL = filesURLDataStore.getModulesFolderURL(forFileURL: fileURL).flatMap { url in
-//                guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
-//                return url
-//            }
-//            xcodeProjectURL = filesURLDataStore.getXcodeProjectURL(forFileURL: fileURL).flatMap { url in
-//                guard (try? FileManager.default.contentsOfDirectory(atPath: url.path)) != nil else { return nil }
-//                return url
-//            }
-//        }
-//
-//        getFileURL(fileURL: fileURL) { fileURL in
-//            self.demoAppFeatureData = .init(
-//                component: component,
-//                document: document,
-//                ashFileURL: fileURL,
-//                onDismiss: { [weak self] in
-//                    self?.demoAppFeatureData = nil
-//                },
-//                onError: { error in
-//                    self.alertState = .errorString(error.localizedDescription)
-//                })
-//        }
-//    }
-    
+
     func checkForUpdate() {
         appUpdateVersionInfoSub = appVersionUpdateProvider
             .appVersionsPublisher()
@@ -191,5 +142,24 @@ class ViewModel: ObservableObject {
             } receiveValue: { appVersionInfos in
                 self.appUpdateVersionInfo = appVersionInfos.results.first
             }
+    }
+    
+    func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, fileURL: URL?) {
+        guard let fileURL else {
+            alertState = .errorString("File should be saved first")
+            return
+        }
+        
+        self.demoAppFeatureData = .init(
+            component: component,
+            document: document,
+            ashFileURL: fileURL,
+            onDismiss: { [weak self] in
+                self?.demoAppFeatureData = nil
+            },
+            onError: { [weak self] error in
+                self?.alertState = .errorString(error.localizedDescription)
+            }
+        )
     }
 }
