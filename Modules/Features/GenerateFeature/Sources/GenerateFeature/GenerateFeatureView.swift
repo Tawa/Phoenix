@@ -170,12 +170,8 @@ class GenerateFeatureViewModel: ObservableObject {
         successMessage += "\n"
         successMessage += "Generated \(count) \(count == 1 ? "package" : "packages")"
         if let generationStart {
-            let formatter = DateComponentsFormatter()
-            formatter.allowedUnits = [.hour, .minute, .second]
-            formatter.unitsStyle = .full
-            if let duration = formatter.string(from: generationStart, to: Date()) {
-                successMessage += " in \(duration)"
-            }
+            let deltaTime = round(1000 * generationStart.distance(to: Date())) / 1000
+            successMessage += " in \(deltaTime) seconds"
         }
         alert = .init(text: successMessage)
     }
