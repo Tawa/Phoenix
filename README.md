@@ -2,7 +2,7 @@
 
 ## What is Phoenix?
 
-Phoenix is a Document Based macOS App that helps you **generate** and **maintain** Swift Packages while modularising your Xcode projects.
+Phoenix is a Document Based macOS App that helps you **generate** and **maintain** Swift Packages while modularizing your Xcode projects.
 
 ## How to install
 ### App Store
