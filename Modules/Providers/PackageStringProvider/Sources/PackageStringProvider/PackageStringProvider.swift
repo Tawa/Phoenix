@@ -1,6 +1,13 @@
 import PackageStringProviderContract
 import SwiftPackage
 
+extension Sequence where Element: Hashable {
+    func uniqued() -> [Element] {
+        var set = Set<Element>()
+        return filter { set.insert($0).inserted }
+    }
+}
+
 public struct PackageStringProvider: PackageStringProviderProtocol {
     
     public init() {
@@ -38,7 +45,7 @@ let package = Package(
 
         if !package.dependencies.isEmpty {
             value += "    dependencies: [\n"
-            value += package.dependencies.sorted().map(packageDependencyString(_:)).joined(separator: ",\n") + "\n"
+            value += package.dependencies.sorted().map(packageDependencyString(_:)).uniqued().joined(separator: ",\n") + "\n"
             value += "    ],\n    targets: [\n"
         } else {
             value += "    targets: [\n"
