@@ -112,6 +112,18 @@ struct ComponentView: View {
                        hasRemove: component.macOSVersion != nil,
                        onRemove: { component.macOSVersion = nil })
             .frame(width: 150)
+            CustomMenu(title: tvOSPlatformMenuTitle(forComponent: component),
+                       data: TVOSVersion.allCases,
+                       onSelection: { component.tvOSVersion = $0 },
+                       hasRemove: component.tvOSVersion != nil,
+                       onRemove: { component.tvOSVersion = nil })
+            .frame(width: 150)
+            CustomMenu(title: watchOSPlatformMenuTitle(forComponent: component),
+                       data: WatchOSVersion.allCases,
+                       onSelection: { component.watchOSVersion = $0 },
+                       hasRemove: component.watchOSVersion != nil,
+                       onRemove: { component.watchOSVersion = nil })
+            .frame(width: 150)
         }
     }
     
@@ -268,7 +280,23 @@ struct ComponentView: View {
             return "Add macOS"
         }
     }
-    
+
+    private func tvOSPlatformMenuTitle(forComponent component: Component) -> String {
+        if let tvOSVersion = component.tvOSVersion {
+            return ".tvOS(.\(tvOSVersion))"
+        } else {
+            return "Add tvOS"
+        }
+    }
+
+    private func watchOSPlatformMenuTitle(forComponent component: Component) -> String {
+        if let watchOSVersion = component.watchOSVersion {
+            return ".watchOS(.\(watchOSVersion))"
+        } else {
+            return "Add watchOS"
+        }
+    }
+
     private func isModuleTypeOn(_ name: String) -> Bool {
         component.modules[name] != nil
     }

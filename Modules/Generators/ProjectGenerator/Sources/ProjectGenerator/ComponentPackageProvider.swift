@@ -158,6 +158,8 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
                                     defaultLocalization: defaultLocalization,
                                     iOSVersion: component.iOSVersion,
                                     macOSVersion: component.macOSVersion,
+                                    tvOSVersion: component.tvOSVersion,
+                                    watchOSVersion: component.watchOSVersion,
                                     products: [Product.library(Library(name: packageName,
                                                                        type: component.modules[packageConfiguration.name] ?? .undefined,
                                                                        targets: [packageName]))],

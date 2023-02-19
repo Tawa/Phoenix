@@ -3,6 +3,8 @@ public struct SwiftPackage: Codable, Hashable {
     public let defaultLocalization: String?
     public let iOSVersion: IOSVersion?
     public let macOSVersion: MacOSVersion?
+    public let tvOSVersion: TVOSVersion?
+    public let watchOSVersion: WatchOSVersion?
     public let products: [Product]
     public let dependencies: [Dependency]
     public let targets: [Target]
@@ -12,6 +14,8 @@ public struct SwiftPackage: Codable, Hashable {
                 defaultLocalization: String?,
                 iOSVersion: IOSVersion?,
                 macOSVersion: MacOSVersion?,
+                tvOSVersion: TVOSVersion?,
+                watchOSVersion: WatchOSVersion?,
                 products: [Product],
                 dependencies: [Dependency],
                 targets: [Target],
@@ -20,6 +24,8 @@ public struct SwiftPackage: Codable, Hashable {
         self.defaultLocalization = defaultLocalization
         self.iOSVersion = iOSVersion
         self.macOSVersion = macOSVersion
+        self.tvOSVersion = tvOSVersion
+        self.watchOSVersion = watchOSVersion
         self.products = products
         self.dependencies = dependencies
         self.targets = targets

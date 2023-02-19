@@ -10,6 +10,8 @@ final class ComponentTests: XCTestCase {
             defaultLocalization: .init(),
             iOSVersion: nil,
             macOSVersion: nil,
+            tvOSVersion: nil,
+            watchOSVersion: nil,
             modules: [:],
             localDependencies: [
                 ComponentDependency(name: Name(given: "Wordpress", family: "DataStore"),

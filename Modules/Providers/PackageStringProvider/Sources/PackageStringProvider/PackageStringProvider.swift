@@ -26,8 +26,11 @@ let package = Package(
         if let defaultLocalization = package.defaultLocalization {
             value += "    defaultLocalization: \"\(defaultLocalization)\",\n"
         }
-
-        if package.iOSVersion != nil || package.macOSVersion != nil {
+        
+        if package.iOSVersion != nil ||
+            package.macOSVersion != nil ||
+            package.tvOSVersion != nil ||
+            package.watchOSVersion != nil {
             value += "    platforms: [\n"
             var versions: [String] = []
             if let iOSVersion = package.iOSVersion {
@@ -35,6 +38,12 @@ let package = Package(
             }
             if let macOSVersion = package.macOSVersion {
                 versions.append("        \(macOSPlatformString(macOSVersion))")
+            }
+            if let tvOSVersion = package.tvOSVersion {
+                versions.append("        \(tvOSPlatformString(tvOSVersion))")
+            }
+            if let watchOSVersion = package.watchOSVersion {
+                versions.append("        \(watchOSPlatformString(watchOSVersion))")
             }
             value += versions.joined(separator: ",\n") + "\n"
             value += "    ],\n"
@@ -143,5 +152,13 @@ let package = Package(
 
     private func macOSPlatformString(_ macOSVersion: MacOSVersion) -> String {
         ".macOS(.\(macOSVersion))"
+    }
+
+    private func tvOSPlatformString(_ tvOSVersion: TVOSVersion) -> String {
+        ".tvOS(.\(tvOSVersion))"
+    }
+
+    private func watchOSPlatformString(_ watchOSVersion: WatchOSVersion) -> String {
+        ".watchOS(.\(watchOSVersion))"
     }
 }
