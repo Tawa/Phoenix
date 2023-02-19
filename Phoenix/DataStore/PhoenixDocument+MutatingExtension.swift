@@ -45,6 +45,8 @@ extension PhoenixDocument {
                                      defaultLocalization: .init(),
                                      iOSVersion: nil,
                                      macOSVersion: nil,
+                                     tvOSVersion: nil,
+                                     watchOSVersion: nil,
                                      modules: moduleTypes,
                                      localDependencies: [],
                                      remoteDependencies: [],

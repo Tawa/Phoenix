@@ -10,6 +10,8 @@ final class PackageStringProviderTests: XCTestCase {
                                    defaultLocalization: nil,
                                    iOSVersion: nil,
                                    macOSVersion: nil,
+                                   tvOSVersion: nil,
+                                   watchOSVersion: nil,
                                    products: [
                                     .library(Library(name: "HomeService", type: .undefined, targets: ["HomeService"]))
                                    ],
