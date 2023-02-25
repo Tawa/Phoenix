@@ -4,6 +4,12 @@
 
 Phoenix is a Document Based macOS App that helps you **generate** and **maintain** Swift Packages while modularizing your Xcode projects.
 
+## Introduction Video
+
+The following video should give you a summary of why this solution was created, and a brief demo on how to use it.
+
+[![](https://img.youtube.com/vi/Pu6WbqHTrYY/0.jpg)](https://www.youtube.com/watch?v=Pu6WbqHTrYY "Introduction to the Phoenix App")
+
 ## How to install
 ### App Store
 To get the latest stable version of Phoenix, please download it from the macOS App Store [here](https://apps.apple.com/app/phoenix-app/id1626793172?l=en&mt=12).
