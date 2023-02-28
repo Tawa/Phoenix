@@ -1,3 +1,5 @@
-struct ProjectValidatorContract {
-    var text: String = "Hello, World!"
+import Foundation
+
+public protocol ProjectValidatorProtocol {
+    func validate(fileURL: URL, modulesFolderURL: URL) async throws
 }

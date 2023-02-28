@@ -7,8 +7,8 @@ import DocumentCoder
 import DocumentCoderContract
 import Factory
 import Foundation
-import GenerateFeatureDataStoreContract
 import GenerateFeatureDataStore
+import GenerateFeatureDataStoreContract
 import PackageGenerator
 import PackageGeneratorContract
 import PackageStringProvider
@@ -17,6 +17,8 @@ import PBXProjectSyncer
 import PBXProjectSyncerContract
 import ProjectGenerator
 import ProjectGeneratorContract
+import ProjectValidator
+import ProjectValidatorContract
 import RelativeURLProvider
 import RelativeURLProviderContract
 import SwiftPackage
@@ -117,5 +119,9 @@ extension Container {
         GenerateFeatureDataStore(
             dictionaryCache: UserDefaults.standard
         ) as GenerateFeatureDataStoreProtocol
+    }
+    
+    static let projectValidator = Factory(scope: .singleton) {
+        ProjectValidator() as ProjectValidatorProtocol
     }
 }
