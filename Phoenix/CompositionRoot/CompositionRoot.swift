@@ -7,6 +7,8 @@ import DocumentCoder
 import DocumentCoderContract
 import Factory
 import Foundation
+import GenerateFeatureDataStoreContract
+import GenerateFeatureDataStore
 import PackageGenerator
 import PackageGeneratorContract
 import PackageStringProvider
@@ -109,5 +111,11 @@ extension Container {
     
     static let relativeURLProvider = Factory {
         RelativeURLProvider() as RelativeURLProviderProtocol
+    }
+    
+    static let generateFeatureDataStore = Factory(scope: .singleton) {
+        GenerateFeatureDataStore(
+            dictionaryCache: UserDefaults.standard
+        ) as GenerateFeatureDataStoreProtocol
     }
 }
