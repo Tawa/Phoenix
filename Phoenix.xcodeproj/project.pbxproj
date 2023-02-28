@@ -116,6 +116,7 @@
 
 /* Begin PBXFileReference section */
 		11412F894C62710EEE3CAAA9 /* DemoAppGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGenerator; sourceTree = "<group>"; };
+		1E1B96BEF3F71179056A3614 /* ValidationFeature */ = {isa = PBXFileReference; name = ValidationFeature; path = ValidationFeature; sourceTree = "<group>"; };
 		1F90EE55889EB973A1F4A83A /* RelativeURLProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProviderContract; sourceTree = "<group>"; };
 		29DC1384DF456B933D03EBA9 /* AppVersionProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProviderContract; sourceTree = "<group>"; };
 		2B0CA06482809DF6A85E8004 /* GenerateFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GenerateFeature; sourceTree = "<group>"; };
@@ -159,7 +160,9 @@
 		56E271F2EFDE93C907701834 /* DocumentCoderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoderContract; sourceTree = "<group>"; };
 		75F2909D8CE5D60A75D05DD9 /* PBXProjectSyncer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PBXProjectSyncer; sourceTree = "<group>"; };
 		7630EE55C64753273E2BF13A /* SwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SwiftPackage; sourceTree = "<group>"; };
+		859FC6397437A78F21391163 /* ProjectValidatorContract */ = {isa = PBXFileReference; name = ProjectValidatorContract; path = ProjectValidatorContract; sourceTree = "<group>"; };
 		981295FCE3B52E97779A2186 /* DocumentCoder */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoder; sourceTree = "<group>"; };
+		9FE96A2D3B3268D8FAD977D1 /* ProjectValidator */ = {isa = PBXFileReference; name = ProjectValidator; path = ProjectValidator; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		B216D3A02926EDC6005EDBB5 /* RelationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationView.swift; sourceTree = "<group>"; };
 		B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+AppVersion.swift"; sourceTree = "<group>"; };
@@ -251,6 +254,7 @@
 			children = (
 				B544253829AAED80892BA404 /* DemoAppFeature */,
 				2B0CA06482809DF6A85E8004 /* GenerateFeature */,
+				1E1B96BEF3F71179056A3614 /* ValidationFeature */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -418,6 +422,14 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		57FCAA725E695B6ADD3B234E /* Validators */ = {
+			isa = PBXGroup;
+			children = (
+				859FC6397437A78F21391163 /* ProjectValidatorContract */,
+			);
+			path = Validators;
+			sourceTree = "<group>";
+		};
 		63CC22A165DCFB985567FF61 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -516,6 +528,14 @@
 			path = Generators;
 			sourceTree = "<group>";
 		};
+		C576D00D8A957965E32C7C76 /* Validators */ = {
+			isa = PBXGroup;
+			children = (
+				9FE96A2D3B3268D8FAD977D1 /* ProjectValidator */,
+			);
+			path = Validators;
+			sourceTree = "<group>";
+		};
 		C6FB5E3AC3B8F01526D3C642 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
@@ -527,6 +547,7 @@
 				E66D986E49EF92A54A4D6C86 /* Providers */,
 				86377C62E848559EB015C968 /* Syncers */,
 				1AD6768A622340C75953B258 /* Support */,
+				C576D00D8A957965E32C7C76 /* Validators */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -538,6 +559,7 @@
 				BF4AAF6C9E073FB1B587345F /* Generators */,
 				D3300490E8D5D25FE260401E /* Providers */,
 				94B827383F01837B8AFE3B25 /* Syncers */,
+				57FCAA725E695B6ADD3B234E /* Validators */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -958,7 +980,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.1;
+				MARKETING_VERSION = 4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -992,7 +1014,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.1;
+				MARKETING_VERSION = 4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

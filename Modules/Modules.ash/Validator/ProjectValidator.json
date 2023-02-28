@@ -1,0 +1,28 @@
+{
+  "localDependencies" : [
+    {
+      "name" : {
+        "family" : "Entity",
+        "given" : "PhoenixDocument"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Implementation"
+      ]
+    }
+  ],
+  "modules" : {
+    "Contract" : "undefined",
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Validator",
+    "given" : "Project"
+  },
+  "resources" : [
+
+  ]
+}

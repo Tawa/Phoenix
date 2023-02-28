@@ -1,0 +1,28 @@
+{
+  "localDependencies" : [
+    {
+      "name" : {
+        "family" : "Validator",
+        "given" : "Project"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
+    }
+  ],
+  "macOSVersion" : "v12",
+  "modules" : {
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Feature",
+    "given" : "Validation"
+  },
+  "resources" : [
+
+  ]
+}
