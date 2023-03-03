@@ -167,6 +167,7 @@ struct ContentView: View {
             .padding(.horizontal)
             ComponentsList(
                 sections: viewModel.componentsListSections(document: document),
+                footerText: viewModel.numberOfComponentsAndPackagesText(document: document),
                 onSelect: viewModel.select(componentName:),
                 onSelectSection: viewModel.select(familyName:)
             )

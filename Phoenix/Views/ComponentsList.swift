@@ -27,6 +27,7 @@ struct ComponentsListSection: Hashable, Identifiable {
 
 struct ComponentsList: View {
     let sections: [ComponentsListSection]
+    let footerText: String
     let onSelect: (Name) -> Void
     let onSelectSection: (String) -> Void
     
@@ -63,20 +64,12 @@ struct ComponentsList: View {
                 }
                 Divider()
             }
-            Text(numberOfComponentsString)
+            Text(footerText)
+                .lineLimit(nil)
                 .foregroundColor(.gray)
         }
         .frame(minHeight: 200, maxHeight: .infinity)
         .listStyle(SidebarListStyle())
-    }
-    
-    private var numberOfComponentsString: String {
-        let totalRows = sections.flatMap(\.rows).count
-        if totalRows == 1 {
-            return "1 component"
-        } else {
-            return "\(totalRows) components"
-        }
     }
 }
 
@@ -95,6 +88,7 @@ struct ComponentsList_Previews: PreviewProvider {
                     ]
                 ),
             ],
+            footerText: "3 components",
             onSelect: { _ in },
             onSelectSection: { _ in }
         )

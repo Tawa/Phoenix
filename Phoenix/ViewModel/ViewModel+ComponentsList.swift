@@ -1,6 +1,34 @@
 import PhoenixDocument
 
 extension ViewModel {
+    
+    func numberOfComponentsAndPackagesText(document: PhoenixDocument) -> String {
+        var text: String = ""
+        
+        let components: [Component] = document.components.values.map { $0 }
+        
+        let totalComponents = components.count
+        if totalComponents == 1 {
+            text += "1 component"
+        } else {
+            text += "\(totalComponents) components"
+        }
+        
+        let totalPackages = components.reduce(0, { $0 + $1.modules.count })
+        
+        if totalPackages != totalComponents {
+            text += "\n("
+            if totalPackages == 1 {
+                text += "1 swift package"
+            } else {
+                text += "\(totalPackages) swift packages"
+            }
+            text += ")"
+        }
+        
+        return text
+    }
+    
     func componentsListSections(document: PhoenixDocument) -> [ComponentsListSection] {
         componentsListSections(
             document: document,
