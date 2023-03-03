@@ -71,8 +71,16 @@ public enum Dependency: Codable, Hashable, Identifiable, Comparable {
         switch (lhs, rhs) {
         case (.module(let lhsPath, _) , .module(let rhsPath, _)):
             return lhsPath < rhsPath
-        case (.external(let lhsUrl, _, _), .external(let rhsUrl, _, _)):
-            return lhsUrl < rhsUrl
+        case (let .external(lhsUrl, lhsName, lhsDescription), let .external(rhsUrl, rhsName, rhsDescription)):
+            if lhsUrl == rhsUrl {
+                if lhsName == rhsName {
+                    return lhsDescription.title < rhsDescription.title
+                } else {
+                    return lhsName < rhsName
+                }
+            } else {
+                return lhsUrl < rhsUrl
+            }
         case (.module, .external):
             return true
         case (.external, .module):
