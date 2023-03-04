@@ -2,6 +2,7 @@ import Foundation
 import PhoenixDocument
 
 public enum ProjectValidatorError: Error {
+    case accessIsNotGranted
     case missingFiles
     case unsavedChanges
 }

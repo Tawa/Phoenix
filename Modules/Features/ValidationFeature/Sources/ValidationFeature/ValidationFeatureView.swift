@@ -80,6 +80,8 @@ class ValidationFeatureViewModel: ObservableObject {
                     modulesFolderURL: modulesFolderURL
                 )
                 await update(state: .valid)
+            } catch ProjectValidatorError.accessIsNotGranted {
+                await update(state: .error("Access to modules folder is not granted"))
             } catch ProjectValidatorError.missingFiles {
                 await update(state: .error("Could not read local file"))
             } catch ProjectValidatorError.unsavedChanges {
@@ -147,7 +149,7 @@ public struct ValidationFeatureView: View {
                     .controlSize(.small)
                     .help("Validating \"Package.swift\" files")
             case let .error(text):
-                Image(systemName: "exclamationmark.circle")
+                Image(systemName: "power.circle")
                     .foregroundColor(.red)
                     .help("Error: \(text)")
             case let .warning(text):

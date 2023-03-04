@@ -3,8 +3,19 @@ import PhoenixDocument
 import DocumentCoderContract
 import ProjectValidatorContract
 
+protocol FileAccessValidatorProtocol {
+    func hasAccess(to url: URL) -> Bool
+}
+
+struct FileAccessValidator: FileAccessValidatorProtocol {
+    func hasAccess(to url: URL) -> Bool {
+        FileManager.default.isDeletableFile(atPath: url.path)
+    }
+}
+
 public struct ProjectValidator: ProjectValidatorProtocol {
     let decoder: PhoenixDocumentFileWrappersDecoderProtocol
+    let fileAccessValidator: FileAccessValidatorProtocol = FileAccessValidator()
     let packagesValidator: PackagesValidatorProtocol
     
     public init(
@@ -20,6 +31,8 @@ public struct ProjectValidator: ProjectValidatorProtocol {
         fileURL: URL,
         modulesFolderURL: URL
     ) async throws {
+        guard fileAccessValidator.hasAccess(to: fileURL)
+        else { throw ProjectValidatorError.accessIsNotGranted }
         guard let fileWrappers = (try FileWrapper(url: fileURL)).fileWrappers
         else { throw ProjectValidatorError.missingFiles }
         
