@@ -6,30 +6,19 @@ import ProjectGeneratorContract
 import SwiftPackage
 
 public struct ProjectGenerator: ProjectGeneratorProtocol {
-    let componentPackagesProvider: ComponentPackagesProviderProtocol
+    let documentPackagesProvider: DocumentPackagesProviderProtocol
     let packageGenerator: PackageGeneratorProtocol
     
     public init(
-        componentPackagesProvider: ComponentPackagesProviderProtocol,
+        documentPackagesProvider: DocumentPackagesProviderProtocol,
         packageGenerator: PackageGeneratorProtocol
     ) {
-        self.componentPackagesProvider = componentPackagesProvider
+        self.documentPackagesProvider = documentPackagesProvider
         self.packageGenerator = packageGenerator
     }
     
     public func generate(document: PhoenixDocument, folderURL: URL) throws {
-        let allFamilies: [Family] = document.families.map { $0.family }
-        let packagesWithPath: [PackageWithPath] = document.families.flatMap { componentFamily -> [PackageWithPath] in
-            let family = componentFamily.family
-            return componentFamily.components.flatMap { (component: Component) -> [PackageWithPath] in
-                componentPackagesProvider.packages(for: component,
-                                                   of: family,
-                                                   allFamilies: allFamilies,
-                                                   projectConfiguration: document.projectConfiguration,
-                                                   remoteComponents: document.remoteComponents)
-            }
-        }
-        
+        let packagesWithPath: [PackageWithPath] = documentPackagesProvider.packages(for: document)
         for packageWithPath in packagesWithPath {
             let url = folderURL.appendingPathComponent(packageWithPath.path, isDirectory: true)
             try packageGenerator.generate(package: packageWithPath.package, at: url)

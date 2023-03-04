@@ -86,6 +86,12 @@ extension Container {
         ) as ComponentPackagesProviderProtocol
     }
     
+    static let documentPackagesProvider = Factory {
+        DocumentPackagesProvider(
+            componentPackagesProvider: componentPackagesProvider()
+        ) as DocumentPackagesProviderProtocol
+    }
+    
     static let pbxProjSyncer = Factory {
         PBXProjectSyncer(
             packageFolderNameProvider: Container.packageFolderNameProvider(),
@@ -102,7 +108,7 @@ extension Container {
     
     static let projectGenerator = Factory {
         ProjectGenerator(
-            componentPackagesProvider: Container.componentPackagesProvider(),
+            documentPackagesProvider: documentPackagesProvider(),
             packageGenerator: Container.packageGenerator()
         ) as ProjectGeneratorProtocol
     }
