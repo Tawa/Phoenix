@@ -410,6 +410,7 @@ struct ContentView: View {
     
     @ViewBuilder private func toolbarTrailingItems() -> some View {
         ValidationFeatureView(
+            document: document,
             fileURL: fileURL,
             dependencies: ValidationFeatureDependencies(
                 dataStore: Container.generateFeatureDataStore(),

@@ -1,4 +1,5 @@
 import Foundation
+import PhoenixDocument
 import ProjectValidatorContract
 
 enum ProjectValidatorError: Error {
@@ -10,7 +11,12 @@ public struct ProjectValidator: ProjectValidatorProtocol {
         
     }
     
-    public func validate(fileURL: URL, modulesFolderURL: URL) async throws {
-//        throw ProjectValidatorError.missingImplementation
+    public func validate(
+        document: PhoenixDocument,
+        fileURL: URL,
+        modulesFolderURL: URL
+    ) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+        //        throw ProjectValidatorError.missingImplementation
     }
 }

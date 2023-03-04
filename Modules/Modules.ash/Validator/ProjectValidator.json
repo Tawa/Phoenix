@@ -8,6 +8,11 @@
       "targetTypes" : [
         {
           "isTests" : false,
+          "name" : "Contract"
+        },
+        "Implementation",
+        {
+          "isTests" : false,
           "name" : "Implementation"
         },
         "Implementation"

@@ -12,9 +12,15 @@ let package = Package(
             name: "ProjectValidatorContract",
             targets: ["ProjectValidatorContract"])
     ],
+    dependencies: [
+        .package(path: "../../../Entities/PhoenixDocument")
+    ],
     targets: [
         .target(
-            name: "ProjectValidatorContract"
+            name: "ProjectValidatorContract",
+            dependencies: [
+                "PhoenixDocument"
+            ]
         )
     ]
 )

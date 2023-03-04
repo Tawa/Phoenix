@@ -1,4 +1,5 @@
 import GenerateFeatureDataStoreContract
+import PhoenixDocument
 import ProjectValidatorContract
 import SwiftUI
 
@@ -9,6 +10,7 @@ enum ValidationState {
 }
 
 class ValidationFeatureViewModel: ObservableObject {
+    let document: PhoenixDocument
     let fileURL: URL?
     let dataStore: GenerateFeatureDataStoreProtocol
     let projectValidator: ProjectValidatorProtocol
@@ -17,10 +19,12 @@ class ValidationFeatureViewModel: ObservableObject {
     @Published var state: ValidationState = .loading
     
     init(
+        document: PhoenixDocument,
         fileURL: URL?,
         dataStore: GenerateFeatureDataStoreProtocol,
         projectValidator: ProjectValidatorProtocol
     ) {
+        self.document = document
         self.fileURL = fileURL
         self.dataStore = dataStore
         self.projectValidator = projectValidator
@@ -51,9 +55,12 @@ class ValidationFeatureViewModel: ObservableObject {
         }
         Task {
             await update(state: .loading)
-            try await Task.sleep(nanoseconds: 500_000_000)
             do {
-                try await validateProject(fileURL: fileURL, modulesFolderURL: modulesFolderURL)
+                try await validateProject(
+                    document: document,
+                    fileURL: fileURL,
+                    modulesFolderURL: modulesFolderURL
+                )
                 await update(state: .valid)
             } catch {
                 await update(state: .error("\(error)"))
@@ -61,8 +68,13 @@ class ValidationFeatureViewModel: ObservableObject {
         }
     }
     
-    private func validateProject(fileURL: URL, modulesFolderURL: URL) async throws {
+    private func validateProject(
+        document: PhoenixDocument,
+        fileURL: URL,
+        modulesFolderURL: URL
+    ) async throws {
         try await projectValidator.validate(
+            document: document,
             fileURL: fileURL,
             modulesFolderURL: modulesFolderURL
         )
@@ -84,11 +96,13 @@ public struct ValidationFeatureView: View {
     @ObservedObject var viewModel: ValidationFeatureViewModel
     
     public init(
+        document: PhoenixDocument,
         fileURL: URL?,
         dependencies: ValidationFeatureDependencies
     ) {
         _viewModel = .init(
             initialValue: ValidationFeatureViewModel(
+                document: document,
                 fileURL: fileURL,
                 dataStore: dependencies.dataStore,
                 projectValidator: dependencies.projectValidator

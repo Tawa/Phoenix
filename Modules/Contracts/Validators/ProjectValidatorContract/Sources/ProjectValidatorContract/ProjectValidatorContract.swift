@@ -1,5 +1,10 @@
 import Foundation
+import PhoenixDocument
 
 public protocol ProjectValidatorProtocol {
-    func validate(fileURL: URL, modulesFolderURL: URL) async throws
+    func validate(
+        document: PhoenixDocument,
+        fileURL: URL,
+        modulesFolderURL: URL
+    ) async throws
 }
