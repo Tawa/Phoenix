@@ -3,8 +3,14 @@ import PhoenixDocument
 import ProjectValidatorContract
 import SwiftUI
 
+struct ValidationPopover: Identifiable {
+    let id: String = UUID().uuidString
+    let text: String
+}
+
 enum ValidationState {
     case loading
+    case warning(String)
     case error(String)
     case valid
 }
@@ -15,8 +21,20 @@ class ValidationFeatureViewModel: ObservableObject {
     let dataStore: GenerateFeatureDataStoreProtocol
     let projectValidator: ProjectValidatorProtocol
    
-    @MainActor
     @Published var state: ValidationState = .loading
+    @Published var presentedPopover: ValidationPopover?
+    private var popoverText: String? {
+        switch state {
+        case .loading:
+            return ""
+        case .warning(let string):
+            return string
+        case .error(let string):
+            return string
+        case .valid:
+            return ""
+        }
+    }
     
     init(
         document: PhoenixDocument,
@@ -62,6 +80,10 @@ class ValidationFeatureViewModel: ObservableObject {
                     modulesFolderURL: modulesFolderURL
                 )
                 await update(state: .valid)
+            } catch ProjectValidatorError.missingFiles {
+                await update(state: .error("Could not read local file"))
+            } catch ProjectValidatorError.unsavedChanges {
+                await update(state: .error("Unsaved Changes"))
             } catch {
                 await update(state: .error("\(error)"))
             }
@@ -78,6 +100,11 @@ class ValidationFeatureViewModel: ObservableObject {
             fileURL: fileURL,
             modulesFolderURL: modulesFolderURL
         )
+    }
+    
+    func onTap() {
+        guard let popoverText else { return }
+        self.presentedPopover = .init(text: popoverText)
     }
 }
 
@@ -118,13 +145,23 @@ public struct ValidationFeatureView: View {
                     .controlSize(.small)
                     .help("Validating \"Package.swift\" files")
             case let .error(text):
-                Text(text)
-                    .help("\"Package.swift\" file validation error: \(text)")
+                Image(systemName: "exclamationmark.circle")
+                    .foregroundColor(.red)
+                    .help("Error: \(text)")
+            case let .warning(text):
+                Image(systemName: "exclamationmark.circle")
+                    .foregroundColor(.orange)
+                    .help("Warning: \(text)")
             case .valid:
                 Image(systemName: "checkmark.circle")
                     .foregroundColor(.green)
                     .help("\"Package.swift\" files are valid")
             }
+        }
+        .onTapGesture(perform: viewModel.onTap)
+        .popover(item: $viewModel.presentedPopover) { popover in
+            Text(popover.text)
+                .padding()
         }
     }
 }

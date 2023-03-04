@@ -1,6 +1,11 @@
 import Foundation
 import PhoenixDocument
 
+public enum ProjectValidatorError: Error {
+    case missingFiles
+    case unsavedChanges
+}
+
 public protocol ProjectValidatorProtocol {
     func validate(
         document: PhoenixDocument,
