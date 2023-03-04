@@ -1,14 +1,18 @@
 import Foundation
 import PhoenixDocument
+import DocumentCoderContract
 import ProjectValidatorContract
 
 enum ProjectValidatorError: Error {
-    case missingImplementation
+    case missingFiles
+    case unsavedChanges
 }
 
 public struct ProjectValidator: ProjectValidatorProtocol {
-    public init() {
-        
+    let decoder: PhoenixDocumentFileWrappersDecoderProtocol
+    
+    public init(decoder: PhoenixDocumentFileWrappersDecoderProtocol) {
+        self.decoder = decoder
     }
     
     public func validate(
@@ -17,6 +21,12 @@ public struct ProjectValidator: ProjectValidatorProtocol {
         modulesFolderURL: URL
     ) async throws {
         try await Task.sleep(nanoseconds: 500_000_000)
-        //        throw ProjectValidatorError.missingImplementation
+        guard let fileWrappers = (try FileWrapper(url: fileURL)).fileWrappers
+        else { throw ProjectValidatorError.missingFiles }
+        
+        let localDocument = try decoder.phoenixDocument(from: fileWrappers)
+        
+        guard localDocument.hashValue == document.hashValue
+        else { throw ProjectValidatorError.unsavedChanges }
     }
 }

@@ -29,4 +29,11 @@ public struct RemoteDependency: Codable, Hashable, Identifiable, Comparable {
     public static func < (lhs: RemoteDependency, rhs: RemoteDependency) -> Bool {
         lhs.id < rhs.id
     }
+        
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(url)
+        hasher.combine(name)
+        hasher.combine(version)
+        hasher.combine(targetTypes)
+    }
 }

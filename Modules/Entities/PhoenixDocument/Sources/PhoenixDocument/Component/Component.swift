@@ -129,4 +129,19 @@ public struct Component: Codable, Hashable, Identifiable {
     public mutating func clearRemoteDependencies() {
         remoteDependencies.removeAll(keepingCapacity: false)
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(defaultLocalization)
+        hasher.combine(iOSVersion)
+        hasher.combine(macOSVersion)
+        hasher.combine(tvOSVersion)
+        hasher.combine(watchOSVersion)
+        hasher.combine(modules)
+        hasher.combine(localDependencies)
+        hasher.combine(remoteDependencies)
+        hasher.combine(remoteComponentDependencies)
+        hasher.combine(resources)
+        hasher.combine(defaultDependencies)
+    }
 }

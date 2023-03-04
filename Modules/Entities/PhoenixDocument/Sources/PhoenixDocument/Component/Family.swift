@@ -51,4 +51,12 @@ public struct Family: Codable, Hashable, Identifiable {
             try container.encode(excludedFamilies, forKey: .excludedFamilies)
         }
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(ignoreSuffix)
+        hasher.combine(folder)
+        hasher.combine(defaultDependencies)
+        hasher.combine(excludedFamilies)
+    }
 }

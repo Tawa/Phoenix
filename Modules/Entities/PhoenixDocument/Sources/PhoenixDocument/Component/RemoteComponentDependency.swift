@@ -16,4 +16,9 @@ public struct RemoteComponentDependency: Codable, Hashable, Identifiable {
         try container.encode(url, forKey: .url)
         try container.encodeSorted(dictionary: targetTypes, forKey: .targetTypes)
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(url)
+        hasher.combine(targetTypes)
+    }
 }

@@ -122,6 +122,8 @@ extension Container {
     }
     
     static let projectValidator = Factory(scope: .singleton) {
-        ProjectValidator() as ProjectValidatorProtocol
+        ProjectValidator(
+            decoder: phoenixDocumentFileWrappersDecoder()
+        ) as ProjectValidatorProtocol
     }
 }

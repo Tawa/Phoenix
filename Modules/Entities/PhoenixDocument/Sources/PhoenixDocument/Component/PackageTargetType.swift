@@ -13,4 +13,9 @@ public struct PackageTargetType: Codable, Hashable, Identifiable, Comparable {
         else { return !lhs.isTests }
         return lhs.name.lowercased() < rhs.name.lowercased()
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(isTests)
+    }
 }

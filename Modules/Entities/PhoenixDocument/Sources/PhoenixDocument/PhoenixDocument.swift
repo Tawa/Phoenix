@@ -27,6 +27,7 @@ public struct PhoenixDocument: Hashable {
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(families.hashValue)
+        hasher.combine(remoteComponents.hashValue)
         hasher.combine(projectConfiguration.hashValue)
     }
     

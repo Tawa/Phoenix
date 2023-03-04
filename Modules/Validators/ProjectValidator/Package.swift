@@ -13,6 +13,7 @@ let package = Package(
             targets: ["ProjectValidator"])
     ],
     dependencies: [
+        .package(path: "../../Contracts/Coders/DocumentCoderContract"),
         .package(path: "../../Contracts/Validators/ProjectValidatorContract"),
         .package(path: "../../Entities/PhoenixDocument")
     ],
@@ -20,6 +21,7 @@ let package = Package(
         .target(
             name: "ProjectValidator",
             dependencies: [
+                "DocumentCoderContract",
                 "ProjectValidatorContract",
                 "PhoenixDocument"
             ]

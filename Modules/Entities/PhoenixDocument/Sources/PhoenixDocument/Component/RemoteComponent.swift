@@ -21,4 +21,10 @@ public struct RemoteComponent: Codable, Hashable, Identifiable {
             self.version = version
             self.names = names
         }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(url)
+        hasher.combine(version)
+        hasher.combine(names)
+    }
 }
