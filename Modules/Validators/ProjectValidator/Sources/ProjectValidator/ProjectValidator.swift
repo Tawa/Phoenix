@@ -5,9 +5,14 @@ import ProjectValidatorContract
 
 public struct ProjectValidator: ProjectValidatorProtocol {
     let decoder: PhoenixDocumentFileWrappersDecoderProtocol
+    let packagesValidator: PackagesValidatorProtocol
     
-    public init(decoder: PhoenixDocumentFileWrappersDecoderProtocol) {
+    public init(
+        decoder: PhoenixDocumentFileWrappersDecoderProtocol,
+        packagesValidator: PackagesValidatorProtocol
+    ) {
         self.decoder = decoder
+        self.packagesValidator = packagesValidator
     }
     
     public func validate(
@@ -22,5 +27,10 @@ public struct ProjectValidator: ProjectValidatorProtocol {
         
         guard localDocument.hashValue == document.hashValue
         else { throw ProjectValidatorError.unsavedChanges }
+        
+        try await packagesValidator.validate(
+            document: document,
+            modulesFolderURL: modulesFolderURL
+        )
     }
 }

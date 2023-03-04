@@ -15,6 +15,19 @@
     },
     {
       "name" : {
+        "family" : "Provider",
+        "given" : "PackageString"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
+    },
+    {
+      "name" : {
         "family" : "Entity",
         "given" : "PhoenixDocument"
       },
@@ -29,6 +42,19 @@
           "name" : "Implementation"
         },
         "Implementation"
+      ]
+    },
+    {
+      "name" : {
+        "family" : "Generator",
+        "given" : "Project"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
       ]
     }
   ],

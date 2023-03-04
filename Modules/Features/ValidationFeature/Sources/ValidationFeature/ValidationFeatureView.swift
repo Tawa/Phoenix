@@ -84,6 +84,8 @@ class ValidationFeatureViewModel: ObservableObject {
                 await update(state: .error("Could not read local file"))
             } catch ProjectValidatorError.unsavedChanges {
                 await update(state: .error("Unsaved Changes"))
+            } catch PackagesValidatorError.projectOutOfSync(let warningText) {
+                await update(state: .warning(warningText))
             } catch {
                 await update(state: .error("\(error)"))
             }
