@@ -13,4 +13,12 @@ public struct PackageConfiguration: Codable, Hashable, Identifiable {
         self.internalDependency = internalDependency
         self.hasTests = hasTests
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(containerFolderName)
+        hasher.combine(appendPackageName)
+        hasher.combine(internalDependency)
+        hasher.combine(hasTests)
+    }
 }

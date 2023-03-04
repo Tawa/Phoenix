@@ -1,4 +1,11 @@
 {
+  "defaultDependencies" : [
+    {
+      "isTests" : false,
+      "name" : "Implementation"
+    },
+    "Contract"
+  ],
   "defaultOrganizationIdentifier" : "com.hellofresh.demoapp",
   "packageConfigurations" : [
     {

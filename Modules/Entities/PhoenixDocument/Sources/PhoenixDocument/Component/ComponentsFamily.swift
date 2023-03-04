@@ -7,4 +7,9 @@ public struct ComponentsFamily: Codable, Hashable, Identifiable {
         self.family = family
         self.components = components
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(family)
+        hasher.combine(components)
+    }
 }

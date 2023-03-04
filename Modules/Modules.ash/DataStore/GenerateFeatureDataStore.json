@@ -1,0 +1,14 @@
+{
+  "macOSVersion" : "v12",
+  "modules" : {
+    "Contract" : "undefined",
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "DataStore",
+    "given" : "GenerateFeature"
+  },
+  "resources" : [
+
+  ]
+}

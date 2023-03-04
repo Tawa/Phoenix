@@ -29,4 +29,10 @@ public struct ComponentResources: Codable, Hashable, Identifiable, Comparable {
     public static func <(lhs: ComponentResources, rhs: ComponentResources) -> Bool {
         lhs.folderName < rhs.folderName
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(folderName)
+        hasher.combine(type)
+        hasher.combine(targets)
+    }
 }

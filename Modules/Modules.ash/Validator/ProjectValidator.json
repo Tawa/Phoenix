@@ -1,0 +1,73 @@
+{
+  "localDependencies" : [
+    {
+      "name" : {
+        "family" : "Coder",
+        "given" : "Document"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
+    },
+    {
+      "name" : {
+        "family" : "Provider",
+        "given" : "PackageString"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
+    },
+    {
+      "name" : {
+        "family" : "Entity",
+        "given" : "PhoenixDocument"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Contract"
+        },
+        "Implementation",
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Implementation"
+      ]
+    },
+    {
+      "name" : {
+        "family" : "Generator",
+        "given" : "Project"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
+    }
+  ],
+  "macOSVersion" : "v12",
+  "modules" : {
+    "Contract" : "undefined",
+    "Implementation" : "undefined"
+  },
+  "name" : {
+    "family" : "Validator",
+    "given" : "Project"
+  },
+  "resources" : [
+
+  ]
+}

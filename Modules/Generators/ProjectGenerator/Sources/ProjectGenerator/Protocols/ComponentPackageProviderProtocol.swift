@@ -1,4 +1,5 @@
 import PhoenixDocument
+import ProjectGeneratorContract
 
 public protocol ComponentPackageProviderProtocol {
     func package(for component: Component,

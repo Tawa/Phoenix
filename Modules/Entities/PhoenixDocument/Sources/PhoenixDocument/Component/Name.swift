@@ -16,4 +16,9 @@ public struct Name: Codable, Hashable, Identifiable, Comparable {
     }
     
     public static var empty: Name { .init(given: "", family: "") }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(given)
+        hasher.combine(family)
+    }
 }

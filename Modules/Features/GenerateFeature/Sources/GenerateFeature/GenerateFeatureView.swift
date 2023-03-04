@@ -1,14 +1,20 @@
+import GenerateFeatureDataStoreContract
 import PBXProjectSyncerContract
 import PhoenixDocument
 import ProjectGeneratorContract
 import SwiftUI
 
 public struct GenerateFeatureDependencies {
+    let dataStore: GenerateFeatureDataStoreProtocol
     let projectGenerator: ProjectGeneratorProtocol
     let pbxProjectSyncer: PBXProjectSyncerProtocol
     
-    public init(projectGenerator: ProjectGeneratorProtocol,
-                pbxProjectSyncer: PBXProjectSyncerProtocol) {
+    public init(
+        dataStore: GenerateFeatureDataStoreProtocol,
+        projectGenerator: ProjectGeneratorProtocol,
+        pbxProjectSyncer: PBXProjectSyncerProtocol
+    ) {
+        self.dataStore = dataStore
         self.projectGenerator = projectGenerator
         self.pbxProjectSyncer = pbxProjectSyncer
     }
@@ -75,9 +81,9 @@ class GenerateFeatureViewModel: ObservableObject {
         
         ashFileURLGetter = AshFileURLGetter(fileURL: fileURL)
         xcodeProjURLGetter = XcodeProjURLGetter(fileURL: fileURL)
-        dataStore = GenerateFeatureDataStore(dictionaryCache: UserDefaults.standard)
         fileAccessValidator = FileAccessValidator()
         
+        dataStore = dependencies.dataStore
         projectGenerator = dependencies.projectGenerator
         pbxProjectSyncer = dependencies.pbxProjectSyncer
 

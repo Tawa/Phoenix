@@ -1,5 +1,6 @@
 import ComponentDetailsProviderContract
 import PhoenixDocument
+import ProjectGeneratorContract
 import SwiftPackage
 
 extension Component {

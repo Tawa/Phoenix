@@ -13,6 +13,7 @@ let package = Package(
             targets: ["GenerateFeature"])
     ],
     dependencies: [
+        .package(path: "../../Contracts/DataStores/GenerateFeatureDataStoreContract"),
         .package(path: "../../Contracts/Generators/ProjectGeneratorContract"),
         .package(path: "../../Contracts/Syncers/PBXProjectSyncerContract"),
         .package(path: "../../Entities/PhoenixDocument")
@@ -21,6 +22,7 @@ let package = Package(
         .target(
             name: "GenerateFeature",
             dependencies: [
+                "GenerateFeatureDataStoreContract",
                 "ProjectGeneratorContract",
                 "PBXProjectSyncerContract",
                 "PhoenixDocument"

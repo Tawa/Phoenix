@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import AppVersionProviderContract
 import DemoAppFeature
 import Factory
@@ -5,7 +6,7 @@ import PhoenixDocument
 import GenerateFeature
 import SwiftUI
 import SwiftPackage
-import AccessibilityIdentifiers
+import ValidationFeature
 
 enum ListSelection: String, Hashable, CaseIterable, Identifiable {
     static var allCases: [ListSelection] { [.components, .remote] }
@@ -408,10 +409,19 @@ struct ContentView: View {
     }
     
     @ViewBuilder private func toolbarTrailingItems() -> some View {
+        ValidationFeatureView(
+            document: document,
+            fileURL: fileURL,
+            dependencies: ValidationFeatureDependencies(
+                dataStore: Container.generateFeatureDataStore(),
+                projectValidator: Container.projectValidator()
+            )
+        )
         GenerateFeatureView(
             fileURL: fileURL,
             getDocument: document,
             dependencies: GenerateFeatureDependencies(
+                dataStore: Container.generateFeatureDataStore(),
                 projectGenerator: Container.projectGenerator(),
                 pbxProjectSyncer: Container.pbxProjSyncer()
             )

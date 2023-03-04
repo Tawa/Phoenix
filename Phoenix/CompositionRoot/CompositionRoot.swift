@@ -7,6 +7,8 @@ import DocumentCoder
 import DocumentCoderContract
 import Factory
 import Foundation
+import GenerateFeatureDataStore
+import GenerateFeatureDataStoreContract
 import PackageGenerator
 import PackageGeneratorContract
 import PackageStringProvider
@@ -15,6 +17,8 @@ import PBXProjectSyncer
 import PBXProjectSyncerContract
 import ProjectGenerator
 import ProjectGeneratorContract
+import ProjectValidator
+import ProjectValidatorContract
 import RelativeURLProvider
 import RelativeURLProviderContract
 import SwiftPackage
@@ -26,14 +30,14 @@ extension Container {
 
     static let phoenixDocumentFileWrapperEncoder = Factory {
         PhoenixDocumentFileWrapperEncoder(
-            currentAppVersionStringProvider: Container.currentAppVersionStringProvider()
+            currentAppVersionStringProvider: currentAppVersionStringProvider()
         ) as PhoenixDocumentFileWrapperEncoderProtocol
     }
     
     static let packageGenerator = Factory {
         PackageGenerator(
             fileManager: .default,
-            packageStringProvider: Container.packageStringProvider()
+            packageStringProvider: packageStringProvider()
         ) as PackageGeneratorProtocol
     }
     
@@ -57,38 +61,44 @@ extension Container {
     
     static let packageFolderNameProvider = Factory {
         PackageFolderNameProvider(
-            defaultFolderNameProvider: Container.familyFolderNameProvider()
+            defaultFolderNameProvider: familyFolderNameProvider()
         ) as PackageFolderNameProviderProtocol
     }
     
     static let packagePathProvider = Factory {
         PackagePathProvider(
-            packageFolderNameProvider: Container.packageFolderNameProvider(),
-            packageNameProvider: Container.packageNameProvider()
+            packageFolderNameProvider: packageFolderNameProvider(),
+            packageNameProvider: packageNameProvider()
         ) as PackagePathProviderProtocol
     }
     
     static let componentPackageProvider = Factory {
         ComponentPackageProvider(
-            packageFolderNameProvider: Container.packageFolderNameProvider(),
-            packageNameProvider: Container.packageNameProvider(),
-            packagePathProvider: Container.packagePathProvider()
+            packageFolderNameProvider: packageFolderNameProvider(),
+            packageNameProvider: packageNameProvider(),
+            packagePathProvider: packagePathProvider()
         ) as ComponentPackageProviderProtocol
     }
     
     static let componentPackagesProvider = Factory {
         ComponentPackagesProvider(
-            componentPackageProvider: Container.componentPackageProvider()
+            componentPackageProvider: componentPackageProvider()
         ) as ComponentPackagesProviderProtocol
+    }
+    
+    static let documentPackagesProvider = Factory {
+        DocumentPackagesProvider(
+            componentPackagesProvider: componentPackagesProvider()
+        ) as DocumentPackagesProviderProtocol
     }
     
     static let pbxProjSyncer = Factory {
         PBXProjectSyncer(
-            packageFolderNameProvider: Container.packageFolderNameProvider(),
-            packageNameProvider: Container.packageNameProvider(),
-            packagePathProvider: Container.packagePathProvider(),
-            projectWriter: Container.pbxProjectWriter(),
-            relativeURLProvider: Container.relativeURLProvider()
+            packageFolderNameProvider: packageFolderNameProvider(),
+            packageNameProvider: packageNameProvider(),
+            packagePathProvider: packagePathProvider(),
+            projectWriter: pbxProjectWriter(),
+            relativeURLProvider: relativeURLProvider()
         ) as PBXProjectSyncerProtocol
     }
     
@@ -98,8 +108,8 @@ extension Container {
     
     static let projectGenerator = Factory {
         ProjectGenerator(
-            componentPackagesProvider: Container.componentPackagesProvider(),
-            packageGenerator: Container.packageGenerator()
+            documentPackagesProvider: documentPackagesProvider(),
+            packageGenerator: packageGenerator()
         ) as ProjectGeneratorProtocol
     }
     
@@ -109,5 +119,32 @@ extension Container {
     
     static let relativeURLProvider = Factory {
         RelativeURLProvider() as RelativeURLProviderProtocol
+    }
+    
+    static let generateFeatureDataStore = Factory(scope: .singleton) {
+        GenerateFeatureDataStore(
+            dictionaryCache: UserDefaults.standard
+        ) as GenerateFeatureDataStoreProtocol
+    }
+    
+    static let projectValidator = Factory(scope: .singleton) {
+        ProjectValidator(
+            decoder: phoenixDocumentFileWrappersDecoder(),
+            packagesValidator: packagesValidator()
+        ) as ProjectValidatorProtocol
+    }
+    
+    static let packageValidator = Factory(scope: .singleton) {
+        PackageValidator(
+            fileManager: .default,
+            packageStringProvider: packageStringProvider()
+        ) as PackageValidatorProtocol
+    }
+    
+    static let packagesValidator = Factory(scope: .singleton) {
+        PackagesValidator(
+            documentPackagesProvider: documentPackagesProvider(),
+            packageValidator: packageValidator()
+        ) as PackagesValidatorProtocol
     }
 }
