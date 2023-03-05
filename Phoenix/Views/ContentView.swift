@@ -420,6 +420,7 @@ struct ContentView: View {
         GenerateFeatureView(
             fileURL: fileURL,
             getDocument: document,
+            onGenerate: viewModel.onGenerateCompletion,
             dependencies: GenerateFeatureDependencies(
                 dataStore: Container.generateFeatureDataStore(),
                 projectGenerator: Container.projectGenerator(),

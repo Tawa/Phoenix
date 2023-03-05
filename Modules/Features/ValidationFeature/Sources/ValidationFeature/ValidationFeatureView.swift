@@ -23,16 +23,16 @@ final class ValidationFeatureViewModel: ObservableObject {
    
     @Published var state: ValidationState = .loading
     @Published var presentedPopover: ValidationPopover?
-    private var popoverText: String? {
+    private var popoverText: String {
         switch state {
         case .loading:
-            return ""
+            return "Validating Project"
         case .warning(let string):
             return string
         case .error(let string):
             return string
         case .valid:
-            return ""
+            return "Packages and ash file are valid"
         }
     }
     
@@ -107,7 +107,6 @@ final class ValidationFeatureViewModel: ObservableObject {
     }
     
     func onTap() {
-        guard let popoverText else { return }
         self.presentedPopover = .init(text: popoverText)
     }
 }
