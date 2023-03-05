@@ -2,6 +2,7 @@ import AppVersionProvider
 import AppVersionProviderContract
 import Factory
 import Foundation
+import SwiftUI
 
 extension Container {
     static let currentAppVersionStringProvider = Factory(Container.shared) {
@@ -27,8 +28,19 @@ extension Container {
         ) as AppVersionUpdateProviderProtocol
     }
     
-    static let remoteAppVersionUpdateProvider = Factory(Container.shared) {
-        AppStoreVersionUpdateProvider() as AppVersionUpdateProviderProtocol
+    private static let remoteAppVersionUpdateProvider = Factory<AppVersionUpdateProviderProtocol>(Container.shared) {
+//        AppStoreVersionUpdateProvider() as AppVersionUpdateProviderProtocol
+        GithubVersionUpdateProvider() as AppVersionUpdateProviderProtocol
+    }
+    
+    static let updateButton = Factory(Container.shared) {
+        appStoreUpdateButton()
+    }
+    
+    private static let appStoreUpdateButton = Factory(Container.shared) {
+        Link(destination: URL(string: "https://apps.apple.com/us/app/phoenix-app/id1626793172")!) {
+            Text("Update")
+        }
     }
 }
 
