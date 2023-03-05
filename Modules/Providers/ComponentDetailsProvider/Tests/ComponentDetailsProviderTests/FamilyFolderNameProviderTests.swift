@@ -1,7 +1,7 @@
 @testable import ComponentDetailsProvider
 import XCTest
 
-class FamilyFolderNameProviderTests: XCTestCase {
+final class FamilyFolderNameProviderTests: XCTestCase {
 
     func testStrings() {
         let familyNameFolderProvider = FamilyFolderNameProvider()

@@ -2,7 +2,7 @@ import Foundation
 import PathKit
 import XcodeProj
 
-class PackageDescription {
+final class PackageDescription {
     var name: String
     var path: String
 

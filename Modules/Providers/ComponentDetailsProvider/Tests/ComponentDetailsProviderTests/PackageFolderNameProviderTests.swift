@@ -2,7 +2,7 @@
 import PhoenixDocument
 import XCTest
 
-class PackageFolderNameProviderTests: XCTestCase {
+final class PackageFolderNameProviderTests: XCTestCase {
 
     func testFamilyWithFolderName() {
         // Given

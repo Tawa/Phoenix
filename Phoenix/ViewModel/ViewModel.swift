@@ -46,7 +46,7 @@ enum ComponentSelection {
     }
 }
 
-class ViewModel: ObservableObject {
+final class ViewModel: ObservableObject {
     // MARK: - Selection
     private var selectionQueue: [ComponentSelection] = []
     private var selectionQueueIndex: Int = 0

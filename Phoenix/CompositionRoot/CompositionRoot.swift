@@ -132,19 +132,19 @@ extension Container {
             decoder: phoenixDocumentFileWrappersDecoder(),
             packagesValidator: packagesValidator()
         ) as ProjectValidatorProtocol
-    }.scope(.singleton)
+    }
     
     static let packageValidator = Factory(Container.shared) {
         PackageValidator(
             fileManager: .default,
             packageStringProvider: packageStringProvider()
         ) as PackageValidatorProtocol
-    }.scope(.singleton)
+    }
     
     static let packagesValidator = Factory(Container.shared) {
         PackagesValidator(
             documentPackagesProvider: documentPackagesProvider(),
             packageValidator: packageValidator()
         ) as PackagesValidatorProtocol
-    }.scope(.singleton)
+    }
 }

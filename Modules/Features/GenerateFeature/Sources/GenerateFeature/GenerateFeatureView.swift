@@ -20,7 +20,7 @@ public struct GenerateFeatureDependencies {
     }
 }
 
-class GenerateFeatureViewModel: ObservableObject {
+final class GenerateFeatureViewModel: ObservableObject {
     @Published var generateFeatureInput: GenerateFeatureInput? = nil
     @Published var alert: AlertSheetModel? = nil
     let fileURL: URL?

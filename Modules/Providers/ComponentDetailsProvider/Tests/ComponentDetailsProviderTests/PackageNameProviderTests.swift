@@ -2,7 +2,7 @@
 import PhoenixDocument
 import XCTest
 
-class PackageNameProviderTests: XCTestCase {
+final class PackageNameProviderTests: XCTestCase {
 
     let sut = PackageNameProvider()
 

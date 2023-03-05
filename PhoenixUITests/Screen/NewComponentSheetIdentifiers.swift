@@ -1,7 +1,7 @@
 import AccessibilityIdentifiers
 import XCTest
 
-class NewComponentSheet: Screen {
+final class NewComponentSheet: Screen {
     var givenNameTextField: XCUIElement {
         Screen.app.textFields[NewComponentSheetIdentifiers.givenNameTextField.identifier]
     }

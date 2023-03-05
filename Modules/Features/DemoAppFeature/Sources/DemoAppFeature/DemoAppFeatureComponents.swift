@@ -33,7 +33,7 @@ struct DemoAppDependenciesViewModel {
     var selections: Set<DemoAppDependencySelection>
 }
 
-class DemoAppFeatureViewModel: ObservableObject {
+final class DemoAppFeatureViewModel: ObservableObject {
     let title: String
     @Published var organizationIdentifier: String = ""
     @Published var isListLoading: Bool = false
@@ -66,7 +66,7 @@ struct DemoAppFeaturePresenter {
     }
 }
 
-class DemoAppFeatureInteractor {
+final class DemoAppFeatureInteractor {
     private let ashFileURL: URL
     private let component: Component
     private let demoAppGenerator: DemoAppGeneratorProtocol
