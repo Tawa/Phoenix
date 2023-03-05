@@ -15,7 +15,7 @@ enum ValidationState {
     case valid
 }
 
-class ValidationFeatureViewModel: ObservableObject {
+final class ValidationFeatureViewModel: ObservableObject {
     let document: PhoenixDocument
     let fileURL: URL?
     let dataStore: GenerateFeatureDataStoreProtocol

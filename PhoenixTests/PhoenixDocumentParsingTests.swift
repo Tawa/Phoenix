@@ -1,7 +1,7 @@
 @testable import Phoenix
 import XCTest
 
-class PhoenixDocumentParsingTests: XCTestCase {
+final class PhoenixDocumentParsingTests: XCTestCase {
 
     func testExample() throws {
     }

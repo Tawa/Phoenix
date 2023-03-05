@@ -4,18 +4,22 @@ import Factory
 import Foundation
 
 extension Container {
-    static let currentAppVersionStringProvider = Factory { Bundle.main as CurrentAppVersionStringProviderProtocol }
+    static let currentAppVersionStringProvider = Factory(Container.shared) {
+        Bundle.main as CurrentAppVersionStringProviderProtocol
+    }
     
-    static let appVersionStringParser = Factory { AppVersionStringParser() as AppVersionStringParserProtocol }
+    static let appVersionStringParser = Factory(Container.shared) {
+        AppVersionStringParser() as AppVersionStringParserProtocol
+    }
     
-    static let currentAppVersionProvider = Factory {
+    static let currentAppVersionProvider = Factory(Container.shared) {
         CurrentAppVersionProvider(
             appVersionStringProvider: Container.currentAppVersionStringProvider(),
             appVersionStringParser: Container.appVersionStringParser()
         ) as CurrentAppVersionProviderProtocol
     }
     
-    static let appVersionUpdateProvider = Factory {
+    static let appVersionUpdateProvider = Factory(Container.shared) {
         AppVersionUpdateFilteredProvider(
             appVersionUpdateProvider: Container.removeAppVersionUpdateProvider(),
             appVersionStringParser: Container.appVersionStringParser(),
@@ -23,7 +27,7 @@ extension Container {
         ) as AppVersionUpdateProviderProtocol
     }
     
-    static let removeAppVersionUpdateProvider = Factory {
+    static let removeAppVersionUpdateProvider = Factory(Container.shared) {
         AppStoreVersionUpdateProvider() as AppVersionUpdateProviderProtocol
     }
 }

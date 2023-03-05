@@ -1,7 +1,7 @@
 import AccessibilityIdentifiers
 import XCTest
 
-class DependenciesSheet: Screen {
+final class DependenciesSheet: Screen {
     var filter: XCUIElement {
         Screen.app.textFields[DependenciesSheetIdentifiers.filter.identifier]
     }

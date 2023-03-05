@@ -40,7 +40,7 @@ struct FamilySheet: View {
     let onDismiss: () -> Void
     
     // MARK: - Private
-    @Injected(Container.familyFolderNameProvider) private var familyFolderNameProvider
+    private var familyFolderNameProvider: FamilyFolderNameProviderProtocol = Container.familyFolderNameProvider()
     private var name: String { family.name }
     private var defaultFolderName: String { familyFolderNameProvider.folderName(forFamily: family.name) }
     private var componentNameExample: String { "Component\(family.ignoreSuffix ? "" : family.name)" }

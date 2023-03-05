@@ -1,7 +1,7 @@
 import AccessibilityIdentifiers
 import XCTest
 
-class ConfigurationSheet: Screen {
+final class ConfigurationSheet: Screen {
     var addNewButton: XCUIElement {
         Screen.app.buttons[ConfigurationSheetIdentifiers.addNewButton.identifier]
     }

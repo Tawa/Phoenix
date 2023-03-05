@@ -27,7 +27,7 @@ extension UserDefaults: GenerateFeatureCacheProtocol {
     }
 }
 
-public class GenerateFeatureDataStore: GenerateFeatureDataStoreProtocol {
+public final class GenerateFeatureDataStore: GenerateFeatureDataStoreProtocol {
     let modulesFolderURLCacheKey: String = "modulesFolderURLCache"
     let xcodeProjectURLCacheKey: String = "xcodeProjectURLCache"
     let shouldSkipXcodeProjectCacheKey: String = "shouldSkipXcodeProjectCache"

@@ -1,7 +1,7 @@
 import AccessibilityIdentifiers
 import XCTest
 
-class FamilySheet: Screen {
+final class FamilySheet: Screen {
     var folderTextField: XCUIElement {
         Screen.app.textFields[FamilySheetIdentifiers.folderNameTextField.identifier]
     }
