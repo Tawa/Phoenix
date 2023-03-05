@@ -239,7 +239,7 @@
 		B2F4B1B329B48B02008DBAB1 /* CompositionRoot+ProjectGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+ProjectGenerator.swift"; sourceTree = "<group>"; };
 		B2F4B1B529B48B39008DBAB1 /* CompositionRoot+ProjectValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+ProjectValidator.swift"; sourceTree = "<group>"; };
 		B2F4B1B729B48F4B008DBAB1 /* CompositionRoot+DemoAppFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+DemoAppFeature.swift"; sourceTree = "<group>"; };
-		B2F4B1BA29B49635008DBAB1 /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
+		B2F4B1BA29B49635008DBAB1 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		B4F18C5B17A0862878E78D80 /* ComponentDetailsProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ComponentDetailsProviderContract; sourceTree = "<group>"; };
 		B544253829AAED80892BA404 /* DemoAppFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppFeature; sourceTree = "<group>"; };
 		B86CEB09DA099F6F8731087F /* PackageGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageGeneratorContract; sourceTree = "<group>"; };
@@ -601,7 +601,7 @@
 		B2F4B1B929B49565008DBAB1 /* ci_scripts */ = {
 			isa = PBXGroup;
 			children = (
-				B2F4B1BA29B49635008DBAB1 /* ci_pre_xcodebuild.sh */,
+				B2F4B1BA29B49635008DBAB1 /* ci_post_clone.sh */,
 			);
 			path = ci_scripts;
 			sourceTree = "<group>";
