@@ -101,6 +101,7 @@
 		B2F4B1B429B48B02008DBAB1 /* CompositionRoot+ProjectGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4B1B329B48B02008DBAB1 /* CompositionRoot+ProjectGenerator.swift */; };
 		B2F4B1B629B48B39008DBAB1 /* CompositionRoot+ProjectValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4B1B529B48B39008DBAB1 /* CompositionRoot+ProjectValidator.swift */; };
 		B2F4B1B829B48F4B008DBAB1 /* CompositionRoot+DemoAppFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4B1B729B48F4B008DBAB1 /* CompositionRoot+DemoAppFeature.swift */; };
+		B2F4B1BC29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4B1BB29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift */; };
 		B2F5B85528C143A600282672 /* PBXProjectSyncer in Frameworks */ = {isa = PBXBuildFile; productRef = B2F5B85428C143A600282672 /* PBXProjectSyncer */; };
 /* End PBXBuildFile section */
 
@@ -240,6 +241,7 @@
 		B2F4B1B529B48B39008DBAB1 /* CompositionRoot+ProjectValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+ProjectValidator.swift"; sourceTree = "<group>"; };
 		B2F4B1B729B48F4B008DBAB1 /* CompositionRoot+DemoAppFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+DemoAppFeature.swift"; sourceTree = "<group>"; };
 		B2F4B1BA29B49635008DBAB1 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
+		B2F4B1BB29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+EnvironmentVariables.swift"; sourceTree = "<group>"; };
 		B4F18C5B17A0862878E78D80 /* ComponentDetailsProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ComponentDetailsProviderContract; sourceTree = "<group>"; };
 		B544253829AAED80892BA404 /* DemoAppFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppFeature; sourceTree = "<group>"; };
 		B86CEB09DA099F6F8731087F /* PackageGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageGeneratorContract; sourceTree = "<group>"; };
@@ -410,6 +412,7 @@
 			isa = PBXGroup;
 			children = (
 				B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */,
+				B2F4B1BB29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift */,
 				B2F4B1A529B489C6008DBAB1 /* CompositionRoot+ComponentDetailsProvider.swift */,
 				B2F4B1A929B48A47008DBAB1 /* CompositionRoot+DemoAppGenerator.swift */,
 				B2F4B1AB29B48A6B008DBAB1 /* CompositionRoot+DocumentCoder.swift */,
@@ -924,6 +927,7 @@
 				381855762819CACD00BF6696 /* ResourcesView.swift in Sources */,
 				B2F4B1A629B489C6008DBAB1 /* CompositionRoot+ComponentDetailsProvider.swift in Sources */,
 				B2BD9D3C29602A570048D505 /* MentionsView.swift in Sources */,
+				B2F4B1BC29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift in Sources */,
 				B29BE1042943D37C00675860 /* ViewModel+Selection.swift in Sources */,
 				B2EDFE60295732C2005BB99C /* RemoteComponentDependencyView.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,

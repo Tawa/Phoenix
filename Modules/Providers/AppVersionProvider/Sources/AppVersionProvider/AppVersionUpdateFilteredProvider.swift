@@ -23,15 +23,15 @@ public struct AppVersionUpdateFilteredProvider: AppVersionUpdateProviderProtocol
         
         return appVersionUpdateProvider
             .appVersionsPublisher()
-            .compactMap { appVersions in
-                let results = appVersions.results.filter({ appVersionInfo in
-                    guard let appVersion = appVersionStringParser.appVersion(from: appVersionInfo.version)
-                    else { return false }
-                    return currentAppVersion.isOlderThan(version: appVersion)
-                })
-                
-                return AppVersions(results: results)
-            }
+//            .compactMap { appVersions in
+//                let results = appVersions.results.filter({ appVersionInfo in
+//                    guard let appVersion = appVersionStringParser.appVersion(from: appVersionInfo.version)
+//                    else { return false }
+//                    return currentAppVersion.isOlderThan(version: appVersion)
+//                })
+//                
+//                return AppVersions(results: results)
+//            }
             .eraseToAnyPublisher()
     }
 }

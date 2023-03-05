@@ -29,12 +29,23 @@ extension Container {
     }
     
     private static let remoteAppVersionUpdateProvider = Factory<AppVersionUpdateProviderProtocol>(Container.shared) {
-//        AppStoreVersionUpdateProvider() as AppVersionUpdateProviderProtocol
-        GithubVersionUpdateProvider() as AppVersionUpdateProviderProtocol
+        if Container.isGithubRelease {
+            return GithubVersionUpdateProvider()
+        } else {
+            return AppStoreVersionUpdateProvider()
+        }
     }
     
-    static let updateButton = Factory(Container.shared) {
-        appStoreUpdateButton()
+    static let updateButton = Factory<AnyView>(Container.shared) {
+        if Container.isGithubRelease {
+            return AnyView(githubUpdateButton())
+        } else {
+            return AnyView(appStoreUpdateButton())
+        }
+    }
+    
+    private static let githubUpdateButton = Factory(Container.shared) {
+        GithubUpdateView()
     }
     
     private static let appStoreUpdateButton = Factory(Container.shared) {
@@ -47,5 +58,26 @@ extension Container {
 extension Bundle: CurrentAppVersionStringProviderProtocol {
     public func currentAppVersionString() -> String? {
         infoDictionary?["CFBundleShortVersionString"] as? String
+    }
+}
+
+struct GithubUpdateView: View {
+    @State var isShowingUpdate: Bool = false
+    
+    var body: some View {
+        Button("Githupdate", action: {
+            isShowingUpdate = true
+        })
+        .sheet(isPresented: $isShowingUpdate) {
+            VStack {
+                Text("Downloading Update")
+                ProgressView()
+                    .padding()
+                Button("Cancel") {
+                    isShowingUpdate = false
+                }
+            }
+            .padding()
+        }
     }
 }
