@@ -113,10 +113,8 @@ class ViewModel: ObservableObject {
     @Published var alertState: AlertState? = nil
     @Published var demoAppFeatureData: DemoAppFeatureInput? = nil
 
-    @Injected(Container.appVersionUpdateProvider)
-    var appVersionUpdateProvider: AppVersionUpdateProviderProtocol
-    @Injected(Container.familyFolderNameProvider)
-    var familyFolderNameProvider: FamilyFolderNameProviderProtocol
+    var appVersionUpdateProvider: AppVersionUpdateProviderProtocol = Container.appVersionUpdateProvider()
+    var familyFolderNameProvider: FamilyFolderNameProviderProtocol = Container.familyFolderNameProvider()
         
     func onConfigurationButton() {
         showingConfigurationPopup = true

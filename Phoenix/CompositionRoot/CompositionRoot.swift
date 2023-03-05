@@ -24,55 +24,55 @@ import RelativeURLProviderContract
 import SwiftPackage
 
 extension Container {
-    static let phoenixDocumentFileWrappersDecoder = Factory {
+    static let phoenixDocumentFileWrappersDecoder = Factory(Container.shared) {
         PhoenixDocumentFileWrappersDecoder() as PhoenixDocumentFileWrappersDecoderProtocol
     }
 
-    static let phoenixDocumentFileWrapperEncoder = Factory {
+    static let phoenixDocumentFileWrapperEncoder = Factory(Container.shared) {
         PhoenixDocumentFileWrapperEncoder(
             currentAppVersionStringProvider: currentAppVersionStringProvider()
         ) as PhoenixDocumentFileWrapperEncoderProtocol
     }
     
-    static let packageGenerator = Factory {
+    static let packageGenerator = Factory(Container.shared) {
         PackageGenerator(
             fileManager: .default,
             packageStringProvider: packageStringProvider()
         ) as PackageGeneratorProtocol
     }
     
-    static let demoAppGenerator = Factory {
+    static let demoAppGenerator = Factory(Container.shared) {
         DemoAppGenerator(
             fileManager: FileManager.default
         ) as DemoAppGeneratorProtocol
     }
     
-    static let familyFolderNameProvider = Factory {
+    static let familyFolderNameProvider = Factory(Container.shared) {
         FamilyFolderNameProvider() as FamilyFolderNameProviderProtocol
     }
     
-    static let packageNameProvider = Factory {
+    static let packageNameProvider = Factory(Container.shared) {
         PackageNameProvider() as PackageNameProviderProtocol
     }
     
-    static let packageStringProvider = Factory {
+    static let packageStringProvider = Factory(Container.shared) {
         PackageStringProvider() as PackageStringProviderProtocol
     }
     
-    static let packageFolderNameProvider = Factory {
+    static let packageFolderNameProvider = Factory(Container.shared) {
         PackageFolderNameProvider(
             defaultFolderNameProvider: familyFolderNameProvider()
         ) as PackageFolderNameProviderProtocol
     }
     
-    static let packagePathProvider = Factory {
+    static let packagePathProvider = Factory(Container.shared) {
         PackagePathProvider(
             packageFolderNameProvider: packageFolderNameProvider(),
             packageNameProvider: packageNameProvider()
         ) as PackagePathProviderProtocol
     }
     
-    static let componentPackageProvider = Factory {
+    static let componentPackageProvider = Factory(Container.shared) {
         ComponentPackageProvider(
             packageFolderNameProvider: packageFolderNameProvider(),
             packageNameProvider: packageNameProvider(),
@@ -80,19 +80,19 @@ extension Container {
         ) as ComponentPackageProviderProtocol
     }
     
-    static let componentPackagesProvider = Factory {
+    static let componentPackagesProvider = Factory(Container.shared) {
         ComponentPackagesProvider(
             componentPackageProvider: componentPackageProvider()
         ) as ComponentPackagesProviderProtocol
     }
     
-    static let documentPackagesProvider = Factory {
+    static let documentPackagesProvider = Factory(Container.shared) {
         DocumentPackagesProvider(
             componentPackagesProvider: componentPackagesProvider()
         ) as DocumentPackagesProviderProtocol
     }
     
-    static let pbxProjSyncer = Factory {
+    static let pbxProjSyncer = Factory(Container.shared) {
         PBXProjectSyncer(
             packageFolderNameProvider: packageFolderNameProvider(),
             packageNameProvider: packageNameProvider(),
@@ -102,49 +102,49 @@ extension Container {
         ) as PBXProjectSyncerProtocol
     }
     
-    static let pbxProjectWriter = Factory {
+    static let pbxProjectWriter = Factory(Container.shared) {
         PBXProjectWriter() as PBXProjectWriterProtocol
     }
     
-    static let projectGenerator = Factory {
+    static let projectGenerator = Factory(Container.shared) {
         ProjectGenerator(
             documentPackagesProvider: documentPackagesProvider(),
             packageGenerator: packageGenerator()
         ) as ProjectGeneratorProtocol
     }
     
-    static let demoAppNameProvider = Factory {
+    static let demoAppNameProvider = Factory(Container.shared) {
         DemoAppNameProvider() as DemoAppNameProviderProtocol
     }
     
-    static let relativeURLProvider = Factory {
+    static let relativeURLProvider = Factory(Container.shared) {
         RelativeURLProvider() as RelativeURLProviderProtocol
     }
     
-    static let generateFeatureDataStore = Factory(scope: .singleton) {
+    static let generateFeatureDataStore = Factory(Container.shared) {
         GenerateFeatureDataStore(
             dictionaryCache: UserDefaults.standard
         ) as GenerateFeatureDataStoreProtocol
-    }
+    }.scope(.singleton)
     
-    static let projectValidator = Factory(scope: .singleton) {
+    static let projectValidator = Factory(Container.shared) {
         ProjectValidator(
             decoder: phoenixDocumentFileWrappersDecoder(),
             packagesValidator: packagesValidator()
         ) as ProjectValidatorProtocol
-    }
+    }.scope(.singleton)
     
-    static let packageValidator = Factory(scope: .singleton) {
+    static let packageValidator = Factory(Container.shared) {
         PackageValidator(
             fileManager: .default,
             packageStringProvider: packageStringProvider()
         ) as PackageValidatorProtocol
-    }
+    }.scope(.singleton)
     
-    static let packagesValidator = Factory(scope: .singleton) {
+    static let packagesValidator = Factory(Container.shared) {
         PackagesValidator(
             documentPackagesProvider: documentPackagesProvider(),
             packageValidator: packageValidator()
         ) as PackagesValidatorProtocol
-    }
+    }.scope(.singleton)
 }

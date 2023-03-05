@@ -3,7 +3,7 @@ import Factory
 
 extension Container {
     // DemoAppFeature
-    static let demoAppFeatureView = ParameterFactory { (data: DemoAppFeatureInput) in
+    static let demoAppFeatureView = ParameterFactory(Container.shared) { (data: DemoAppFeatureInput) in
         DemoAppFeatureView(
             data: data,
             dependency: .init(
