@@ -54,15 +54,16 @@ enum CommandLineError: Error {
     static func main() async {
         let arguments = CommandLine.arguments
         
-        guard arguments.count > 2 else {
+        guard arguments.count > 2
+        else {
             print("Input arguments should be \"ash file url\" and \"modules folder url\"")
-            return
+            exit(1)
         }
         
         guard let currentDirectoryURL = URL(string: FileManager.default.currentDirectoryPath)
         else {
             print("Error getting current working directory")
-            return
+            exit(1)
         }
                 
         let ashFileURL = properURL(path: arguments[1], relativeURL: currentDirectoryURL)
@@ -75,10 +76,13 @@ enum CommandLineError: Error {
                                                 fileURL: ashFileURL,
                                                 modulesFolderURL: modulesFolderURL)
             print("Everything looks good")
+            exit(0)
         } catch PackagesValidatorError.projectOutOfSync(let message) {
             print("Project Out Of Sync:\n\(message)")
+            exit(1)
         } catch {
             print("Error \(error)")
+            exit(1)
         }
     }
     
