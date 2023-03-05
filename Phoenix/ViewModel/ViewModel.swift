@@ -160,4 +160,8 @@ final class ViewModel: ObservableObject {
             }
         )
     }
+    
+    func onGenerateCompletion() {
+        objectWillChange.send()
+    }
 }

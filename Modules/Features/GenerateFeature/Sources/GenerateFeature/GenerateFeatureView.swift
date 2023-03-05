@@ -24,6 +24,7 @@ final class GenerateFeatureViewModel: ObservableObject {
     @Published var generateFeatureInput: GenerateFeatureInput? = nil
     @Published var alert: AlertSheetModel? = nil
     let fileURL: URL?
+    let onGenerate: () -> Void
     
     let projectGenerator: ProjectGeneratorProtocol
     let pbxProjectSyncer: PBXProjectSyncerProtocol
@@ -76,8 +77,10 @@ final class GenerateFeatureViewModel: ObservableObject {
     private var generationStart: Date? = nil
     
     public init(fileURL: URL?,
+                onGenerate: @escaping () -> Void,
                 dependencies: GenerateFeatureDependencies) {
         self.fileURL = fileURL
+        self.onGenerate = onGenerate
         
         ashFileURLGetter = AshFileURLGetter(fileURL: fileURL)
         xcodeProjURLGetter = XcodeProjURLGetter(fileURL: fileURL)
@@ -156,6 +159,7 @@ final class GenerateFeatureViewModel: ObservableObject {
             alert = .init(text: "Error generating project: \(error)")
         }
         generateFeatureInput = nil
+        onGenerate()
     }
 
     private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL) throws {
@@ -190,10 +194,12 @@ public struct GenerateFeatureView: View {
     public init(
         fileURL: URL?,
         getDocument: @escaping @autoclosure () -> PhoenixDocument,
+        onGenerate: @escaping () -> Void,
         dependencies: GenerateFeatureDependencies
     ) {
         self._viewModel = .init(wrappedValue: .init(
             fileURL: fileURL,
+            onGenerate: onGenerate,
             dependencies: dependencies
         ))
         self.getDocument = getDocument
