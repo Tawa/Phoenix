@@ -21,13 +21,13 @@ extension Container {
     
     static let appVersionUpdateProvider = Factory(Container.shared) {
         AppVersionUpdateFilteredProvider(
-            appVersionUpdateProvider: Container.removeAppVersionUpdateProvider(),
+            appVersionUpdateProvider: Container.remoteAppVersionUpdateProvider(),
             appVersionStringParser: Container.appVersionStringParser(),
             currentAppVersionProvider: Container.currentAppVersionProvider()
         ) as AppVersionUpdateProviderProtocol
     }
     
-    static let removeAppVersionUpdateProvider = Factory(Container.shared) {
+    static let remoteAppVersionUpdateProvider = Factory(Container.shared) {
         AppStoreVersionUpdateProvider() as AppVersionUpdateProviderProtocol
     }
 }
