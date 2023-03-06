@@ -317,7 +317,7 @@
          <EnvironmentVariable
             key = "release_destination"
             value = "github"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>

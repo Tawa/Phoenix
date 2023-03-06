@@ -198,6 +198,7 @@
 		B0575B2BA782D723A9A8ECFC /* GenerateFeatureDataStoreContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GenerateFeatureDataStoreContract; sourceTree = "<group>"; };
 		B2071ECA29B66BBD003E509E /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
 		B2071ECB29B66C5E003E509E /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
+		B2071ECC29B69BA4003E509E /* EnableGithubReleaseTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableGithubReleaseTarget.swift; sourceTree = "<group>"; };
 		B216D3A02926EDC6005EDBB5 /* RelationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationView.swift; sourceTree = "<group>"; };
 		B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+AppVersion.swift"; sourceTree = "<group>"; };
 		B233DB6828EB5BC000243D58 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -609,6 +610,7 @@
 				B2F4B1BA29B49635008DBAB1 /* ci_post_clone.sh */,
 				B2071ECA29B66BBD003E509E /* ci_post_xcodebuild.sh */,
 				B2071ECB29B66C5E003E509E /* ci_pre_xcodebuild.sh */,
+				B2071ECC29B69BA4003E509E /* EnableGithubReleaseTarget.swift */,
 			);
 			path = ci_scripts;
 			sourceTree = "<group>";
