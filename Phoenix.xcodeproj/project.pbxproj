@@ -196,6 +196,8 @@
 		9FE96A2D3B3268D8FAD977D1 /* ProjectValidator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectValidator; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		B0575B2BA782D723A9A8ECFC /* GenerateFeatureDataStoreContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GenerateFeatureDataStoreContract; sourceTree = "<group>"; };
+		B2071ECA29B66BBD003E509E /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
+		B2071ECB29B66C5E003E509E /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		B216D3A02926EDC6005EDBB5 /* RelationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationView.swift; sourceTree = "<group>"; };
 		B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+AppVersion.swift"; sourceTree = "<group>"; };
 		B233DB6828EB5BC000243D58 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -605,6 +607,8 @@
 			isa = PBXGroup;
 			children = (
 				B2F4B1BA29B49635008DBAB1 /* ci_post_clone.sh */,
+				B2071ECA29B66BBD003E509E /* ci_post_xcodebuild.sh */,
+				B2071ECB29B66C5E003E509E /* ci_pre_xcodebuild.sh */,
 			);
 			path = ci_scripts;
 			sourceTree = "<group>";
