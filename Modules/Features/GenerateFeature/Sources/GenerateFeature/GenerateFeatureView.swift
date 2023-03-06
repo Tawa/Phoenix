@@ -188,7 +188,7 @@ final class GenerateFeatureViewModel: ObservableObject {
 }
 
 public struct GenerateFeatureView: View {
-    @ObservedObject private var viewModel: GenerateFeatureViewModel
+    @StateObject private var viewModel: GenerateFeatureViewModel
     let getDocument: () -> PhoenixDocument
     
     public init(
