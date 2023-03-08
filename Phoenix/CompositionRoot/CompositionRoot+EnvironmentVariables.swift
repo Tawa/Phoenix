@@ -2,7 +2,7 @@ import Factory
 import Foundation
 
 extension Container {
-    static let isGithubRelease: Bool = {
+    static let isGitHubRelease: Bool = {
         ProcessInfo.processInfo.environment["release_destination"] == "github"
     }()
 }

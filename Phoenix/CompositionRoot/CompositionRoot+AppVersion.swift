@@ -29,23 +29,23 @@ extension Container {
     }
     
     private static let remoteAppVersionUpdateProvider = Factory<AppVersionUpdateProviderProtocol>(Container.shared) {
-        if Container.isGithubRelease {
-            return GithubVersionUpdateProvider()
+        if Container.isGitHubRelease {
+            return GitHubVersionUpdateProvider()
         } else {
             return AppStoreVersionUpdateProvider()
         }
     }
     
     static let updateButton = Factory<AnyView>(Container.shared) {
-        if Container.isGithubRelease {
-            return AnyView(githubUpdateButton())
+        if Container.isGitHubRelease {
+            return AnyView(gitHubUpdateButton())
         } else {
             return AnyView(appStoreUpdateButton())
         }
     }
     
-    private static let githubUpdateButton = Factory(Container.shared) {
-        GithubUpdateView()
+    private static let gitHubUpdateButton = Factory(Container.shared) {
+        GitHubUpdateView()
     }
     
     private static let appStoreUpdateButton = Factory(Container.shared) {
@@ -61,7 +61,7 @@ extension Bundle: CurrentAppVersionStringProviderProtocol {
     }
 }
 
-struct GithubUpdateView: View {
+struct GitHubUpdateView: View {
     @State var isShowingUpdate: Bool = false
     
     var body: some View {

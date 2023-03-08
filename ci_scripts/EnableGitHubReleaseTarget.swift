@@ -2,11 +2,13 @@
 import Foundation
 import RegexBuilder
 
-// Phoenix.xcodeproj/xcshareddata/xcschemes/Phoenix.xcscheme
-
-class EnableGithubReleaseTarget {
+class EnableGitHubReleaseTarget {
     static func main() {
-        guard CommandLine.argc == 2 else { exit(1) }
+        guard CommandLine.argc == 2
+        else {
+            print("Wrong number of parameters")
+            exit(1)
+        }
 
         let arguments = CommandLine.arguments
         
@@ -76,4 +78,4 @@ class EnableGithubReleaseTarget {
     }
 }
 
-EnableGithubReleaseTarget.main()
+EnableGitHubReleaseTarget.main()

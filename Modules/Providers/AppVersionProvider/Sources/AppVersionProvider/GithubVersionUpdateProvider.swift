@@ -2,7 +2,7 @@ import AppVersionProviderContract
 import Combine
 import Foundation
 
-struct GithubAsset: Decodable {
+struct GitHubAsset: Decodable {
     let url: URL
     
     enum CodingKeys: String, CodingKey {
@@ -10,11 +10,11 @@ struct GithubAsset: Decodable {
     }
 }
 
-struct GithubVersion: Decodable {
+struct GitHubVersion: Decodable {
     let url: URL
     let tagName: String
     let body: String
-    let assets: [GithubAsset]
+    let assets: [GitHubAsset]
     
     enum CodingKeys: String, CodingKey {
         case url
@@ -25,7 +25,7 @@ struct GithubVersion: Decodable {
 }
 
 
-public struct GithubVersionUpdateProvider: AppVersionUpdateProviderProtocol {
+public struct GitHubVersionUpdateProvider: AppVersionUpdateProviderProtocol {
     
     public init() {
         
@@ -40,9 +40,9 @@ public struct GithubVersionUpdateProvider: AppVersionUpdateProviderProtocol {
         
         return URLSession.shared.dataTaskPublisher(for: url)
             .tryMap(\.data)
-            .decode(type: [GithubVersion].self, decoder: JSONDecoder())
+            .decode(type: [GitHubVersion].self, decoder: JSONDecoder())
             .map({ $0.filter { !$0.assets.isEmpty } })
-            .map({ $0.map { githubVersion in AppVersionInfo(version: githubVersion.tagName, releaseNotes: githubVersion.body) }})
+            .map({ $0.map { gitHubVersion in AppVersionInfo(version: gitHubVersion.tagName, releaseNotes: gitHubVersion.body) }})
             .map({ AppVersions(results: $0) })
             .eraseToAnyPublisher()
     }
