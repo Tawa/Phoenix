@@ -4,7 +4,7 @@ import Foundation
 class CreateGitHubRelease {
     static func main() {
         print("Create GitHub Release Script")
-        guard CommandLine.argc == 3
+        guard CommandLine.argc == 4
         else {
             print("Wrong number of parameters")
             exit(1)
