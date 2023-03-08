@@ -11,6 +11,4 @@ then
     status=$?
     [ $status -eq 0 ] && echo "$cmd command was successful" || echo "$cmd failed"
     exit $status
-else
-    echo "ci_pre_xcodebuild No Actions"
 fi
