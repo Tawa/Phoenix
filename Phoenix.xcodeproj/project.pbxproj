@@ -101,6 +101,7 @@
 		B2F4B1B429B48B02008DBAB1 /* CompositionRoot+ProjectGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4B1B329B48B02008DBAB1 /* CompositionRoot+ProjectGenerator.swift */; };
 		B2F4B1B629B48B39008DBAB1 /* CompositionRoot+ProjectValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4B1B529B48B39008DBAB1 /* CompositionRoot+ProjectValidator.swift */; };
 		B2F4B1B829B48F4B008DBAB1 /* CompositionRoot+DemoAppFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4B1B729B48F4B008DBAB1 /* CompositionRoot+DemoAppFeature.swift */; };
+		B2F4B1BC29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4B1BB29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift */; };
 		B2F5B85528C143A600282672 /* PBXProjectSyncer in Frameworks */ = {isa = PBXBuildFile; productRef = B2F5B85428C143A600282672 /* PBXProjectSyncer */; };
 /* End PBXBuildFile section */
 
@@ -195,11 +196,15 @@
 		9FE96A2D3B3268D8FAD977D1 /* ProjectValidator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectValidator; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		B0575B2BA782D723A9A8ECFC /* GenerateFeatureDataStoreContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GenerateFeatureDataStoreContract; sourceTree = "<group>"; };
+		B2071ECA29B66BBD003E509E /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
+		B2071ECB29B66C5E003E509E /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
+		B2071ECC29B69BA4003E509E /* EnableGitHubReleaseTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableGitHubReleaseTarget.swift; sourceTree = "<group>"; };
 		B216D3A02926EDC6005EDBB5 /* RelationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationView.swift; sourceTree = "<group>"; };
 		B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+AppVersion.swift"; sourceTree = "<group>"; };
 		B233DB6828EB5BC000243D58 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B233DB6A28EB5BC000243D58 /* PhoenixUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoenixUITests.swift; sourceTree = "<group>"; };
 		B26383E928D7773D00C9380E /* PhoenixRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PhoenixRelease.entitlements; sourceTree = "<group>"; };
+		B290498629B87D580088E65F /* CreateGitHubRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGitHubRelease.swift; sourceTree = "<group>"; };
 		B298E7FE29B3D1970008794A /* ProjectValidatorCommand */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ProjectValidatorCommand; sourceTree = BUILT_PRODUCTS_DIR; };
 		B298E80029B3D1970008794A /* CommandLineTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineTool.swift; sourceTree = "<group>"; };
 		B29BE1032943D37C00675860 /* ViewModel+Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Selection.swift"; sourceTree = "<group>"; };
@@ -240,6 +245,7 @@
 		B2F4B1B529B48B39008DBAB1 /* CompositionRoot+ProjectValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+ProjectValidator.swift"; sourceTree = "<group>"; };
 		B2F4B1B729B48F4B008DBAB1 /* CompositionRoot+DemoAppFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+DemoAppFeature.swift"; sourceTree = "<group>"; };
 		B2F4B1BA29B49635008DBAB1 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
+		B2F4B1BB29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+EnvironmentVariables.swift"; sourceTree = "<group>"; };
 		B4F18C5B17A0862878E78D80 /* ComponentDetailsProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ComponentDetailsProviderContract; sourceTree = "<group>"; };
 		B544253829AAED80892BA404 /* DemoAppFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppFeature; sourceTree = "<group>"; };
 		B86CEB09DA099F6F8731087F /* PackageGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageGeneratorContract; sourceTree = "<group>"; };
@@ -410,6 +416,7 @@
 			isa = PBXGroup;
 			children = (
 				B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */,
+				B2F4B1BB29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift */,
 				B2F4B1A529B489C6008DBAB1 /* CompositionRoot+ComponentDetailsProvider.swift */,
 				B2F4B1A929B48A47008DBAB1 /* CompositionRoot+DemoAppGenerator.swift */,
 				B2F4B1AB29B48A6B008DBAB1 /* CompositionRoot+DocumentCoder.swift */,
@@ -602,6 +609,10 @@
 			isa = PBXGroup;
 			children = (
 				B2F4B1BA29B49635008DBAB1 /* ci_post_clone.sh */,
+				B2071ECA29B66BBD003E509E /* ci_post_xcodebuild.sh */,
+				B2071ECB29B66C5E003E509E /* ci_pre_xcodebuild.sh */,
+				B2071ECC29B69BA4003E509E /* EnableGitHubReleaseTarget.swift */,
+				B290498629B87D580088E65F /* CreateGitHubRelease.swift */,
 			);
 			path = ci_scripts;
 			sourceTree = "<group>";
@@ -924,6 +935,7 @@
 				381855762819CACD00BF6696 /* ResourcesView.swift in Sources */,
 				B2F4B1A629B489C6008DBAB1 /* CompositionRoot+ComponentDetailsProvider.swift in Sources */,
 				B2BD9D3C29602A570048D505 /* MentionsView.swift in Sources */,
+				B2F4B1BC29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift in Sources */,
 				B29BE1042943D37C00675860 /* ViewModel+Selection.swift in Sources */,
 				B2EDFE60295732C2005BB99C /* RemoteComponentDependencyView.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,

@@ -398,14 +398,6 @@ struct ContentView: View {
         }
         .keyboardShortcut(",", modifiers: [.command])
         .with(accessibilityIdentifier: ToolbarIdentifiers.configurationButton)
-
-        if let appUpdateVerdsionInfo = viewModel.appUpdateVersionInfo {
-            Button(action: viewModel.onUpdateButton) {
-                Image(systemName: "info.circle.fill")
-                    .foregroundColor(.red)
-                Text("Update \(appUpdateVerdsionInfo.version) Available")
-            }
-        }
     }
     
     @ViewBuilder private func toolbarTrailingItems() -> some View {
@@ -427,25 +419,36 @@ struct ContentView: View {
                 pbxProjectSyncer: Container.pbxProjSyncer()
             )
         )
-        Button(action: { inspectorSelection.toggle() }) {
-            Image(systemName: "sidebar.trailing")
+        if
+            let appUpdateVerdsionInfo = viewModel.appUpdateVersionInfo,
+            !appUpdateVerdsionInfo.versions.isEmpty
+        {
+            Button(action: viewModel.onUpdateButton) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundColor(.red)
+                Text("Update \(appUpdateVerdsionInfo.versions.first.map(\.version) ?? "") Available")
+                    .foregroundColor(.red)
+            }
         }
-        .keyboardShortcut(.init("0"), modifiers: [.command, .option])
+        if viewModel.selectedComponent(document: $document) != nil {
+            Button(action: { inspectorSelection.toggle() }) {
+                Image(systemName: "sidebar.trailing")
+            }
+            .keyboardShortcut(.init("0"), modifiers: [.command, .option])
+        }
     }
     
-    @ViewBuilder private func updateView(appVersionInfo: AppVersionInfo) -> some View {
+    @ViewBuilder private func updateView(appVersionInfo: AppVersionInfoPopoverDetails) -> some View {
         VStack(alignment: .leading) {
-            Text("Update v\(appVersionInfo.version) is available.")
-                .font(.title)
-            Text("Release Notes: \(appVersionInfo.releaseNotes)")
-                .lineLimit(nil)
-                .multilineTextAlignment(.leading)
+            ForEach(appVersionInfo.versions) { appVersionInfo in
+                Text("Update v\(appVersionInfo.version) is available.")
+                    .font(.title)
+                Text("Release Notes: \(appVersionInfo.releaseNotes)")
+                    .lineLimit(nil)
+                    .multilineTextAlignment(.leading)
+            }
             HStack {
-                Link(destination: URL(
-                    string: "https://apps.apple.com/us/app/phoenix-app/id1626793172")!
-                ) {
-                    Text("Update")
-                }
+                Container.updateButton()
                 Button("Dismiss") {
                     withAnimation {
                         viewModel.showingUpdatePopup = nil

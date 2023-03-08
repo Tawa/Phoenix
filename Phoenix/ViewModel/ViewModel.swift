@@ -13,6 +13,11 @@ import SwiftPackage
 import SwiftUI
 import UniformTypeIdentifiers
 
+struct AppVersionInfoPopoverDetails: Identifiable {
+    let id: String = UUID().uuidString
+    let versions: [AppVersionInfo]
+}
+
 enum ComponentPopupState: Hashable, Identifiable {
     var id: Int { hashValue }
     case new
@@ -101,8 +106,8 @@ final class ViewModel: ObservableObject {
     
     // MARK: - Update Button
     private var appUpdateVersionInfoSub: AnyCancellable? = nil
-    @Published var appUpdateVersionInfo: AppVersionInfo? = nil
-    @Published var showingUpdatePopup: AppVersionInfo? = nil
+    @Published var appUpdateVersionInfo: AppVersionInfoPopoverDetails? = nil
+    @Published var showingUpdatePopup: AppVersionInfoPopoverDetails? = nil
     
     // MARK: - Sheets
     @Published var showingQuickSelectionSheet: Bool = false
@@ -138,7 +143,7 @@ final class ViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { _ in
             } receiveValue: { appVersionInfos in
-                self.appUpdateVersionInfo = appVersionInfos.results.first
+                self.appUpdateVersionInfo = .init(versions: appVersionInfos.results)
             }
     }
     
