@@ -5,10 +5,10 @@
 
 if [[ $CI_WORKFLOW == "GitHub Release" ]];
 then
-    ARCHIVE_PATH="$CI_WORKSPACE/ci_scripts/Phoenix.app.zip"
+    ZIP_PATH="$CI_WORKSPACE/ci_scripts/Phoenix.app.zip"
 
     cd "$ARCHIVE_PATH/Products/Applications/"
     zip -r $ARCHIVE_PATH Phoenix.app
     
-    "$CI_WORKSPACE/ci_scripts/CreateGitHubRelease.swift" $CI_TAG $ARCHIVE_PATH $GITHUB_TOKEN
+    "$CI_WORKSPACE/ci_scripts/CreateGitHubRelease.swift" $CI_TAG $ZIP_PATH $GITHUB_TOKEN
 fi
