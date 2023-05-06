@@ -28,7 +28,7 @@ public struct ProjectConfiguration: Codable, Hashable {
         
         packageConfigurations = try container.decode([PackageConfiguration].self, forKey: .packageConfigurations)
         defaultDependencies = try container.decodeIfPresent([PackageTargetType: String].self, forKey: .defaultDependencies) ?? [:]
-        swiftVersion = (try? container.decode(String.self, forKey: .swiftVersion)) ?? "5.6"
+        swiftVersion = (try? container.decode(String.self, forKey: .swiftVersion)) ?? "5.8"
         defaultOrganizationIdentifier = try? container.decodeIfPresent(String.self, forKey: .defaultOrganizationIdentifier)
     }
     
@@ -50,6 +50,6 @@ extension ProjectConfiguration {
                                                                                             internalDependency: nil,
                                                                                             hasTests: true)],
                                                               defaultDependencies: [:],
-                                                              swiftVersion: "5.6",
+                                                              swiftVersion: "5.8",
                                                               defaultOrganizationIdentifier: nil)
 }
