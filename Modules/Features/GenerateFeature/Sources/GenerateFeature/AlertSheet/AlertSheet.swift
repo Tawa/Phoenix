@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import SwiftUI
 
 struct AlertSheetModel: Identifiable {
@@ -13,8 +14,10 @@ struct AlertSheet: View {
         VStack(alignment: .center) {
             Text(model.text)
                 .font(.largeTitle)
+                .with(accessibilityIdentifier: AlertMessageIdentifiers.alertMessage)
             Button(action: onOkayButton) {
                 Text("Ok")
+                    .with(accessibilityIdentifier: AlertMessageIdentifiers.okButton)
             }.keyboardShortcut(.defaultAction)
         }
         .frame(maxWidth:  .infinity, maxHeight: .infinity)

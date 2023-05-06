@@ -12,6 +12,22 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
         Screen.app.sheets.firstMatch
     }
     
+    var saveAsNameTextField: XCUIElement {
+        Screen.app.textFields["saveAsNameTextField"]
+    }
+    
+    var okButton: XCUIElement {
+        Screen.app.buttons["OKButton"]
+    }
+    
+    var alertMessage: XCUIElement {
+        Screen.app.staticTexts[AlertMessageIdentifiers.alertMessage.identifier]
+    }
+    
+    var alertOkButton: XCUIElement {
+        Screen.app.buttons[AlertMessageIdentifiers.okButton.identifier]
+    }
+    
     @discardableResult
     func closeAllWindowsIfNecessary() -> Screen {
         while Screen.app.windows.firstMatch.exists {
@@ -43,6 +59,36 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
     @discardableResult
     func maximize() -> Screen {
         window.doubleClick()
+        
+        return self
+    }
+    
+    @discardableResult
+    func saveFile() -> Screen {
+        Screen.app.typeKey("s", modifierFlags: .command)
+
+        saveAsNameTextField.click()
+        
+        let fileName: String = "Modules\(floor(Date().timeIntervalSince1970)).ash"
+        
+        Screen.app.typeKey("a", modifierFlags: .command)
+        saveAsNameTextField.typeText(fileName)
+        
+        okButton.click()
+        
+        return self
+    }
+        
+    @discardableResult
+    func openGenerateSheet() -> Screen {
+        Screen.app.typeKey(.init("r"), modifierFlags: .command)
+        
+        return self
+    }
+    
+    @discardableResult
+    func closeAlertMessage() -> Screen {
+        alertOkButton.click()
         
         return self
     }
@@ -127,4 +173,18 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
         return self
     }
 
+    // MARK: - Assertions
+    @discardableResult
+    func assertAlertNotShown() -> Screen {
+        XCTAssertFalse(alertMessage.exists)
+        
+        return self
+    }
+    
+    @discardableResult
+    func assertAlertShowing(message: String) -> Screen {
+        XCTAssertTrue(alertMessage.exists)
+        
+        return self
+    }
 }

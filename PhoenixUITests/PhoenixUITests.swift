@@ -55,4 +55,18 @@ final class PhoenixUITests: XCTestCase {
             .selectAndAssertContractAndMock(component: wordpressRepository,
                                             andAddDependency: networking, wordpressDataStore)
     }
+    
+    func testPopovers() {
+        screen
+            .launch()
+            .closeAllWindowsIfNecessary()
+            .createNewFile()
+            .openGenerateSheet()
+            .assertAlertShowing(message: "File should be saved first")
+            .closeAlertMessage()
+            .saveFile()
+            .openGenerateSheet()
+            .assertAlertNotShown()
+
+    }
 }
