@@ -2,6 +2,19 @@
   "localDependencies" : [
     {
       "name" : {
+        "family" : "Support",
+        "given" : "AccessibilityIdentifiers"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Implementation"
+      ]
+    },
+    {
+      "name" : {
         "family" : "DataStore",
         "given" : "GenerateFeature"
       },

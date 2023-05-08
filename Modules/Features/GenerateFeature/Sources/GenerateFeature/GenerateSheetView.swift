@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import SwiftUI
 
 struct GenerateSheetView: View {
@@ -21,32 +22,41 @@ struct GenerateSheetView: View {
                         Spacer()
                     }
                 }
-            }.buttonStyle(.plain)
+            }
+            .buttonStyle(.plain)
+            .with(accessibilityIdentifier: GenerateSheetIdentifiers.modulesFolderButton)
             
-            Button(action: viewModel.onOpenXcodeProject) {
-                VStack(alignment: .leading) {
-                    HStack {
-                        Image(systemName: "wrench.and.screwdriver")
-                        Text("Xcode Project")
-                        Toggle("Skip this step", isOn: Binding(get: {
-                            viewModel.isSkipXcodeProjectOn
-                        }, set: { newValue in
-                            self.viewModel.onSkipXcodeProject(newValue)
-                        }))
-                    }
-                    HStack {
-                        Text(viewModel.xcodeProjectPath)
-                            .opacity(xcodeProjectPathOpaticy)
-                        Spacer()
+            VStack(alignment: .leading, spacing: 0) {
+                Toggle("Skip Xcode step", isOn: Binding(get: {
+                    viewModel.isSkipXcodeProjectOn
+                }, set: { newValue in
+                    self.viewModel.onSkipXcodeProject(newValue)
+                }))
+                .with(accessibilityIdentifier: GenerateSheetIdentifiers.skipXcodeToggle)
+                Button(action: viewModel.onOpenXcodeProject) {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Image(systemName: "wrench.and.screwdriver")
+                            Text("Xcode Project")
+                        }
+                        HStack {
+                            Text(viewModel.xcodeProjectPath)
+                                .opacity(xcodeProjectPathOpaticy)
+                            Spacer()
+                        }
                     }
                 }
-            }.buttonStyle(.plain)
+                .buttonStyle(.plain)
+                .opacity(viewModel.isSkipXcodeProjectOn ? 0.5 : 1)
+            }
 
             HStack {
                 Button(action: viewModel.onGenerate) {
                     Text("Generate")
-                }.disabled(!isGenerateEnabled)
-                    .keyboardShortcut(.defaultAction)
+                }
+                .with(accessibilityIdentifier: GenerateSheetIdentifiers.generateButton)
+                .disabled(!isGenerateEnabled)
+                .keyboardShortcut(.defaultAction)
                 Button(action: viewModel.onDismiss) {
                     Text("Cancel")
                 }.keyboardShortcut(.cancelAction)

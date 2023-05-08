@@ -66,10 +66,10 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
     @discardableResult
     func saveFile() -> Screen {
         Screen.app.typeKey("s", modifierFlags: .command)
-
+        
         saveAsNameTextField.click()
         
-        let fileName: String = "Modules\(floor(Date().timeIntervalSince1970)).ash"
+        let fileName: String = "Modules\(Int(Date().timeIntervalSince1970)).ash"
         
         Screen.app.typeKey("a", modifierFlags: .command)
         saveAsNameTextField.typeText(fileName)
@@ -78,12 +78,18 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
         
         return self
     }
-        
+    
     @discardableResult
-    func openGenerateSheet() -> Screen {
+    func attemptToOpenGenerateSheet() -> Screen {
         Screen.app.typeKey(.init("r"), modifierFlags: .command)
         
         return self
+    }
+    
+    @discardableResult
+    func openGenerateSheet() -> GenerateSheet {
+        attemptToOpenGenerateSheet()
+        return GenerateSheet()
     }
     
     @discardableResult
@@ -151,7 +157,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .assertSelector(dependencyName: named, packageName: "Implementation", title: "Contract")
             .assertSelector(dependencyName: named, packageName: "Tests", title: "Mock")
     }
-
+    
     @discardableResult
     func assertContractContractAndMock(forDependency named: String) -> Screen {
         return self
@@ -159,7 +165,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .assertSelector(dependencyName: named, packageName: "Implementation", title: "Contract")
             .assertSelector(dependencyName: named, packageName: "Tests", title: "Mock")
     }
-
+    
     @discardableResult
     func selectDefaultDependenciesContractContractAndMock() -> Screen {
         let dependencyName = "Default Dependencies"
@@ -172,10 +178,10 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .assertSelector(dependencyName: dependencyName, packageName: "Tests", title: "Mock")
         return self
     }
-
+    
     // MARK: - Assertions
     @discardableResult
-    func assertAlertNotShown() -> Screen {
+    func assertAlertNotShown() -> Self {
         XCTAssertFalse(alertMessage.exists)
         
         return self
@@ -184,6 +190,15 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
     @discardableResult
     func assertAlertShowing(message: String) -> Screen {
         XCTAssertTrue(alertMessage.exists)
+        XCTAssertEqual(alertMessage.value as? String, message)
+        
+        return self
+    }
+    
+    @discardableResult
+    func assertAlertShowing(messagePrefix: String) -> Screen {
+        XCTAssertTrue(alertMessage.exists)
+        XCTAssertTrue((alertMessage.value as? String)?.hasPrefix(messagePrefix) == true)
         
         return self
     }

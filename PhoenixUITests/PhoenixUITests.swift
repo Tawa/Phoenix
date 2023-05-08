@@ -61,12 +61,15 @@ final class PhoenixUITests: XCTestCase {
             .launch()
             .closeAllWindowsIfNecessary()
             .createNewFile()
-            .openGenerateSheet()
+            .attemptToOpenGenerateSheet()
             .assertAlertShowing(message: "File should be saved first")
             .closeAlertMessage()
             .saveFile()
             .openGenerateSheet()
             .assertAlertNotShown()
-
+            .openModulesFolder()
+            .enableXcodeToggle()
+            .generate()
+            .assertAlertShowing(messagePrefix: "Generated 0 packages")
     }
 }
