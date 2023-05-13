@@ -70,6 +70,6 @@ final class PhoenixUITests: XCTestCase {
             .openModulesFolder()
             .enableXcodeToggle()
             .generate()
-            .assertAlertShowing(messagePrefix: "Generated 0 packages")
+            .assertAlertShowing(messagePrefix: "Success\nGenerated 0 packages")
     }
 }

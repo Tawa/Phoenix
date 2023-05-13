@@ -59,41 +59,36 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            splitView(sidebar: sideView, content: contentView)
-                .alert(item: $viewModel.alertState, content: { alertState in
-                    Alert(title: Text("Error"),
-                          message: Text(alertState.title),
-                          dismissButton: .default(Text("Ok")))
-                }).sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
-                    newComponentSheet(state: state)
-                }.sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
-                    FamilySheet(family: family,
-                                relationViewData: document.familyRelationViewData(familyName: family.wrappedValue.name),
-                                rules: viewModel.allRules(for: family.wrappedValue, document: document),
-                                onDismiss: { viewModel.select(familyName: nil) }
-                    )
-                }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
-                    ConfigurationView(
-                        configuration: $document.projectConfiguration,
-                        relationViewData: document.projectConfigurationRelationViewData()
-                    ) {
-                        viewModel.showingConfigurationPopup = false
-                    }.frame(minHeight: 800)
-                }
-                .sheet(item: $viewModel.demoAppFeatureData, content: { data in
-                    Container.demoAppFeatureView(data)
-                })
-                .sheet(isPresented: $viewModel.showingQuickSelectionSheet, content: {
-                    QuickSelectionSheet(rows: viewModel.quickSelectionRows(document: document))
-                })
-                .popover(item: $viewModel.showingUpdatePopup) { showingUpdatePopup in
-                    updateView(appVersionInfo: showingUpdatePopup)
-                }
-        }
-        .onAppear(perform: viewModel.checkForUpdate)
-        .toolbar(content: toolbarViews)
-        .frame(minWidth: 900)
+        splitView(sidebar: sideView, content: contentView)
+            .sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
+                newComponentSheet(state: state)
+            }.sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
+                FamilySheet(family: family,
+                            relationViewData: document.familyRelationViewData(familyName: family.wrappedValue.name),
+                            rules: viewModel.allRules(for: family.wrappedValue, document: document),
+                            onDismiss: { viewModel.select(familyName: nil) }
+                )
+            }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
+                ConfigurationView(
+                    configuration: $document.projectConfiguration,
+                    relationViewData: document.projectConfigurationRelationViewData()
+                ) {
+                    viewModel.showingConfigurationPopup = false
+                }.frame(minHeight: 800)
+            }
+            .sheet(item: $viewModel.demoAppFeatureData, content: { data in
+                Container.demoAppFeatureView(data)
+            })
+            .sheet(isPresented: $viewModel.showingQuickSelectionSheet, content: {
+                QuickSelectionSheet(rows: viewModel.quickSelectionRows(document: document))
+            })
+            .popover(item: $viewModel.showingUpdatePopup) { showingUpdatePopup in
+                updateView(appVersionInfo: showingUpdatePopup)
+            }
+            .alertSheet(model: $viewModel.alertSheetState)
+            .onAppear(perform: viewModel.checkForUpdate)
+            .toolbar(content: toolbarViews)
+            .frame(minWidth: 900)
     }
     
     // MARK: - Views
@@ -413,6 +408,7 @@ struct ContentView: View {
             fileURL: fileURL,
             getDocument: document,
             onGenerate: viewModel.onGenerateCompletion,
+            onAlert: viewModel.onAlert,
             dependencies: GenerateFeatureDependencies(
                 dataStore: Container.generateFeatureDataStore(),
                 projectGenerator: Container.projectGenerator(),

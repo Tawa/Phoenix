@@ -24,18 +24,6 @@ enum ComponentPopupState: Hashable, Identifiable {
     case remote
 }
 
-enum AlertState: Hashable, Identifiable {
-    var id: Int { hashValue }
-    case errorString(String)
-    
-    var title: String {
-        switch self {
-        case let .errorString(value):
-            return value
-        }
-    }
-}
-
 enum ComponentSelection {
     case component(name: Name)
     case remoteComponent(url: String)
@@ -94,10 +82,10 @@ final class ViewModel: ObservableObject {
     
     @Published private(set) var undoSelectionDisabled: Bool = true
     @Published private(set) var redoSelectionDisabled: Bool = true
-
+    
     // MARK: - Components List
     @Published var componentsListFilter: String? = nil
-
+    
     // MARK: - Family Sheet
     @Published private(set) var selectedFamilyName: String? = nil
     func select(familyName: String?) {
@@ -115,12 +103,12 @@ final class ViewModel: ObservableObject {
     @Published var showingNewComponentPopup: ComponentPopupState? = nil
     @Published var showingDependencySheet: Bool = false
     @Published var showingRemoteDependencySheet: Bool = false
-    @Published var alertState: AlertState? = nil
+    @Published var alertSheetState: AlertSheetModel? = nil
     @Published var demoAppFeatureData: DemoAppFeatureInput? = nil
-
+    
     var appVersionUpdateProvider: AppVersionUpdateProviderProtocol = Container.appVersionUpdateProvider()
     var familyFolderNameProvider: FamilyFolderNameProviderProtocol = Container.familyFolderNameProvider()
-        
+    
     func onConfigurationButton() {
         showingConfigurationPopup = true
     }
@@ -136,7 +124,7 @@ final class ViewModel: ObservableObject {
     func onAddRemoteButton() {
         showingNewComponentPopup = .remote
     }
-
+    
     func checkForUpdate() {
         appUpdateVersionInfoSub = appVersionUpdateProvider
             .appVersionsPublisher()
@@ -149,7 +137,7 @@ final class ViewModel: ObservableObject {
     
     func onGenerateDemoProject(for component: Component, from document: PhoenixDocument, fileURL: URL?) {
         guard let fileURL else {
-            alertState = .errorString("File should be saved first")
+            alertSheetState = .init(text: "File should be saved first")
             return
         }
         
@@ -161,12 +149,16 @@ final class ViewModel: ObservableObject {
                 self?.demoAppFeatureData = nil
             },
             onError: { [weak self] error in
-                self?.alertState = .errorString(error.localizedDescription)
+                self?.alertSheetState = .init(text: error.localizedDescription)
             }
         )
     }
     
     func onGenerateCompletion() {
         objectWillChange.send()
+    }
+    
+    func onAlert(_ string: String) {
+        self.alertSheetState = .init(text: string)
     }
 }
