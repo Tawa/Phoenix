@@ -55,4 +55,21 @@ final class PhoenixUITests: XCTestCase {
             .selectAndAssertContractAndMock(component: wordpressRepository,
                                             andAddDependency: networking, wordpressDataStore)
     }
+    
+    func testPopovers() {
+        screen
+            .launch()
+            .closeAllWindowsIfNecessary()
+            .createNewFile()
+            .attemptToOpenGenerateSheet()
+            .assertAlertShowing(message: "File should be saved first")
+            .closeAlertMessage()
+            .saveFile()
+            .openGenerateSheet()
+            .assertAlertNotShown()
+            .openModulesFolder()
+            .enableXcodeToggle()
+            .generate()
+            .assertAlertShowing(messagePrefix: "Success\nGenerated 0 packages")
+    }
 }

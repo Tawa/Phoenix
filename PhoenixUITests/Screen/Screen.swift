@@ -12,6 +12,22 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
         Screen.app.sheets.firstMatch
     }
     
+    var saveAsNameTextField: XCUIElement {
+        Screen.app.textFields["saveAsNameTextField"]
+    }
+    
+    var okButton: XCUIElement {
+        Screen.app.buttons["OKButton"]
+    }
+    
+    var alertMessage: XCUIElement {
+        Screen.app.staticTexts[AlertMessageIdentifiers.alertMessage.identifier]
+    }
+    
+    var alertOkButton: XCUIElement {
+        Screen.app.buttons[AlertMessageIdentifiers.okButton.identifier]
+    }
+    
     @discardableResult
     func closeAllWindowsIfNecessary() -> Screen {
         while Screen.app.windows.firstMatch.exists {
@@ -43,6 +59,42 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
     @discardableResult
     func maximize() -> Screen {
         window.doubleClick()
+        
+        return self
+    }
+    
+    @discardableResult
+    func saveFile() -> Screen {
+        Screen.app.typeKey("s", modifierFlags: .command)
+        
+        saveAsNameTextField.click()
+        
+        let fileName: String = "Modules\(Int(Date().timeIntervalSince1970)).ash"
+        
+        Screen.app.typeKey("a", modifierFlags: .command)
+        saveAsNameTextField.typeText(fileName)
+        
+        okButton.click()
+        
+        return self
+    }
+    
+    @discardableResult
+    func attemptToOpenGenerateSheet() -> Screen {
+        Screen.app.typeKey(.init("r"), modifierFlags: .command)
+        
+        return self
+    }
+    
+    @discardableResult
+    func openGenerateSheet() -> GenerateSheet {
+        attemptToOpenGenerateSheet()
+        return GenerateSheet()
+    }
+    
+    @discardableResult
+    func closeAlertMessage() -> Screen {
+        alertOkButton.click()
         
         return self
     }
@@ -105,7 +157,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .assertSelector(dependencyName: named, packageName: "Implementation", title: "Contract")
             .assertSelector(dependencyName: named, packageName: "Tests", title: "Mock")
     }
-
+    
     @discardableResult
     func assertContractContractAndMock(forDependency named: String) -> Screen {
         return self
@@ -113,7 +165,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .assertSelector(dependencyName: named, packageName: "Implementation", title: "Contract")
             .assertSelector(dependencyName: named, packageName: "Tests", title: "Mock")
     }
-
+    
     @discardableResult
     func selectDefaultDependenciesContractContractAndMock() -> Screen {
         let dependencyName = "Default Dependencies"
@@ -126,5 +178,28 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .assertSelector(dependencyName: dependencyName, packageName: "Tests", title: "Mock")
         return self
     }
-
+    
+    // MARK: - Assertions
+    @discardableResult
+    func assertAlertNotShown() -> Self {
+        XCTAssertFalse(alertMessage.exists)
+        
+        return self
+    }
+    
+    @discardableResult
+    func assertAlertShowing(message: String) -> Screen {
+        XCTAssertTrue(alertMessage.exists)
+        XCTAssertEqual(alertMessage.value as? String, message)
+        
+        return self
+    }
+    
+    @discardableResult
+    func assertAlertShowing(messagePrefix: String) -> Screen {
+        XCTAssertTrue(alertMessage.exists)
+        XCTAssertTrue((alertMessage.value as? String)?.hasPrefix(messagePrefix) == true)
+        
+        return self
+    }
 }

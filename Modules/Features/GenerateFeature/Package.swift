@@ -16,7 +16,8 @@ let package = Package(
         .package(path: "../../Contracts/DataStores/GenerateFeatureDataStoreContract"),
         .package(path: "../../Contracts/Generators/ProjectGeneratorContract"),
         .package(path: "../../Contracts/Syncers/PBXProjectSyncerContract"),
-        .package(path: "../../Entities/PhoenixDocument")
+        .package(path: "../../Entities/PhoenixDocument"),
+        .package(path: "../../Support/AccessibilityIdentifiers")
     ],
     targets: [
         .target(
@@ -25,7 +26,8 @@ let package = Package(
                 "GenerateFeatureDataStoreContract",
                 "ProjectGeneratorContract",
                 "PBXProjectSyncerContract",
-                "PhoenixDocument"
+                "PhoenixDocument",
+                "AccessibilityIdentifiers"
             ]
         ),
         .testTarget(

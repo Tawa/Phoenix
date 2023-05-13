@@ -1,3 +1,4 @@
+import AccessibilityIdentifiers
 import GenerateFeatureDataStoreContract
 import PBXProjectSyncerContract
 import PhoenixDocument
@@ -22,9 +23,9 @@ public struct GenerateFeatureDependencies {
 
 final class GenerateFeatureViewModel: ObservableObject {
     @Published var generateFeatureInput: GenerateFeatureInput? = nil
-    @Published var alert: AlertSheetModel? = nil
     let fileURL: URL?
     let onGenerate: () -> Void
+    let onAlert: (String) -> Void
     
     let projectGenerator: ProjectGeneratorProtocol
     let pbxProjectSyncer: PBXProjectSyncerProtocol
@@ -74,13 +75,13 @@ final class GenerateFeatureViewModel: ObservableObject {
     var dataStore: GenerateFeatureDataStoreProtocol
     var fileAccessValidator: FileAccessValidatorProtocol
     
-    private var generationStart: Date? = nil
-    
     public init(fileURL: URL?,
                 onGenerate: @escaping () -> Void,
+                onAlert: @escaping (String) -> Void,
                 dependencies: GenerateFeatureDependencies) {
         self.fileURL = fileURL
         self.onGenerate = onGenerate
+        self.onAlert = onAlert
         
         ashFileURLGetter = AshFileURLGetter(fileURL: fileURL)
         xcodeProjURLGetter = XcodeProjURLGetter(fileURL: fileURL)
@@ -89,7 +90,7 @@ final class GenerateFeatureViewModel: ObservableObject {
         dataStore = dependencies.dataStore
         projectGenerator = dependencies.projectGenerator
         pbxProjectSyncer = dependencies.pbxProjectSyncer
-
+        
         guard let fileURL else { return }
         dataStore.getModulesFolderURL(forFileURL: fileURL)
             .map {
@@ -103,7 +104,7 @@ final class GenerateFeatureViewModel: ObservableObject {
             }
         isSkipXcodeProjectOn = dataStore.getShouldSkipXcodeProject(forFileURL: fileURL)
     }
-
+    
     func onOpenModulesFolder() {
         ashFileURLGetter.getUrl().map { modulesURL = $0 }
     }
@@ -131,16 +132,16 @@ final class GenerateFeatureViewModel: ObservableObject {
     // MARK: - Private
     private func getFileURL(_ completion: (URL) -> Void) {
         guard let fileURL else {
-            alert = .init(text: "File should be saved first")
+            onAlert("File should be saved first")
             return
         }
         completion(fileURL)
     }
     
     private func onGenerate(document: PhoenixDocument, fileURL: URL) {
-        generationStart = .now
+        let generationStart: Date = .now
         guard let modulesURL = modulesURL else {
-            alert = .init(text: "Could not find path for modules folder.")
+            onAlert("Could not find path for modules folder.")
             generateFeatureInput = nil
             return
         }
@@ -153,18 +154,19 @@ final class GenerateFeatureViewModel: ObservableObject {
                 count: document.families
                     .flatMap(\.components)
                     .flatMap(\.modules.keys)
-                    .count
+                    .count,
+                duration: generationStart.distance(to: Date())
             )
         } catch {
-            alert = .init(text: "Error generating project: \(error)")
+            onAlert("Error generating project: \(error)")
         }
         generateFeatureInput = nil
         onGenerate()
     }
-
+    
     private func generateXcodeProject(for document: PhoenixDocument, fileURL: URL) throws {
         guard let xcodeProjectURL = xcodeProjectURL else {
-            alert = .init(text: "Xcode Project URL missing")
+            onAlert("Xcode Project URL missing")
             generateFeatureInput = nil
             return
         }
@@ -175,31 +177,31 @@ final class GenerateFeatureViewModel: ObservableObject {
         try pbxProjectSyncer.sync(document: document, at: fileURL, withProjectAt: xcodeFileURL)
     }
     
-    private func displaySuccessMessage(count: Int) {
+    private func displaySuccessMessage(count: Int, duration: TimeInterval) {
         var successMessage: String = "Success"
         successMessage += "\n"
         successMessage += "Generated \(count) \(count == 1 ? "package" : "packages")"
-        if let generationStart {
-            let deltaTime = round(1000 * generationStart.distance(to: Date())) / 1000
-            successMessage += " in \(deltaTime) seconds"
-        }
-        alert = .init(text: successMessage)
+        let deltaTime = round(1000 * duration) / 1000
+        successMessage += " in \(deltaTime) seconds"
+        onAlert(successMessage)
     }
 }
 
 public struct GenerateFeatureView: View {
-    @StateObject private var viewModel: GenerateFeatureViewModel
+    @ObservedObject private var viewModel: GenerateFeatureViewModel
     let getDocument: () -> PhoenixDocument
     
     public init(
         fileURL: URL?,
         getDocument: @escaping @autoclosure () -> PhoenixDocument,
         onGenerate: @escaping () -> Void,
+        onAlert: @escaping (String) -> Void,
         dependencies: GenerateFeatureDependencies
     ) {
         self._viewModel = .init(wrappedValue: .init(
             fileURL: fileURL,
             onGenerate: onGenerate,
+            onAlert: onAlert,
             dependencies: dependencies
         ))
         self.getDocument = getDocument
@@ -227,14 +229,13 @@ public struct GenerateFeatureView: View {
                 )
             )
         })
-        .alertSheet(model: $viewModel.alert)
         Button(action: onGenerate) {
             Image(systemName: "play")
         }
         .disabled(!viewModel.isGenerateEnabled)
         .keyboardShortcut(.init("R"), modifiers: [.command, .shift])
     }
-            
+    
     // MARK: - Private
     private func onGenerate() {
         viewModel.onGenerate(document: getDocument())

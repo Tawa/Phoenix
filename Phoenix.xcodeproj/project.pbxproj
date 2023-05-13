@@ -39,6 +39,8 @@
 		38E251332837EC73002FFA31 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E251322837EC73002FFA31 /* FilterView.swift */; };
 		38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */; };
 		38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */; };
+		B20F17412A067ACC004391B0 /* GenerateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F17402A067ACC004391B0 /* GenerateSheet.swift */; };
+		B20F9D502A0FC1C9005F99BB /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F9D4F2A0FC154005F99BB /* AlertSheet.swift */; };
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
 		B216D3A12926EDC6005EDBB5 /* RelationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B216D3A02926EDC6005EDBB5 /* RelationView.swift */; };
 		B21BF48D28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */; };
@@ -199,6 +201,8 @@
 		B2071ECA29B66BBD003E509E /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
 		B2071ECB29B66C5E003E509E /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		B2071ECC29B69BA4003E509E /* EnableGitHubReleaseTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableGitHubReleaseTarget.swift; sourceTree = "<group>"; };
+		B20F17402A067ACC004391B0 /* GenerateSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateSheet.swift; sourceTree = "<group>"; };
+		B20F9D4F2A0FC154005F99BB /* AlertSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSheet.swift; sourceTree = "<group>"; };
 		B216D3A02926EDC6005EDBB5 /* RelationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationView.swift; sourceTree = "<group>"; };
 		B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+AppVersion.swift"; sourceTree = "<group>"; };
 		B233DB6828EB5BC000243D58 /* PhoenixUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhoenixUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -450,6 +454,7 @@
 		38C7D144280888E800E2675B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B20F9D4E2A0FC154005F99BB /* AlertSheet */,
 				38E0B2F92815702E00B5992D /* ComponentDependenciesSheet.swift */,
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
 				38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */,
@@ -544,6 +549,14 @@
 			path = Syncers;
 			sourceTree = "<group>";
 		};
+		B20F9D4E2A0FC154005F99BB /* AlertSheet */ = {
+			isa = PBXGroup;
+			children = (
+				B20F9D4F2A0FC154005F99BB /* AlertSheet.swift */,
+			);
+			path = AlertSheet;
+			sourceTree = "<group>";
+		};
 		B233DB6928EB5BC000243D58 /* PhoenixUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -597,6 +610,7 @@
 				B2E6318428F2BF5400C71866 /* FamilySheet.swift */,
 				B2E1D48629425E8700FF07DE /* XCUIElement+Extensions.swift */,
 				B2EFE83728ECC1AC005DBE78 /* DependenciesSheet.swift */,
+				B20F17402A067ACC004391B0 /* GenerateSheet.swift */,
 				B2EFE83928ECD0CE005DBE78 /* DependencyScreen.swift */,
 				B2F407C728EB8C27007E7434 /* ToolbarIdentifiers.swift */,
 				B2F407C928EB8C40007E7434 /* NewComponentSheetIdentifiers.swift */,
@@ -952,6 +966,7 @@
 				B2EDFE6229574954005BB99C /* TargetTypesView.swift in Sources */,
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
 				38BCCC952854A0C000E928CA /* CompositionRoot+RelativeURLProvider.swift in Sources */,
+				B20F9D502A0FC1C9005F99BB /* AlertSheet.swift in Sources */,
 				3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */,
 				B2EDFE4F295596D8005BB99C /* ViewModel+RemoteComponentsList.swift in Sources */,
 				B21BF48D28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift in Sources */,
@@ -980,6 +995,7 @@
 				B2EFE83628ECC0CF005DBE78 /* ComponentScreen.swift in Sources */,
 				B2F407C228EB8000007E7434 /* Screen.swift in Sources */,
 				B2F407CF28EB94CC007E7434 /* ComponentsList.swift in Sources */,
+				B20F17412A067ACC004391B0 /* GenerateSheet.swift in Sources */,
 				B2E6318528F2BF5400C71866 /* FamilySheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
