@@ -2,6 +2,19 @@
   "localDependencies" : [
     {
       "name" : {
+        "family" : "Provider",
+        "given" : "LocalFileURL"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
+    },
+    {
+      "name" : {
         "family" : "Validator",
         "given" : "Project"
       },

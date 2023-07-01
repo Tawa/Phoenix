@@ -39,6 +39,8 @@
 		38E251332837EC73002FFA31 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E251322837EC73002FFA31 /* FilterView.swift */; };
 		38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513C28392CF9002FFA31 /* IdentifiableWithSubtype.swift */; };
 		38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */; };
+		4B37C5002A50B6F600887128 /* LocalFileURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 4B37C4FF2A50B6F600887128 /* LocalFileURLProvider */; };
+		4B37C5022A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B37C5012A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift */; };
 		B20F17412A067ACC004391B0 /* GenerateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F17402A067ACC004391B0 /* GenerateSheet.swift */; };
 		B20F9D502A0FC1C9005F99BB /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F9D4F2A0FC154005F99BB /* AlertSheet.swift */; };
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
@@ -153,6 +155,7 @@
 		1F90EE55889EB973A1F4A83A /* RelativeURLProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProviderContract; sourceTree = "<group>"; };
 		29DC1384DF456B933D03EBA9 /* AppVersionProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProviderContract; sourceTree = "<group>"; };
 		2B0CA06482809DF6A85E8004 /* GenerateFeature */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GenerateFeature; sourceTree = "<group>"; };
+		2C6C37E379762B8756711E29 /* LocalFileURLProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LocalFileURLProvider; sourceTree = "<group>"; };
 		3810D8CA2809811F006E7EE3 /* ComponentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentView.swift; sourceTree = "<group>"; };
 		3810D8CC280990AF006E7EE3 /* ComponentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentsList.swift; sourceTree = "<group>"; };
 		3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentListItem.swift; sourceTree = "<group>"; };
@@ -187,6 +190,7 @@
 		38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableWithTitle.swift; sourceTree = "<group>"; };
 		3AC25B88077E4AB50EB60A99 /* AccessibilityIdentifiers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AccessibilityIdentifiers; sourceTree = "<group>"; };
 		3AC871CD675846430EFB4047 /* PackageStringProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageStringProvider; sourceTree = "<group>"; };
+		4B37C5012A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+LocalFileURLProvider.swift"; sourceTree = "<group>"; };
 		4B57167F7F7325C28B04EF58 /* DemoAppGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGeneratorContract; sourceTree = "<group>"; };
 		51991ED64782A59B5A9A0E7F /* RelativeURLProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProvider; sourceTree = "<group>"; };
 		5669FA7E1C90B8D304C1121D /* ProjectGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectGenerator; sourceTree = "<group>"; };
@@ -194,6 +198,7 @@
 		75F2909D8CE5D60A75D05DD9 /* PBXProjectSyncer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PBXProjectSyncer; sourceTree = "<group>"; };
 		7630EE55C64753273E2BF13A /* SwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SwiftPackage; sourceTree = "<group>"; };
 		859FC6397437A78F21391163 /* ProjectValidatorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectValidatorContract; sourceTree = "<group>"; };
+		8D49F7342B29AFF62AA1C4BE /* LocalFileURLProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LocalFileURLProviderContract; sourceTree = "<group>"; };
 		981295FCE3B52E97779A2186 /* DocumentCoder */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoder; sourceTree = "<group>"; };
 		9FE96A2D3B3268D8FAD977D1 /* ProjectValidator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectValidator; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
@@ -267,6 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				388B77F92857D4CE0038D4F4 /* DocumentCoder in Frameworks */,
+				4B37C5002A50B6F600887128 /* LocalFileURLProvider in Frameworks */,
 				B2F407C428EB8136007E7434 /* AccessibilityIdentifiers in Frameworks */,
 				B2F5B85528C143A600282672 /* PBXProjectSyncer in Frameworks */,
 				388B77F12857D2990038D4F4 /* PhoenixDocument in Frameworks */,
@@ -420,11 +426,12 @@
 			isa = PBXGroup;
 			children = (
 				B21BF48C28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift */,
-				B2F4B1BB29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift */,
 				B2F4B1A529B489C6008DBAB1 /* CompositionRoot+ComponentDetailsProvider.swift */,
 				B2F4B1A929B48A47008DBAB1 /* CompositionRoot+DemoAppGenerator.swift */,
 				B2F4B1AB29B48A6B008DBAB1 /* CompositionRoot+DocumentCoder.swift */,
+				B2F4B1BB29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift */,
 				B2F4B1AD29B48A92008DBAB1 /* CompositionRoot+GenerateFeatureDataStore.swift */,
+				4B37C5012A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift */,
 				B2F4B1AF29B48AC5008DBAB1 /* CompositionRoot+PackageGenerator.swift */,
 				B2F4B1A729B489F3008DBAB1 /* CompositionRoot+PackageStringProvider.swift */,
 				B2F4B1B129B48AE7008DBAB1 /* CompositionRoot+PBXProjectSyncer.swift */,
@@ -686,6 +693,7 @@
 				C6203B95ABB73C7D223C834F /* PackageStringProviderContract */,
 				1F90EE55889EB973A1F4A83A /* RelativeURLProviderContract */,
 				B4F18C5B17A0862878E78D80 /* ComponentDetailsProviderContract */,
+				8D49F7342B29AFF62AA1C4BE /* LocalFileURLProviderContract */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -705,6 +713,7 @@
 				3AC871CD675846430EFB4047 /* PackageStringProvider */,
 				51991ED64782A59B5A9A0E7F /* RelativeURLProvider */,
 				C7DFFFA4F4362ABC8A50059A /* ComponentDetailsProvider */,
+				2C6C37E379762B8756711E29 /* LocalFileURLProvider */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -762,6 +771,7 @@
 				B27DC48E29AE4B5E003A3E98 /* ProjectValidator */,
 				B27DC49029AE58B1003A3E98 /* GenerateFeatureDataStore */,
 				B298E81029B3DB1F0008794A /* ArgumentParser */,
+				4B37C4FF2A50B6F600887128 /* LocalFileURLProvider */,
 			);
 			productName = Phoenix;
 			productReference = 3873E5A02804C509000BCB03 /* Phoenix.app */;
@@ -948,6 +958,7 @@
 				388DA8A6281862630066086A /* CustomToggle.swift in Sources */,
 				381855762819CACD00BF6696 /* ResourcesView.swift in Sources */,
 				B2F4B1A629B489C6008DBAB1 /* CompositionRoot+ComponentDetailsProvider.swift in Sources */,
+				4B37C5022A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift in Sources */,
 				B2BD9D3C29602A570048D505 /* MentionsView.swift in Sources */,
 				B2F4B1BC29B502B3008DBAB1 /* CompositionRoot+EnvironmentVariables.swift in Sources */,
 				B29BE1042943D37C00675860 /* ViewModel+Selection.swift in Sources */,
@@ -1165,7 +1176,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 4.2.3;
+				MARKETING_VERSION = 4.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1199,7 +1210,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 4.2.3;
+				MARKETING_VERSION = 4.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tawanicolas.phoenix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1423,6 +1434,10 @@
 		38BCCC9128549BAE00E928CA /* AppVersionProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppVersionProvider;
+		};
+		4B37C4FF2A50B6F600887128 /* LocalFileURLProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LocalFileURLProvider;
 		};
 		B213A90C28C7CA13005AFC91 /* ProjectGenerator */ = {
 			isa = XCSwiftPackageProductDependency;

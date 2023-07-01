@@ -15,6 +15,7 @@ let package = Package(
     dependencies: [
         .package(path: "../../Contracts/DataStores/GenerateFeatureDataStoreContract"),
         .package(path: "../../Contracts/Generators/ProjectGeneratorContract"),
+        .package(path: "../../Contracts/Providers/LocalFileURLProviderContract"),
         .package(path: "../../Contracts/Syncers/PBXProjectSyncerContract"),
         .package(path: "../../Entities/PhoenixDocument"),
         .package(path: "../../Support/AccessibilityIdentifiers")
@@ -25,6 +26,7 @@ let package = Package(
             dependencies: [
                 "GenerateFeatureDataStoreContract",
                 "ProjectGeneratorContract",
+                "LocalFileURLProviderContract",
                 "PBXProjectSyncerContract",
                 "PhoenixDocument",
                 "AccessibilityIdentifiers"

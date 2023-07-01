@@ -1,13 +1,18 @@
 import AppKit
 import Foundation
+import LocalFileURLProviderContract
 
-struct XcodeProjURLGetter: LocalFileURLGetter {
-    let fileURL: URL?
+public struct XcodeProjURLProvider: LocalFileURLProviderProtocol {
+    let initialURL: URL?
     
-    func getUrl() -> URL? {
+    public init(initialURL: URL?) {
+        self.initialURL = initialURL
+    }
+    
+    public func localFileURL() -> URL? {
         let openPanel = NSOpenPanel()
         
-        openPanel.directoryURL = fileURL?.deletingLastPathComponent()
+        openPanel.directoryURL = initialURL?.deletingLastPathComponent()
         openPanel.allowsMultipleSelection = false
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = false

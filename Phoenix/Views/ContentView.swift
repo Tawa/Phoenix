@@ -88,7 +88,7 @@ struct ContentView: View {
             .alertSheet(model: $viewModel.alertSheetState)
             .onAppear(perform: viewModel.checkForUpdate)
             .toolbar(content: toolbarViews)
-            .frame(minWidth: 900)
+            .frame(minWidth: 1000, minHeight: 600)
     }
     
     // MARK: - Views
@@ -400,7 +400,9 @@ struct ContentView: View {
             document: document,
             fileURL: fileURL,
             dependencies: ValidationFeatureDependencies(
+                ashFileURLProvider: Container.ashFileURLProvider(fileURL),
                 dataStore: Container.generateFeatureDataStore(),
+                onAshFileLoad: { _ in viewModel.objectWillChange.send() },
                 projectValidator: Container.projectValidator()
             )
         )
@@ -410,9 +412,11 @@ struct ContentView: View {
             onGenerate: viewModel.onGenerateCompletion,
             onAlert: viewModel.onAlert,
             dependencies: GenerateFeatureDependencies(
+                ashFileURLProvider: Container.ashFileURLProvider(fileURL),
                 dataStore: Container.generateFeatureDataStore(),
                 projectGenerator: Container.projectGenerator(),
-                pbxProjectSyncer: Container.pbxProjSyncer()
+                pbxProjectSyncer: Container.pbxProjSyncer(),
+                xcodeProjURLProvider: Container.xcodeProjURLProvider(fileURL)
             )
         )
         if
