@@ -13,12 +13,14 @@ let package = Package(
             targets: ["ValidationFeature"])
     ],
     dependencies: [
+        .package(path: "../../Contracts/Providers/LocalFileURLProviderContract"),
         .package(path: "../../Contracts/Validators/ProjectValidatorContract")
     ],
     targets: [
         .target(
             name: "ValidationFeature",
             dependencies: [
+                "LocalFileURLProviderContract",
                 "ProjectValidatorContract"
             ]
         ),

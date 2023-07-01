@@ -410,9 +410,11 @@ struct ContentView: View {
             onGenerate: viewModel.onGenerateCompletion,
             onAlert: viewModel.onAlert,
             dependencies: GenerateFeatureDependencies(
+                ashFileURLGetter: Container.ashFileURLProvider(fileURL),
                 dataStore: Container.generateFeatureDataStore(),
                 projectGenerator: Container.projectGenerator(),
-                pbxProjectSyncer: Container.pbxProjSyncer()
+                pbxProjectSyncer: Container.pbxProjSyncer(),
+                xcodeProjURLGetter: Container.xcodeProjURLProvider(fileURL)
             )
         )
         if

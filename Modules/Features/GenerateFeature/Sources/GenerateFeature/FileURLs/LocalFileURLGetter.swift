@@ -1,5 +1,5 @@
-import Foundation
-
-protocol LocalFileURLGetter {
-    func getUrl() -> URL?
-}
+//import Foundation
+//
+//protocol LocalFileURLGetter {
+//    func getUrl() -> URL?
+//}

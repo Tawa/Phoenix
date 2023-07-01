@@ -28,6 +28,19 @@
     },
     {
       "name" : {
+        "family" : "Provider",
+        "given" : "LocalFileURL"
+      },
+      "targetTypes" : [
+        {
+          "isTests" : false,
+          "name" : "Implementation"
+        },
+        "Contract"
+      ]
+    },
+    {
+      "name" : {
         "family" : "Syncer",
         "given" : "PBXProject"
       },
