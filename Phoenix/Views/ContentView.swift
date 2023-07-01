@@ -88,7 +88,7 @@ struct ContentView: View {
             .alertSheet(model: $viewModel.alertSheetState)
             .onAppear(perform: viewModel.checkForUpdate)
             .toolbar(content: toolbarViews)
-            .frame(minWidth: 900)
+            .frame(minWidth: 1000, minHeight: 600)
     }
     
     // MARK: - Views
