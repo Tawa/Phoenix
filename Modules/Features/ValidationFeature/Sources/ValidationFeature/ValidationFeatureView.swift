@@ -1,24 +1,33 @@
 import GenerateFeatureDataStoreContract
+import LocalFileURLProviderContract
 import PhoenixDocument
 import ProjectValidatorContract
 import SwiftUI
 
+struct ValidationPopoverAction {
+    let action: () -> Void
+    let title: String
+}
+
 struct ValidationPopover: Identifiable {
     let id: String = UUID().uuidString
     let text: String
+    let action: ValidationPopoverAction?
 }
 
 enum ValidationState {
     case loading
     case warning(String)
-    case error(String)
+    case error(String, action: ValidationPopoverAction?)
     case valid
 }
 
 final class ValidationFeatureViewModel: ObservableObject {
+    let ashFileURLProvider: LocalFileURLProviderProtocol
     let document: PhoenixDocument
     let fileURL: URL?
     let dataStore: GenerateFeatureDataStoreProtocol
+    let onAshFileLoad: (URL?) -> Void
     let projectValidator: ProjectValidatorProtocol
    
     @Published var state: ValidationState = .loading
@@ -29,22 +38,34 @@ final class ValidationFeatureViewModel: ObservableObject {
             return "Validating Project"
         case .warning(let string):
             return string
-        case .error(let string):
+        case .error(let string, _):
             return string
         case .valid:
             return "Packages and ash file are valid"
         }
     }
+    private var popoverAction: ValidationPopoverAction? {
+        switch state {
+        case .loading, .warning, .valid:
+            return nil
+        case .error(_, let action):
+            return action
+        }
+    }
     
     init(
+        ashFileURLProvider: LocalFileURLProviderProtocol,
         document: PhoenixDocument,
         fileURL: URL?,
         dataStore: GenerateFeatureDataStoreProtocol,
+        onAshFileLoad: @escaping (URL?) -> Void,
         projectValidator: ProjectValidatorProtocol
     ) {
+        self.ashFileURLProvider = ashFileURLProvider
         self.document = document
         self.fileURL = fileURL
         self.dataStore = dataStore
+        self.onAshFileLoad = onAshFileLoad
         self.projectValidator = projectValidator
         
         validate()
@@ -59,7 +80,7 @@ final class ValidationFeatureViewModel: ObservableObject {
         guard let fileURL
         else {
             Task {
-                await update(state: .error("Unsaved File"))
+                await update(state: .error("Unsaved File", action: nil))
             }
             return
         }
@@ -67,7 +88,7 @@ final class ValidationFeatureViewModel: ObservableObject {
         guard let modulesFolderURL = dataStore.getModulesFolderURL(forFileURL: fileURL)
         else {
             Task {
-                await update(state: .error("Missing Modules Folder URL"))
+                await update(state: .error("Missing Modules Folder URL", action: nil))
             }
             return
         }
@@ -81,15 +102,17 @@ final class ValidationFeatureViewModel: ObservableObject {
                 )
                 await update(state: .valid)
             } catch ProjectValidatorError.accessIsNotGranted {
-                await update(state: .error("Access to modules folder is not granted"))
+                await update(state: .error("Access to modules folder is not granted",
+                                           action: .init(action: self.grantAccessAction,
+                                                         title: "Grant Access")))
             } catch ProjectValidatorError.missingFiles {
-                await update(state: .error("Could not read local file"))
+                await update(state: .error("Could not read local file", action: nil))
             } catch ProjectValidatorError.unsavedChanges {
-                await update(state: .error("Unsaved Changes"))
+                await update(state: .error("Unsaved Changes", action: nil))
             } catch PackagesValidatorError.projectOutOfSync(let warningText) {
                 await update(state: .warning(warningText))
             } catch {
-                await update(state: .error("\(error)"))
+                await update(state: .error("\(error)", action: nil))
             }
         }
     }
@@ -107,17 +130,28 @@ final class ValidationFeatureViewModel: ObservableObject {
     }
     
     func onTap() {
-        self.presentedPopover = .init(text: popoverText)
+        self.presentedPopover = .init(text: popoverText, action: popoverAction)
+    }
+    
+    private func grantAccessAction() {
+        let localFileURL = self.ashFileURLProvider.localFileURL()
+        onAshFileLoad(localFileURL)
     }
 }
 
 public struct ValidationFeatureDependencies {
+    let ashFileURLProvider: LocalFileURLProviderProtocol
     let dataStore: GenerateFeatureDataStoreProtocol
+    let onAshFileLoad: (URL?) -> Void
     let projectValidator: ProjectValidatorProtocol
     
-    public init(dataStore: GenerateFeatureDataStoreProtocol,
+    public init(ashFileURLProvider: LocalFileURLProviderProtocol,
+                dataStore: GenerateFeatureDataStoreProtocol,
+                onAshFileLoad: @escaping (URL?) -> Void,
                 projectValidator: ProjectValidatorProtocol) {
+        self.ashFileURLProvider = ashFileURLProvider
         self.dataStore = dataStore
+        self.onAshFileLoad = onAshFileLoad
         self.projectValidator = projectValidator
     }
 }
@@ -132,9 +166,11 @@ public struct ValidationFeatureView: View {
     ) {
         _viewModel = .init(
             initialValue: ValidationFeatureViewModel(
+                ashFileURLProvider: dependencies.ashFileURLProvider,
                 document: document,
                 fileURL: fileURL,
                 dataStore: dependencies.dataStore,
+                onAshFileLoad: dependencies.onAshFileLoad,
                 projectValidator: dependencies.projectValidator
             )
         )
@@ -147,7 +183,7 @@ public struct ValidationFeatureView: View {
                 ProgressView()
                     .controlSize(.small)
                     .help("Validating \"Package.swift\" files")
-            case let .error(text):
+            case let .error(text, _):
                 Image(systemName: "power.circle")
                     .foregroundColor(.red)
                     .help("Error: \(text)")
@@ -163,8 +199,12 @@ public struct ValidationFeatureView: View {
         }
         .onTapGesture(perform: viewModel.onTap)
         .popover(item: $viewModel.presentedPopover) { popover in
-            Text(popover.text)
-                .padding()
+            HStack {
+                Text(popover.text)
+                if let action = popover.action {
+                    Button(action.title, action: action.action)
+                }
+            }.padding()
         }
     }
 }

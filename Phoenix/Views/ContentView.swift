@@ -400,7 +400,9 @@ struct ContentView: View {
             document: document,
             fileURL: fileURL,
             dependencies: ValidationFeatureDependencies(
+                ashFileURLProvider: Container.ashFileURLProvider(fileURL),
                 dataStore: Container.generateFeatureDataStore(),
+                onAshFileLoad: { _ in viewModel.objectWillChange.send() },
                 projectValidator: Container.projectValidator()
             )
         )
@@ -410,11 +412,11 @@ struct ContentView: View {
             onGenerate: viewModel.onGenerateCompletion,
             onAlert: viewModel.onAlert,
             dependencies: GenerateFeatureDependencies(
-                ashFileURLGetter: Container.ashFileURLProvider(fileURL),
+                ashFileURLProvider: Container.ashFileURLProvider(fileURL),
                 dataStore: Container.generateFeatureDataStore(),
                 projectGenerator: Container.projectGenerator(),
                 pbxProjectSyncer: Container.pbxProjSyncer(),
-                xcodeProjURLGetter: Container.xcodeProjURLProvider(fileURL)
+                xcodeProjURLProvider: Container.xcodeProjURLProvider(fileURL)
             )
         )
         if

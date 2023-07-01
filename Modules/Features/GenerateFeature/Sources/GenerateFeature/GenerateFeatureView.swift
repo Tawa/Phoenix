@@ -7,24 +7,24 @@ import ProjectGeneratorContract
 import SwiftUI
 
 public struct GenerateFeatureDependencies {
-    let ashFileURLGetter: LocalFileURLProviderProtocol
+    let ashFileURLProvider: LocalFileURLProviderProtocol
     let dataStore: GenerateFeatureDataStoreProtocol
     let projectGenerator: ProjectGeneratorProtocol
     let pbxProjectSyncer: PBXProjectSyncerProtocol
-    let xcodeProjURLGetter: LocalFileURLProviderProtocol
+    let xcodeProjURLProvider: LocalFileURLProviderProtocol
     
     public init(
-        ashFileURLGetter: LocalFileURLProviderProtocol,
+        ashFileURLProvider: LocalFileURLProviderProtocol,
         dataStore: GenerateFeatureDataStoreProtocol,
         projectGenerator: ProjectGeneratorProtocol,
         pbxProjectSyncer: PBXProjectSyncerProtocol,
-        xcodeProjURLGetter: LocalFileURLProviderProtocol
+        xcodeProjURLProvider: LocalFileURLProviderProtocol
     ) {
-        self.ashFileURLGetter = ashFileURLGetter
+        self.ashFileURLProvider = ashFileURLProvider
         self.dataStore = dataStore
         self.projectGenerator = projectGenerator
         self.pbxProjectSyncer = pbxProjectSyncer
-        self.xcodeProjURLGetter = xcodeProjURLGetter
+        self.xcodeProjURLProvider = xcodeProjURLProvider
     }
 }
 
@@ -77,8 +77,8 @@ final class GenerateFeatureViewModel: ObservableObject {
     }
     
     // File URLs Managers
-    var ashFileURLGetter: LocalFileURLProviderProtocol
-    var xcodeProjURLGetter: LocalFileURLProviderProtocol
+    var ashFileURLProvider: LocalFileURLProviderProtocol
+    var xcodeProjURLProvider: LocalFileURLProviderProtocol
     var dataStore: GenerateFeatureDataStoreProtocol
     var fileAccessValidator: FileAccessValidatorProtocol
     
@@ -90,8 +90,8 @@ final class GenerateFeatureViewModel: ObservableObject {
         self.onGenerate = onGenerate
         self.onAlert = onAlert
         
-        ashFileURLGetter = dependencies.ashFileURLGetter
-        xcodeProjURLGetter = dependencies.xcodeProjURLGetter
+        ashFileURLProvider = dependencies.ashFileURLProvider
+        xcodeProjURLProvider = dependencies.xcodeProjURLProvider
         fileAccessValidator = FileAccessValidator()
         
         dataStore = dependencies.dataStore
@@ -113,11 +113,11 @@ final class GenerateFeatureViewModel: ObservableObject {
     }
     
     func onOpenModulesFolder() {
-        ashFileURLGetter.localFileURL().map { modulesURL = $0 }
+        ashFileURLProvider.localFileURL().map { modulesURL = $0 }
     }
     
     func onOpenXcodeProject() {
-        xcodeProjURLGetter.localFileURL().map { xcodeProjectURL = $0 }
+        xcodeProjURLProvider.localFileURL().map { xcodeProjectURL = $0 }
     }
     
     func onSkipXcodeProject(_ value: Bool) {
