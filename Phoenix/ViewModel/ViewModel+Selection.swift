@@ -82,6 +82,42 @@ extension ViewModel {
         )
     }
     
+    // MARK: - Macros
+    func selectNextMacro(ids: [MacroComponent.ID]) {
+        guard
+            let selectedMacroId = selection?.macroId,
+            let index = ids.firstIndex(of: selectedMacroId)
+        else {
+            ids.first.map(select(macro:))
+            return
+        }
+        let nextIndex = (index + 1) % ids.count
+        select(macro: ids[nextIndex])
+    }
+    
+    func selectPreviousMacro(ids: [String]) {
+        guard
+            let selectedMacroId = selection?.macroId,
+            let index = ids.firstIndex(of: selectedMacroId)
+        else {
+            ids.first.map(select(macro:))
+            return
+        }
+        let nextIndex = index > 0 ? index - 1 : ids.count - 1
+        select(macro: ids[nextIndex])
+    }
+
+    func selectedMacro(document: Binding<PhoenixDocument>) -> Binding<MacroComponent>? {
+        guard
+            let selectedMacroId = selection?.macroId,
+            let macroIndex = document.wrappedValue.macrosComponents.firstIndex(where: { $0.id == selectedMacroId })
+        else { return nil }
+        return Binding(
+            get: { document.wrappedValue.macrosComponents[macroIndex] },
+            set: { document.wrappedValue.macrosComponents[macroIndex] = $0 }
+        )
+    }
+    
     // MARK: - Family
     func selectedFamily(document: Binding<PhoenixDocument>) -> Binding<Family>? {
         guard

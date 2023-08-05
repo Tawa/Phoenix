@@ -9,7 +9,7 @@ import SwiftPackage
 import ValidationFeature
 
 enum ListSelection: String, Hashable, CaseIterable, Identifiable {
-    static var allCases: [ListSelection] { [.components, .remote] }
+    static var allCases: [ListSelection] { [.components, .remote, .macros] }
     var id: String { rawValue }
     var title: String { rawValue.capitalized }
     var keyboardShortcut: KeyEquivalent {
@@ -18,13 +18,16 @@ enum ListSelection: String, Hashable, CaseIterable, Identifiable {
             return "1"
         case .remote:
             return "2"
-        case .plugins:
+        case .macros:
             return "3"
+        case .plugins:
+            return "4"
         }
     }
     
     case components
     case remote
+    case macros
     case plugins
 }
 
@@ -144,6 +147,8 @@ struct ContentView: View {
                     componentsList()
                 case .remote:
                     remoteComponentsList()
+                case .macros:
+                    macrosList()
                 case .plugins:
                     pluginsList()
                 }
@@ -184,7 +189,24 @@ struct ContentView: View {
             )
         }
     }
-    
+
+    @ViewBuilder private func macrosList() -> some View {
+        VStack(alignment: .leading) {
+            Button(action: viewModel.onAddMacroButton) {
+                Label("New Macro", systemImage: "plus.circle.fill")
+            }
+            .keyboardShortcut("A", modifiers: [.command, .shift])
+            .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
+            .padding(.horizontal)
+            MacrosList(
+                selected: viewModel.selection?.macroId,
+                rows: viewModel.macrosList(document: document),
+                onSelect: viewModel.select(macro:)
+            )
+            Spacer()
+        }
+    }
+
     @ViewBuilder private func pluginsList() -> some View {
         VStack(alignment: .leading) {
             Button(action: viewModel.onAddButton) {
@@ -213,6 +235,8 @@ struct ContentView: View {
                         }
                 } else if let selectedRemoteComponentBinding = viewModel.selectedRemoteComponent(document: $document) {
                     remoteComponentView(for: selectedRemoteComponentBinding)
+                } else if let selectedMacroBinding = viewModel.selectedMacro(document: $document) {
+                    macroComponentView(for: selectedMacroBinding)
                 } else {
                     HStack(alignment: .top) {
                         VStack(alignment: .leading) {
@@ -264,6 +288,13 @@ struct ContentView: View {
         )
     }
     
+    @ViewBuilder private func macroComponentView(for macroComponent: Binding<MacroComponent>) -> some View {
+        MacroComponentView(
+            macroComponent: macroComponent,
+            onRemove: { document.removeMacroComponent(withName: macroComponent.wrappedValue.name) }
+        )
+    }
+    
     @ViewBuilder private func detailView() -> some View {
         if inspectorSelection == .none || viewModel.selection == nil {
             EmptyView()
@@ -283,6 +314,8 @@ struct ContentView: View {
             return document.title(forComponentNamed: name)
         case let .remoteComponent(url):
             return url
+        case let .macro(name):
+            return name
         case .none:
             return ""
         }
@@ -294,6 +327,8 @@ struct ContentView: View {
             return document.mentions(forName: name)
         case let .remoteComponent(url):
             return document.mentions(forURL: url)
+        case let .macro(name):
+            return document.mentions(forMacro: name)
         case .none:
             return []
         }
@@ -319,6 +354,14 @@ struct ContentView: View {
         case .remote:
             NewRemoteComponentSheet { url, version in
                 try document.addNewRemoteComponent(withURL: url, version: version)
+                viewModel.showingNewComponentPopup = nil
+            } onDismiss: {
+                viewModel.showingNewComponentPopup = nil
+            }
+        
+        case .macro:
+            NewMacroComponentSheet { name in
+                try document.addNewMacroComponent(with: name)
                 viewModel.showingNewComponentPopup = nil
             } onDismiss: {
                 viewModel.showingNewComponentPopup = nil
@@ -480,6 +523,8 @@ struct ContentView: View {
             viewModel.selectNextComponent(names: document.families.flatMap(\.components).map(\.name))
         case .remote:
             viewModel.selectNextRemoteComponent(remoteComponents: document.remoteComponents)
+        case .macros:
+            viewModel.selectNextMacro(ids: document.macrosComponents.map(\.id))
         case .plugins:
             break
         }
@@ -491,6 +536,8 @@ struct ContentView: View {
             viewModel.selectPreviousComponent(names: document.families.flatMap(\.components).map(\.name))
         case .remote:
             viewModel.selectPreviousRemoteComponent(remoteComponents: document.remoteComponents)
+        case .macros:
+            viewModel.selectPreviousMacro(ids: document.macrosComponents.map(\.id))
         case .plugins:
             break
         }

@@ -78,6 +78,16 @@ extension PhoenixDocument {
         remoteComponents.sort(by: { $0.url < $1.url })
     }
     
+    mutating func addNewMacroComponent(with name: String) throws {
+        if name.isEmpty {
+            throw NSError(domain: "Macro name cannot be empty", code: 500)
+        } else if macrosComponents.contains(where: { $0.name == name }) {
+            throw NSError(domain: "Macro name already in use", code: 502)
+        }
+        macrosComponents.append(MacroComponent(name: name))
+        macrosComponents.sort(by: { $0.name < $1.name })
+    }
+    
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {
         var defaultDependencies: [PackageTargetType: String] = component(named: dependencyName)?.defaultDependencies ?? [:]
         if defaultDependencies.isEmpty {
@@ -127,5 +137,9 @@ extension PhoenixDocument {
     
     mutating func removeRemoteComponent(withURL url: String) {
         remoteComponents.removeAll(where: { $0.url == url })
+    }
+    
+    mutating func removeMacroComponent(withName name: String) {
+        macrosComponents.removeAll(where: { $0.name == name })
     }
 }

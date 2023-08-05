@@ -41,6 +41,10 @@
 		38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2513E28392D18002FFA31 /* IdentifiableWithTitle.swift */; };
 		4B37C5002A50B6F600887128 /* LocalFileURLProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 4B37C4FF2A50B6F600887128 /* LocalFileURLProvider */; };
 		4B37C5022A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B37C5012A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift */; };
+		4B4058752A7CE75600388E0B /* NewMacroComponentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4058742A7CE75600388E0B /* NewMacroComponentSheet.swift */; };
+		4B4058772A7CEA1900388E0B /* MacrosList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4058762A7CEA1900388E0B /* MacrosList.swift */; };
+		4B4058792A7CEB3A00388E0B /* ViewModel+MacrosList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4058782A7CEB3A00388E0B /* ViewModel+MacrosList.swift */; };
+		4BF43B022A7E51A300094B27 /* MacroComponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF43B012A7E51A300094B27 /* MacroComponentView.swift */; };
 		B20F17412A067ACC004391B0 /* GenerateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F17402A067ACC004391B0 /* GenerateSheet.swift */; };
 		B20F9D502A0FC1C9005F99BB /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F9D4F2A0FC154005F99BB /* AlertSheet.swift */; };
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
@@ -191,7 +195,11 @@
 		3AC25B88077E4AB50EB60A99 /* AccessibilityIdentifiers */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AccessibilityIdentifiers; sourceTree = "<group>"; };
 		3AC871CD675846430EFB4047 /* PackageStringProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PackageStringProvider; sourceTree = "<group>"; };
 		4B37C5012A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+LocalFileURLProvider.swift"; sourceTree = "<group>"; };
+		4B4058742A7CE75600388E0B /* NewMacroComponentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMacroComponentSheet.swift; sourceTree = "<group>"; };
+		4B4058762A7CEA1900388E0B /* MacrosList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosList.swift; sourceTree = "<group>"; };
+		4B4058782A7CEB3A00388E0B /* ViewModel+MacrosList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+MacrosList.swift"; sourceTree = "<group>"; };
 		4B57167F7F7325C28B04EF58 /* DemoAppGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGeneratorContract; sourceTree = "<group>"; };
+		4BF43B012A7E51A300094B27 /* MacroComponentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroComponentView.swift; sourceTree = "<group>"; };
 		51991ED64782A59B5A9A0E7F /* RelativeURLProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProvider; sourceTree = "<group>"; };
 		5669FA7E1C90B8D304C1121D /* ProjectGenerator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectGenerator; sourceTree = "<group>"; };
 		56E271F2EFDE93C907701834 /* DocumentCoderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoderContract; sourceTree = "<group>"; };
@@ -474,21 +482,24 @@
 				3810D8D22809C555006E7EE3 /* FamilySheet.swift */,
 				38E251322837EC73002FFA31 /* FilterView.swift */,
 				38E251302837E96A002FFA31 /* InfoSheet.swift */,
+				4BF43B012A7E51A300094B27 /* MacroComponentView.swift */,
+				4B4058762A7CEA1900388E0B /* MacrosList.swift */,
+				B2BD9D3B29602A570048D505 /* MentionsView.swift */,
 				38C7D1482808B35300E2675B /* NewComponentSheet.swift */,
+				4B4058742A7CE75600388E0B /* NewMacroComponentSheet.swift */,
 				B2EDFE582955ECBA005BB99C /* NewRemoteComponentNameSheet.swift */,
 				B2EDFE5029559D60005BB99C /* NewRemoteComponentSheet.swift */,
+				B2EDFE632958C3A4005BB99C /* QuickSelectionSheet.swift */,
 				B216D3A02926EDC6005EDBB5 /* RelationView.swift */,
 				B2EDFE5A2956EF0D005BB99C /* RemoteComponentDependenciesSheet.swift */,
+				B2EDFE5F295732C2005BB99C /* RemoteComponentDependencyView.swift */,
 				B2EDFE4C2955955E005BB99C /* RemoteComponentsList.swift */,
 				B2EDFE562955E802005BB99C /* RemoteComponentView.swift */,
-				B2BD9D3B29602A570048D505 /* MentionsView.swift */,
 				3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */,
 				38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */,
-				B2EDFE6129574954005BB99C /* TargetTypesView.swift */,
-				B2EDFE5F295732C2005BB99C /* RemoteComponentDependencyView.swift */,
 				381855752819CACD00BF6696 /* ResourcesView.swift */,
 				388DA8A4281862420066086A /* Reusable */,
-				B2EDFE632958C3A4005BB99C /* QuickSelectionSheet.swift */,
+				B2EDFE6129574954005BB99C /* TargetTypesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -596,6 +607,7 @@
 				B29BE1032943D37C00675860 /* ViewModel+Selection.swift */,
 				B2E1D48429425CCB00FF07DE /* ViewModel+ComponentsList.swift */,
 				B2EDFE4E295596D8005BB99C /* ViewModel+RemoteComponentsList.swift */,
+				4B4058782A7CEB3A00388E0B /* ViewModel+MacrosList.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -947,6 +959,7 @@
 				3873E5A62804C509000BCB03 /* PhoenixDocument+Extensions.swift in Sources */,
 				38E251332837EC73002FFA31 /* FilterView.swift in Sources */,
 				3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */,
+				4B4058792A7CEB3A00388E0B /* ViewModel+MacrosList.swift in Sources */,
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
 				38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */,
 				B2E1D48529425CCB00FF07DE /* ViewModel+ComponentsList.swift in Sources */,
@@ -957,6 +970,7 @@
 				B2F4B1B829B48F4B008DBAB1 /* CompositionRoot+DemoAppFeature.swift in Sources */,
 				388DA8A6281862630066086A /* CustomToggle.swift in Sources */,
 				381855762819CACD00BF6696 /* ResourcesView.swift in Sources */,
+				4B4058772A7CEA1900388E0B /* MacrosList.swift in Sources */,
 				B2F4B1A629B489C6008DBAB1 /* CompositionRoot+ComponentDetailsProvider.swift in Sources */,
 				4B37C5022A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift in Sources */,
 				B2BD9D3C29602A570048D505 /* MentionsView.swift in Sources */,
@@ -969,6 +983,7 @@
 				B216D3A12926EDC6005EDBB5 /* RelationView.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesSheet.swift in Sources */,
 				B2F4B1AC29B48A6B008DBAB1 /* CompositionRoot+DocumentCoder.swift in Sources */,
+				4B4058752A7CE75600388E0B /* NewMacroComponentSheet.swift in Sources */,
 				38C7D1492808B35300E2675B /* NewComponentSheet.swift in Sources */,
 				B2F4B1B429B48B02008DBAB1 /* CompositionRoot+ProjectGenerator.swift in Sources */,
 				B2F4B1A829B489F3008DBAB1 /* CompositionRoot+PackageStringProvider.swift in Sources */,
@@ -981,6 +996,7 @@
 				3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */,
 				B2EDFE4F295596D8005BB99C /* ViewModel+RemoteComponentsList.swift in Sources */,
 				B21BF48D28EAD6E7007AAA0B /* CompositionRoot+AppVersion.swift in Sources */,
+				4BF43B022A7E51A300094B27 /* MacroComponentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

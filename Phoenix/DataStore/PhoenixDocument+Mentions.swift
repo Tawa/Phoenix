@@ -18,4 +18,8 @@ extension PhoenixDocument {
             }
             .map(\.name)
     }
+    
+    func mentions(forMacro name: String) -> [Name] {
+        []
+    }
 }
