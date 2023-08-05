@@ -18,7 +18,7 @@ public struct PackageStringProvider: PackageStringProviderProtocol {
         var value: String = """
 // swift-tools-version: \(package.swiftVersion)
 
-import PackageDescription
+\(getImports(for: package))
 
 let package = Package(
     name: "\(package.name)",\n
@@ -67,6 +67,14 @@ let package = Package(
         value += package.targets.sorted().map(targetString(_:)).joined(separator: ",\n") + "\n"
         value += "    ]\n)\n"
 
+        return value
+    }
+    
+    private func getImports(for package: SwiftPackage) -> String {
+        var value = "import PackageDescription"
+        if package.targets.contains(where: { $0.type == .macro }) {
+            value += "\nimport CompilerPluginSupport"
+        }
         return value
     }
     
