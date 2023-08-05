@@ -17,10 +17,15 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         try createPackageFolderIfNecessary(at: url)
 
         try package.targets.forEach { target in
-            if target.type == .testTarget {
-                try createTestsFolderIfNecessary(at: url, name: target.name)
-            } else {
+            switch target.type {
+            case .executableTarget:
+                break
+            case .target:
                 try createSourcesFolderIfNecessary(at: url, name: target.name)
+            case .testTarget:
+                try createTestsFolderIfNecessary(at: url, name: target.name)
+            case .macro:
+                break
             }
         }
         try createPackageFile(for: package, at: url)
