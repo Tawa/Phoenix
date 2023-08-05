@@ -10,6 +10,7 @@ struct ComponentView: View {
     let remoteDependencies: [String: RemoteComponent]
     let relationViewData: RelationViewData
     let relationViewDataToComponentNamed: (Name, [PackageTargetType: String]) -> RelationViewData
+    let relationViewDataToMacroComponentNamed: (String, Set<PackageTargetType>) -> RelationViewData
     let titleForComponentNamed: (Name) -> String
     
     let onGenerateDemoAppProject: () -> Void
@@ -17,8 +18,10 @@ struct ComponentView: View {
     let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
     let onShowDependencySheet: () -> Void
     let onShowRemoteDependencySheet: () -> Void
+    let onShowMacroDependencySheet: () -> Void
     let onSelectComponentName: (Name) -> Void
     let onSelectRemoteURL: (String) -> Void
+    let onSelectMacroName: (String) -> Void
     let allModuleTypes: [String]
     
     // MARK: - Private
@@ -26,6 +29,7 @@ struct ComponentView: View {
     
     @State private var showingLocalDependencies: Bool = false
     @State private var showingRemoteDependencies: Bool = false
+    @State private var showingMacroDependencies: Bool = false
     @State private var showingResources: Bool = false
 
     var body: some View {
@@ -38,6 +42,7 @@ struct ComponentView: View {
             defaultDependenciesView()
             localDependenciesView()
             remoteComponentDependenciesView()
+            macroComponentDependenciesView()
             resourcesView()
         }
     }
@@ -159,6 +164,16 @@ struct ComponentView: View {
             }
     }
     
+    @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
+        RelationView(
+            defaultDependencies: dependency.targetTypes,
+            title: titleForComponentNamed(dependency.wrappedValue.name),
+            viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),
+            onSelect: { onSelectComponentName(dependency.wrappedValue.name) },
+            onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
+        )
+    }
+    
     @ViewBuilder private func remoteComponentDependenciesView() -> some View {
         expandableDependenciesSection(
             title: "Remote Dependencies",
@@ -187,15 +202,38 @@ struct ComponentView: View {
             }
     }
     
-    @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
+    @ViewBuilder private func macroComponentDependenciesView() -> some View {
+        expandableDependenciesSection(
+            title: "Macro Dependencies",
+            isExpanded: $showingMacroDependencies,
+            accessibilityIdentifier: ComponentIdentifiers.macroDependenciesButton) {
+                LazyVStack {
+                    ForEach($component.macroComponentDependencies) { macroDependency in
+                        HStack {
+                            Divider()
+                            macroDependencyView(for: macroDependency)
+                        }
+                    }
+                }
+                if component.macroComponentDependencies.isEmpty {
+                    Text("No macro dependencies")
+                }
+            } accessoryContent: {
+                Button(action: onShowMacroDependencySheet) { Image(systemName: "plus") }
+                    .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
+            }
+    }
+    
+    @ViewBuilder private func macroDependencyView(for dependency: Binding<MacroComponentDependency>) -> some View {
         RelationView(
-            defaultDependencies: dependency.targetTypes,
-            title: titleForComponentNamed(dependency.wrappedValue.name),
-            viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),
-            onSelect: { onSelectComponentName(dependency.wrappedValue.name) },
-            onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
+            defaultDependencies: dependency.targetTypes.toStringDictionaryBinding(),
+            title: dependency.wrappedValue.macroName,
+            viewData: relationViewDataToMacroComponentNamed(dependency.wrappedValue.macroName, dependency.wrappedValue.targetTypes),
+            onSelect: { onSelectMacroName(dependency.wrappedValue.macroName) },
+            onRemove: { component.macroComponentDependencies.removeAll(where: { $0.macroName == dependency.wrappedValue.macroName }) }
         )
     }
+
     
     @ViewBuilder func resourcesView() -> some View {
         expandableDependenciesSection(title: "Resources",

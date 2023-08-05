@@ -44,14 +44,26 @@ extension PhoenixDocument {
         fromComponentName: Name,
         toComponentName: Name,
         selectedValues: [PackageTargetType: String]
-    )
-    -> RelationViewData {
+    ) -> RelationViewData {
         let fromComponent = component(named: fromComponentName)
         let toComponent = component(named: toComponentName)
         return .init(
             types: dependencyTypes(selectedValues: selectedValues)
                 .filter { value in fromComponent?.modules.keys.contains(where: { value.value.name == $0 }) ?? false },
             selectionValues: toComponent?.modules.keys.sorted() ?? []
+        )
+    }
+    
+    func relationViewData(
+        fromComponentName: Name,
+        toMacroName macroName: String,
+        selectedValues: [PackageTargetType: String]
+    ) -> RelationViewData {
+        let fromComponent = component(named: fromComponentName)
+        return .init(
+            types: dependencyTypes(selectedValues: selectedValues)
+                .filter { value in fromComponent?.modules.keys.contains(where: { value.value.name == $0 }) ?? false },
+            selectionValues: [""]
         )
     }
 }

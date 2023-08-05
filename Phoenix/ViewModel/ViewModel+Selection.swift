@@ -110,11 +110,11 @@ extension ViewModel {
     func selectedMacro(document: Binding<PhoenixDocument>) -> Binding<MacroComponent>? {
         guard
             let selectedMacroId = selection?.macroId,
-            let macroIndex = document.wrappedValue.macrosComponents.firstIndex(where: { $0.id == selectedMacroId })
+            let macroIndex = document.wrappedValue.macroComponents.firstIndex(where: { $0.id == selectedMacroId })
         else { return nil }
         return Binding(
-            get: { document.wrappedValue.macrosComponents[macroIndex] },
-            set: { document.wrappedValue.macrosComponents[macroIndex] = $0 }
+            get: { document.wrappedValue.macroComponents[macroIndex] },
+            set: { document.wrappedValue.macroComponents[macroIndex] = $0 }
         )
     }
     

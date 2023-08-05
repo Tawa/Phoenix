@@ -31,7 +31,7 @@ public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncod
         try encode(projectConfiguration: document.projectConfiguration, mainFolderWrapper: mainFolderWrapper)
         try encode(families: document.families, mainFolderWrapper: mainFolderWrapper)
         try encode(remoteComponents: document.remoteComponents, mainFolderWrapper: mainFolderWrapper)
-        try encode(macroComponents: document.macrosComponents, mainFolderWrapper: mainFolderWrapper)
+        try encode(macroComponents: document.macroComponents, mainFolderWrapper: mainFolderWrapper)
         
         return mainFolderWrapper
     }
@@ -77,7 +77,7 @@ public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncod
     private func encode(macroComponents: [MacroComponent], mainFolderWrapper: FileWrapper) throws {
         guard !macroComponents.isEmpty else { return }
         let macroComponentsFolderWrapper = FileWrapper(directoryWithFileWrappers: [:])
-        macroComponentsFolderWrapper.preferredFilename = PhoenixDocumentConstants.macrosComponentsFolderName
+        macroComponentsFolderWrapper.preferredFilename = PhoenixDocumentConstants.macroComponentsFolderName
         
         for macroComponent in macroComponents {
             let macroComponentFileWrapper = FileWrapper(regularFileWithContents: try jsonEncoder.encode(macroComponent))

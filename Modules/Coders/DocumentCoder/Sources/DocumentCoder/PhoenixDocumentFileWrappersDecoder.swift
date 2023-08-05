@@ -8,7 +8,7 @@ enum PhoenixDocumentConstants {
     static let configurationFileName: String = "config" + jsonFileExtension
     static let familyFileName: String = "family" + jsonFileExtension
     static let remoteComponentsFolderName: String = "_remote"
-    static let macrosComponentsFolderName: String = "_macros"
+    static let macroComponentsFolderName: String = "_macros"
 }
 
 enum PhoenixDocumentError: LocalizedError {
@@ -121,7 +121,7 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
         var macroComponents: [MacroComponent] = []
         
         if let macroComponentsFolderWrappers = fileWrapper.values
-            .first(where: { $0.filename == PhoenixDocumentConstants.macrosComponentsFolderName }),
+            .first(where: { $0.filename == PhoenixDocumentConstants.macroComponentsFolderName }),
            let macroComponentsWrappers = macroComponentsFolderWrappers.fileWrappers?.values.compactMap(\.regularFileContents) {
             macroComponents = try macroComponentsWrappers.map { try jsonDecoder.decode(MacroComponent.self, from: $0) }
                 .sorted(by: { $0.name < $1.name })

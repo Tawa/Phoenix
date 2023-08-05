@@ -233,6 +233,9 @@ struct ContentView: View {
                         .sheet(isPresented: .constant(viewModel.showingRemoteDependencySheet)) {
                             remoteDependencySheet(component: selectedComponentBinding.wrappedValue)
                         }
+                        .sheet(isPresented: .constant(viewModel.showingMacroDependencySheet)) {
+                            macroDependencySheet(component: selectedComponentBinding.wrappedValue)
+                        }
                 } else if let selectedRemoteComponentBinding = viewModel.selectedRemoteComponent(document: $document) {
                     remoteComponentView(for: selectedRemoteComponentBinding)
                 } else if let selectedMacroBinding = viewModel.selectedMacro(document: $document) {
@@ -267,6 +270,13 @@ struct ContentView: View {
                                           toComponentName: dependencyName,
                                           selectedValues: selectedValues)
             },
+            relationViewDataToMacroComponentNamed: { macroName, selectedValues in
+                document.relationViewData(
+                    fromComponentName: component.wrappedValue.name,
+                    toMacroName: macroName,
+                    selectedValues: selectedValues.toStringDictionary()
+                )
+            },
             titleForComponentNamed: document.title(forComponentNamed:),
             onGenerateDemoAppProject: {
                 viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
@@ -275,8 +285,10 @@ struct ContentView: View {
             allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
             onShowDependencySheet: { viewModel.showingDependencySheet = true },
             onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true },
+            onShowMacroDependencySheet: { viewModel.showingMacroDependencySheet = true },
             onSelectComponentName: viewModel.select(componentName:),
             onSelectRemoteURL: viewModel.select(remoteComponentURL:),
+            onSelectMacroName: viewModel.select(macro:),
             allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name)
         )
     }
@@ -381,11 +393,10 @@ struct ContentView: View {
         let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
             partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
                                                                   rows: keyValue.value.map { name in
-                ComponentDependenciesListRow(name: document.title(forComponentNamed: name),
-                                             onSelect: {
+                ComponentDependenciesListRow(name: document.title(forComponentNamed: name)) {
                     document.addDependencyToComponent(withName: component.name, dependencyName: name)
                     viewModel.showingDependencySheet = false
-                })
+                }
             }))
         }.sorted { lhs, rhs in
             lhs.name < rhs.name
@@ -410,6 +421,30 @@ struct ContentView: View {
             },
             onDismiss: { viewModel.showingRemoteDependencySheet = false }
         )
+    }
+    
+    @ViewBuilder private func macroDependencySheet(component: Component) -> some View {
+        ComponentDependenciesSheet(
+            sections: [
+                ComponentDependenciesListSection(
+                    name: "Macros",
+                    rows: document.macroComponents
+                        .filter { macroComponent in
+                            !component.macroComponentDependencies.contains { macroComponentDependency in
+                                macroComponent.name == macroComponentDependency.macroName
+                            }
+                        }
+                        .map { macroComponent in
+                            ComponentDependenciesListRow(name: macroComponent.name) {
+                                document.addMacroDependencyToComponent(withName: component.name, macroName: macroComponent.name)
+                                viewModel.showingMacroDependencySheet = false
+                            }
+                        }
+                )],
+            onDismiss: {
+                viewModel.showingMacroDependencySheet = false
+            }
+        ).frame(minHeight: 600)
     }
     
     @ViewBuilder private func toolbarViews() -> some View {
@@ -524,7 +559,7 @@ struct ContentView: View {
         case .remote:
             viewModel.selectNextRemoteComponent(remoteComponents: document.remoteComponents)
         case .macros:
-            viewModel.selectNextMacro(ids: document.macrosComponents.map(\.id))
+            viewModel.selectNextMacro(ids: document.macroComponents.map(\.id))
         case .plugins:
             break
         }
@@ -537,7 +572,7 @@ struct ContentView: View {
         case .remote:
             viewModel.selectPreviousRemoteComponent(remoteComponents: document.remoteComponents)
         case .macros:
-            viewModel.selectPreviousMacro(ids: document.macrosComponents.map(\.id))
+            viewModel.selectPreviousMacro(ids: document.macroComponents.map(\.id))
         case .plugins:
             break
         }
