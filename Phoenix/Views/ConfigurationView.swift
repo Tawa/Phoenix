@@ -53,6 +53,11 @@ struct ConfigurationView: View {
                     TextField("com.myorganization.demoapp", text: $configuration.defaultOrganizationIdentifier.nonOptionalBinding)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
+                HStack {
+                    Text("Macros Folder Name")
+                    TextField("Macros", text: $configuration.macrosFolderName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
                 Divider()
                 HStack(spacing: 8) {
                     columnView {

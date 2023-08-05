@@ -6,7 +6,8 @@
     },
     "Contract"
   ],
-  "defaultOrganizationIdentifier" : "com.hellofresh.demoapp",
+  "defaultOrganizationIdentifier" : "com.tawanicolas.phoenixdemoapp",
+  "macrosFolderName" : "Macros",
   "packageConfigurations" : [
     {
       "appendPackageName" : true,

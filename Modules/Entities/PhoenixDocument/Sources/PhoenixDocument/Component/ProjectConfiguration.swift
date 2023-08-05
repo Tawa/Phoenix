@@ -1,24 +1,32 @@
 import Foundation
 
+private enum ProjectConfigurationConstants {
+    static let defaultMacrosFolderName = "Macros"
+}
+
 public struct ProjectConfiguration: Codable, Hashable {
     public var packageConfigurations: [PackageConfiguration]
     public var defaultDependencies: [PackageTargetType: String]
+    public var macrosFolderName: String
     public var swiftVersion: String
     public var defaultOrganizationIdentifier: String?
     
     enum CodingKeys: String, CodingKey {
         case packageConfigurations
         case defaultDependencies
+        case macrosFolderName
         case swiftVersion
         case defaultOrganizationIdentifier
     }
     
     internal init(packageConfigurations: [PackageConfiguration],
                   defaultDependencies: [PackageTargetType: String],
+                  macrosFoldeName: String = "Macros",
                   swiftVersion: String,
                   defaultOrganizationIdentifier: String?) {
         self.packageConfigurations = packageConfigurations
         self.defaultDependencies = defaultDependencies
+        self.macrosFolderName = macrosFoldeName
         self.swiftVersion = swiftVersion
         self.defaultOrganizationIdentifier = defaultOrganizationIdentifier
     }
@@ -28,6 +36,7 @@ public struct ProjectConfiguration: Codable, Hashable {
         
         packageConfigurations = try container.decode([PackageConfiguration].self, forKey: .packageConfigurations)
         defaultDependencies = try container.decodeIfPresent([PackageTargetType: String].self, forKey: .defaultDependencies) ?? [:]
+        macrosFolderName = try container.decodeIfPresent(String.self, forKey: .macrosFolderName) ?? ProjectConfigurationConstants.defaultMacrosFolderName
         swiftVersion = (try? container.decode(String.self, forKey: .swiftVersion)) ?? "5.8"
         defaultOrganizationIdentifier = try? container.decodeIfPresent(String.self, forKey: .defaultOrganizationIdentifier)
     }
@@ -38,6 +47,7 @@ public struct ProjectConfiguration: Codable, Hashable {
         if !defaultDependencies.isEmpty {
             try container.encodeSorted(dictionary: defaultDependencies, forKey: .defaultDependencies)
         }
+        try container.encode(macrosFolderName, forKey: .macrosFolderName)
         try container.encode(swiftVersion, forKey: .swiftVersion)
         try container.encodeIfPresent(defaultOrganizationIdentifier, forKey: .defaultOrganizationIdentifier)
     }
