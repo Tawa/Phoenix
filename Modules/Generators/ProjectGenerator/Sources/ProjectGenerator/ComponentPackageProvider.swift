@@ -110,10 +110,10 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         var targets: [Target] = [
             Target(name: packageName,
                    dependencies: implementationDependencies,
-                   isTest: false,
                    resources: component.resources.filter { $0.targets.contains(packageTargetType) }
                 .map { TargetResources(folderName: $0.folderName,
-                                       resourcesType: $0.type) })
+                                       resourcesType: $0.type) },
+                   type: .target)
         ]
         
         dependencies = implementationDependencies
@@ -146,11 +146,11 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
             targets.append(
                 Target(name: packageName + "Tests",
                        dependencies: [Dependency.module(path: "", name: packageName)] + testsDependencies,
-                       isTest: true,
                        resources: component.resources.filter { $0.targets.contains(PackageTargetType(name: packageConfiguration.name,
                                                                                                      isTests: true)) }
                     .map { TargetResources(folderName: $0.folderName,
-                                           resourcesType: $0.type) })
+                                           resourcesType: $0.type) },
+                       type: .testTarget)
             )
             dependencies += testsDependencies
         }

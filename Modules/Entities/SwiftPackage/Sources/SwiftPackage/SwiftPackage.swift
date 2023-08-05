@@ -1,4 +1,4 @@
-public struct SwiftPackage: Codable, Hashable {
+public struct SwiftPackage: Hashable {
     public let name: String
     public let defaultLocalization: String?
     public let iOSVersion: IOSVersion?

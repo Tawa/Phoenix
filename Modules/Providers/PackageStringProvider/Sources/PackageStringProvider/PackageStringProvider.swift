@@ -72,9 +72,17 @@ let package = Package(
     
     private func productString(_ product: Product) -> String {
         switch product {
+        case .executable(let executable):
+            return executableString(executable)
         case .library(let library):
             return libraryString(library)
         }
+    }
+
+    private func executableString(_ executable: Executable) -> String {
+        var value: String = "        .executable(\n            name: \"\(executable.name)\",\n"
+        value += "            targets: [\"\(executable.name)\"])"
+        return value
     }
     
     private func libraryString(_ library: Library) -> String {
@@ -127,11 +135,7 @@ let package = Package(
     
     private func targetString(_ target: Target) -> String {
         var value: String = ""
-        if target.isTest {
-            value += "        .testTarget(\n"
-        } else {
-            value += "        .target(\n"
-        }
+        value += "        .\(target.type.rawValue)(\n"
         value += "            name: \"\(target.name)\""
 
         if !target.dependencies.isEmpty {

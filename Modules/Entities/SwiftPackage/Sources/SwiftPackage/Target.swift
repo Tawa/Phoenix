@@ -1,13 +1,20 @@
-public struct Target: Codable, Hashable, Comparable {
+public struct Target: Hashable, Comparable {
+    public enum TargetType: String {
+        case executableTarget
+        case target
+        case testTarget
+        case macro
+    }
+    
     public let name: String
     public let dependencies: [Dependency]
-    public let isTest: Bool
     public let resources: [TargetResources]
+    public let type: TargetType
     
-    public init(name: String, dependencies: [Dependency], isTest: Bool, resources: [TargetResources]) {
+    public init(name: String, dependencies: [Dependency], resources: [TargetResources], type: TargetType) {
         self.name = name
         self.dependencies = dependencies
-        self.isTest = isTest
+        self.type = type
         self.resources = resources
     }
     

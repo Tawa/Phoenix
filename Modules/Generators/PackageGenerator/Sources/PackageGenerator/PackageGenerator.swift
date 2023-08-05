@@ -17,7 +17,7 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         try createPackageFolderIfNecessary(at: url)
 
         try package.targets.forEach { target in
-            if target.isTest {
+            if target.type == .testTarget {
                 try createTestsFolderIfNecessary(at: url, name: target.name)
             } else {
                 try createSourcesFolderIfNecessary(at: url, name: target.name)
