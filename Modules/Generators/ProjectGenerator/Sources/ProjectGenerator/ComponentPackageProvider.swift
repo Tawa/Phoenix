@@ -158,6 +158,7 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         return .init(package: .init(name: packageName,
                                     defaultLocalization: defaultLocalization,
                                     iOSVersion: component.iOSVersion,
+                                    macCatalystVersion: component.macCatalystVersion,
                                     macOSVersion: component.macOSVersion,
                                     tvOSVersion: component.tvOSVersion,
                                     watchOSVersion: component.watchOSVersion,

@@ -28,6 +28,7 @@ let package = Package(
         }
         
         if package.iOSVersion != nil ||
+            package.macCatalystVersion != nil ||
             package.macOSVersion != nil ||
             package.tvOSVersion != nil ||
             package.watchOSVersion != nil {
@@ -35,6 +36,9 @@ let package = Package(
             var versions: [String] = []
             if let iOSVersion = package.iOSVersion {
                 versions.append("        \(iOSPlatformString(iOSVersion))")
+            }
+            if let macCatalystVersion = package.macCatalystVersion {
+                versions.append("        \(macCatalystPlatformString(macCatalystVersion))")
             }
             if let macOSVersion = package.macOSVersion {
                 versions.append("        \(macOSPlatformString(macOSVersion))")
@@ -146,10 +150,14 @@ let package = Package(
         return value
     }
 
-    private func iOSPlatformString(_ iOSPlatform: IOSVersion) -> String {
-        ".iOS(.\(iOSPlatform))"
+    private func iOSPlatformString(_ iOSVersion: IOSVersion) -> String {
+        ".iOS(.\(iOSVersion))"
     }
 
+    private func macCatalystPlatformString(_ macCatalystVersion: MacCatalystVersion) -> String {
+        ".macCatalyst(.\(macCatalystVersion))"
+    }
+    
     private func macOSPlatformString(_ macOSVersion: MacOSVersion) -> String {
         ".macOS(.\(macOSVersion))"
     }

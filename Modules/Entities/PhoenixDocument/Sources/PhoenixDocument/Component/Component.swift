@@ -19,6 +19,7 @@ public struct Component: Codable, Hashable, Identifiable {
         case name
         case defaultLocalization
         case iOSVersion
+        case macCatalystVersion
         case macOSVersion
         case tvOSVersion
         case watchOSVersion
@@ -35,6 +36,7 @@ public struct Component: Codable, Hashable, Identifiable {
     public let name: Name
     public var defaultLocalization: DefaultLocalization
     public var iOSVersion: IOSVersion?
+    public var macCatalystVersion: MacCatalystVersion?
     public var macOSVersion: MacOSVersion?
     public var tvOSVersion: TVOSVersion?
     public var watchOSVersion: WatchOSVersion?
@@ -50,6 +52,7 @@ public struct Component: Codable, Hashable, Identifiable {
     public init(name: Name,
                 defaultLocalization: DefaultLocalization,
                 iOSVersion: IOSVersion?,
+                macCatalystVersion: MacCatalystVersion?,
                 macOSVersion: MacOSVersion?,
                 tvOSVersion: TVOSVersion?,
                 watchOSVersion: WatchOSVersion?,
@@ -63,6 +66,7 @@ public struct Component: Codable, Hashable, Identifiable {
         self.name = name
         self.defaultLocalization = defaultLocalization
         self.iOSVersion = iOSVersion
+        self.macCatalystVersion = macCatalystVersion
         self.macOSVersion = macOSVersion
         self.tvOSVersion = tvOSVersion
         self.watchOSVersion = watchOSVersion
@@ -80,6 +84,7 @@ public struct Component: Codable, Hashable, Identifiable {
         name = try container.decode(Name.self, forKey: .name)
         defaultLocalization = try container.decodeIfPresent(DefaultLocalization.self, forKey: .defaultLocalization) ?? .init()
         iOSVersion = try container.decodeIfPresent(IOSVersion.self, forKey: .iOSVersion)
+        macCatalystVersion = try container.decodeIfPresent(MacCatalystVersion.self, forKey: .macCatalystVersion)
         macOSVersion = try container.decodeIfPresent(MacOSVersion.self, forKey: .macOSVersion)
         tvOSVersion = try container.decodeIfPresent(TVOSVersion.self, forKey: .tvOSVersion)
         watchOSVersion = try container.decodeIfPresent(WatchOSVersion.self, forKey: .watchOSVersion)
@@ -112,6 +117,7 @@ public struct Component: Codable, Hashable, Identifiable {
             try container.encode(defaultLocalization, forKey: .defaultLocalization)
         }
         try container.encodeIfPresent(iOSVersion, forKey: .iOSVersion)
+        try container.encodeIfPresent(macCatalystVersion, forKey: .macCatalystVersion)
         try container.encodeIfPresent(macOSVersion, forKey: .macOSVersion)
         try container.encodeIfPresent(tvOSVersion, forKey: .tvOSVersion)
         try container.encodeIfPresent(watchOSVersion, forKey: .watchOSVersion)
@@ -142,6 +148,7 @@ public struct Component: Codable, Hashable, Identifiable {
         hasher.combine(name)
         hasher.combine(defaultLocalization)
         hasher.combine(iOSVersion)
+        hasher.combine(macCatalystVersion)
         hasher.combine(macOSVersion)
         hasher.combine(tvOSVersion)
         hasher.combine(watchOSVersion)
