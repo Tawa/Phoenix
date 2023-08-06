@@ -13,6 +13,11 @@ public struct MacroComponent: Codable, Hashable, Identifiable {
     
     enum CodingKeys: CodingKey {
         case name
+        case iOSVersion
+        case macCatalystVersion
+        case macOSVersion
+        case tvOSVersion
+        case watchOSVersion
     }
     
     public init(
