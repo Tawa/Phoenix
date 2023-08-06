@@ -303,6 +303,7 @@ struct ContentView: View {
     @ViewBuilder private func macroComponentView(for macroComponent: Binding<MacroComponent>) -> some View {
         MacroComponentView(
             macroComponent: macroComponent,
+            relationViewData: document.macroComponentRelationViewData(macroComponentName: macroComponent.wrappedValue.name),
             onRemove: { document.removeMacroComponent(withName: macroComponent.wrappedValue.name) }
         )
     }

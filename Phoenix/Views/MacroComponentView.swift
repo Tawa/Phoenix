@@ -4,12 +4,14 @@ import SwiftUI
 
 struct MacroComponentView: View {
     @Binding var macroComponent: MacroComponent
+    let relationViewData: RelationViewData
     let onRemove: () -> Void
     
     var body: some View {
         List {
             headerView()
             platformsContent()
+            defaultDependenciesView()
         }
     }
     
@@ -57,6 +59,16 @@ struct MacroComponentView: View {
                        hasRemove: macroComponent.watchOSVersion != nil,
                        onRemove: { macroComponent.watchOSVersion = nil })
             .frame(width: 150)
+        }
+    }
+    
+    @ViewBuilder private func defaultDependenciesView() -> some View {
+        section {
+            RelationView(
+                defaultDependencies: $macroComponent.defaultDependencies.toStringDictionaryBinding(),
+                title: "Default Dependencies",
+                viewData: relationViewData
+            )
         }
     }
     

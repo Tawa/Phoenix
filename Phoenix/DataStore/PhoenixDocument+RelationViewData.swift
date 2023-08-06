@@ -30,6 +30,16 @@ extension PhoenixDocument {
             selectionValues: component?.modules.keys.sorted() ?? []
         )
     }
+    
+    func macroComponentRelationViewData(macroComponentName: String) -> RelationViewData {
+        let macroComponent = macro(named: macroComponentName)
+        
+        return .init(
+            types: dependencyTypes(selectedValues: (macroComponent?.defaultDependencies.toStringDictionary()) ?? [:]),
+            selectionValues: [""]
+        )
+    }
+    
 
     func familyRelationViewData(familyName: String) -> RelationViewData {
         let family = family(named: familyName)

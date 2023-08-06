@@ -130,9 +130,7 @@ extension PhoenixDocument {
     }
     
     mutating func addMacroDependencyToComponent(withName name: Name, macroName: String) {
-        var defaultDependencies: [PackageTargetType: String] = [:]//component(named: dependencyName)?.defaultDependencies ?? [:]
-        
-        var targetTypes: Set<PackageTargetType> = []
+        var targetTypes: Set<PackageTargetType> = macro(named: macroName)?.defaultDependencies ?? []
         getComponent(withName: name) { component in
             targetTypes = targetTypes.filter { value in component.modules.contains(where: { $0.key == value.name }) }
             var macroComponentDependencies = component.macroComponentDependencies
