@@ -3,6 +3,12 @@ import PackageStringProviderContract
 import Foundation
 import SwiftPackage
 
+extension SwiftPackage {
+    var isMacroPackage: Bool {
+        targets.contains(where: { $0.type == .macro })
+    }
+}
+
 public struct PackageGenerator: PackageGeneratorProtocol {
     let fileManager: FileManager
     let packageStringProvider: PackageStringProviderProtocol
@@ -19,13 +25,17 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         try package.targets.forEach { target in
             switch target.type {
             case .executableTarget:
-                break
+                try createExecutableSourcesFolderIfNecessary(at: url, name: target.name, importName: package.name)
             case .target:
-                try createSourcesFolderIfNecessary(at: url, name: target.name)
+                if package.isMacroPackage {
+                    try createMacroPackageSourcesFolderIfNecessary(at: url, name: target.name)
+                } else {
+                    try createSourcesFolderIfNecessary(at: url, name: target.name)
+                }
             case .testTarget:
-                try createTestsFolderIfNecessary(at: url, name: target.name)
+                try createTestsFolderIfNecessary(at: url, name: target.name, isMacroPackage: package.isMacroPackage)
             case .macro:
-                break
+                try createMacroSourcesFolderIfNecessary(at: url, name: target.name)
             }
         }
         try createPackageFile(for: package, at: url)
@@ -38,6 +48,24 @@ public struct PackageGenerator: PackageGeneratorProtocol {
             try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
         }
     }
+    
+    private func createExecutableSourcesFolderIfNecessary(at url: URL, name: String, importName: String) throws {
+        let path = url.appendingPathComponent("Sources").appendingPathComponent(name, isDirectory: true).path
+        if !fileManager.fileExists(atPath: path) {
+            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
+        }
+
+        try createExecutableSourceFile(name: "main", atPath: path, importName: importName)
+    }
+    
+    public func createMacroSourcesFolderIfNecessary(at url: URL, name: String) throws {
+        let path = url.appendingPathComponent("Sources").appendingPathComponent(name, isDirectory: true).path
+        if !fileManager.fileExists(atPath: path) {
+            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
+        }
+        
+        try createMacroSourceFile(name: name, atPath: path)
+    }
 
     private func createSourcesFolderIfNecessary(at url: URL, name: String) throws {
         let path = url.appendingPathComponent("Sources").appendingPathComponent(name, isDirectory: true).path
@@ -48,13 +76,26 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         try createSourceFile(name: name, atPath: path)
     }
 
-    private func createTestsFolderIfNecessary(at url: URL, name: String) throws {
+    private func createMacroPackageSourcesFolderIfNecessary(at url: URL, name: String) throws {
+        let path = url.appendingPathComponent("Sources").appendingPathComponent(name, isDirectory: true).path
+        if !fileManager.fileExists(atPath: path) {
+            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
+        }
+
+        try createMacroPackageSourceFile(name: name, atPath: path)
+    }
+
+    private func createTestsFolderIfNecessary(at url: URL, name: String, isMacroPackage: Bool) throws {
         let path = url.appendingPathComponent("Tests").appendingPathComponent(name, isDirectory: true).path
         if !fileManager.fileExists(atPath: path) {
             try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
         }
 
-        try createTestFile(name: name, atPath: path)
+        if isMacroPackage {
+            try createMacroTestFile(name: name, atPath: path)
+        } else {
+            try createTestFile(name: name, atPath: path)
+        }
     }
 
     private func isDirectoryEmpty(atPath path: String) -> Bool {
@@ -64,6 +105,43 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         } catch {
             return false
         }
+    }
+    
+    private func createExecutableSourceFile(name: String, atPath path: String, importName: String) throws {
+        guard isDirectoryEmpty(atPath: path) else { return }
+
+        let content: String = """
+import \(importName)
+
+let a = 17
+let b = 25
+
+let (result, code) = #stringify(a + b)
+
+print("The value \\(result) was produced by the code \\(code)\")
+"""
+
+        fileManager.createFile(atPath: path.appending("/\(name).swift"),
+                               contents: content.data(using: .utf8))
+    }
+    
+    private func createMacroPackageSourceFile(name: String, atPath path: String) throws {
+        let content: String = """
+// The Swift Programming Language
+// https://docs.swift.org/swift-book
+
+/// A macro that produces both a value and a string containing the
+/// source code that generated the value. For example,
+///
+///     #stringify(x + y)
+///
+/// produces a tuple `(x + y, "x + y")`.
+@freestanding(expression)
+public macro stringify<T>(_ value: T) -> (T, String) = #externalMacro(module: "\(name)Macros", type: "StringifyMacro")
+"""
+        
+        fileManager.createFile(atPath: path.appending("/\(name).swift"),
+                               contents: content.data(using: .utf8))
     }
 
     private func createSourceFile(name: String, atPath path: String) throws {
@@ -81,6 +159,51 @@ struct \(name) {
                                attributes: nil)
     }
 
+    private func createMacroSourceFile(name: String, atPath path: String) throws {
+        guard isDirectoryEmpty(atPath: path) else { return }
+
+        let content: String = """
+import SwiftCompilerPlugin
+import SwiftSyntax
+import SwiftSyntaxBuilder
+import SwiftSyntaxMacros
+
+/// Implementation of the `stringify` macro, which takes an expression
+/// of any type and produces a tuple containing the value of that expression
+/// and the source code that produced the value. For example
+///
+///     #stringify(x + y)
+///
+///  will expand to
+///
+///     (x + y, "x + y")
+public struct StringifyMacro: ExpressionMacro {
+    public static func expansion(
+        of node: some FreestandingMacroExpansionSyntax,
+        in context: some MacroExpansionContext
+    ) -> ExprSyntax {
+        guard let argument = node.argumentList.first?.expression else {
+            fatalError("compiler bug: the macro does not have any arguments")
+        }
+
+        return "(\\(argument), \\(literal: argument.description))"
+    }
+}
+
+@main
+struct \(name)Plugin: CompilerPlugin {
+    let providingMacros: [Macro.Type] = [
+        StringifyMacro.self,
+    ]
+}
+"""
+
+        fileManager.createFile(atPath: path.appending("/\(name).swift"),
+                               contents: content.data(using: .utf8),
+                               attributes: nil)
+    }
+
+    
     private func createTestFile(name: String, atPath path: String) throws {
         guard isDirectoryEmpty(atPath: path) else { return }
 
@@ -88,7 +211,7 @@ struct \(name) {
         if className.hasSuffix("Tests") {
             className = String(className.dropLast(5))
         }
-
+        
         let content: String = """
 @testable import \(className)
 import XCTest
@@ -98,6 +221,67 @@ final class \(name): XCTestCase {
     }
 }
 
+"""
+        fileManager.createFile(atPath: path.appending("/\(name).swift"),
+                               contents: content.data(using: .utf8),
+                               attributes: nil)
+    }
+
+    private func createMacroTestFile(name: String, atPath path: String) throws {
+        guard isDirectoryEmpty(atPath: path) else { return }
+
+        var className = name
+        if className.hasSuffix("Tests") {
+            className = String(className.dropLast(5))
+        }
+        
+        let content: String = """
+import SwiftSyntaxMacros
+import SwiftSyntaxMacrosTestSupport
+import XCTest
+
+// Macro implementations build for the host, so the corresponding module is not available when cross-compiling. Cross-compiled tests may still make use of the macro itself in end-to-end tests.
+#if canImport(\(className)Macros)
+import \(className)Macros
+
+let testMacros: [String: Macro.Type] = [
+    "stringify": StringifyMacro.self,
+]
+#endif
+
+final class \(className)Tests: XCTestCase {
+    func testMacro() throws {
+        #if canImport(\(className)Macros)
+        assertMacroExpansion(
+            \"""
+            #stringify(a + b)
+            \""",
+            expandedSource: \"""
+            (a + b, "a + b")
+            \""",
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testMacroWithStringLiteral() throws {
+        #if canImport(\(className)Macros)
+        assertMacroExpansion(
+            #\"""
+            #stringify("Hello, \\(name)")
+            \"""#,
+            expandedSource: #\"""
+            ("Hello, \\(name)", #""Hello, \\(name)""#)
+            \"""#,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+}
 """
         fileManager.createFile(atPath: path.appending("/\(name).swift"),
                                contents: content.data(using: .utf8),

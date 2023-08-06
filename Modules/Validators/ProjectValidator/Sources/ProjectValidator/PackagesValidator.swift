@@ -34,7 +34,7 @@ public struct PackagesValidator: PackagesValidatorProtocol {
                 )
             case .couldNotLoadPackageManifest:
                 invalidResults.append(
-                    "Package \"\(packageWithPath.package.name)\" failed to load."
+                    "Package \"\(packageWithPath.package.name)\" failed to load or does not exist."
                 )
             }
         }
