@@ -11,6 +11,9 @@ public protocol PackagePathProviderProtocol {
               relativeToConfiguration: PackageConfiguration) -> String
     
     func path(forMacro name: String,
+              folderName: String) -> String
+
+    func path(forMacro name: String,
               folderName: String,
               relativeToConfiguration: PackageConfiguration) -> String
 }

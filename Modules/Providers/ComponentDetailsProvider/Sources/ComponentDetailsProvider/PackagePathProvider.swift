@@ -37,6 +37,11 @@ public struct PackagePathProvider: PackagePathProviderProtocol {
     }
     
     public func path(forMacro name: String,
+                     folderName: String) -> String {
+        name + "/" + folderName
+    }
+    
+    public func path(forMacro name: String,
                      folderName: String,
                      relativeToConfiguration: PackageConfiguration) -> String {
         var path: String = ""
