@@ -6,35 +6,38 @@ final class PackageStringProviderTests: XCTestCase {
     
     func testPackage() {
         // Given
-        let package = SwiftPackage(name: "HomeService",
-                                   defaultLocalization: nil,
-                                   iOSVersion: nil,
-                                   macOSVersion: nil,
-                                   tvOSVersion: nil,
-                                   watchOSVersion: nil,
-                                   products: [
-                                    .library(Library(name: "HomeService", type: .undefined, targets: ["HomeService"]))
-                                   ],
-                                   dependencies: [
-                                    .module(path: "../../Contracts/Services/HomeServiceContract", name: "HomeServiceContract"),
-                                    .module(path: "../../Contracts/Repositories/HomeRepositoryContract", name: "HomeRepositoryContract"),
-                                    .module(path: "../../Support/DI", name: "DI")
-                                   ],
-                                   targets: [
-                                    Target(name: "HomeService",
-                                           dependencies: [
-                                            .module(path: "../../Contracts/Services/HomeServiceContract", name: "HomeServiceContract"),
-                                            .module(path: "../../Contracts/Repositories/HomeRepositoryContract", name: "HomeRepositoryContract"),
-                                            .module(path: "../../Support/DI", name: "DI")
-                                           ],
-                                           isTest: false,
-                                           resources: []),
-                                    Target(name: "HomeServiceTests",
-                                           dependencies: [ .module(path: "", name: "HomeService") ],
-                                           isTest: true,
-                                           resources: [])
-                                   ],
-                                   swiftVersion: "5.7")
+        let package = SwiftPackage(
+            name: "HomeService",
+            defaultLocalization: nil,
+            iOSVersion: nil,
+            macCatalystVersion: nil,
+            macOSVersion: nil,
+            tvOSVersion: nil,
+            watchOSVersion: nil,
+            products: [
+                .library(Library(name: "HomeService", type: .undefined, targets: ["HomeService"]))
+            ],
+            dependencies: [
+                .module(path: "../../Contracts/Services/HomeServiceContract", name: "HomeServiceContract"),
+                .module(path: "../../Contracts/Repositories/HomeRepositoryContract", name: "HomeRepositoryContract"),
+                .module(path: "../../Support/DI", name: "DI")
+            ],
+            targets: [
+                Target(name: "HomeService",
+                       dependencies: [
+                        .module(path: "../../Contracts/Services/HomeServiceContract", name: "HomeServiceContract"),
+                        .module(path: "../../Contracts/Repositories/HomeRepositoryContract", name: "HomeRepositoryContract"),
+                        .module(path: "../../Support/DI", name: "DI")
+                       ],
+                       resources: [],
+                       type: .target),
+                Target(name: "HomeServiceTests",
+                       dependencies: [ .module(path: "", name: "HomeService") ],
+                       resources: [],
+                       type: .testTarget)
+            ],
+            swiftVersion: "5.7"
+        )
         
         let sut = PackageStringProvider()
         
