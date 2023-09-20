@@ -31,7 +31,7 @@ public struct MacroComponentPackageProvider: MacroComponentPackageProviderProtoc
                     .external(
                         url: "https://github.com/apple/swift-syntax.git",
                         name: .name(""),
-                        description: .from(version: "509.0.0-swift-5.9-DEVELOPMENT-SNAPSHOT-2023-04-25-b")
+                        description: .from(version: "509.0.0")
                     )
                 ],
                 targets: [
