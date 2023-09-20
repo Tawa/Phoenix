@@ -65,12 +65,6 @@ struct ContentView: View {
         splitView(sidebar: sideView, content: contentView)
             .sheet(item: .constant(viewModel.showingNewComponentPopup)) { state in
                 newComponentSheet(state: state)
-            }.sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
-                FamilySheet(family: family,
-                            relationViewData: document.familyRelationViewData(familyName: family.wrappedValue.name),
-                            rules: viewModel.allRules(for: family.wrappedValue, document: document),
-                            onDismiss: { viewModel.select(familyName: nil) }
-                )
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
                 ConfigurationView(
                     configuration: $document.projectConfiguration,
@@ -82,6 +76,13 @@ struct ContentView: View {
             .sheet(item: $viewModel.demoAppFeatureData, content: { data in
                 Container.demoAppFeatureView(data)
             })
+            .sheet(item: .constant(viewModel.selectedFamily(document: $document))) { family in
+                FamilySheet(family: family,
+                            relationViewData: document.familyRelationViewData(familyName: family.wrappedValue.name),
+                            rules: viewModel.allRules(for: family.wrappedValue, document: document),
+                            onDismiss: { viewModel.select(familyName: nil) }
+                )
+            }
             .sheet(isPresented: $viewModel.showingQuickSelectionSheet, content: {
                 QuickSelectionSheet(rows: viewModel.quickSelectionRows(document: document))
             })
@@ -382,10 +383,8 @@ struct ContentView: View {
         }
     }
     
-    @ViewBuilder private func dependencySheet(component: Component) -> some View {
-        let familyName = document.family(named: component.name.family)?.name ?? ""
-        let allFamilies = document.families.filter { !$0.family.excludedFamilies.contains(familyName) }
-        let allNames = allFamilies.flatMap(\.components).map(\.name)
+    private func createSections(families: Set<ComponentsFamily>, component: Component) -> [ComponentDependenciesListSection] {
+        let allNames = families.flatMap(\.components).map(\.name)
         let filteredNames = Dictionary(grouping: allNames.filter { name in
             component.name != name && !component.localDependencies.contains { localDependency in
                 localDependency.name == name
@@ -402,8 +401,23 @@ struct ContentView: View {
         }.sorted { lhs, rhs in
             lhs.name < rhs.name
         }
+        return sections
+    }
+    
+    @ViewBuilder private func dependencySheet(component: Component) -> some View {
+        let familyName = document.family(named: component.name.family)?.name ?? ""
+        let allFamilies: Set<ComponentsFamily> = .init(document.families)
+        let allAllowedFamilies = allFamilies.filter { !$0.family.excludedFamilies.contains(familyName) }
+        let sections = createSections(families: allAllowedFamilies, component: component)
+        let disabledSections = createSections(families: allFamilies.subtracting(allAllowedFamilies), component: component)
         ComponentDependenciesSheet(
+            familyName: familyName,
             sections: sections,
+            disabledSections: disabledSections,
+            onOpenFamilySettings: {
+                viewModel.showingDependencySheet = false
+                viewModel.select(familyName: familyName)
+            },
             onDismiss: {
                 viewModel.showingDependencySheet = false
             }).frame(minHeight: 600)
@@ -426,6 +440,7 @@ struct ContentView: View {
     
     @ViewBuilder private func macroDependencySheet(component: Component) -> some View {
         ComponentDependenciesSheet(
+            familyName: component.name.family,
             sections: [
                 ComponentDependenciesListSection(
                     name: "Macros",
@@ -442,6 +457,11 @@ struct ContentView: View {
                             }
                         }
                 )],
+            disabledSections: [],
+            onOpenFamilySettings: {
+                viewModel.showingMacroDependencySheet = false
+                viewModel.select(familyName: component.name.family)
+            },
             onDismiss: {
                 viewModel.showingMacroDependencySheet = false
             }
