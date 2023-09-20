@@ -226,7 +226,6 @@ struct ComponentView: View {
                 }
             } accessoryContent: {
                 Button(action: onShowMacroDependencySheet) { Image(systemName: "plus") }
-                    .with(accessibilityIdentifier: ComponentIdentifiers.dependenciesPlusButton)
             }
     }
     
