@@ -24,9 +24,14 @@ extension Container {
         ) as ComponentPackagesProviderProtocol
     }
     
+    static let macroComponentPackageProvider = Factory(Container.shared) {
+        MacroComponentPackageProvider() as MacroComponentPackageProviderProtocol
+    }
+    
     static let documentPackagesProvider = Factory(Container.shared) {
         DocumentPackagesProvider(
-            componentPackagesProvider: componentPackagesProvider()
+            componentPackagesProvider: componentPackagesProvider(),
+            macroComponentPackageProvider: macroComponentPackageProvider()
         ) as DocumentPackagesProviderProtocol
     }
 }

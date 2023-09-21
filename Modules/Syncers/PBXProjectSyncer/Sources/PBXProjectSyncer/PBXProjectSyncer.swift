@@ -29,7 +29,7 @@ public struct PBXProjectSyncer: PBXProjectSyncerProtocol {
     public func sync(document: PhoenixDocument,
                      at documentURL: URL,
                      withProjectAt xcodeProjectURL: URL) throws {
-        let allPackages = document.families.map { componentsFamily in
+        let mainPackages = document.families.map { componentsFamily in
             componentsFamily.components.map { component in
                 component.modules.keys.compactMap { moduleType -> PackageDescription? in
                     guard let packageConfiguration = document.projectConfiguration.packageConfigurations.first(where: { $0.name == moduleType }) else { return nil }
@@ -46,7 +46,16 @@ public struct PBXProjectSyncer: PBXProjectSyncerProtocol {
         }
             .flatMap { $0 }
             .flatMap { $0 }
-            .sorted(by: { $0.path < $1.path })
+        
+        let modulesPackages = document.macroComponents.map { macroComponent in
+            PackageDescription(
+                name: macroComponent.name,
+                path: packagePathProvider.path(forMacro: macroComponent.name,
+                                               folderName: document.projectConfiguration.macrosFolderName)
+            )
+        }
+        
+        let allPackages = (mainPackages + modulesPackages).sorted(by: { $0.path < $1.path })
         
         let rootURL = documentURL.deletingLastPathComponent()
         let modulesPathComponent = rootURL.lastPathComponent
@@ -92,7 +101,7 @@ public struct PBXProjectSyncer: PBXProjectSyncerProtocol {
         }
         return groupReference
     }
-        
+    
     func packages(forComponentsFamily: ComponentsFamily, projectConfigmration: ProjectConfiguration) -> [PackageDescription] {
         guard let packageConfiguration = projectConfigmration.packageConfigurations.first(where: { $0.containerFolderName == nil }) else { return [] }
         return forComponentsFamily.components.map { component in

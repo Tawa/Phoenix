@@ -9,6 +9,7 @@ final class ComponentTests: XCTestCase {
             name: Name(given: "Wordpress", family: "Repository"),
             defaultLocalization: .init(),
             iOSVersion: nil,
+            macCatalystVersion: nil,
             macOSVersion: nil,
             tvOSVersion: nil,
             watchOSVersion: nil,
@@ -23,8 +24,10 @@ final class ComponentTests: XCTestCase {
                 RemoteDependency(url: "url", name: .name("name"), value: .branch(name: "main"), targetTypes: [])
             ],
             remoteComponentDependencies: [],
+            macroComponentDependencies: [],
             resources: [],
-            defaultDependencies: [:])
+            defaultDependencies: [:]
+        )
         
         // When
         let localDependencies = component.localDependencies

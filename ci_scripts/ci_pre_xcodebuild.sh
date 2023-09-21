@@ -6,6 +6,6 @@
 if [[ $CI_WORKFLOW == "GitHub Release" ]];
 then
     # Replace entitlements to disable Sandbox for the GitHub Release
-    cp -fr "$CI_WORKSPACE/Phoenix/Phoenix.entitlements" "$CI_WORKSPACE/Phoenix/PhoenixRelease.entitlements"
-    "$CI_WORKSPACE/ci_scripts/EnableGitHubReleaseTarget.swift" "$CI_WORKSPACE/Phoenix.xcodeproj/xcshareddata/xcschemes/Phoenix.xcscheme"
+    cp -fr "$CI_PRIMARY_REPOSITORY_PATH/Phoenix/Phoenix.entitlements" "$CI_PRIMARY_REPOSITORY_PATH/Phoenix/PhoenixRelease.entitlements"
+    "$CI_PRIMARY_REPOSITORY_PATH/ci_scripts/EnableGitHubReleaseTarget.swift" "$CI_PRIMARY_REPOSITORY_PATH/Phoenix.xcodeproj/xcshareddata/xcschemes/Phoenix.xcscheme"
 fi

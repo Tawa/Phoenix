@@ -2,6 +2,24 @@ import AccessibilityIdentifiers
 import PhoenixDocument
 import SwiftUI
 
+extension Set where Element == PackageTargetType {
+    func toStringDictionary() -> [PackageTargetType: String] {
+        reduce(into: [PackageTargetType: String]()) { partialResult, packageTargetType in
+            partialResult[packageTargetType] = ""
+        }
+    }
+}
+
+extension Binding where Value == Set<PackageTargetType> {
+    func toStringDictionaryBinding() -> Binding<[PackageTargetType: String]> {
+        Binding<[PackageTargetType: String]> {
+            wrappedValue.toStringDictionary()
+        } set: { newDictionaryValue in
+            wrappedValue = Set(newDictionaryValue.keys)
+        }
+    }
+}
+
 struct RelationViewData {
     var types: [IdentifiableWithSubtypeAndSelection<PackageTargetType, String>]
     var selectionValues: [String]

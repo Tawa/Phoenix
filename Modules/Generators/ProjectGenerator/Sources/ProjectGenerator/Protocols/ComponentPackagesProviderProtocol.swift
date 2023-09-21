@@ -9,3 +9,4 @@ public protocol ComponentPackagesProviderProtocol {
                   projectConfiguration: ProjectConfiguration,
                   remoteComponents: [RemoteComponent]) -> [PackageWithPath]
 }
+

@@ -10,6 +10,7 @@ struct ComponentView: View {
     let remoteDependencies: [String: RemoteComponent]
     let relationViewData: RelationViewData
     let relationViewDataToComponentNamed: (Name, [PackageTargetType: String]) -> RelationViewData
+    let relationViewDataToMacroComponentNamed: (String, Set<PackageTargetType>) -> RelationViewData
     let titleForComponentNamed: (Name) -> String
     
     let onGenerateDemoAppProject: () -> Void
@@ -17,8 +18,10 @@ struct ComponentView: View {
     let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
     let onShowDependencySheet: () -> Void
     let onShowRemoteDependencySheet: () -> Void
+    let onShowMacroDependencySheet: () -> Void
     let onSelectComponentName: (Name) -> Void
     let onSelectRemoteURL: (String) -> Void
+    let onSelectMacroName: (String) -> Void
     let allModuleTypes: [String]
     
     // MARK: - Private
@@ -26,6 +29,7 @@ struct ComponentView: View {
     
     @State private var showingLocalDependencies: Bool = false
     @State private var showingRemoteDependencies: Bool = false
+    @State private var showingMacroDependencies: Bool = false
     @State private var showingResources: Bool = false
 
     var body: some View {
@@ -38,6 +42,7 @@ struct ComponentView: View {
             defaultDependenciesView()
             localDependenciesView()
             remoteComponentDependenciesView()
+            macroComponentDependenciesView()
             resourcesView()
         }
     }
@@ -100,25 +105,31 @@ struct ComponentView: View {
     @ViewBuilder private func platformsContent() -> some View {
         section {
             Text("Platforms:")
-            CustomMenu(title: iOSPlatformMenuTitle(forComponent: component),
+            CustomMenu(title: iOSPlatformMenuTitle(iOSVersion: component.iOSVersion),
                        data: IOSVersion.allCases,
                        onSelection: { component.iOSVersion = $0 },
                        hasRemove: component.iOSVersion != nil,
                        onRemove: { component.iOSVersion = nil })
             .frame(width: 150)
-            CustomMenu(title: macOSPlatformMenuTitle(forComponent: component),
+            CustomMenu(title: macCatalystPlatformMenuTitle(macCatalystVersion: component.macCatalystVersion),
+                       data: MacCatalystVersion.allCases,
+                       onSelection: { component.macCatalystVersion = $0 },
+                       hasRemove: component.macCatalystVersion != nil,
+                       onRemove: { component.macCatalystVersion = nil })
+            .frame(width: 150)
+            CustomMenu(title: macOSPlatformMenuTitle(macOSVersion: component.macOSVersion),
                        data: MacOSVersion.allCases,
                        onSelection: { component.macOSVersion = $0 },
                        hasRemove: component.macOSVersion != nil,
                        onRemove: { component.macOSVersion = nil })
             .frame(width: 150)
-            CustomMenu(title: tvOSPlatformMenuTitle(forComponent: component),
+            CustomMenu(title: tvOSPlatformMenuTitle(tvOSVersion: component.tvOSVersion),
                        data: TVOSVersion.allCases,
                        onSelection: { component.tvOSVersion = $0 },
                        hasRemove: component.tvOSVersion != nil,
                        onRemove: { component.tvOSVersion = nil })
             .frame(width: 150)
-            CustomMenu(title: watchOSPlatformMenuTitle(forComponent: component),
+            CustomMenu(title: watchOSPlatformMenuTitle(watchOSVersion: component.watchOSVersion),
                        data: WatchOSVersion.allCases,
                        onSelection: { component.watchOSVersion = $0 },
                        hasRemove: component.watchOSVersion != nil,
@@ -159,6 +170,16 @@ struct ComponentView: View {
             }
     }
     
+    @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
+        RelationView(
+            defaultDependencies: dependency.targetTypes,
+            title: titleForComponentNamed(dependency.wrappedValue.name),
+            viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),
+            onSelect: { onSelectComponentName(dependency.wrappedValue.name) },
+            onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
+        )
+    }
+    
     @ViewBuilder private func remoteComponentDependenciesView() -> some View {
         expandableDependenciesSection(
             title: "Remote Dependencies",
@@ -187,15 +208,37 @@ struct ComponentView: View {
             }
     }
     
-    @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
+    @ViewBuilder private func macroComponentDependenciesView() -> some View {
+        expandableDependenciesSection(
+            title: "Macro Dependencies",
+            isExpanded: $showingMacroDependencies,
+            accessibilityIdentifier: ComponentIdentifiers.macroDependenciesButton) {
+                LazyVStack {
+                    ForEach($component.macroComponentDependencies) { macroDependency in
+                        HStack {
+                            Divider()
+                            macroDependencyView(for: macroDependency)
+                        }
+                    }
+                }
+                if component.macroComponentDependencies.isEmpty {
+                    Text("No macro dependencies")
+                }
+            } accessoryContent: {
+                Button(action: onShowMacroDependencySheet) { Image(systemName: "plus") }
+            }
+    }
+    
+    @ViewBuilder private func macroDependencyView(for dependency: Binding<MacroComponentDependency>) -> some View {
         RelationView(
-            defaultDependencies: dependency.targetTypes,
-            title: titleForComponentNamed(dependency.wrappedValue.name),
-            viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),
-            onSelect: { onSelectComponentName(dependency.wrappedValue.name) },
-            onRemove: { component.localDependencies.removeAll(where: { $0.name == dependency.wrappedValue.name }) }
+            defaultDependencies: dependency.targetTypes.toStringDictionaryBinding(),
+            title: dependency.wrappedValue.macroName,
+            viewData: relationViewDataToMacroComponentNamed(dependency.wrappedValue.macroName, dependency.wrappedValue.targetTypes),
+            onSelect: { onSelectMacroName(dependency.wrappedValue.macroName) },
+            onRemove: { component.macroComponentDependencies.removeAll(where: { $0.macroName == dependency.wrappedValue.macroName }) }
         )
     }
+
     
     @ViewBuilder func resourcesView() -> some View {
         expandableDependenciesSection(title: "Resources",
@@ -265,36 +308,24 @@ struct ComponentView: View {
         )
     }
 
-    private func iOSPlatformMenuTitle(forComponent component: Component) -> String {
-        if let iOSVersion = component.iOSVersion {
-            return ".iOS(.\(iOSVersion))"
-        } else {
-            return "Add iOS"
-        }
-    }
-    
-    private func macOSPlatformMenuTitle(forComponent component: Component) -> String {
-        if let macOSVersion = component.macOSVersion {
-            return ".macOS(.\(macOSVersion))"
-        } else {
-            return "Add macOS"
-        }
+    private func iOSPlatformMenuTitle(iOSVersion: IOSVersion?) -> String {
+        iOSVersion.map { ".iOS(.\($0))"  } ?? "Add iOS"
     }
 
-    private func tvOSPlatformMenuTitle(forComponent component: Component) -> String {
-        if let tvOSVersion = component.tvOSVersion {
-            return ".tvOS(.\(tvOSVersion))"
-        } else {
-            return "Add tvOS"
-        }
+    private func macCatalystPlatformMenuTitle(macCatalystVersion: MacCatalystVersion?) -> String {
+        macCatalystVersion.map { ".macCatalyst(.\($0))"  } ?? "Add macCatalyst"
     }
 
-    private func watchOSPlatformMenuTitle(forComponent component: Component) -> String {
-        if let watchOSVersion = component.watchOSVersion {
-            return ".watchOS(.\(watchOSVersion))"
-        } else {
-            return "Add watchOS"
-        }
+    private func macOSPlatformMenuTitle(macOSVersion: MacOSVersion?) -> String {
+        macOSVersion.map { ".macOS(.\($0))"  } ?? "Add macOS"
+    }
+
+    private func tvOSPlatformMenuTitle(tvOSVersion: TVOSVersion?) -> String {
+        tvOSVersion.map { ".tvOS(.\($0))"  } ?? "Add tvOS"
+    }
+
+    private func watchOSPlatformMenuTitle(watchOSVersion: WatchOSVersion?) -> String {
+        watchOSVersion.map { ".watchOS(.\($0))"  } ?? "Add watchOS"
     }
 
     private func isModuleTypeOn(_ name: String) -> Bool {

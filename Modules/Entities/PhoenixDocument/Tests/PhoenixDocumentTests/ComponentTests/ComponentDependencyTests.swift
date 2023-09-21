@@ -17,7 +17,7 @@ final class ComponentDependencyTests: XCTestCase {
     
     func testEncode() throws {
         // Given
-        let expectedString = "{\"name\":{\"given\":\"Given\",\"family\":\"Family\"},\"targetTypes\":[{\"name\":\"Implementation\",\"isTests\":false},\"Contract\",{\"name\":\"Implementation\",\"isTests\":true},\"Mock\"]}"
+        let expectedString = "{\"name\":{\"family\":\"Family\",\"given\":\"Given\"},\"targetTypes\":[{\"isTests\":false,\"name\":\"Implementation\"},\"Contract\",{\"isTests\":true,\"name\":\"Implementation\"},\"Mock\"]}"
         
         let componentDependency = ComponentDependency(
             name: Name(given: "Given", family: "Family"),
@@ -27,7 +27,9 @@ final class ComponentDependencyTests: XCTestCase {
             ])
 
         // When
-        let data = try JSONEncoder().encode(componentDependency)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        let data = try encoder.encode(componentDependency)
         let string = String(data: data, encoding: .utf8)
         
         // Then

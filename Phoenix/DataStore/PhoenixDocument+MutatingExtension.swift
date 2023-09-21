@@ -44,6 +44,7 @@ extension PhoenixDocument {
         let newComponent = Component(name: name,
                                      defaultLocalization: .init(),
                                      iOSVersion: nil,
+                                     macCatalystVersion: nil,
                                      macOSVersion: nil,
                                      tvOSVersion: nil,
                                      watchOSVersion: nil,
@@ -51,6 +52,7 @@ extension PhoenixDocument {
                                      localDependencies: [],
                                      remoteDependencies: [],
                                      remoteComponentDependencies: [],
+                                     macroComponentDependencies: [],
                                      resources: [],
                                      defaultDependencies: [:])
         array.append(newComponent)
@@ -76,6 +78,16 @@ extension PhoenixDocument {
         }
         remoteComponents.append(RemoteComponent(url: url, version: version, names: []))
         remoteComponents.sort(by: { $0.url < $1.url })
+    }
+    
+    mutating func addNewMacroComponent(with name: String) throws {
+        if name.isEmpty {
+            throw NSError(domain: "Macro name cannot be empty", code: 500)
+        } else if macroComponents.contains(where: { $0.name == name }) {
+            throw NSError(domain: "Macro name already in use", code: 502)
+        }
+        macroComponents.append(MacroComponent(name: name))
+        macroComponents.sort(by: { $0.name < $1.name })
     }
     
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {
@@ -117,6 +129,17 @@ extension PhoenixDocument {
         }
     }
     
+    mutating func addMacroDependencyToComponent(withName name: Name, macroName: String) {
+        var targetTypes: Set<PackageTargetType> = macro(named: macroName)?.defaultDependencies ?? []
+        getComponent(withName: name) { component in
+            targetTypes = targetTypes.filter { value in component.modules.contains(where: { $0.key == value.name }) }
+            var macroComponentDependencies = component.macroComponentDependencies
+            macroComponentDependencies.append(MacroComponentDependency(macroName: macroName, targetTypes: targetTypes))
+            macroComponentDependencies.sort()
+            component.macroComponentDependencies = macroComponentDependencies
+        }
+    }
+    
     mutating func removeComponent(withName name: Name) {
         guard
             let familyIndex = families.firstIndex(where: { $0.components.contains(where: { $0.name == name }) })
@@ -127,5 +150,9 @@ extension PhoenixDocument {
     
     mutating func removeRemoteComponent(withURL url: String) {
         remoteComponents.removeAll(where: { $0.url == url })
+    }
+    
+    mutating func removeMacroComponent(withName name: String) {
+        macroComponents.removeAll(where: { $0.name == name })
     }
 }

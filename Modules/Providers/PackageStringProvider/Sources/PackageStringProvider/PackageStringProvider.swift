@@ -18,7 +18,7 @@ public struct PackageStringProvider: PackageStringProviderProtocol {
         var value: String = """
 // swift-tools-version: \(package.swiftVersion)
 
-import PackageDescription
+\(getImports(for: package))
 
 let package = Package(
     name: "\(package.name)",\n
@@ -28,6 +28,7 @@ let package = Package(
         }
         
         if package.iOSVersion != nil ||
+            package.macCatalystVersion != nil ||
             package.macOSVersion != nil ||
             package.tvOSVersion != nil ||
             package.watchOSVersion != nil {
@@ -35,6 +36,9 @@ let package = Package(
             var versions: [String] = []
             if let iOSVersion = package.iOSVersion {
                 versions.append("        \(iOSPlatformString(iOSVersion))")
+            }
+            if let macCatalystVersion = package.macCatalystVersion {
+                versions.append("        \(macCatalystPlatformString(macCatalystVersion))")
             }
             if let macOSVersion = package.macOSVersion {
                 versions.append("        \(macOSPlatformString(macOSVersion))")
@@ -66,11 +70,27 @@ let package = Package(
         return value
     }
     
+    private func getImports(for package: SwiftPackage) -> String {
+        var value = "import PackageDescription"
+        if package.targets.contains(where: { $0.type == .macro }) {
+            value += "\nimport CompilerPluginSupport"
+        }
+        return value
+    }
+    
     private func productString(_ product: Product) -> String {
         switch product {
+        case .executable(let executable):
+            return executableString(executable)
         case .library(let library):
             return libraryString(library)
         }
+    }
+
+    private func executableString(_ executable: Executable) -> String {
+        var value: String = "        .executable(\n            name: \"\(executable.name)\",\n"
+        value += "            targets: [\"\(executable.name)\"])"
+        return value
     }
     
     private func libraryString(_ library: Library) -> String {
@@ -123,11 +143,7 @@ let package = Package(
     
     private func targetString(_ target: Target) -> String {
         var value: String = ""
-        if target.isTest {
-            value += "        .testTarget(\n"
-        } else {
-            value += "        .target(\n"
-        }
+        value += "        .\(target.type.rawValue)(\n"
         value += "            name: \"\(target.name)\""
 
         if !target.dependencies.isEmpty {
@@ -146,10 +162,14 @@ let package = Package(
         return value
     }
 
-    private func iOSPlatformString(_ iOSPlatform: IOSVersion) -> String {
-        ".iOS(.\(iOSPlatform))"
+    private func iOSPlatformString(_ iOSVersion: IOSVersion) -> String {
+        ".iOS(.\(iOSVersion))"
     }
 
+    private func macCatalystPlatformString(_ macCatalystVersion: MacCatalystVersion) -> String {
+        ".macCatalyst(.\(macCatalystVersion))"
+    }
+    
     private func macOSPlatformString(_ macOSVersion: MacOSVersion) -> String {
         ".macOS(.\(macOSVersion))"
     }

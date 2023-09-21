@@ -19,6 +19,7 @@ public struct Component: Codable, Hashable, Identifiable {
         case name
         case defaultLocalization
         case iOSVersion
+        case macCatalystVersion
         case macOSVersion
         case tvOSVersion
         case watchOSVersion
@@ -27,6 +28,7 @@ public struct Component: Codable, Hashable, Identifiable {
         case localDependencies
         case remoteDependencies
         case remoteComponentDependencies
+        case macroComponentDependencies
         case resources
         case defaultDependencies
     }
@@ -34,6 +36,7 @@ public struct Component: Codable, Hashable, Identifiable {
     public let name: Name
     public var defaultLocalization: DefaultLocalization
     public var iOSVersion: IOSVersion?
+    public var macCatalystVersion: MacCatalystVersion?
     public var macOSVersion: MacOSVersion?
     public var tvOSVersion: TVOSVersion?
     public var watchOSVersion: WatchOSVersion?
@@ -44,10 +47,12 @@ public struct Component: Codable, Hashable, Identifiable {
     public var localDependencies: [ComponentDependency]
     private(set) public var remoteDependencies: [RemoteDependency]
     public var remoteComponentDependencies: [RemoteComponentDependency]
+    public var macroComponentDependencies: [MacroComponentDependency]
 
     public init(name: Name,
                 defaultLocalization: DefaultLocalization,
                 iOSVersion: IOSVersion?,
+                macCatalystVersion: MacCatalystVersion?,
                 macOSVersion: MacOSVersion?,
                 tvOSVersion: TVOSVersion?,
                 watchOSVersion: WatchOSVersion?,
@@ -55,11 +60,13 @@ public struct Component: Codable, Hashable, Identifiable {
                 localDependencies: [ComponentDependency],
                 remoteDependencies: [RemoteDependency],
                 remoteComponentDependencies: [RemoteComponentDependency],
+                macroComponentDependencies: [MacroComponentDependency],
                 resources: [ComponentResources],
                 defaultDependencies: [PackageTargetType: String]) {
         self.name = name
         self.defaultLocalization = defaultLocalization
         self.iOSVersion = iOSVersion
+        self.macCatalystVersion = macCatalystVersion
         self.macOSVersion = macOSVersion
         self.tvOSVersion = tvOSVersion
         self.watchOSVersion = watchOSVersion
@@ -67,6 +74,7 @@ public struct Component: Codable, Hashable, Identifiable {
         self.localDependencies = localDependencies
         self.remoteDependencies = remoteDependencies
         self.remoteComponentDependencies = remoteComponentDependencies
+        self.macroComponentDependencies = macroComponentDependencies
         self.resources = resources
         self.defaultDependencies = defaultDependencies
     }
@@ -76,6 +84,7 @@ public struct Component: Codable, Hashable, Identifiable {
         name = try container.decode(Name.self, forKey: .name)
         defaultLocalization = try container.decodeIfPresent(DefaultLocalization.self, forKey: .defaultLocalization) ?? .init()
         iOSVersion = try container.decodeIfPresent(IOSVersion.self, forKey: .iOSVersion)
+        macCatalystVersion = try container.decodeIfPresent(MacCatalystVersion.self, forKey: .macCatalystVersion)
         macOSVersion = try container.decodeIfPresent(MacOSVersion.self, forKey: .macOSVersion)
         tvOSVersion = try container.decodeIfPresent(TVOSVersion.self, forKey: .tvOSVersion)
         watchOSVersion = try container.decodeIfPresent(WatchOSVersion.self, forKey: .watchOSVersion)
@@ -96,6 +105,7 @@ public struct Component: Codable, Hashable, Identifiable {
             remoteDependencies = try container.decodeIfPresent([RemoteDependency].self, forKey: .remoteDependencies) ?? []
         }
         remoteComponentDependencies = try container.decodeIfPresent([RemoteComponentDependency].self, forKey: .remoteComponentDependencies) ?? []
+        macroComponentDependencies = try container.decodeIfPresent([MacroComponentDependency].self, forKey: .macroComponentDependencies) ?? []
         resources = try container.decode([ComponentResources].self, forKey: .resources)
         defaultDependencies = try container.decodeIfPresent([PackageTargetType : String].self, forKey: .defaultDependencies) ?? [:]
     }
@@ -107,6 +117,7 @@ public struct Component: Codable, Hashable, Identifiable {
             try container.encode(defaultLocalization, forKey: .defaultLocalization)
         }
         try container.encodeIfPresent(iOSVersion, forKey: .iOSVersion)
+        try container.encodeIfPresent(macCatalystVersion, forKey: .macCatalystVersion)
         try container.encodeIfPresent(macOSVersion, forKey: .macOSVersion)
         try container.encodeIfPresent(tvOSVersion, forKey: .tvOSVersion)
         try container.encodeIfPresent(watchOSVersion, forKey: .watchOSVersion)
@@ -119,6 +130,9 @@ public struct Component: Codable, Hashable, Identifiable {
         }
         if !remoteComponentDependencies.isEmpty {
             try container.encode(remoteComponentDependencies, forKey: .remoteComponentDependencies)
+        }
+        if !macroComponentDependencies.isEmpty {
+            try container.encode(macroComponentDependencies, forKey: .macroComponentDependencies)
         }
         try container.encode(resources, forKey: .resources)
         if !defaultDependencies.isEmpty {
@@ -134,6 +148,7 @@ public struct Component: Codable, Hashable, Identifiable {
         hasher.combine(name)
         hasher.combine(defaultLocalization)
         hasher.combine(iOSVersion)
+        hasher.combine(macCatalystVersion)
         hasher.combine(macOSVersion)
         hasher.combine(tvOSVersion)
         hasher.combine(watchOSVersion)
@@ -141,6 +156,7 @@ public struct Component: Codable, Hashable, Identifiable {
         hasher.combine(localDependencies)
         hasher.combine(remoteDependencies)
         hasher.combine(remoteComponentDependencies)
+        hasher.combine(macroComponentDependencies)
         hasher.combine(resources)
         hasher.combine(defaultDependencies)
     }

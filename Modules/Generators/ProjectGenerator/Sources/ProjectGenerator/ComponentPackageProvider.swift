@@ -29,6 +29,7 @@ extension Component {
                 }
             }
         
+        allDependencies.append(contentsOf: macroComponentDependencies.map(ComponentDependencyType.macro))
         allDependencies.append(contentsOf: remoteDependencies.map(ComponentDependencyType.remote))
         
         return allDependencies
@@ -86,6 +87,12 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
                                    name: packageNameProvider.packageName(forComponentName: componentDependency.name,
                                                                          of: dependencyFamily,
                                                                          packageConfiguration: dependencyConfiguration))
+                case let .macro(macroDependency):
+                    guard macroDependency.targetTypes.contains(packageTargetType) else { return nil }
+                    return .module(path: packagePathProvider.path(forMacro: macroDependency.macroName,
+                                                                  folderName: projectConfiguration.macrosFolderName,
+                                                                  relativeToConfiguration: packageConfiguration),
+                                   name: macroDependency.macroName)
                 case let .remote(remoteDependency):
                     guard remoteDependency.targetTypes.contains(packageTargetType) else { return nil }
                     return .external(url: remoteDependency.url,
@@ -110,10 +117,10 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         var targets: [Target] = [
             Target(name: packageName,
                    dependencies: implementationDependencies,
-                   isTest: false,
                    resources: component.resources.filter { $0.targets.contains(packageTargetType) }
                 .map { TargetResources(folderName: $0.folderName,
-                                       resourcesType: $0.type) })
+                                       resourcesType: $0.type) },
+                   type: .target)
         ]
         
         dependencies = implementationDependencies
@@ -136,6 +143,12 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
                                        name: packageNameProvider.packageName(forComponentName: componentDependency.name,
                                                                              of: dependencyFamily,
                                                                              packageConfiguration: dependencyConfiguration))
+                    case let .macro(macroDependency):
+                        guard macroDependency.targetTypes.contains(packageTestsTargetType) else { return nil }
+                        return .module(path: packagePathProvider.path(forMacro: macroDependency.macroName,
+                                                                      folderName: projectConfiguration.macrosFolderName,
+                                                                      relativeToConfiguration: packageConfiguration),
+                                       name: macroDependency.macroName)
                     case let .remote(remoteDependency):
                         guard remoteDependency.targetTypes.contains(packageTestsTargetType) else { return nil }
                         return .external(url: remoteDependency.url,
@@ -146,11 +159,11 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
             targets.append(
                 Target(name: packageName + "Tests",
                        dependencies: [Dependency.module(path: "", name: packageName)] + testsDependencies,
-                       isTest: true,
                        resources: component.resources.filter { $0.targets.contains(PackageTargetType(name: packageConfiguration.name,
                                                                                                      isTests: true)) }
                     .map { TargetResources(folderName: $0.folderName,
-                                           resourcesType: $0.type) })
+                                           resourcesType: $0.type) },
+                       type: .testTarget)
             )
             dependencies += testsDependencies
         }
@@ -158,6 +171,7 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
         return .init(package: .init(name: packageName,
                                     defaultLocalization: defaultLocalization,
                                     iOSVersion: component.iOSVersion,
+                                    macCatalystVersion: component.macCatalystVersion,
                                     macOSVersion: component.macOSVersion,
                                     tvOSVersion: component.tvOSVersion,
                                     watchOSVersion: component.watchOSVersion,

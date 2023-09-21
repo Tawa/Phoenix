@@ -9,16 +9,19 @@ public struct PhoenixDocument: Hashable {
         }
     }
     public var remoteComponents: [RemoteComponent]
+    public var macroComponents: [MacroComponent]
     public var projectConfiguration: ProjectConfiguration
     
-    public var components: [Name: Component]
-    public var familiesDetails: [String: Family]
+    private(set) public var components: [Name: Component]
+    private(set) public var familiesDetails: [String: Family]
     
     public init(families: [ComponentsFamily] = [],
                 remoteComponents: [RemoteComponent] = [],
+                macros: [MacroComponent] = [],
                 projectConfiguration: ProjectConfiguration = .default) {
         self.families = families
         self.remoteComponents = remoteComponents
+        self.macroComponents = macros
         self.projectConfiguration = projectConfiguration
         
         self.components = families.flatMap(\.components).reduce(into: [Name: Component](), { $0[$1.name] = $1 })
@@ -47,5 +50,9 @@ public struct PhoenixDocument: Hashable {
             name += family.name
         }
         return name
+    }
+    
+    public func macro(named name: String) -> MacroComponent? {
+        macroComponents.first(where: { $0.name == name })
     }
 }

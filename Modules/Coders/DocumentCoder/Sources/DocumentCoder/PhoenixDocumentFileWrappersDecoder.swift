@@ -8,6 +8,7 @@ enum PhoenixDocumentConstants {
     static let configurationFileName: String = "config" + jsonFileExtension
     static let familyFileName: String = "family" + jsonFileExtension
     static let remoteComponentsFolderName: String = "_remote"
+    static let macroComponentsFolderName: String = "_macros"
 }
 
 enum PhoenixDocumentError: LocalizedError {
@@ -35,10 +36,12 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
         var componentsFamilies = try decodeFamilies(fileWrapper: fileWrapper)
         let remoteComponents = try decodeRemoteComponents(fileWrapper: fileWrapper, componentsFamilies: &componentsFamilies)
         let projectConfiguration = try decodeConfiguration(fileWrapper: fileWrapper)
+        let macros = try decodeMacros(fileWrapper: fileWrapper)
 
         return .init(
             families: componentsFamilies,
             remoteComponents: remoteComponents,
+            macros: macros,
             projectConfiguration: projectConfiguration
         )
     }
@@ -114,8 +117,23 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
         return remoteComponents
     }
     
+    private func decodeMacros(fileWrapper: [String: FileWrapper]) throws -> [MacroComponent] {
+        var macroComponents: [MacroComponent] = []
+        
+        if let macroComponentsFolderWrappers = fileWrapper.values
+            .first(where: { $0.filename == PhoenixDocumentConstants.macroComponentsFolderName }),
+           let macroComponentsWrappers = macroComponentsFolderWrappers.fileWrappers?.values.compactMap(\.regularFileContents) {
+            macroComponents = try macroComponentsWrappers.map { try jsonDecoder.decode(MacroComponent.self, from: $0) }
+                .sorted(by: { $0.name < $1.name })
+        }
+        
+        return macroComponents
+    }
+
     private func decodeConfiguration(fileWrapper: [String: FileWrapper]) throws -> ProjectConfiguration {
-        let configurationFileWrapper = fileWrapper.values.filter { $0.preferredFilename == PhoenixDocumentConstants.configurationFileName }.first
+        let configurationFileWrapper = fileWrapper.values.first {
+            $0.preferredFilename == PhoenixDocumentConstants.configurationFileName
+        }
         return try configurationFileWrapper?.regularFileContents
             .map({ try jsonDecoder.decode(ProjectConfiguration.self, from: $0) }) ?? .default
     }

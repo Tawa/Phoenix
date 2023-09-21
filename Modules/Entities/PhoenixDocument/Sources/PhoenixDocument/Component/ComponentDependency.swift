@@ -1,11 +1,6 @@
 import Foundation
 import SwiftPackage
 
-enum EitherOrValue <FirstType, SecondType> {
-    case either(FirstType)
-    case or(SecondType)
-}
-
 public struct ComponentDependency: Codable, Hashable, Identifiable, Comparable {
     public var id: String { name.given + name.family }
     

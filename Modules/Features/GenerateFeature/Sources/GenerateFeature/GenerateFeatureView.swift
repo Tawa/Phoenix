@@ -157,11 +157,11 @@ final class GenerateFeatureViewModel: ObservableObject {
             if !isSkipXcodeProjectOn {
                 try generateXcodeProject(for: document, fileURL: fileURL)
             }
+            let packagesCount = document.families.flatMap(\.components).flatMap(\.modules.keys).count
+            let macrosCount = document.macroComponents.count
+            let count = packagesCount + macrosCount
             displaySuccessMessage(
-                count: document.families
-                    .flatMap(\.components)
-                    .flatMap(\.modules.keys)
-                    .count,
+                count: count,
                 duration: generationStart.distance(to: Date())
             )
         } catch {

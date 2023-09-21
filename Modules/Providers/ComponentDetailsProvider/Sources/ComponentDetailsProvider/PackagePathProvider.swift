@@ -36,7 +36,27 @@ public struct PackagePathProvider: PackagePathProviderProtocol {
                 relativeToConfiguration: relativeToConfiguration)
     }
     
-    public func getPath(for name: Name,
+    public func path(forMacro name: String,
+                     folderName: String) -> String {
+        name + "/" + folderName
+    }
+    
+    public func path(forMacro name: String,
+                     folderName: String,
+                     relativeToConfiguration: PackageConfiguration) -> String {
+        var path: String = ""
+        if relativeToConfiguration.containerFolderName != nil {
+            path = "../../../"
+        } else {
+            path = "../../"
+        }
+        path += folderName + "/"
+        path += name
+        
+        return path
+    }
+
+    private func getPath(for name: Name,
                         of family: Family,
                         packageConfiguration: PackageConfiguration,
                         relativeToConfiguration: PackageConfiguration?) -> String {
