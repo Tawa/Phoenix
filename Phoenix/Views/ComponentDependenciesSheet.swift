@@ -22,8 +22,10 @@ struct ComponentDependenciesListSection: Hashable, Identifiable {
 }
 
 struct ComponentDependenciesSheet: View {
-    
+    let familyName: String
     let sections: [ComponentDependenciesListSection]
+    let disabledSections: [ComponentDependenciesListSection]
+    let onOpenFamilySettings: () -> Void
     let onDismiss: () -> Void
     
     @State private var filter: String = ""
@@ -35,7 +37,7 @@ struct ComponentDependenciesSheet: View {
             .with(accessibilityIdentifier: DependenciesSheetIdentifiers.filter)
             .padding(.top)
             List {
-                ForEach(filteredSections) { section in
+                ForEach(filtered(sections: sections)) { section in
                     Section {
                         ForEach(section.rows) { row in
                             Button {
@@ -51,7 +53,33 @@ struct ComponentDependenciesSheet: View {
                             .font(.title)
                     }
                 }
-                Spacer()
+                Divider()
+                let filteredDisabledSections = filtered(sections: disabledSections)
+                if !filteredDisabledSections.isEmpty {
+                    Text("The following components are not allowed to be used by ").foregroundColor(.red)
+                    + Text("\"\(familyName)\"").bold().foregroundColor(.red)
+                    + Text(" family rules.").foregroundColor(.red)
+                    Text("This rule can be changed in the \"\(familyName)\" Family settings.")
+                    Button(action: onOpenFamilySettings) {
+                        Text("Open \"\(familyName)\" Family settings.")
+                    }
+                    ForEach(filtered(sections: disabledSections)) { section in
+                        Section {
+                            ForEach(section.rows) { row in
+                                Button {
+                                    row.onSelect()
+                                } label: {
+                                    Text(row.name)
+                                }
+                                .disabled(true)
+                                .padding(.leading, 2)
+                            }
+                        } header: {
+                            Text(section.name)
+                                .font(.title)
+                        }
+                    }
+                }
             }
             .padding(.horizontal)
             Button(action: onDismiss) {
@@ -63,7 +91,7 @@ struct ComponentDependenciesSheet: View {
         .frame(minWidth: 400)
     }
     
-    private var filteredSections: [ComponentDependenciesListSection] {
+    private func filtered(sections: [ComponentDependenciesListSection]) -> [ComponentDependenciesListSection] {
         guard !filter.isEmpty else { return sections }
         return sections
             .map { item -> ComponentDependenciesListSection in
@@ -74,7 +102,7 @@ struct ComponentDependenciesSheet: View {
     }
     
     private func performSubmit() {
-        let rows = filteredSections.flatMap(\.rows)
+        let rows = filtered(sections: sections).flatMap(\.rows)
         guard rows.count == 1 else { return }
         rows.first?.onSelect()
     }
