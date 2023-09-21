@@ -54,12 +54,16 @@ public struct ProjectConfiguration: Codable, Hashable {
 }
 
 extension ProjectConfiguration {
-    public static let `default`: ProjectConfiguration = .init(packageConfigurations: [.init(name: "Implementation",
-                                                                                            containerFolderName: nil,
-                                                                                            appendPackageName: false,
-                                                                                            internalDependency: nil,
-                                                                                            hasTests: true)],
-                                                              defaultDependencies: [:],
-                                                              swiftVersion: "5.9",
-                                                              defaultOrganizationIdentifier: nil)
+    public static let `default`: ProjectConfiguration = .init(
+        packageConfigurations: [.init(
+            name: "Implementation",
+            containerFolderName: nil,
+            appendPackageName: false,
+            internalDependency: nil,
+            hasTests: true
+        )],
+        defaultDependencies: [:],
+        swiftVersion: "5.9",
+        defaultOrganizationIdentifier: nil
+    )
 }
