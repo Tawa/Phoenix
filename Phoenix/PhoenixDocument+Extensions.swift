@@ -17,7 +17,9 @@ extension PhoenixDocument: FileDocument {
     public init(configuration: ReadConfiguration) throws {
         if configuration.file.isDirectory, let fileWrapper = configuration.file.fileWrappers {
             let phoenixDocumentFileWrappersDecoder = Container.phoenixDocumentFileWrappersDecoder()
-            self = try phoenixDocumentFileWrappersDecoder.phoenixDocument(from: fileWrapper)
+            let phoenixDocument = try phoenixDocumentFileWrappersDecoder.phoenixDocument(from: fileWrapper)
+            self = phoenixDocument
+            print(self)
         } else {
             throw CocoaError(.fileReadCorruptFile)
         }

@@ -4,39 +4,39 @@ import Foundation
 import SwiftPackage
 
 struct PlatformsEditingView: View {
-    @Binding var component: Component
+    @Binding var platforms: Component.Platforms
 
     var body: some View {
         Text("Platforms:")
-        CustomMenu(title: iOSPlatformMenuTitle(iOSVersion: component.iOSVersion),
+        CustomMenu(title: iOSPlatformMenuTitle(iOSVersion: platforms.iOSVersion),
                    data: IOSVersion.allCases,
-                   onSelection: { component.iOSVersion = $0 },
-                   hasRemove: component.iOSVersion != nil,
-                   onRemove: { component.iOSVersion = nil })
+                   onSelection: { platforms.iOSVersion = $0 },
+                   hasRemove: platforms.iOSVersion != nil,
+                   onRemove: { platforms.iOSVersion = nil })
         .frame(width: 150)
-        CustomMenu(title: macCatalystPlatformMenuTitle(macCatalystVersion: component.macCatalystVersion),
+        CustomMenu(title: macCatalystPlatformMenuTitle(macCatalystVersion: platforms.macCatalystVersion),
                    data: MacCatalystVersion.allCases,
-                   onSelection: { component.macCatalystVersion = $0 },
-                   hasRemove: component.macCatalystVersion != nil,
-                   onRemove: { component.macCatalystVersion = nil })
+                   onSelection: { platforms.macCatalystVersion = $0 },
+                   hasRemove: platforms.macCatalystVersion != nil,
+                   onRemove: { platforms.macCatalystVersion = nil })
         .frame(width: 150)
-        CustomMenu(title: macOSPlatformMenuTitle(macOSVersion: component.macOSVersion),
+        CustomMenu(title: macOSPlatformMenuTitle(macOSVersion: platforms.macOSVersion),
                    data: MacOSVersion.allCases,
-                   onSelection: { component.macOSVersion = $0 },
-                   hasRemove: component.macOSVersion != nil,
-                   onRemove: { component.macOSVersion = nil })
+                   onSelection: { platforms.macOSVersion = $0 },
+                   hasRemove: platforms.macOSVersion != nil,
+                   onRemove: { platforms.macOSVersion = nil })
         .frame(width: 150)
-        CustomMenu(title: tvOSPlatformMenuTitle(tvOSVersion: component.tvOSVersion),
+        CustomMenu(title: tvOSPlatformMenuTitle(tvOSVersion: platforms.tvOSVersion),
                    data: TVOSVersion.allCases,
-                   onSelection: { component.tvOSVersion = $0 },
-                   hasRemove: component.tvOSVersion != nil,
-                   onRemove: { component.tvOSVersion = nil })
+                   onSelection: { platforms.tvOSVersion = $0 },
+                   hasRemove: platforms.tvOSVersion != nil,
+                   onRemove: { platforms.tvOSVersion = nil })
         .frame(width: 150)
-        CustomMenu(title: watchOSPlatformMenuTitle(watchOSVersion: component.watchOSVersion),
+        CustomMenu(title: watchOSPlatformMenuTitle(watchOSVersion: platforms.watchOSVersion),
                    data: WatchOSVersion.allCases,
-                   onSelection: { component.watchOSVersion = $0 },
-                   hasRemove: component.watchOSVersion != nil,
-                   onRemove: { component.watchOSVersion = nil })
+                   onSelection: { platforms.watchOSVersion = $0 },
+                   hasRemove: platforms.watchOSVersion != nil,
+                   onRemove: { platforms.watchOSVersion = nil })
         .frame(width: 150)
     }
 

@@ -104,7 +104,7 @@ struct ComponentView: View {
     
     @ViewBuilder private func platformsContent() -> some View {
         section {
-            PlatformsEditingView(component: $component)
+            PlatformsEditingView(platforms: $component.platforms)
         }
     }
     

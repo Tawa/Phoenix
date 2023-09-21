@@ -108,11 +108,14 @@ public struct Component: Codable, Hashable, Identifiable {
         if let value = defaultLocalization.value, !value.isEmpty {
             try container.encode(defaultLocalization, forKey: .defaultLocalization)
         }
+        
+        // Platforms encoding
         try container.encodeIfPresent(platforms.iOSVersion, forKey: .iOSVersion)
         try container.encodeIfPresent(platforms.macCatalystVersion, forKey: .macCatalystVersion)
         try container.encodeIfPresent(platforms.macOSVersion, forKey: .macOSVersion)
         try container.encodeIfPresent(platforms.tvOSVersion, forKey: .tvOSVersion)
         try container.encodeIfPresent(platforms.watchOSVersion, forKey: .watchOSVersion)
+
         try container.encode(modules, forKey: .modules)
         if !localDependencies.isEmpty {
             try container.encode(localDependencies, forKey: .localDependencies)
