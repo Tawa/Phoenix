@@ -35,11 +35,7 @@ public struct Component: Codable, Hashable, Identifiable {
     
     public let name: Name
     public var defaultLocalization: DefaultLocalization
-    public var iOSVersion: IOSVersion?
-    public var macCatalystVersion: MacCatalystVersion?
-    public var macOSVersion: MacOSVersion?
-    public var tvOSVersion: TVOSVersion?
-    public var watchOSVersion: WatchOSVersion?
+    public var platforms: Platforms
     public var modules: [String: LibraryType]
     public var resources: [ComponentResources]
     public var defaultDependencies: [PackageTargetType: String]
@@ -51,11 +47,7 @@ public struct Component: Codable, Hashable, Identifiable {
 
     public init(name: Name,
                 defaultLocalization: DefaultLocalization,
-                iOSVersion: IOSVersion?,
-                macCatalystVersion: MacCatalystVersion?,
-                macOSVersion: MacOSVersion?,
-                tvOSVersion: TVOSVersion?,
-                watchOSVersion: WatchOSVersion?,
+                platforms: Platforms,
                 modules: [String: LibraryType],
                 localDependencies: [ComponentDependency],
                 remoteDependencies: [RemoteDependency],
@@ -65,11 +57,7 @@ public struct Component: Codable, Hashable, Identifiable {
                 defaultDependencies: [PackageTargetType: String]) {
         self.name = name
         self.defaultLocalization = defaultLocalization
-        self.iOSVersion = iOSVersion
-        self.macCatalystVersion = macCatalystVersion
-        self.macOSVersion = macOSVersion
-        self.tvOSVersion = tvOSVersion
-        self.watchOSVersion = watchOSVersion
+        self.platforms = platforms
         self.modules = modules
         self.localDependencies = localDependencies
         self.remoteDependencies = remoteDependencies
@@ -83,11 +71,15 @@ public struct Component: Codable, Hashable, Identifiable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(Name.self, forKey: .name)
         defaultLocalization = try container.decodeIfPresent(DefaultLocalization.self, forKey: .defaultLocalization) ?? .init()
-        iOSVersion = try container.decodeIfPresent(IOSVersion.self, forKey: .iOSVersion)
-        macCatalystVersion = try container.decodeIfPresent(MacCatalystVersion.self, forKey: .macCatalystVersion)
-        macOSVersion = try container.decodeIfPresent(MacOSVersion.self, forKey: .macOSVersion)
-        tvOSVersion = try container.decodeIfPresent(TVOSVersion.self, forKey: .tvOSVersion)
-        watchOSVersion = try container.decodeIfPresent(WatchOSVersion.self, forKey: .watchOSVersion)
+
+        // Platforms decoding
+        platforms = .empty
+        platforms.iOSVersion = try container.decodeIfPresent(IOSVersion.self, forKey: .iOSVersion)
+        platforms.macCatalystVersion = try container.decodeIfPresent(MacCatalystVersion.self, forKey: .macCatalystVersion)
+        platforms.macOSVersion = try container.decodeIfPresent(MacOSVersion.self, forKey: .macOSVersion)
+        platforms.tvOSVersion = try container.decodeIfPresent(TVOSVersion.self, forKey: .tvOSVersion)
+        platforms.watchOSVersion = try container.decodeIfPresent(WatchOSVersion.self, forKey: .watchOSVersion)
+
         modules = try container.decode([String : LibraryType].self, forKey: .modules)
         if let dependencies = try? container.decode([ComponentDependencyType].self, forKey: .dependencies) {
             localDependencies = dependencies.compactMap { componentDependencyType in
@@ -116,11 +108,11 @@ public struct Component: Codable, Hashable, Identifiable {
         if let value = defaultLocalization.value, !value.isEmpty {
             try container.encode(defaultLocalization, forKey: .defaultLocalization)
         }
-        try container.encodeIfPresent(iOSVersion, forKey: .iOSVersion)
-        try container.encodeIfPresent(macCatalystVersion, forKey: .macCatalystVersion)
-        try container.encodeIfPresent(macOSVersion, forKey: .macOSVersion)
-        try container.encodeIfPresent(tvOSVersion, forKey: .tvOSVersion)
-        try container.encodeIfPresent(watchOSVersion, forKey: .watchOSVersion)
+        try container.encodeIfPresent(platforms.iOSVersion, forKey: .iOSVersion)
+        try container.encodeIfPresent(platforms.macCatalystVersion, forKey: .macCatalystVersion)
+        try container.encodeIfPresent(platforms.macOSVersion, forKey: .macOSVersion)
+        try container.encodeIfPresent(platforms.tvOSVersion, forKey: .tvOSVersion)
+        try container.encodeIfPresent(platforms.watchOSVersion, forKey: .watchOSVersion)
         try container.encode(modules, forKey: .modules)
         if !localDependencies.isEmpty {
             try container.encode(localDependencies, forKey: .localDependencies)
@@ -147,11 +139,7 @@ public struct Component: Codable, Hashable, Identifiable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(name)
         hasher.combine(defaultLocalization)
-        hasher.combine(iOSVersion)
-        hasher.combine(macCatalystVersion)
-        hasher.combine(macOSVersion)
-        hasher.combine(tvOSVersion)
-        hasher.combine(watchOSVersion)
+        hasher.combine(platforms)
         hasher.combine(modules)
         hasher.combine(localDependencies)
         hasher.combine(remoteDependencies)
@@ -160,4 +148,21 @@ public struct Component: Codable, Hashable, Identifiable {
         hasher.combine(resources)
         hasher.combine(defaultDependencies)
     }
+}
+
+// MARK: - Platforms
+public extension Component {
+    struct Platforms: Hashable, Identifiable {
+        public let id: String = UUID().uuidString
+
+        public var iOSVersion: IOSVersion?
+        public var macCatalystVersion: MacCatalystVersion?
+        public var macOSVersion: MacOSVersion?
+        public var tvOSVersion: TVOSVersion?
+        public var watchOSVersion: WatchOSVersion?
+    }
+}
+
+public extension Component.Platforms {
+    static var empty: Self { .init() }
 }
