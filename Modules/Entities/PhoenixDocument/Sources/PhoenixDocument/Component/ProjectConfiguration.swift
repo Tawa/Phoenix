@@ -9,6 +9,7 @@ public struct ProjectConfiguration: Codable, Hashable {
     public var defaultDependencies: [PackageTargetType: String]
     public var macrosFolderName: String
     public var swiftVersion: String
+    public var platforms: Component.Platforms
     public var defaultOrganizationIdentifier: String?
     
     enum CodingKeys: String, CodingKey {
@@ -17,18 +18,21 @@ public struct ProjectConfiguration: Codable, Hashable {
         case macrosFolderName
         case swiftVersion
         case defaultOrganizationIdentifier
+        case platforms
     }
     
     internal init(packageConfigurations: [PackageConfiguration],
                   defaultDependencies: [PackageTargetType: String],
                   macrosFoldeName: String = "Macros",
                   swiftVersion: String,
-                  defaultOrganizationIdentifier: String?) {
+                  defaultOrganizationIdentifier: String?,
+                  platforms: Component.Platforms) {
         self.packageConfigurations = packageConfigurations
         self.defaultDependencies = defaultDependencies
         self.macrosFolderName = macrosFoldeName
         self.swiftVersion = swiftVersion
         self.defaultOrganizationIdentifier = defaultOrganizationIdentifier
+        self.platforms = platforms
     }
     
     public init(from decoder: Decoder) throws {
@@ -39,6 +43,7 @@ public struct ProjectConfiguration: Codable, Hashable {
         macrosFolderName = try container.decodeIfPresent(String.self, forKey: .macrosFolderName) ?? ProjectConfigurationConstants.defaultMacrosFolderName
         swiftVersion = (try? container.decode(String.self, forKey: .swiftVersion)) ?? "5.9"
         defaultOrganizationIdentifier = try? container.decodeIfPresent(String.self, forKey: .defaultOrganizationIdentifier)
+        platforms = (try? container.decode(Component.Platforms.self, forKey: .platforms)) ?? .empty
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -50,6 +55,7 @@ public struct ProjectConfiguration: Codable, Hashable {
         try container.encode(macrosFolderName, forKey: .macrosFolderName)
         try container.encode(swiftVersion, forKey: .swiftVersion)
         try container.encodeIfPresent(defaultOrganizationIdentifier, forKey: .defaultOrganizationIdentifier)
+        try container.encode(platforms, forKey: .platforms)
     }
 }
 
@@ -64,6 +70,7 @@ extension ProjectConfiguration {
         )],
         defaultDependencies: [:],
         swiftVersion: "5.9",
-        defaultOrganizationIdentifier: nil
+        defaultOrganizationIdentifier: nil,
+        platforms: .empty
     )
 }

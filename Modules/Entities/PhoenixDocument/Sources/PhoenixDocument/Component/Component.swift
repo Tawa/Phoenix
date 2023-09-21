@@ -152,9 +152,7 @@ public struct Component: Codable, Hashable, Identifiable {
 
 // MARK: - Platforms
 public extension Component {
-    struct Platforms: Hashable, Identifiable {
-        public let id: String = UUID().uuidString
-
+    struct Platforms: Codable, Hashable {
         public var iOSVersion: IOSVersion?
         public var macCatalystVersion: MacCatalystVersion?
         public var macOSVersion: MacOSVersion?
