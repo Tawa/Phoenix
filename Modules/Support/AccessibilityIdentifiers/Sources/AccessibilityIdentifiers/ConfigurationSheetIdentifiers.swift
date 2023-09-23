@@ -3,6 +3,7 @@ import Foundation
 public enum ConfigurationSheetIdentifiers: AccessibilityIdentifiable {
     case addNewButton
     case closeButton
+    case iOSVersionMenu
     case textField(column: Int, row: Int)
     
     public var identifier: String {
@@ -13,6 +14,8 @@ public enum ConfigurationSheetIdentifiers: AccessibilityIdentifiable {
             return "Configuration-Close"
         case let .textField(column, row):
             return "Configuration-TextField-\(column)-\(row)"
+        case .iOSVersionMenu:
+            return "iOSVersion-Menu"
         }
     }
 }
