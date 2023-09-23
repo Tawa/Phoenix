@@ -6,6 +6,7 @@ import SwiftUI
 
 struct ConfigurationView: View {
     @Binding var configuration: ProjectConfiguration
+    @Binding var document: PhoenixDocument
     let relationViewData: RelationViewData
     let columnWidth: CGFloat = 200
     let narrowColumnWidth: CGFloat = 100
@@ -14,10 +15,12 @@ struct ConfigurationView: View {
     
     init(configuration: Binding<ProjectConfiguration>,
          relationViewData: RelationViewData,
+         document: Binding<PhoenixDocument>,
          onDismiss: @escaping () -> Void) {
         self._configuration = configuration
         self.relationViewData = relationViewData
         self.onDismiss = onDismiss
+        self._document = document
     }
     
     @ViewBuilder
@@ -47,6 +50,19 @@ struct ConfigurationView: View {
                     TextField("default: \(ProjectConfiguration.default.swiftVersion)",
                               text: $configuration.swiftVersion)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
+                HStack {
+                    Text("Default Supported Platforms for all local packages")
+                    PlatformsEditingView(platforms: Binding(get: {
+                        document.projectConfiguration.platforms
+                    }, set: { newValue in
+                        document.projectConfiguration.platforms = newValue
+                        document.families.modifyEach { componentsFamily in
+                            componentsFamily.components.modifyEach { component in
+                                component.platforms = newValue
+                            }
+                        }
+                    }))
                 }
                 HStack {
                     Text("Demo Apps Default Organization Identifier")
@@ -151,3 +167,28 @@ struct ConfigurationView: View {
     }
 }
 
+extension MutableCollection {
+    mutating func modifyEach(_ modify: (inout Element) throws -> Void) rethrows {
+        var i = startIndex
+        while i != endIndex {
+            try modify(&self[i])
+            formIndex(after: &i)
+        }
+
+    }
+}
+
+extension MutableCollection where Self: RandomAccessCollection {
+    /// SwifterSwift: Assign a given value to a field `keyPath` of all elements in the collection.
+    ///
+    /// - Parameters:
+    ///   - value: The new value of the field.
+    ///   - keyPath: The actual field of the element.
+    mutating func assignToAll<Value>(value: Value, by keyPath: WritableKeyPath<Element, Value>) {
+        var index = startIndex
+        while index != endIndex {
+            self[index][keyPath: keyPath] = value
+            formIndex(after: &index)
+        }
+    }
+}

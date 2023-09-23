@@ -7,7 +7,6 @@ struct PlatformsEditingView: View {
     @Binding var platforms: Component.Platforms
 
     var body: some View {
-        Text("Platforms:")
         CustomMenu(title: iOSPlatformMenuTitle(iOSVersion: platforms.iOSVersion),
                    data: IOSVersion.allCases,
                    onSelection: { platforms.iOSVersion = $0 },

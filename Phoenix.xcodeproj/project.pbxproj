@@ -472,6 +472,7 @@
 			isa = PBXGroup;
 			children = (
 				B20F9D4E2A0FC154005F99BB /* AlertSheet */,
+				388DA8A4281862420066086A /* Reusable */,
 				38E0B2F92815702E00B5992D /* ComponentDependenciesSheet.swift */,
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
 				38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */,
@@ -491,6 +492,7 @@
 				4B4058742A7CE75600388E0B /* NewMacroComponentSheet.swift */,
 				B2EDFE582955ECBA005BB99C /* NewRemoteComponentNameSheet.swift */,
 				B2EDFE5029559D60005BB99C /* NewRemoteComponentSheet.swift */,
+				991B1A972ABCA98700B4B8F3 /* PlatformsEditingView.swift */,
 				B2EDFE632958C3A4005BB99C /* QuickSelectionSheet.swift */,
 				B216D3A02926EDC6005EDBB5 /* RelationView.swift */,
 				B2EDFE5A2956EF0D005BB99C /* RemoteComponentDependenciesSheet.swift */,
@@ -500,9 +502,7 @@
 				3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */,
 				38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */,
 				381855752819CACD00BF6696 /* ResourcesView.swift */,
-				388DA8A4281862420066086A /* Reusable */,
 				B2EDFE6129574954005BB99C /* TargetTypesView.swift */,
-				991B1A972ABCA98700B4B8F3 /* PlatformsEditingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

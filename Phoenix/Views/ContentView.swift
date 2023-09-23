@@ -68,7 +68,8 @@ struct ContentView: View {
             }.sheet(isPresented: .constant(viewModel.showingConfigurationPopup)) {
                 ConfigurationView(
                     configuration: $document.projectConfiguration,
-                    relationViewData: document.projectConfigurationRelationViewData()
+                    relationViewData: document.projectConfigurationRelationViewData(),
+                    document: $document
                 ) {
                     viewModel.showingConfigurationPopup = false
                 }.frame(minHeight: 800)
