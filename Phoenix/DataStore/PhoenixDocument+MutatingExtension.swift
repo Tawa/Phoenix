@@ -43,7 +43,7 @@ extension PhoenixDocument {
         
         let newComponent = Component(name: name,
                                      defaultLocalization: .init(),
-                                     platforms: .empty,
+                                     platforms: projectConfiguration.platforms,
                                      modules: moduleTypes,
                                      localDependencies: [],
                                      remoteDependencies: [],
