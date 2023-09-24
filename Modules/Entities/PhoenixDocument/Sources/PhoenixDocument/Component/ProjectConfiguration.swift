@@ -44,7 +44,6 @@ public struct ProjectConfiguration: Codable, Hashable {
         swiftVersion = (try? container.decode(String.self, forKey: .swiftVersion)) ?? "5.9"
         defaultOrganizationIdentifier = try? container.decodeIfPresent(String.self, forKey: .defaultOrganizationIdentifier)
         platforms = (try? container.decode(Component.Platforms.self, forKey: .platforms)) ?? .empty
-        print(platforms)
     }
     
     public func encode(to encoder: Encoder) throws {
