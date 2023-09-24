@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
     name: "RelativeURLProvider",
+    platforms: [
+        .macOS(.v12)
+    ],
     products: [
         .library(
             name: "RelativeURLProvider",
