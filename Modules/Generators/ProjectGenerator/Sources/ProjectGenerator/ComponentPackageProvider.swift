@@ -172,7 +172,13 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
             package: .init(
                 name: packageName,
                 defaultLocalization: defaultLocalization,
-                platforms: component.platforms ?? projectConfiguration.platforms,
+                platforms: .init(
+                    iOSVersion: component.platforms.iOSVersion ?? projectConfiguration.platforms.iOSVersion,
+                    macCatalystVersion: component.platforms.macCatalystVersion ?? projectConfiguration.platforms.macCatalystVersion,
+                    macOSVersion: component.platforms.macOSVersion ?? projectConfiguration.platforms.macOSVersion,
+                    tvOSVersion: component.platforms.tvOSVersion ?? projectConfiguration.platforms.tvOSVersion,
+                    watchOSVersion: component.platforms.watchOSVersion ?? projectConfiguration.platforms.watchOSVersion
+                ),
                 products: [Product.library(
                     Library(
                         name: packageName,
