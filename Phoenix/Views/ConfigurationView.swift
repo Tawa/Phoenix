@@ -154,29 +154,3 @@ struct ConfigurationView: View {
                                                          hasTests: false))
     }
 }
-
-extension MutableCollection {
-    mutating func modifyEach(_ modify: (inout Element) throws -> Void) rethrows {
-        var i = startIndex
-        while i != endIndex {
-            try modify(&self[i])
-            formIndex(after: &i)
-        }
-
-    }
-}
-
-extension MutableCollection where Self: RandomAccessCollection {
-    /// SwifterSwift: Assign a given value to a field `keyPath` of all elements in the collection.
-    ///
-    /// - Parameters:
-    ///   - value: The new value of the field.
-    ///   - keyPath: The actual field of the element.
-    mutating func assignToAll<Value>(value: Value, by keyPath: WritableKeyPath<Element, Value>) {
-        var index = startIndex
-        while index != endIndex {
-            self[index][keyPath: keyPath] = value
-            formIndex(after: &index)
-        }
-    }
-}
