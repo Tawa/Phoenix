@@ -30,7 +30,7 @@ struct RemoteComponentView: View {
     }
     
     @ViewBuilder private func headerView() -> some View {
-        section {
+        SectionView {
             Text(remoteComponent.url)
                 .font(.largeTitle.bold())
             Spacer()
@@ -41,14 +41,14 @@ struct RemoteComponentView: View {
     }
     
     @ViewBuilder private func versionView() -> some View {
-        section {
+        SectionView {
             Text("Version:")
             ExternalDependencyVersionView(version: $remoteComponent.version)
         }
     }
     
     @ViewBuilder private func namesView() -> some View {
-        section {
+        SectionView {
             VStack(alignment: .leading) {
                 HStack {
                     Text("Names/Packages:")
@@ -75,15 +75,6 @@ struct RemoteComponentView: View {
     }
     
     // MARK: - Helper Functions
-    @ViewBuilder private func section<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
-        Section {
-            HStack(alignment: .center) {
-                content()
-            }
-            Divider()
-        }
-    }
-    
     private func onAddName() {
         showingNamePopup = true
     }

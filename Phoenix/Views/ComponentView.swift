@@ -49,7 +49,7 @@ struct ComponentView: View {
     
     // MARK: - Subviews
     @ViewBuilder private func headerView() -> some View {
-        section {
+        SectionView {
             Text(title)
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.leading)
@@ -64,7 +64,7 @@ struct ComponentView: View {
     }
     
     @ViewBuilder private func moduleTypesView() -> some View {
-        section {
+        SectionView {
             Text("Module Types:")
             ComponentModuleTypesView(dictionary: $component.modules,
                                      allModuleTypes: allModuleTypes)
@@ -73,7 +73,7 @@ struct ComponentView: View {
     }
     
     @ViewBuilder private func defaultLocalizationView() -> some View {
-        section {
+        SectionView {
             Text("Default Localization: ")
             TextField("ex: en", text: $component.defaultLocalization.value.nonOptionalBinding)
                 .frame(width: 100)
@@ -103,14 +103,14 @@ struct ComponentView: View {
     }
     
     @ViewBuilder private func platformsContent() -> some View {
-        section {
+        SectionView {
             Text("Platforms:")
             PlatformsEditingView(platforms: $component.platforms)
         }
     }
     
     @ViewBuilder private func defaultDependenciesView() -> some View {
-        section {
+        SectionView {
             RelationView(
                 defaultDependencies: $component.defaultDependencies,
                 title: "Default Dependencies",
@@ -220,15 +220,6 @@ struct ComponentView: View {
     }
     
     // MARK: - Helper Functions
-    @ViewBuilder private func section<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
-        Section {
-            HStack(alignment: .center) {
-                content()
-            }
-            Divider()
-        }
-    }
-    
     @ViewBuilder private func expandableSection<Title: View, Content: View, AccessoryContent: View>(
         isExpanded: Binding<Bool>,
         accessibilityIdentifier: AccessibilityIdentifiable,

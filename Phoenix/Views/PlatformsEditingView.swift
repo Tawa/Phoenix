@@ -5,7 +5,7 @@ import SwiftPackage
 import AccessibilityIdentifiers
 
 struct PlatformsEditingView: View {
-    @Binding var platforms: Component.Platforms
+    @Binding var platforms: Platforms
 
     var body: some View {
         CustomMenu(title: iOSPlatformMenuTitle(iOSVersion: platforms.iOSVersion),
