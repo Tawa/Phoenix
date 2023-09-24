@@ -9,11 +9,7 @@ final class PackageStringProviderTests: XCTestCase {
         let package = SwiftPackage(
             name: "HomeService",
             defaultLocalization: nil,
-            iOSVersion: nil,
-            macCatalystVersion: nil,
-            macOSVersion: nil,
-            tvOSVersion: nil,
-            watchOSVersion: nil,
+            platforms: .empty,
             products: [
                 .library(Library(name: "HomeService", type: .undefined, targets: ["HomeService"]))
             ],
