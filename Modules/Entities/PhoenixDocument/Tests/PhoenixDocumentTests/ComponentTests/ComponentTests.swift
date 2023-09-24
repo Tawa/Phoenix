@@ -67,6 +67,7 @@ final class ComponentTests: XCTestCase {
             defaultDependencies: [:]
         )
         let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
 
         // When
         let json = try encoder.encode(component)
@@ -81,7 +82,7 @@ final class ComponentTests: XCTestCase {
 private extension ComponentTests {
     var componentJSON: String {
         #"""
-        {"modules":{},"resources":[],"name":{"given":"HFDomain","family":"Core"},"tvOSVersion":"v13","iOSVersion":"v15"}
+        {"iOSVersion":"v15","modules":{},"name":{"family":"Core","given":"HFDomain"},"resources":[],"tvOSVersion":"v13"}
         """#
     }
 }
