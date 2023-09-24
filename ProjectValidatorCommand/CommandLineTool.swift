@@ -24,6 +24,7 @@ enum CommandLineError: Error {
     static let projectValidator: ProjectValidator = {
         let familyFolderNameProvider = FamilyFolderNameProvider()
         let packageNameProvider = PackageNameProvider()
+        let macroComponentPackageProvider = MacroComponentPackageProvider()
         
         return ProjectValidator(
             decoder: decoder,
@@ -41,7 +42,7 @@ enum CommandLineError: Error {
                                 packageNameProvider: packageNameProvider
                             )
                         )
-                    )
+                    ), macroComponentPackageProvider: macroComponentPackageProvider
                 ),
                 packageValidator: PackageValidator(
                     fileManager: .default,
@@ -68,6 +69,9 @@ enum CommandLineError: Error {
                 
         let ashFileURL = properURL(path: arguments[1], relativeURL: currentDirectoryURL)
         let modulesFolderURL = properURL(path: arguments[2], relativeURL: currentDirectoryURL)
+        
+        print("Ash File URL: \(ashFileURL)")
+        print("Modules Folder URL: \(modulesFolderURL)")
         
         do {
             let document = try CommandLineTool.loadDocument(at: ashFileURL)
