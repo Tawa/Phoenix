@@ -45,6 +45,8 @@
 		4B4058772A7CEA1900388E0B /* MacrosList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4058762A7CEA1900388E0B /* MacrosList.swift */; };
 		4B4058792A7CEB3A00388E0B /* ViewModel+MacrosList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4058782A7CEB3A00388E0B /* ViewModel+MacrosList.swift */; };
 		4BF43B022A7E51A300094B27 /* MacroComponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF43B012A7E51A300094B27 /* MacroComponentView.swift */; };
+		991B1A982ABCA98700B4B8F3 /* PlatformsEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991B1A972ABCA98700B4B8F3 /* PlatformsEditingView.swift */; };
+		9931609A2AC056E1009981BC /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993160992AC056E1009981BC /* SectionView.swift */; };
 		B20F17412A067ACC004391B0 /* GenerateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F17402A067ACC004391B0 /* GenerateSheet.swift */; };
 		B20F9D502A0FC1C9005F99BB /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F9D4F2A0FC154005F99BB /* AlertSheet.swift */; };
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
@@ -208,6 +210,8 @@
 		859FC6397437A78F21391163 /* ProjectValidatorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectValidatorContract; sourceTree = "<group>"; };
 		8D49F7342B29AFF62AA1C4BE /* LocalFileURLProviderContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LocalFileURLProviderContract; sourceTree = "<group>"; };
 		981295FCE3B52E97779A2186 /* DocumentCoder */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoder; sourceTree = "<group>"; };
+		991B1A972ABCA98700B4B8F3 /* PlatformsEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformsEditingView.swift; sourceTree = "<group>"; };
+		993160992AC056E1009981BC /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		9FE96A2D3B3268D8FAD977D1 /* ProjectValidator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectValidator; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		B0575B2BA782D723A9A8ECFC /* GenerateFeatureDataStoreContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GenerateFeatureDataStoreContract; sourceTree = "<group>"; };
@@ -426,6 +430,7 @@
 			children = (
 				388DA8A5281862630066086A /* CustomToggle.swift */,
 				388DA8A7281863750066086A /* CustomMenu.swift */,
+				993160992AC056E1009981BC /* SectionView.swift */,
 			);
 			path = Reusable;
 			sourceTree = "<group>";
@@ -470,6 +475,7 @@
 			isa = PBXGroup;
 			children = (
 				B20F9D4E2A0FC154005F99BB /* AlertSheet */,
+				388DA8A4281862420066086A /* Reusable */,
 				38E0B2F92815702E00B5992D /* ComponentDependenciesSheet.swift */,
 				3810D8CE28099B82006E7EE3 /* ComponentListItem.swift */,
 				38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */,
@@ -489,6 +495,7 @@
 				4B4058742A7CE75600388E0B /* NewMacroComponentSheet.swift */,
 				B2EDFE582955ECBA005BB99C /* NewRemoteComponentNameSheet.swift */,
 				B2EDFE5029559D60005BB99C /* NewRemoteComponentSheet.swift */,
+				991B1A972ABCA98700B4B8F3 /* PlatformsEditingView.swift */,
 				B2EDFE632958C3A4005BB99C /* QuickSelectionSheet.swift */,
 				B216D3A02926EDC6005EDBB5 /* RelationView.swift */,
 				B2EDFE5A2956EF0D005BB99C /* RemoteComponentDependenciesSheet.swift */,
@@ -498,7 +505,6 @@
 				3853D201283968E1005E2FAE /* RemoteDependencyFormView.swift */,
 				38E0B2FE2815CC7D00B5992D /* RemoteDependencyView.swift */,
 				381855752819CACD00BF6696 /* ResourcesView.swift */,
-				388DA8A4281862420066086A /* Reusable */,
 				B2EDFE6129574954005BB99C /* TargetTypesView.swift */,
 			);
 			path = Views;
@@ -979,7 +985,9 @@
 				B2EDFE60295732C2005BB99C /* RemoteComponentDependencyView.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
 				B2EDFE5129559D61005BB99C /* NewRemoteComponentSheet.swift in Sources */,
+				991B1A982ABCA98700B4B8F3 /* PlatformsEditingView.swift in Sources */,
 				38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */,
+				9931609A2AC056E1009981BC /* SectionView.swift in Sources */,
 				B216D3A12926EDC6005EDBB5 /* RelationView.swift in Sources */,
 				38E0B2FA2815702E00B5992D /* ComponentDependenciesSheet.swift in Sources */,
 				B2F4B1AC29B48A6B008DBAB1 /* CompositionRoot+DocumentCoder.swift in Sources */,

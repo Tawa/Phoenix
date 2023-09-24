@@ -43,11 +43,7 @@ extension PhoenixDocument {
         
         let newComponent = Component(name: name,
                                      defaultLocalization: .init(),
-                                     iOSVersion: nil,
-                                     macCatalystVersion: nil,
-                                     macOSVersion: nil,
-                                     tvOSVersion: nil,
-                                     watchOSVersion: nil,
+                                     platforms: projectConfiguration.platforms,
                                      modules: moduleTypes,
                                      localDependencies: [],
                                      remoteDependencies: [],

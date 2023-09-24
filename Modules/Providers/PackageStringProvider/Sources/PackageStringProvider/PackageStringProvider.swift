@@ -26,27 +26,29 @@ let package = Package(
         if let defaultLocalization = package.defaultLocalization {
             value += "    defaultLocalization: \"\(defaultLocalization)\",\n"
         }
-        
-        if package.iOSVersion != nil ||
-            package.macCatalystVersion != nil ||
-            package.macOSVersion != nil ||
-            package.tvOSVersion != nil ||
-            package.watchOSVersion != nil {
+
+        let packagePlatformsAnyNotNil: Bool = package.platforms.iOSVersion != nil ||
+            package.platforms.macCatalystVersion != nil ||
+            package.platforms.macOSVersion != nil ||
+            package.platforms.tvOSVersion != nil ||
+            package.platforms.watchOSVersion != nil
+
+        if packagePlatformsAnyNotNil {
             value += "    platforms: [\n"
             var versions: [String] = []
-            if let iOSVersion = package.iOSVersion {
+            if let iOSVersion = package.platforms.iOSVersion {
                 versions.append("        \(iOSPlatformString(iOSVersion))")
             }
-            if let macCatalystVersion = package.macCatalystVersion {
+            if let macCatalystVersion = package.platforms.macCatalystVersion {
                 versions.append("        \(macCatalystPlatformString(macCatalystVersion))")
             }
-            if let macOSVersion = package.macOSVersion {
+            if let macOSVersion = package.platforms.macOSVersion {
                 versions.append("        \(macOSPlatformString(macOSVersion))")
             }
-            if let tvOSVersion = package.tvOSVersion {
+            if let tvOSVersion = package.platforms.tvOSVersion {
                 versions.append("        \(tvOSPlatformString(tvOSVersion))")
             }
-            if let watchOSVersion = package.watchOSVersion {
+            if let watchOSVersion = package.platforms.watchOSVersion {
                 versions.append("        \(watchOSPlatformString(watchOSVersion))")
             }
             value += versions.joined(separator: ",\n") + "\n"

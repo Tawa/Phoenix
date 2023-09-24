@@ -167,22 +167,34 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
             )
             dependencies += testsDependencies
         }
-        
-        return .init(package: .init(name: packageName,
-                                    defaultLocalization: defaultLocalization,
-                                    iOSVersion: component.iOSVersion,
-                                    macCatalystVersion: component.macCatalystVersion,
-                                    macOSVersion: component.macOSVersion,
-                                    tvOSVersion: component.tvOSVersion,
-                                    watchOSVersion: component.watchOSVersion,
-                                    products: [Product.library(Library(name: packageName,
-                                                                       type: component.modules[packageConfiguration.name] ?? .undefined,
-                                                                       targets: [packageName]))],
-                                    dependencies: dependencies.uniqued(),
-                                    targets: targets,
-                                    swiftVersion: projectConfiguration.swiftVersion),
-                     path: packagePathProvider.path(for: component.name,
-                                                    of: family,
-                                                    packageConfiguration: packageConfiguration))
+
+        return .init(
+            package: .init(
+                name: packageName,
+                defaultLocalization: defaultLocalization,
+                platforms: .init(
+                    iOSVersion: component.platforms.iOSVersion ?? projectConfiguration.platforms.iOSVersion,
+                    macCatalystVersion: component.platforms.macCatalystVersion ?? projectConfiguration.platforms.macCatalystVersion,
+                    macOSVersion: component.platforms.macOSVersion ?? projectConfiguration.platforms.macOSVersion,
+                    tvOSVersion: component.platforms.tvOSVersion ?? projectConfiguration.platforms.tvOSVersion,
+                    watchOSVersion: component.platforms.watchOSVersion ?? projectConfiguration.platforms.watchOSVersion
+                ),
+                products: [Product.library(
+                    Library(
+                        name: packageName,
+                        type: component.modules[packageConfiguration.name] ?? .undefined,
+                        targets: [packageName]
+                    )
+                )],
+                dependencies: dependencies.uniqued(),
+                targets: targets,
+                swiftVersion: projectConfiguration.swiftVersion
+            ),
+            path: packagePathProvider.path(
+                for: component.name,
+                of: family,
+                packageConfiguration: packageConfiguration
+            )
+        )
     }
 }

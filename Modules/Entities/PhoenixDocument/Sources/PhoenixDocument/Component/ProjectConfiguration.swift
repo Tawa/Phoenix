@@ -1,4 +1,5 @@
 import Foundation
+import SwiftPackage
 
 private enum ProjectConfigurationConstants {
     static let defaultMacrosFolderName = "Macros"
@@ -9,6 +10,7 @@ public struct ProjectConfiguration: Codable, Hashable {
     public var defaultDependencies: [PackageTargetType: String]
     public var macrosFolderName: String
     public var swiftVersion: String
+    public var platforms: Platforms
     public var defaultOrganizationIdentifier: String?
     
     enum CodingKeys: String, CodingKey {
@@ -17,18 +19,21 @@ public struct ProjectConfiguration: Codable, Hashable {
         case macrosFolderName
         case swiftVersion
         case defaultOrganizationIdentifier
+        case platforms
     }
     
     internal init(packageConfigurations: [PackageConfiguration],
                   defaultDependencies: [PackageTargetType: String],
                   macrosFoldeName: String = "Macros",
                   swiftVersion: String,
-                  defaultOrganizationIdentifier: String?) {
+                  defaultOrganizationIdentifier: String?,
+                  platforms: Platforms) {
         self.packageConfigurations = packageConfigurations
         self.defaultDependencies = defaultDependencies
         self.macrosFolderName = macrosFoldeName
         self.swiftVersion = swiftVersion
         self.defaultOrganizationIdentifier = defaultOrganizationIdentifier
+        self.platforms = platforms
     }
     
     public init(from decoder: Decoder) throws {
@@ -39,6 +44,7 @@ public struct ProjectConfiguration: Codable, Hashable {
         macrosFolderName = try container.decodeIfPresent(String.self, forKey: .macrosFolderName) ?? ProjectConfigurationConstants.defaultMacrosFolderName
         swiftVersion = (try? container.decode(String.self, forKey: .swiftVersion)) ?? "5.9"
         defaultOrganizationIdentifier = try? container.decodeIfPresent(String.self, forKey: .defaultOrganizationIdentifier)
+        platforms = (try? container.decode(Platforms.self, forKey: .platforms)) ?? .empty
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -50,16 +56,22 @@ public struct ProjectConfiguration: Codable, Hashable {
         try container.encode(macrosFolderName, forKey: .macrosFolderName)
         try container.encode(swiftVersion, forKey: .swiftVersion)
         try container.encodeIfPresent(defaultOrganizationIdentifier, forKey: .defaultOrganizationIdentifier)
+        try container.encode(platforms, forKey: .platforms)
     }
 }
 
 extension ProjectConfiguration {
-    public static let `default`: ProjectConfiguration = .init(packageConfigurations: [.init(name: "Implementation",
-                                                                                            containerFolderName: nil,
-                                                                                            appendPackageName: false,
-                                                                                            internalDependency: nil,
-                                                                                            hasTests: true)],
-                                                              defaultDependencies: [:],
-                                                              swiftVersion: "5.9",
-                                                              defaultOrganizationIdentifier: nil)
+    public static let `default`: ProjectConfiguration = .init(
+        packageConfigurations: [.init(
+            name: "Implementation",
+            containerFolderName: nil,
+            appendPackageName: false,
+            internalDependency: nil,
+            hasTests: true
+        )],
+        defaultDependencies: [:],
+        swiftVersion: "5.9",
+        defaultOrganizationIdentifier: nil,
+        platforms: .empty
+    )
 }

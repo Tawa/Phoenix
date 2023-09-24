@@ -49,6 +49,10 @@ struct ConfigurationView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 HStack {
+                    Text("Default Supported Platforms for all local packages")
+                    PlatformsEditingView(platforms: $configuration.platforms)
+                }
+                HStack {
                     Text("Demo Apps Default Organization Identifier")
                     TextField("com.myorganization.demoapp", text: $configuration.defaultOrganizationIdentifier.nonOptionalBinding)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -150,4 +154,3 @@ struct ConfigurationView: View {
                                                          hasTests: false))
     }
 }
-
