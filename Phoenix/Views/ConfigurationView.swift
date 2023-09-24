@@ -6,7 +6,6 @@ import SwiftUI
 
 struct ConfigurationView: View {
     @Binding var configuration: ProjectConfiguration
-    @Binding var document: PhoenixDocument
     let relationViewData: RelationViewData
     let columnWidth: CGFloat = 200
     let narrowColumnWidth: CGFloat = 100
@@ -15,12 +14,10 @@ struct ConfigurationView: View {
     
     init(configuration: Binding<ProjectConfiguration>,
          relationViewData: RelationViewData,
-         document: Binding<PhoenixDocument>,
          onDismiss: @escaping () -> Void) {
         self._configuration = configuration
         self.relationViewData = relationViewData
         self.onDismiss = onDismiss
-        self._document = document
     }
     
     @ViewBuilder
@@ -53,16 +50,7 @@ struct ConfigurationView: View {
                 }
                 HStack {
                     Text("Default Supported Platforms for all local packages")
-                    PlatformsEditingView(platforms: Binding(get: {
-                        document.projectConfiguration.platforms
-                    }, set: { newValue in
-                        document.projectConfiguration.platforms = newValue
-                        document.families.modifyEach { componentsFamily in
-                            componentsFamily.components.modifyEach { component in
-                                component.platforms = newValue
-                            }
-                        }
-                    }))
+                    PlatformsEditingView(platforms: $configuration.platforms)
                 }
                 HStack {
                     Text("Demo Apps Default Organization Identifier")
