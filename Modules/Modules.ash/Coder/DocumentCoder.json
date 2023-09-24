@@ -40,7 +40,6 @@
       ]
     }
   ],
-  "macOSVersion" : "v10_15",
   "modules" : {
     "Contract" : "undefined",
     "Implementation" : "undefined"

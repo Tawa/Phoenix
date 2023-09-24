@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
     name: "PBXProjectSyncer",
+    platforms: [
+        .macOS(.v12)
+    ],
     products: [
         .library(
             name: "PBXProjectSyncer",

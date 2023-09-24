@@ -22,5 +22,8 @@
       "name" : "Implementation"
     }
   ],
+  "platforms" : {
+    "macOSVersion" : "v12"
+  },
   "swiftVersion" : "5.9"
 }

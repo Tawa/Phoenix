@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
     name: "PackageGeneratorContract",
+    platforms: [
+        .macOS(.v12)
+    ],
     products: [
         .library(
             name: "PackageGeneratorContract",

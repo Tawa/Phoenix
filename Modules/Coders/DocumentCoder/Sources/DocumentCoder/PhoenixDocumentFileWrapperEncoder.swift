@@ -11,11 +11,7 @@ public struct PhoenixDocumentFileWrapperEncoder: PhoenixDocumentFileWrapperEncod
         self.currentAppVersionStringProvider = currentAppVersionStringProvider
 
         jsonEncoder = JSONEncoder()
-        if #available(macOS 10.13, *) {
-            jsonEncoder.outputFormatting = [.sortedKeys, .prettyPrinted]
-        } else {
-            jsonEncoder.outputFormatting = [.prettyPrinted]
-        }
+        jsonEncoder.outputFormatting = [.sortedKeys, .prettyPrinted]
     }
 
     public func fileWrapper(for document: PhoenixDocument) throws -> FileWrapper {
