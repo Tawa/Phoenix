@@ -27,11 +27,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
     var alertOkButton: XCUIElement {
         Screen.app.buttons[AlertMessageIdentifiers.okButton.identifier]
     }
-
-    var iOSVersionMenu: XCUIElement {
-        Screen.app.popUpButtons[ConfigurationSheetIdentifiers.iOSVersionMenu.identifier]
-    }
-
+    
     @discardableResult
     func closeAllWindowsIfNecessary() -> Screen {
         while Screen.app.windows.firstMatch.exists {
@@ -124,15 +120,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
             .selectDefaultDependenciesContractAndMock()
             .close()
     }
-
-    @discardableResult
-    func setupDefaultIOSPlatform() -> Screen {
-        return self
-            .openConfiguration()
-            .selectDefaultIOSVersion()
-            .close()
-    }
-
+    
     @discardableResult
     func addNewComponent(givenName: String, familyName: String) -> Screen {
         return self
@@ -211,6 +199,7 @@ class Screen: Toolbar, ComponentsList, ComponentScreen, DependencySheet {
     func assertAlertShowing(messagePrefix: String) -> Screen {
         XCTAssertTrue(alertMessage.exists)
         XCTAssertTrue((alertMessage.value as? String)?.hasPrefix(messagePrefix) == true)
+        
         return self
     }
 }

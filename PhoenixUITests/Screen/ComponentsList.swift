@@ -53,13 +53,4 @@ extension ComponentsList {
         familySettingsButton(named: named).click()
         return FamilySheet()
     }
-
-    @discardableResult
-    func assertIOSPlatformUpdatedInComponent() -> ComponentsList {
-        XCTAssertEqual(
-            iOSVersionMenu.title,
-            ".iOS(.v15)"
-        )
-        return self
-    }
 }

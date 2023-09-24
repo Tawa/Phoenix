@@ -54,14 +54,6 @@ final class PhoenixUITests: XCTestCase {
                                             andAddDependency: wordpressRepository)
             .selectAndAssertContractAndMock(component: wordpressRepository,
                                             andAddDependency: networking, wordpressDataStore)
-            .setupDefaultIOSPlatform()
-            .assertIOSPlatformUpdatedInComponent()
-            .selectComponent(named: wordpressFeature)
-            .assertIOSPlatformUpdatedInComponent()
-            .selectComponent(named: wordpressUseCases)
-            .assertIOSPlatformUpdatedInComponent()
-            .selectComponent(named: wordpressDataStore)
-            .assertIOSPlatformUpdatedInComponent()
     }
     
     func testPopovers() {

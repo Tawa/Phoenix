@@ -9,13 +9,7 @@ final class ConfigurationSheet: Screen {
     var closeButton: XCUIElement {
         Screen.app.buttons[ConfigurationSheetIdentifiers.closeButton.identifier]
     }
-
-    @discardableResult
-    func selectIOSVersion(_ version: String) -> ConfigurationSheet {
-        Screen.app.menuItems[version].click()
-        return self
-    }
-
+    
     func textField(column: Int, row: Int) -> XCUIElement {
         Screen.app.textFields[
             ConfigurationSheetIdentifiers.textField(
@@ -54,13 +48,6 @@ final class ConfigurationSheet: Screen {
             .select(option: "Mock", dependencyName: dependencyName, packageName: "Tests")
             .assertSelector(dependencyName: dependencyName, packageName: "Implementation", title: "Contract")
             .assertSelector(dependencyName: dependencyName, packageName: "Tests", title: "Mock")
-        return self
-    }
-
-    @discardableResult
-    func selectDefaultIOSVersion() -> ConfigurationSheet {
-        iOSVersionMenu.firstMatch.click()
-        selectIOSVersion("v15")
         return self
     }
 }

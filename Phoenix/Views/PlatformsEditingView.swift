@@ -2,7 +2,6 @@ import SwiftUI
 import PhoenixDocument
 import Foundation
 import SwiftPackage
-import AccessibilityIdentifiers
 
 struct PlatformsEditingView: View {
     @Binding var platforms: Platforms
@@ -13,7 +12,6 @@ struct PlatformsEditingView: View {
                    onSelection: { platforms.iOSVersion = $0 },
                    hasRemove: platforms.iOSVersion != nil,
                    onRemove: { platforms.iOSVersion = nil })
-        .with(accessibilityIdentifier: ConfigurationSheetIdentifiers.iOSVersionMenu)
         .frame(width: 150)
         CustomMenu(title: macCatalystPlatformMenuTitle(macCatalystVersion: platforms.macCatalystVersion),
                    data: MacCatalystVersion.allCases,
