@@ -6,12 +6,7 @@ public struct MacroComponent: Codable, Hashable, Identifiable {
     public var name: String
     
     public var defaultDependencies: Set<PackageTargetType>
-    
-    public var iOSVersion: IOSVersion?
-    public var macCatalystVersion: MacCatalystVersion?
-    public var macOSVersion: MacOSVersion?
-    public var tvOSVersion: TVOSVersion?
-    public var watchOSVersion: WatchOSVersion?
+    public var platforms: Platforms
     
     enum CodingKeys: CodingKey {
         case name
@@ -26,39 +21,40 @@ public struct MacroComponent: Codable, Hashable, Identifiable {
     public init(
         name: String,
         defaultDependencies: Set<PackageTargetType> = [],
-        iOSVersion: IOSVersion? = .v13,
-        macCatalystVersion: MacCatalystVersion? = .v13,
-        macOSVersion: MacOSVersion? = .v10_15,
-        tvOSVersion: TVOSVersion? = .v13,
-        watchOSVersion: WatchOSVersion? = .v6
+        platforms: Platforms = .macroDefault
     ) {
         self.name = name
         self.defaultDependencies = defaultDependencies
-        self.iOSVersion = iOSVersion
-        self.macCatalystVersion = macCatalystVersion
-        self.macOSVersion = macOSVersion
-        self.tvOSVersion = tvOSVersion
-        self.watchOSVersion = watchOSVersion
+        self.platforms = platforms
     }
-    
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        defaultDependencies = try container.decode(Set<PackageTargetType>.self, forKey: .defaultDependencies)
+
+        platforms = .empty
+        platforms.iOSVersion = try container.decode(IOSVersion.self, forKey: .iOSVersion)
+        platforms.macCatalystVersion = try container.decode(MacCatalystVersion.self, forKey: .macCatalystVersion)
+        platforms.macOSVersion = try container.decode(MacOSVersion.self, forKey: .macOSVersion)
+        platforms.tvOSVersion = try container.decode(TVOSVersion.self, forKey: .tvOSVersion)
+        platforms.watchOSVersion = try container.decode(WatchOSVersion.self, forKey: .watchOSVersion)
+    }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.name, forKey: .name)
-        try container.encode(self.defaultDependencies.sorted(), forKey: .defaultDependencies)
-        try container.encodeIfPresent(self.iOSVersion, forKey: .iOSVersion)
-        try container.encodeIfPresent(self.macCatalystVersion, forKey: .macCatalystVersion)
-        try container.encodeIfPresent(self.macOSVersion, forKey: .macOSVersion)
-        try container.encodeIfPresent(self.tvOSVersion, forKey: .tvOSVersion)
-        try container.encodeIfPresent(self.watchOSVersion, forKey: .watchOSVersion)
+        try container.encode(name, forKey: .name)
+        try container.encode(defaultDependencies.sorted(), forKey: .defaultDependencies)
+        try container.encodeIfPresent(platforms.iOSVersion, forKey: .iOSVersion)
+        try container.encodeIfPresent(platforms.macCatalystVersion, forKey: .macCatalystVersion)
+        try container.encodeIfPresent(platforms.macOSVersion, forKey: .macOSVersion)
+        try container.encodeIfPresent(platforms.tvOSVersion, forKey: .tvOSVersion)
+        try container.encodeIfPresent(platforms.watchOSVersion, forKey: .watchOSVersion)
     }
-    
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(name)
         hasher.combine(defaultDependencies)
-        hasher.combine(iOSVersion)
-        hasher.combine(macCatalystVersion)
-        hasher.combine(macOSVersion)
-        hasher.combine(tvOSVersion)
-        hasher.combine(watchOSVersion)
+        hasher.combine(platforms)
     }
 }

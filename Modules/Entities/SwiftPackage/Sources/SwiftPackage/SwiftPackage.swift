@@ -1,11 +1,7 @@
 public struct SwiftPackage: Hashable {
     public let name: String
     public let defaultLocalization: String?
-    public let iOSVersion: IOSVersion?
-    public let macCatalystVersion: MacCatalystVersion?
-    public let macOSVersion: MacOSVersion?
-    public let tvOSVersion: TVOSVersion?
-    public let watchOSVersion: WatchOSVersion?
+    public let platforms: Platforms
     public let products: [Product]
     public let dependencies: [Dependency]
     public let targets: [Target]
@@ -13,22 +9,14 @@ public struct SwiftPackage: Hashable {
     
     public init(name: String,
                 defaultLocalization: String?,
-                iOSVersion: IOSVersion?,
-                macCatalystVersion: MacCatalystVersion?,
-                macOSVersion: MacOSVersion?,
-                tvOSVersion: TVOSVersion?,
-                watchOSVersion: WatchOSVersion?,
+                platforms: Platforms,
                 products: [Product],
                 dependencies: [Dependency],
                 targets: [Target],
                 swiftVersion: String) {
         self.name = name
         self.defaultLocalization = defaultLocalization
-        self.iOSVersion = iOSVersion
-        self.macCatalystVersion = macCatalystVersion
-        self.macOSVersion = macOSVersion
-        self.tvOSVersion = tvOSVersion
-        self.watchOSVersion = watchOSVersion
+        self.platforms = platforms
         self.products = products
         self.dependencies = dependencies
         self.targets = targets

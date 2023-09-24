@@ -167,22 +167,28 @@ public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
             )
             dependencies += testsDependencies
         }
-        
-        return .init(package: .init(name: packageName,
-                                    defaultLocalization: defaultLocalization,
-                                    iOSVersion: component.platforms.iOSVersion,
-                                    macCatalystVersion: component.platforms.macCatalystVersion,
-                                    macOSVersion: component.platforms.macOSVersion,
-                                    tvOSVersion: component.platforms.tvOSVersion,
-                                    watchOSVersion: component.platforms.watchOSVersion,
-                                    products: [Product.library(Library(name: packageName,
-                                                                       type: component.modules[packageConfiguration.name] ?? .undefined,
-                                                                       targets: [packageName]))],
-                                    dependencies: dependencies.uniqued(),
-                                    targets: targets,
-                                    swiftVersion: projectConfiguration.swiftVersion),
-                     path: packagePathProvider.path(for: component.name,
-                                                    of: family,
-                                                    packageConfiguration: packageConfiguration))
+
+        return .init(
+            package: .init(
+                name: packageName,
+                defaultLocalization: defaultLocalization,
+                platforms: component.platforms ?? projectConfiguration.platforms,
+                products: [Product.library(
+                    Library(
+                        name: packageName,
+                        type: component.modules[packageConfiguration.name] ?? .undefined,
+                        targets: [packageName]
+                    )
+                )],
+                dependencies: dependencies.uniqued(),
+                targets: targets,
+                swiftVersion: projectConfiguration.swiftVersion
+            ),
+            path: packagePathProvider.path(
+                for: component.name,
+                of: family,
+                packageConfiguration: packageConfiguration
+            )
+        )
     }
 }

@@ -152,18 +152,3 @@ public struct Component: Codable, Hashable, Identifiable {
         hasher.combine(defaultDependencies)
     }
 }
-
-// MARK: - Platforms
-public extension Component {
-    struct Platforms: Codable, Hashable {
-        public var iOSVersion: IOSVersion?
-        public var macCatalystVersion: MacCatalystVersion?
-        public var macOSVersion: MacOSVersion?
-        public var tvOSVersion: TVOSVersion?
-        public var watchOSVersion: WatchOSVersion?
-    }
-}
-
-public extension Component.Platforms {
-    static var empty: Self { .init() }
-}

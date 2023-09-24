@@ -18,11 +18,7 @@ public struct MacroComponentPackageProvider: MacroComponentPackageProviderProtoc
             package: SwiftPackage(
                 name: name,
                 defaultLocalization: nil,
-                iOSVersion: macroComponent.iOSVersion,
-                macCatalystVersion: macroComponent.macCatalystVersion,
-                macOSVersion: macroComponent.macOSVersion,
-                tvOSVersion: macroComponent.tvOSVersion,
-                watchOSVersion: macroComponent.watchOSVersion,
+                platforms: macroComponent.platforms,
                 products: [
                     .executable(Executable(name: clientName, targets: [clientName])),
                     .library(Library(name: name, type: .undefined, targets: [name]))

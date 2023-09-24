@@ -1,4 +1,5 @@
 import Foundation
+import SwiftPackage
 
 private enum ProjectConfigurationConstants {
     static let defaultMacrosFolderName = "Macros"
@@ -9,7 +10,7 @@ public struct ProjectConfiguration: Codable, Hashable {
     public var defaultDependencies: [PackageTargetType: String]
     public var macrosFolderName: String
     public var swiftVersion: String
-    public var platforms: Component.Platforms
+    public var platforms: Platforms
     public var defaultOrganizationIdentifier: String?
     
     enum CodingKeys: String, CodingKey {
@@ -26,7 +27,7 @@ public struct ProjectConfiguration: Codable, Hashable {
                   macrosFoldeName: String = "Macros",
                   swiftVersion: String,
                   defaultOrganizationIdentifier: String?,
-                  platforms: Component.Platforms) {
+                  platforms: Platforms) {
         self.packageConfigurations = packageConfigurations
         self.defaultDependencies = defaultDependencies
         self.macrosFolderName = macrosFoldeName
@@ -43,7 +44,7 @@ public struct ProjectConfiguration: Codable, Hashable {
         macrosFolderName = try container.decodeIfPresent(String.self, forKey: .macrosFolderName) ?? ProjectConfigurationConstants.defaultMacrosFolderName
         swiftVersion = (try? container.decode(String.self, forKey: .swiftVersion)) ?? "5.9"
         defaultOrganizationIdentifier = try? container.decodeIfPresent(String.self, forKey: .defaultOrganizationIdentifier)
-        platforms = (try? container.decode(Component.Platforms.self, forKey: .platforms)) ?? .empty
+        platforms = (try? container.decode(Platforms.self, forKey: .platforms)) ?? .empty
     }
     
     public func encode(to encoder: Encoder) throws {
