@@ -26,20 +26,34 @@ public struct PackageGenerator: PackageGeneratorProtocol {
             switch target.type {
             case .executableTarget:
                 try createExecutableSourcesFolderIfNecessary(at: url, name: target.name, importName: package.name)
+                try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .target:
                 if package.isMacroPackage {
                     try createMacroPackageSourcesFolderIfNecessary(at: url, name: target.name)
                 } else {
                     try createSourcesFolderIfNecessary(at: url, name: target.name)
                 }
+                try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .testTarget:
                 try createTestsFolderIfNecessary(at: url, name: target.name, isMacroPackage: package.isMacroPackage)
+                try createResourceFoldersIfNecessary(inFolder: "Tests", at: url, for: target)
             case .macro:
                 try createMacroSourcesFolderIfNecessary(at: url, name: target.name)
+                try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             }
         }
         try createPackageFile(for: package, at: url)
         try createReadMeFileIfNecessary(at: url, withName: package.name)
+    }
+
+    private func createResourceFoldersIfNecessary(inFolder folder: String, at url: URL, for target: Target) throws {
+        for resource in target.resources {
+            // Resources folder needs to be created inside the right folder for the given Target
+            let newURL = url
+                .appendingPathComponent(folder)
+                .appendingPathComponent(target.name)
+            _ = try createFolderIfNecessary(folder: resource.folderName, at: newURL, withName: "")
+        }
     }
 
     private func createPackageFolderIfNecessary(at url: URL) throws {
@@ -50,52 +64,41 @@ public struct PackageGenerator: PackageGeneratorProtocol {
     }
     
     private func createExecutableSourcesFolderIfNecessary(at url: URL, name: String, importName: String) throws {
-        let path = url.appendingPathComponent("Sources").appendingPathComponent(name, isDirectory: true).path
-        if !fileManager.fileExists(atPath: path) {
-            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
-        }
-
+        let path = try createFolderIfNecessary(folder: "Sources", at: url, withName: name)
         try createExecutableSourceFile(name: "main", atPath: path, importName: importName)
     }
     
     public func createMacroSourcesFolderIfNecessary(at url: URL, name: String) throws {
-        let path = url.appendingPathComponent("Sources").appendingPathComponent(name, isDirectory: true).path
-        if !fileManager.fileExists(atPath: path) {
-            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
-        }
-        
+        let path = try createFolderIfNecessary(folder: "Sources", at: url, withName: name)
         try createMacroSourceFile(name: name, atPath: path)
     }
 
     private func createSourcesFolderIfNecessary(at url: URL, name: String) throws {
-        let path = url.appendingPathComponent("Sources").appendingPathComponent(name, isDirectory: true).path
-        if !fileManager.fileExists(atPath: path) {
-            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
-        }
-
+        let path = try createFolderIfNecessary(folder: "Sources", at: url, withName: name)
         try createSourceFile(name: name, atPath: path)
     }
 
     private func createMacroPackageSourcesFolderIfNecessary(at url: URL, name: String) throws {
-        let path = url.appendingPathComponent("Sources").appendingPathComponent(name, isDirectory: true).path
-        if !fileManager.fileExists(atPath: path) {
-            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
-        }
-
+        let path = try createFolderIfNecessary(folder: "Sources", at: url, withName: name)
         try createMacroPackageSourceFile(name: name, atPath: path)
     }
 
     private func createTestsFolderIfNecessary(at url: URL, name: String, isMacroPackage: Bool) throws {
-        let path = url.appendingPathComponent("Tests").appendingPathComponent(name, isDirectory: true).path
-        if !fileManager.fileExists(atPath: path) {
-            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
-        }
+        let path = try createFolderIfNecessary(folder: "Tests", at: url, withName: name)
 
         if isMacroPackage {
             try createMacroTestFile(name: name, atPath: path)
         } else {
             try createTestFile(name: name, atPath: path)
         }
+    }
+
+    private func createFolderIfNecessary(folder: String, at url: URL, withName name: String) throws -> String {
+        let path = url.appendingPathComponent(folder).appendingPathComponent(name, isDirectory: true).path
+        if !fileManager.fileExists(atPath: path) {
+            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
+        }
+        return path
     }
 
     private func isDirectoryEmpty(atPath path: String) -> Bool {
