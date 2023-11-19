@@ -26,20 +26,34 @@ public struct PackageGenerator: PackageGeneratorProtocol {
             switch target.type {
             case .executableTarget:
                 try createExecutableSourcesFolderIfNecessary(at: url, name: target.name, importName: package.name)
+                try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .target:
                 if package.isMacroPackage {
                     try createMacroPackageSourcesFolderIfNecessary(at: url, name: target.name)
                 } else {
                     try createSourcesFolderIfNecessary(at: url, name: target.name)
                 }
+                try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .testTarget:
                 try createTestsFolderIfNecessary(at: url, name: target.name, isMacroPackage: package.isMacroPackage)
+                try createResourceFoldersIfNecessary(inFolder: "Tests", at: url, for: target)
             case .macro:
                 try createMacroSourcesFolderIfNecessary(at: url, name: target.name)
+                try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             }
         }
         try createPackageFile(for: package, at: url)
         try createReadMeFileIfNecessary(at: url, withName: package.name)
+    }
+
+    private func createResourceFoldersIfNecessary(inFolder folder: String, at url: URL, for target: Target) throws {
+        for resource in target.resources {
+            // Resources folder needs to be created inside the right folder for the given Target
+            let newURL = url
+                .appendingPathComponent(folder)
+                .appendingPathComponent(target.name)
+            _ = try createFolderIfNecessary(folder: resource.folderName, at: newURL, withName: "")
+        }
     }
 
     private func createPackageFolderIfNecessary(at url: URL) throws {
