@@ -245,7 +245,6 @@ struct ComponentView: View {
                 accessoryContent()
             }
         }
-        Divider()
     }
     
     @ViewBuilder private func expandableDependenciesSection<Content: View, AccessoryContent: View>(
