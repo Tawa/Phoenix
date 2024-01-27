@@ -12,7 +12,6 @@ struct SectionView<Content: View>: View {
             HStack(alignment: .center) {
                 content()
             }
-            Divider()
         }
     }
 }

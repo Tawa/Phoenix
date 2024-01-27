@@ -114,7 +114,6 @@ struct ConfigurationView: View {
                     } content: { index in
                         Button(action: { removePackageConfiguration(at: index) }) {
                             Image(systemName: "trash")
-                                .padding()
                         }
                     }
                 }.padding()
