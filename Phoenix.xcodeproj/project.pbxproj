@@ -47,6 +47,7 @@
 		4BF43B022A7E51A300094B27 /* MacroComponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF43B012A7E51A300094B27 /* MacroComponentView.swift */; };
 		991B1A982ABCA98700B4B8F3 /* PlatformsEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991B1A972ABCA98700B4B8F3 /* PlatformsEditingView.swift */; };
 		9931609A2AC056E1009981BC /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993160992AC056E1009981BC /* SectionView.swift */; };
+		994957962BF3285E0055B81B /* MutableCollection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994957952BF3285E0055B81B /* MutableCollection+Extensions.swift */; };
 		B20F17412A067ACC004391B0 /* GenerateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F17402A067ACC004391B0 /* GenerateSheet.swift */; };
 		B20F9D502A0FC1C9005F99BB /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F9D4F2A0FC154005F99BB /* AlertSheet.swift */; };
 		B213A90D28C7CA13005AFC91 /* ProjectGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = B213A90C28C7CA13005AFC91 /* ProjectGenerator */; };
@@ -212,6 +213,7 @@
 		981295FCE3B52E97779A2186 /* DocumentCoder */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DocumentCoder; sourceTree = "<group>"; };
 		991B1A972ABCA98700B4B8F3 /* PlatformsEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformsEditingView.swift; sourceTree = "<group>"; };
 		993160992AC056E1009981BC /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
+		994957952BF3285E0055B81B /* MutableCollection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutableCollection+Extensions.swift"; sourceTree = "<group>"; };
 		9FE96A2D3B3268D8FAD977D1 /* ProjectValidator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectValidator; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
 		B0575B2BA782D723A9A8ECFC /* GenerateFeatureDataStoreContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GenerateFeatureDataStoreContract; sourceTree = "<group>"; };
@@ -622,6 +624,7 @@
 			isa = PBXGroup;
 			children = (
 				B2EDFE5D2956F3DD005BB99C /* Array+RemoteComponent+Extensions.swift */,
+				994957952BF3285E0055B81B /* MutableCollection+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -999,6 +1002,7 @@
 				3810D8CD280990AF006E7EE3 /* ComponentsList.swift in Sources */,
 				B2EDFE6229574954005BB99C /* TargetTypesView.swift in Sources */,
 				38E2513F28392D18002FFA31 /* IdentifiableWithTitle.swift in Sources */,
+				994957962BF3285E0055B81B /* MutableCollection+Extensions.swift in Sources */,
 				38BCCC952854A0C000E928CA /* CompositionRoot+RelativeURLProvider.swift in Sources */,
 				B20F9D502A0FC1C9005F99BB /* AlertSheet.swift in Sources */,
 				3853D202283968E1005E2FAE /* RemoteDependencyFormView.swift in Sources */,

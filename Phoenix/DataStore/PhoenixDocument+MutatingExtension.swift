@@ -142,6 +142,11 @@ extension PhoenixDocument {
         else { return }
         families[familyIndex].components.removeAll(where: { $0.name == name })
         families.removeAll(where: { $0.components.isEmpty })
+        families.modifyEach { componentFamily in
+            componentFamily.components.modifyEach { component in
+                component.localDependencies.removeAll { $0.name == name }
+            }
+        }
     }
     
     mutating func removeRemoteComponent(withURL url: String) {
