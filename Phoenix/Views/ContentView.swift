@@ -259,8 +259,8 @@ struct ContentView: View {
         }
     }
     
-    @ViewBuilder private func componentView(for component: Binding<Component>) -> some View {
-        ComponentView(
+    private func componentView(for component: Binding<Component>) -> some View {
+        let componentView = ComponentView(
             component: component,
             remoteDependencies: document.remoteComponents.reduce(into: [String: RemoteComponent](), { partialResult, remoteComponent in
                 partialResult[remoteComponent.url] = remoteComponent
@@ -292,6 +292,46 @@ struct ContentView: View {
             onSelectMacroName: viewModel.select(macro:),
             allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name)
         )
+        let metaComponentView = MetaComponentView(
+            component: component,
+            remoteDependencies: document.remoteComponents.reduce(into: [String: RemoteComponent](), { partialResult, remoteComponent in
+                partialResult[remoteComponent.url] = remoteComponent
+            }),
+            relationViewData: document.componentRelationViewData(componentName: component.wrappedValue.name),
+            relationViewDataToComponentNamed: { dependencyName, selectedValues in
+                document.relationViewData(fromComponentName: component.wrappedValue.name,
+                                          toComponentName: dependencyName,
+                                          selectedValues: selectedValues)
+            },
+            relationViewDataToMacroComponentNamed: { macroName, selectedValues in
+                document.relationViewData(
+                    fromComponentName: component.wrappedValue.name,
+                    toMacroName: macroName,
+                    selectedValues: selectedValues.toStringDictionary()
+                )
+            },
+            titleForComponentNamed: document.title(forComponentNamed:),
+            onGenerateDemoAppProject: {
+                viewModel.onGenerateDemoProject(for: component.wrappedValue, from: document, fileURL: fileURL)
+            },
+            onRemove: { document.removeComponent(withName: component.wrappedValue.name) },
+            allTargetTypes: allTargetTypes(forComponent: component.wrappedValue),
+            onShowDependencySheet: { viewModel.showingDependencySheet = true },
+            onShowRemoteDependencySheet: { viewModel.showingRemoteDependencySheet = true },
+            onShowMacroDependencySheet: { viewModel.showingMacroDependencySheet = true },
+            onSelectComponentName: viewModel.select(componentName:),
+            onSelectRemoteURL: viewModel.select(remoteComponentURL:),
+            onSelectMacroName: viewModel.select(macro:),
+            allModuleTypes: document.projectConfiguration.packageConfigurations.map(\.name)
+        )
+
+        return VStack() { 
+            if component.wrappedValue.name.family == "Meta" {
+                metaComponentView
+            } else {
+                componentView
+            }
+        }
     }
     
     @ViewBuilder private func remoteComponentView(for remoteComponent: Binding<RemoteComponent>) -> some View {
