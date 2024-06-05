@@ -18,6 +18,8 @@ public struct ProjectGenerator: ProjectGeneratorProtocol {
     }
     
     public func generate(document: PhoenixDocument, folderURL: URL) throws {
+        print(document.families.compactMap{$0.family.name})
+        print()
         let packagesWithPath: [PackageWithPath] = documentPackagesProvider.packages(for: document)
         for packageWithPath in packagesWithPath {
             let url = folderURL.appendingPathComponent(packageWithPath.path, isDirectory: true)

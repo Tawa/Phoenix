@@ -25,7 +25,17 @@ public extension Platforms {
 
     static var macroDefault: Self {
         .init(
-            iOSVersion: .v13,
+            iOSVersion: .v15,
+            macCatalystVersion: .v13,
+            macOSVersion: .v10_15,
+            tvOSVersion: .v13,
+            watchOSVersion: .v6
+        )
+    }
+    
+    static var metaDefault: Self {
+        .init(
+            iOSVersion: .v15,
             macCatalystVersion: .v13,
             macOSVersion: .v10_15,
             tvOSVersion: .v13,

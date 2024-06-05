@@ -10,6 +10,7 @@ public struct PhoenixDocument: Hashable {
     }
     public var remoteComponents: [RemoteComponent]
     public var macroComponents: [MacroComponent]
+    public var metaComponents: [MetaComponent]
     public var projectConfiguration: ProjectConfiguration
     
     private(set) public var components: [Name: Component]
@@ -18,10 +19,12 @@ public struct PhoenixDocument: Hashable {
     public init(families: [ComponentsFamily] = [],
                 remoteComponents: [RemoteComponent] = [],
                 macros: [MacroComponent] = [],
+                metas: [MetaComponent] = [],
                 projectConfiguration: ProjectConfiguration = .default) {
         self.families = families
         self.remoteComponents = remoteComponents
         self.macroComponents = macros
+        self.metaComponents = metas
         self.projectConfiguration = projectConfiguration
         
         self.components = families.flatMap(\.components).reduce(into: [Name: Component](), { $0[$1.name] = $1 })

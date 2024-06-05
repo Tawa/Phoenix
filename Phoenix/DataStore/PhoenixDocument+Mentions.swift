@@ -22,4 +22,8 @@ extension PhoenixDocument {
     func mentions(forMacro name: String) -> [Name] {
         []
     }
+
+    func mentions(forMeta name: String) -> [Name] {
+        []
+    }
 }

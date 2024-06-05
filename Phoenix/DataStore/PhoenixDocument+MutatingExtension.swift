@@ -86,6 +86,16 @@ extension PhoenixDocument {
         macroComponents.sort(by: { $0.name < $1.name })
     }
     
+    mutating func addNewMetaComponent(with name: String) throws {
+        if name.isEmpty {
+            throw NSError(domain: "Meta name cannot be empty", code: 500)
+        } else if metaComponents.contains(where: { $0.name == name }) {
+            throw NSError(domain: "Meta name already in use", code: 502)
+        }
+        metaComponents.append(MetaComponent(name: name))
+        metaComponents.sort(by: { $0.name < $1.name })
+    }
+    
     mutating func addDependencyToComponent(withName name: Name, dependencyName: Name) {
         var defaultDependencies: [PackageTargetType: String] = component(named: dependencyName)?.defaultDependencies ?? [:]
         if defaultDependencies.isEmpty {

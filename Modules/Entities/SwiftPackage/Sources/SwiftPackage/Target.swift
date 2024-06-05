@@ -4,6 +4,7 @@ public struct Target: Hashable, Comparable {
         case target
         case testTarget
         case macro
+        case meta
     }
     
     public let name: String

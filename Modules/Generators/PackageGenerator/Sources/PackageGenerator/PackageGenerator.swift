@@ -7,6 +7,10 @@ extension SwiftPackage {
     var isMacroPackage: Bool {
         targets.contains(where: { $0.type == .macro })
     }
+    
+    var isMetaPackage: Bool {
+        targets.contains(where: { $0.type == .meta })
+    }
 }
 
 public struct PackageGenerator: PackageGeneratorProtocol {
@@ -30,6 +34,10 @@ public struct PackageGenerator: PackageGeneratorProtocol {
             case .target:
                 if package.isMacroPackage {
                     try createMacroPackageSourcesFolderIfNecessary(at: url, name: target.name)
+                } else if package.isMetaPackage {
+                    //TODO: createMetaSourcesFolderIfNecessary
+                    try createSourcesFolderIfNecessary(at: url, name: target.name)
+                    try symlinkMetaPackageSources(at: url, name: target.name)
                 } else {
                     try createSourcesFolderIfNecessary(at: url, name: target.name)
                 }
@@ -40,8 +48,11 @@ public struct PackageGenerator: PackageGeneratorProtocol {
             case .macro:
                 try createMacroSourcesFolderIfNecessary(at: url, name: target.name)
                 try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
+            case .meta:
+                return
             }
         }
+        //here we make sure all the child dependencies are added? Nothing extra needed right?
         try createPackageFile(for: package, at: url)
         try createReadMeFileIfNecessary(at: url, withName: package.name)
     }
@@ -161,7 +172,20 @@ struct \(name) {
                                contents: content.data(using: .utf8),
                                attributes: nil)
     }
+    
+    private func createSourceFileSymlink(atPath path: String,
+                                         withDestinationPath destPath: String) throws {
+        guard isDirectoryEmpty(atPath: path) else { return }
 
+        try fileManager.createSymbolicLink(atPath:  path, withDestinationPath: destPath)
+    }
+    
+    private func symlinkMetaPackageSources(at url: URL, name: String) throws {
+//        for each in dependencies mock
+        let derivedPath = ""
+        try createSourceFileSymlink(atPath: url.absoluteString, withDestinationPath: derivedPath)
+    }
+    
     private func createMacroSourceFile(name: String, atPath path: String) throws {
         guard isDirectoryEmpty(atPath: path) else { return }
 

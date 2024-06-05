@@ -79,7 +79,7 @@ extension ViewModel {
                 return section
             }
     }
-    
+
     private func sectionTitle(forFamily family: Family) -> String {
         family.name == family.folder ? family.name : familyFolderNameProvider.folderName(forFamily: family.name)
     }

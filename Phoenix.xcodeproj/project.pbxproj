@@ -43,7 +43,6 @@
 		4B37C5022A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B37C5012A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift */; };
 		4B4058752A7CE75600388E0B /* NewMacroComponentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4058742A7CE75600388E0B /* NewMacroComponentSheet.swift */; };
 		4B4058772A7CEA1900388E0B /* MacrosList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4058762A7CEA1900388E0B /* MacrosList.swift */; };
-		4B4058792A7CEB3A00388E0B /* ViewModel+MacrosList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4058782A7CEB3A00388E0B /* ViewModel+MacrosList.swift */; };
 		4BF43B022A7E51A300094B27 /* MacroComponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF43B012A7E51A300094B27 /* MacroComponentView.swift */; };
 		991B1A982ABCA98700B4B8F3 /* PlatformsEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991B1A972ABCA98700B4B8F3 /* PlatformsEditingView.swift */; };
 		9931609A2AC056E1009981BC /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993160992AC056E1009981BC /* SectionView.swift */; };
@@ -51,6 +50,10 @@
 		994957992BF368BB0055B81B /* PhoenixDocument+MutatingExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994957982BF368BB0055B81B /* PhoenixDocument+MutatingExtensionTests.swift */; };
 		9949579B2BF3901D0055B81B /* PhoenixDocument in Frameworks */ = {isa = PBXBuildFile; productRef = 9949579A2BF3901D0055B81B /* PhoenixDocument */; };
 		9949579D2BF390CB0055B81B /* SwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 9949579C2BF390CB0055B81B /* SwiftPackage */; };
+		9B00BA042C11C5940014EA36 /* ViewModel+MacrosList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B00BA022C11C5940014EA36 /* ViewModel+MacrosList.swift */; };
+		9B00BA052C11C5940014EA36 /* ViewModel+MetasList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B00BA032C11C5940014EA36 /* ViewModel+MetasList.swift */; };
+		9B6DEF8A2C11C41700F9AC7F /* MetasList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6DEF882C11C41700F9AC7F /* MetasList.swift */; };
+		9B6DEF8B2C11C41700F9AC7F /* NewMetaComponentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6DEF892C11C41700F9AC7F /* NewMetaComponentSheet.swift */; };
 		9BDC59762C0DEEAE00474ADD /* MetaComponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDC59752C0DEEAE00474ADD /* MetaComponentView.swift */; };
 		B20F17412A067ACC004391B0 /* GenerateSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F17402A067ACC004391B0 /* GenerateSheet.swift */; };
 		B20F9D502A0FC1C9005F99BB /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20F9D4F2A0FC154005F99BB /* AlertSheet.swift */; };
@@ -204,7 +207,6 @@
 		4B37C5012A50B70700887128 /* CompositionRoot+LocalFileURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositionRoot+LocalFileURLProvider.swift"; sourceTree = "<group>"; };
 		4B4058742A7CE75600388E0B /* NewMacroComponentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMacroComponentSheet.swift; sourceTree = "<group>"; };
 		4B4058762A7CEA1900388E0B /* MacrosList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacrosList.swift; sourceTree = "<group>"; };
-		4B4058782A7CEB3A00388E0B /* ViewModel+MacrosList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+MacrosList.swift"; sourceTree = "<group>"; };
 		4B57167F7F7325C28B04EF58 /* DemoAppGeneratorContract */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemoAppGeneratorContract; sourceTree = "<group>"; };
 		4BF43B012A7E51A300094B27 /* MacroComponentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroComponentView.swift; sourceTree = "<group>"; };
 		51991ED64782A59B5A9A0E7F /* RelativeURLProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RelativeURLProvider; sourceTree = "<group>"; };
@@ -219,6 +221,10 @@
 		993160992AC056E1009981BC /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		994957952BF3285E0055B81B /* MutableCollection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutableCollection+Extensions.swift"; sourceTree = "<group>"; };
 		994957982BF368BB0055B81B /* PhoenixDocument+MutatingExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhoenixDocument+MutatingExtensionTests.swift"; sourceTree = "<group>"; };
+		9B00BA022C11C5940014EA36 /* ViewModel+MacrosList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewModel+MacrosList.swift"; sourceTree = "<group>"; };
+		9B00BA032C11C5940014EA36 /* ViewModel+MetasList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewModel+MetasList.swift"; sourceTree = "<group>"; };
+		9B6DEF882C11C41700F9AC7F /* MetasList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetasList.swift; sourceTree = "<group>"; };
+		9B6DEF892C11C41700F9AC7F /* NewMetaComponentSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMetaComponentSheet.swift; sourceTree = "<group>"; };
 		9BDC59752C0DEEAE00474ADD /* MetaComponentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetaComponentView.swift; sourceTree = "<group>"; };
 		9FE96A2D3B3268D8FAD977D1 /* ProjectValidator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProjectValidator; sourceTree = "<group>"; };
 		ABEE0E3F8FE6D1C0124E666E /* AppVersionProvider */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppVersionProvider; sourceTree = "<group>"; };
@@ -492,6 +498,8 @@
 				38E2512E2837E508002FFA31 /* ComponentModuleTypeView.swift */,
 				3810D8CC280990AF006E7EE3 /* ComponentsList.swift */,
 				3810D8CA2809811F006E7EE3 /* ComponentView.swift */,
+				9B6DEF882C11C41700F9AC7F /* MetasList.swift */,
+				9B6DEF892C11C41700F9AC7F /* NewMetaComponentSheet.swift */,
 				3880FEE72842216800ED0110 /* ConfigurationView.swift */,
 				3873E5A72804C509000BCB03 /* ContentView.swift */,
 				9BDC59752C0DEEAE00474ADD /* MetaComponentView.swift */,
@@ -633,7 +641,8 @@
 				B29BE1032943D37C00675860 /* ViewModel+Selection.swift */,
 				B2E1D48429425CCB00FF07DE /* ViewModel+ComponentsList.swift */,
 				B2EDFE4E295596D8005BB99C /* ViewModel+RemoteComponentsList.swift */,
-				4B4058782A7CEB3A00388E0B /* ViewModel+MacrosList.swift */,
+				9B00BA022C11C5940014EA36 /* ViewModel+MacrosList.swift */,
+				9B00BA032C11C5940014EA36 /* ViewModel+MetasList.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -981,8 +990,10 @@
 				B2EDFE5E2956F3DD005BB99C /* Array+RemoteComponent+Extensions.swift in Sources */,
 				B2EDFE642958C3A4005BB99C /* QuickSelectionSheet.swift in Sources */,
 				B2BD9D3E296188530048D505 /* PhoenixDocument+Mentions.swift in Sources */,
+				9B6DEF8B2C11C41700F9AC7F /* NewMetaComponentSheet.swift in Sources */,
 				3880FEE82842216800ED0110 /* ConfigurationView.swift in Sources */,
 				B2EDFE592955ECBA005BB99C /* NewRemoteComponentNameSheet.swift in Sources */,
+				9B6DEF8A2C11C41700F9AC7F /* MetasList.swift in Sources */,
 				B2F4B1B229B48AE7008DBAB1 /* CompositionRoot+PBXProjectSyncer.swift in Sources */,
 				3810D8D32809C555006E7EE3 /* FamilySheet.swift in Sources */,
 				38E2512F2837E508002FFA31 /* ComponentModuleTypeView.swift in Sources */,
@@ -991,7 +1002,6 @@
 				3873E5A62804C509000BCB03 /* PhoenixDocument+Extensions.swift in Sources */,
 				38E251332837EC73002FFA31 /* FilterView.swift in Sources */,
 				3873E5A42804C509000BCB03 /* PhoenixApp.swift in Sources */,
-				4B4058792A7CEB3A00388E0B /* ViewModel+MacrosList.swift in Sources */,
 				3810D8CB2809811F006E7EE3 /* ComponentView.swift in Sources */,
 				38E2512B2837E163002FFA31 /* ViewModel.swift in Sources */,
 				B2E1D48529425CCB00FF07DE /* ViewModel+ComponentsList.swift in Sources */,
@@ -1010,6 +1020,7 @@
 				B29BE1042943D37C00675860 /* ViewModel+Selection.swift in Sources */,
 				B2EDFE60295732C2005BB99C /* RemoteComponentDependencyView.swift in Sources */,
 				3873E5A82804C509000BCB03 /* ContentView.swift in Sources */,
+				9B00BA042C11C5940014EA36 /* ViewModel+MacrosList.swift in Sources */,
 				B2EDFE5129559D61005BB99C /* NewRemoteComponentSheet.swift in Sources */,
 				991B1A982ABCA98700B4B8F3 /* PlatformsEditingView.swift in Sources */,
 				38E2513D28392CF9002FFA31 /* IdentifiableWithSubtype.swift in Sources */,
@@ -1019,6 +1030,7 @@
 				B2F4B1AC29B48A6B008DBAB1 /* CompositionRoot+DocumentCoder.swift in Sources */,
 				4B4058752A7CE75600388E0B /* NewMacroComponentSheet.swift in Sources */,
 				38C7D1492808B35300E2675B /* NewComponentSheet.swift in Sources */,
+				9B00BA052C11C5940014EA36 /* ViewModel+MetasList.swift in Sources */,
 				B2F4B1B429B48B02008DBAB1 /* CompositionRoot+ProjectGenerator.swift in Sources */,
 				B2F4B1A829B489F3008DBAB1 /* CompositionRoot+PackageStringProvider.swift in Sources */,
 				38E251312837E96A002FFA31 /* InfoSheet.swift in Sources */,

@@ -23,13 +23,15 @@ enum ComponentPopupState: Hashable, Identifiable {
     case new
     case remote
     case macro
+    case meta
 }
 
 enum ComponentSelection {
     case component(name: Name)
     case remoteComponent(url: RemoteComponent.ID)
     case macro(name: MacroComponent.ID)
-    
+    case meta(name: MetaComponent.ID)
+
     var componentName: Name? {
         guard case .component(let name) = self else { return nil }
         return name
@@ -42,6 +44,11 @@ enum ComponentSelection {
     
     var macroId: String? {
         guard case .macro(let name) = self else { return nil}
+        return name
+    }
+    
+    var metaId: String? {
+        guard case .meta(let name) = self else { return nil}
         return name
     }
 }
@@ -68,7 +75,7 @@ final class ViewModel: ObservableObject {
     func select(componentName: Name) {
         select(.component(name: componentName))
     }
-    
+        
     func select(remoteComponentURL: String) {
         select(.remoteComponent(url: remoteComponentURL))
     }
@@ -76,7 +83,11 @@ final class ViewModel: ObservableObject {
     func select(macro: String) {
         select(.macro(name: macro))
     }
-    
+
+    func select(meta: String) {
+        select(.meta(name: meta))
+    }
+
     func undoSelection() {
         guard selectionQueueIndex > 0 && selectionQueueIndex < selectionQueue.count else { return }
         selectionQueueIndex -= 1
@@ -141,6 +152,10 @@ final class ViewModel: ObservableObject {
     
     func onAddMacroButton() {
         showingNewComponentPopup = .macro
+    }
+    
+    func onAddMetaButton() {
+        showingNewComponentPopup = .meta
     }
     
     func checkForUpdate() {

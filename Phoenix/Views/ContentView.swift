@@ -9,7 +9,7 @@ import SwiftPackage
 import ValidationFeature
 
 enum ListSelection: String, Hashable, CaseIterable, Identifiable {
-    static var allCases: [ListSelection] { [.components, .remote, .macros] }
+    static var allCases: [ListSelection] { [.components, .remote, .macros, .meta] }
     var id: String { rawValue }
     var title: String { rawValue.capitalized }
     var keyboardShortcut: KeyEquivalent {
@@ -22,6 +22,8 @@ enum ListSelection: String, Hashable, CaseIterable, Identifiable {
             return "3"
         case .plugins:
             return "4"
+        case .meta:
+            return "5"
         }
     }
     
@@ -29,6 +31,7 @@ enum ListSelection: String, Hashable, CaseIterable, Identifiable {
     case remote
     case macros
     case plugins
+    case meta
 }
 
 enum InspectorSelection: String, Hashable, CaseIterable, Identifiable {
@@ -152,11 +155,13 @@ struct ContentView: View {
                     macrosList()
                 case .plugins:
                     pluginsList()
+                case .meta:
+                    metasList()
                 }
                 FilterView(text: $viewModel.componentsListFilter.nonOptionalBinding)
             }
         }
-        .frame(minWidth: 250)
+        .frame(minWidth: 280)
     }
     
     @ViewBuilder private func componentsList() -> some View {
@@ -219,6 +224,23 @@ struct ContentView: View {
             ScrollView {
                 
             }
+            Spacer()
+        }
+    }
+    
+    @ViewBuilder private func metasList() -> some View {
+        VStack(alignment: .leading) {
+            Button(action: viewModel.onAddMetaButton) {
+                Label("New Meta", systemImage: "plus.circle.fill")
+            }
+            .keyboardShortcut("M", modifiers: [.command, .shift])
+            .with(accessibilityIdentifier: ToolbarIdentifiers.newComponentButton)
+            .padding(.horizontal)
+            MetasList(
+                selected: viewModel.selection?.metaId,
+                rows: viewModel.metasList(document: document),
+                onSelect: viewModel.select(meta:)
+            )
             Spacer()
         }
     }
@@ -366,6 +388,8 @@ struct ContentView: View {
         switch viewModel.selection {
         case let .component(name):
             return document.title(forComponentNamed: name)
+        case let .meta(name: name):
+            return name
         case let .remoteComponent(url):
             return url
         case let .macro(name):
@@ -379,6 +403,8 @@ struct ContentView: View {
         switch viewModel.selection {
         case let .component(name):
             return document.mentions(forName: name)
+        case let .meta(name):
+            return document.mentions(forMeta: name)
         case let .remoteComponent(url):
             return document.mentions(forURL: url)
         case let .macro(name):
@@ -420,7 +446,16 @@ struct ContentView: View {
             } onDismiss: {
                 viewModel.showingNewComponentPopup = nil
             }
+            
+        case .meta:
+            NewMetaComponentSheet { name in
+                try document.addNewMetaComponent(with: name)
+                viewModel.showingNewComponentPopup = nil
+            } onDismiss: {
+                viewModel.showingNewComponentPopup = nil
+            }
         }
+        
     }
     
     private func createSections(families: Set<ComponentsFamily>, component: Component) -> [ComponentDependenciesListSection] {
@@ -615,7 +650,7 @@ struct ContentView: View {
     
     private func onDownArrow() {
         switch listSelection {
-        case .components:
+        case .components, .meta:
             viewModel.selectNextComponent(names: document.families.flatMap(\.components).map(\.name))
         case .remote:
             viewModel.selectNextRemoteComponent(remoteComponents: document.remoteComponents)
@@ -628,7 +663,7 @@ struct ContentView: View {
     
     private func onUpArrow() {
         switch listSelection {
-        case .components:
+        case .components, .meta:
             viewModel.selectPreviousComponent(names: document.families.flatMap(\.components).map(\.name))
         case .remote:
             viewModel.selectPreviousRemoteComponent(remoteComponents: document.remoteComponents)
