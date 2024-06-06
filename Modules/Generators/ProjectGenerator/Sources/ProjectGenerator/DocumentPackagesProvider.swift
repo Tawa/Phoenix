@@ -4,13 +4,16 @@ import ProjectGeneratorContract
 public struct DocumentPackagesProvider: DocumentPackagesProviderProtocol {
     let componentPackagesProvider: ComponentPackagesProviderProtocol
     let macroComponentPackageProvider: MacroComponentPackageProviderProtocol
-    
+    let metaComponentPackageProvider: MetaComponentPackageProviderProtocol
+
     public init(
         componentPackagesProvider: ComponentPackagesProviderProtocol,
-        macroComponentPackageProvider: MacroComponentPackageProviderProtocol
+        macroComponentPackageProvider: MacroComponentPackageProviderProtocol,
+        metaComponentPackageProvider: MetaComponentPackageProviderProtocol
     ) {
         self.componentPackagesProvider = componentPackagesProvider
         self.macroComponentPackageProvider = macroComponentPackageProvider
+        self.metaComponentPackageProvider = metaComponentPackageProvider
     }
 
     public func packages(for document: PhoenixDocument) -> [PackageWithPath] {
@@ -32,9 +35,15 @@ public struct DocumentPackagesProvider: DocumentPackagesProviderProtocol {
                                                   projectConfiguration: document.projectConfiguration)
         }
         
+        let metaComponentPackages = document.metaComponents.map { metaComponent in
+            metaComponentPackageProvider.package(for: metaComponent,
+                                                  projectConfiguration: document.projectConfiguration)
+        }
+        
         var packagesWithPath: [PackageWithPath] = []
         packagesWithPath.append(contentsOf: componentPackages)
         packagesWithPath.append(contentsOf: macroComponentPackages)
+        packagesWithPath.append(contentsOf: metaComponentPackages)
         return packagesWithPath
     }
 }

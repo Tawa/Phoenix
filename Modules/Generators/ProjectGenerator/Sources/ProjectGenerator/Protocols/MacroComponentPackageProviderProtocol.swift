@@ -6,3 +6,8 @@ public protocol MacroComponentPackageProviderProtocol {
     func package(for macroComponent: MacroComponent,
                  projectConfiguration: ProjectConfiguration) -> PackageWithPath
 }
+
+public protocol MetaComponentPackageProviderProtocol {
+    func package(for macroComponent: MetaComponent,
+                 projectConfiguration: ProjectConfiguration) -> PackageWithPath
+}

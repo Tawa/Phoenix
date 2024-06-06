@@ -1,0 +1,16 @@
+{
+  "names" : [
+    {
+      "product" : {
+        "name" : "ArgumentParser",
+        "package" : "swift-argument-parser"
+      }
+    }
+  ],
+  "url" : "https:\/\/github.com\/apple\/swift-argument-parser.git",
+  "version" : {
+    "from" : {
+      "version" : "1.2.0"
+    }
+  }
+}

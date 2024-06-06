@@ -40,6 +40,14 @@
     "family" : "Generator",
     "given" : "Package"
   },
+  "remoteComponentDependencies" : [
+    {
+      "targetTypes" : [
+
+      ],
+      "url" : "https:\/\/github.com\/apple\/swift-argument-parser.git"
+    }
+  ],
   "resources" : [
 
   ]

@@ -28,10 +28,15 @@ extension Container {
         MacroComponentPackageProvider() as MacroComponentPackageProviderProtocol
     }
     
+    static let metaComponentPackageProvider = Factory(Container.shared) {
+        MetaComponentPackageProvider() as MetaComponentPackageProviderProtocol
+    }
+    
     static let documentPackagesProvider = Factory(Container.shared) {
         DocumentPackagesProvider(
             componentPackagesProvider: componentPackagesProvider(),
-            macroComponentPackageProvider: macroComponentPackageProvider()
+            macroComponentPackageProvider: macroComponentPackageProvider(),
+            metaComponentPackageProvider: metaComponentPackageProvider()
         ) as DocumentPackagesProviderProtocol
     }
 }

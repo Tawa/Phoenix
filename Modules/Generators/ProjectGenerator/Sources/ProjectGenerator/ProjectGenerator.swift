@@ -7,6 +7,7 @@ import SwiftPackage
 
 public struct ProjectGenerator: ProjectGeneratorProtocol {
     let documentPackagesProvider: DocumentPackagesProviderProtocol
+//    let metaPackagesProvider: MetaComponentPackageProviderProtocol
     let packageGenerator: PackageGeneratorProtocol
     
     public init(
@@ -24,6 +25,6 @@ public struct ProjectGenerator: ProjectGeneratorProtocol {
         for packageWithPath in packagesWithPath {
             let url = folderURL.appendingPathComponent(packageWithPath.path, isDirectory: true)
             try packageGenerator.generate(package: packageWithPath.package, at: url)
-        }
+        }        
     }
 }

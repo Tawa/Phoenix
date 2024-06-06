@@ -7,10 +7,6 @@ extension SwiftPackage {
     var isMacroPackage: Bool {
         targets.contains(where: { $0.type == .macro })
     }
-    
-    var isMetaPackage: Bool {
-        targets.contains(where: { $0.type == .meta })
-    }
 }
 
 public struct PackageGenerator: PackageGeneratorProtocol {
@@ -32,15 +28,7 @@ public struct PackageGenerator: PackageGeneratorProtocol {
                 try createExecutableSourcesFolderIfNecessary(at: url, name: target.name, importName: package.name)
                 try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .target:
-                if package.isMacroPackage {
-                    try createMacroPackageSourcesFolderIfNecessary(at: url, name: target.name)
-                } else if package.isMetaPackage {
-                    //TODO: createMetaSourcesFolderIfNecessary
-                    try createSourcesFolderIfNecessary(at: url, name: target.name)
-                    try symlinkMetaPackageSources(at: url, name: target.name)
-                } else {
-                    try createSourcesFolderIfNecessary(at: url, name: target.name)
-                }
+                try createSourcesFolderIfNecessary(at: url, name: target.name)
                 try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .testTarget:
                 try createTestsFolderIfNecessary(at: url, name: target.name, isMacroPackage: package.isMacroPackage)
@@ -50,9 +38,11 @@ public struct PackageGenerator: PackageGeneratorProtocol {
                 try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .meta:
                 return
+//                try createMetaSourcesFolderIfNecessary(at: url, name: target.name)
+//                try symlinkMetaPackageSources(from: url, name: target.name)
             }
         }
-        //here we make sure all the child dependencies are added? Nothing extra needed right?
+        //here we make sure all the child dependencies are added?
         try createPackageFile(for: package, at: url)
         try createReadMeFileIfNecessary(at: url, withName: package.name)
     }
@@ -92,6 +82,23 @@ public struct PackageGenerator: PackageGeneratorProtocol {
     private func createMacroPackageSourcesFolderIfNecessary(at url: URL, name: String) throws {
         let path = try createFolderIfNecessary(folder: "Sources", at: url, withName: name)
         try createMacroPackageSourceFile(name: name, atPath: path)
+    }
+
+    private func createMetaSourcesFolderIfNecessary(at url: URL, name: String) throws {
+        let path = try createFolderIfNecessary(folder: "MetasMocksSample", at: url, withName: name)
+    }
+
+    private func symlinkMetaPackageSources(from url: URL, name: String) throws {
+//        let destPath = "/Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Mocks/Features/TwoFeatureMock/Sources/TwoFeatureMock"
+//        let atPath = "/Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Metas/TwoFeatureMock"
+//        do {
+//            try fileManager.createSymbolicLink(atPath: atPath, withDestinationPath: destPath)
+//        } catch {
+//            print(error)
+//        }
+
+        let shell = Shell(verbose: true)
+        try shell.execute("ln -s /Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Mocks/Features/TwoFeatureMock/Sources/TwoFeatureMock /Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Metas")
     }
 
     private func createTestsFolderIfNecessary(at url: URL, name: String, isMacroPackage: Bool) throws {
@@ -178,12 +185,6 @@ struct \(name) {
         guard isDirectoryEmpty(atPath: path) else { return }
 
         try fileManager.createSymbolicLink(atPath:  path, withDestinationPath: destPath)
-    }
-    
-    private func symlinkMetaPackageSources(at url: URL, name: String) throws {
-//        for each in dependencies mock
-        let derivedPath = ""
-        try createSourceFileSymlink(atPath: url.absoluteString, withDestinationPath: derivedPath)
     }
     
     private func createMacroSourceFile(name: String, atPath path: String) throws {
