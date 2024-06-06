@@ -9,6 +9,7 @@ enum PhoenixDocumentConstants {
     static let familyFileName: String = "family" + jsonFileExtension
     static let remoteComponentsFolderName: String = "_remote"
     static let macroComponentsFolderName: String = "_macros"
+    static let metaComponentsFolderName: String = "_metas"
 }
 
 enum PhoenixDocumentError: LocalizedError {
@@ -37,11 +38,13 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
         let remoteComponents = try decodeRemoteComponents(fileWrapper: fileWrapper, componentsFamilies: &componentsFamilies)
         let projectConfiguration = try decodeConfiguration(fileWrapper: fileWrapper)
         let macros = try decodeMacros(fileWrapper: fileWrapper)
+        let metas = try decodeMetas(fileWrapper: fileWrapper)
 
         return .init(
             families: componentsFamilies,
             remoteComponents: remoteComponents,
             macros: macros,
+            metas: metas,
             projectConfiguration: projectConfiguration
         )
     }
@@ -128,6 +131,19 @@ public struct PhoenixDocumentFileWrappersDecoder: PhoenixDocumentFileWrappersDec
         }
         
         return macroComponents
+    }
+
+    private func decodeMetas(fileWrapper: [String: FileWrapper]) throws -> [MetaComponent] {
+        var metaComponents: [MetaComponent] = []
+
+        if let metaComponentsFolderWrappers = fileWrapper.values
+            .first(where: { $0.filename == PhoenixDocumentConstants.metaComponentsFolderName }),
+           let metaComponentsWrappers = metaComponentsFolderWrappers.fileWrappers?.values.compactMap(\.regularFileContents) {
+            metaComponents = try metaComponentsWrappers.map { try jsonDecoder.decode(MetaComponent.self, from: $0) }
+                .sorted(by: { $0.name < $1.name })
+        }
+
+        return metaComponents
     }
 
     private func decodeConfiguration(fileWrapper: [String: FileWrapper]) throws -> ProjectConfiguration {
