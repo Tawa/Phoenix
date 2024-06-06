@@ -117,7 +117,18 @@ extension ViewModel {
             set: { document.wrappedValue.macroComponents[macroIndex] = $0 }
         )
     }
-    
+
+    func selectedMeta(document: Binding<PhoenixDocument>) -> Binding<MetaComponent>? {
+        guard
+            let selectedMetaId = selection?.metaId,
+            let metaIndex = document.wrappedValue.metaComponents.firstIndex(where: { $0.id == selectedMetaId })
+        else { return nil }
+        return Binding(
+            get: { document.wrappedValue.metaComponents[metaIndex] },
+            set: { document.wrappedValue.metaComponents[metaIndex] = $0 }
+        )
+    }
+
     // MARK: - Family
     func selectedFamily(document: Binding<PhoenixDocument>) -> Binding<Family>? {
         guard

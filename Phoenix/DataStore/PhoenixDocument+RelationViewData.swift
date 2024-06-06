@@ -39,7 +39,6 @@ extension PhoenixDocument {
             selectionValues: [""]
         )
     }
-    
 
     func familyRelationViewData(familyName: String) -> RelationViewData {
         let family = family(named: familyName)

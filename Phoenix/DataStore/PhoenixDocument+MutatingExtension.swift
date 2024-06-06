@@ -166,4 +166,8 @@ extension PhoenixDocument {
     mutating func removeMacroComponent(withName name: String) {
         macroComponents.removeAll(where: { $0.name == name })
     }
+
+    mutating func removeMetaComponent(withName name: String) {
+        metaComponents.removeAll(where: { $0.name == name })
+    }
 }

@@ -5,12 +5,12 @@ public struct MetaComponent: Codable, Hashable, Identifiable {
     public let id: String = UUID().uuidString
     public var name: String
     
-    public var defaultDependencies: Set<PackageTargetType>
+    public var localDependencies: [ComponentDependency]
     public var platforms: Platforms
     
     enum CodingKeys: CodingKey {
         case name
-        case defaultDependencies
+        case localDependencies
         case iOSVersion
         case macCatalystVersion
         case macOSVersion
@@ -20,18 +20,18 @@ public struct MetaComponent: Codable, Hashable, Identifiable {
     
     public init(
         name: String,
-        defaultDependencies: Set<PackageTargetType> = [],
+        localDependencies: [ComponentDependency] = [],
         platforms: Platforms = .metaDefault
     ) {
         self.name = name
-        self.defaultDependencies = defaultDependencies
+        self.localDependencies = localDependencies
         self.platforms = platforms
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: .name)
-        defaultDependencies = try container.decode(Set<PackageTargetType>.self, forKey: .defaultDependencies)
+        localDependencies = try container.decodeIfPresent([ComponentDependency].self, forKey: .localDependencies) ?? []
 
         platforms = .empty
         platforms.iOSVersion = try container.decode(IOSVersion.self, forKey: .iOSVersion)
@@ -44,7 +44,7 @@ public struct MetaComponent: Codable, Hashable, Identifiable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
-        try container.encode(defaultDependencies.sorted(), forKey: .defaultDependencies)
+        try container.encode(localDependencies.sorted(), forKey: .localDependencies)
         try container.encodeIfPresent(platforms.iOSVersion, forKey: .iOSVersion)
         try container.encodeIfPresent(platforms.macCatalystVersion, forKey: .macCatalystVersion)
         try container.encodeIfPresent(platforms.macOSVersion, forKey: .macOSVersion)
@@ -54,7 +54,7 @@ public struct MetaComponent: Codable, Hashable, Identifiable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(name)
-        hasher.combine(defaultDependencies)
+        hasher.combine(localDependencies)
         hasher.combine(platforms)
     }
 }

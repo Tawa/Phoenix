@@ -6,31 +6,17 @@ import SwiftUI
 import SwiftPackage
 
 struct MetaComponentView: View {
-    @Binding var component: Component
-    let remoteDependencies: [String: RemoteComponent]
+    @Binding var component: MetaComponent
     let relationViewData: RelationViewData
     let relationViewDataToComponentNamed: (Name, [PackageTargetType: String]) -> RelationViewData
-    let relationViewDataToMacroComponentNamed: (String, Set<PackageTargetType>) -> RelationViewData
     let titleForComponentNamed: (Name) -> String
-    
-    let onGenerateDemoAppProject: () -> Void
     let onRemove: () -> Void
-    let allTargetTypes: [IdentifiableWithSubtype<PackageTargetType>]
     let onShowDependencySheet: () -> Void
-    let onShowRemoteDependencySheet: () -> Void
-    let onShowMacroDependencySheet: () -> Void
     let onSelectComponentName: (Name) -> Void
-    let onSelectRemoteURL: (String) -> Void
-    let onSelectMacroName: (String) -> Void
-    let allModuleTypes: [String]
-    
+
+
     // MARK: - Private
-    private var title: String { titleForComponentNamed(component.name) }
-    
     @State private var showingLocalDependencies: Bool = false
-    @State private var showingRemoteDependencies: Bool = false
-    @State private var showingMacroDependencies: Bool = false
-    @State private var showingResources: Bool = false
 
     var body: some View {
         List {
@@ -43,13 +29,10 @@ struct MetaComponentView: View {
     // MARK: - Subviews
     @ViewBuilder private func headerView() -> some View {
         SectionView {
-            Text(title)
+            Text(component.name)
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.leading)
             Spacer()
-            Button(action: onGenerateDemoAppProject) {
-                Text("Generate Demo App")
-            }.help("Generate Demo App Xcode Project")
             Button(role: .destructive, action: onRemove) {
                 Image(systemName: "trash")
             }.help("Remove")
@@ -143,9 +126,5 @@ struct MetaComponentView: View {
             content: content,
             accessoryContent: accessoryContent
         )
-    }
-
-    private func isModuleTypeOn(_ name: String) -> Bool {
-        component.modules[name] != nil
     }
 }

@@ -58,4 +58,8 @@ public struct PhoenixDocument: Hashable {
     public func macro(named name: String) -> MacroComponent? {
         macroComponents.first(where: { $0.name == name })
     }
+
+    public func meta(named name: String) -> MetaComponent? {
+        metaComponents.first(where: { $0.name == name })
+    }
 }
