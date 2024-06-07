@@ -66,7 +66,7 @@ public enum Dependency: Codable, Hashable, Identifiable, Comparable {
     case external(url: String,
                   name: ExternalDependencyName,
                   description: ExternalDependencyVersion)
-
+    
     public static func <(lhs: Dependency, rhs: Dependency) -> Bool {
         switch (lhs, rhs) {
         case (.module(let lhsPath, _) , .module(let rhsPath, _)):

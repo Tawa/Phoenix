@@ -38,7 +38,7 @@ public struct PackageGenerator: PackageGeneratorProtocol {
                 try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .meta:
                 try createMetaSourcesFolderIfNecessary(at: url, name: target.name)
-                try symlinkMetaPackageSources(from: url, name: target.name)
+                try symlinkMetaPackageSources(inFolder: "Sources", from: url, for: target)
             }
         }
         //here we make sure all the child dependencies are added?
@@ -84,10 +84,21 @@ public struct PackageGenerator: PackageGeneratorProtocol {
     }
 
     private func createMetaSourcesFolderIfNecessary(at url: URL, name: String) throws {
-        _ = try createFolderIfNecessary(folder: "MetasMocksSample", at: url, withName: name)
+        _ = try createFolderIfNecessary(folder: "Sources", at: url, withName: name)
     }
 
-    private func symlinkMetaPackageSources(from url: URL, name: String) throws {
+    private func symlinkMetaPackageSources(inFolder: String, from url: URL, for target: Target) throws {
+        let atPath = url
+            .appendingPathComponent("\(inFolder)/\(target.name)")// where we copy hfMocksKit/Sources/hfMocksKit
+        let shell = Shell(verbose: true)
+
+        for dependency in target.dependencies {
+            if case let .module(path, name) = dependency {
+                let destPath = URL(string: path)!
+                    .appendingPathComponent("Sources/\(name)")//Modules/Features/TwoFeature/Sources/TwoFeature
+                try shell.execute("ln -s \(destPath) \(atPath)")
+            }
+        }
 //        let destPath = "/Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Mocks/Features/TwoFeatureMock/Sources/TwoFeatureMock"
 //        let atPath = "/Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Metas/TwoFeatureMock"
 //        do {
@@ -95,9 +106,6 @@ public struct PackageGenerator: PackageGeneratorProtocol {
 //        } catch {
 //            print(error)
 //        }
-
-        let shell = Shell(verbose: true)
-        try shell.execute("ln -s /Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Mocks/Features/TwoFeatureMock/Sources/TwoFeatureMock /Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Metas")
     }
 
     private func createTestsFolderIfNecessary(at url: URL, name: String, isMacroPackage: Bool) throws {
