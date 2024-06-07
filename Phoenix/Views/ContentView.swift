@@ -265,6 +265,9 @@ struct ContentView: View {
                     macroComponentView(for: selectedMacroBinding)
                 } else if let selectedMetaBinding = viewModel.selectedMeta(document: $document) {
                     metaComponentView(for: selectedMetaBinding)
+                        .sheet(isPresented: .constant(viewModel.showingDependencySheet)) {
+                            dependencySheet(meta: selectedMetaBinding.wrappedValue)
+                        }
                 } else {
                     HStack(alignment: .top) {
                         VStack(alignment: .leading) {
@@ -456,7 +459,28 @@ struct ContentView: View {
         }
         return sections
     }
-    
+
+    private func createSections(families: Set<ComponentsFamily>, meta: MetaComponent) -> [ComponentDependenciesListSection] {
+        let allNames = families.flatMap(\.components).map(\.name)
+        let filteredNames = Dictionary(grouping: allNames.filter { name in
+            meta.name != name.given && !meta.localDependencies.contains { localDependency in
+                localDependency.name == name
+            }
+        }, by: { $0.family })
+        let sections = filteredNames.reduce(into: [ComponentDependenciesListSection]()) { partialResult, keyValue in
+            partialResult.append(ComponentDependenciesListSection(name: keyValue.key,
+                                                                  rows: keyValue.value.map { name in
+                ComponentDependenciesListRow(name: document.title(forComponentNamed: name)) {
+                    document.addDependencyToMeta(withName: meta.name, dependencyName: name)
+                    viewModel.showingDependencySheet = false
+                }
+            }))
+        }.sorted { lhs, rhs in
+            lhs.name < rhs.name
+        }
+        return sections
+    }
+
     @ViewBuilder private func dependencySheet(component: Component) -> some View {
         let familyName = document.family(named: component.name.family)?.name ?? ""
         let allFamilies: Set<ComponentsFamily> = .init(document.families)
@@ -475,7 +499,25 @@ struct ContentView: View {
                 viewModel.showingDependencySheet = false
             }).frame(minHeight: 600)
     }
-    
+
+    @ViewBuilder private func dependencySheet(meta: MetaComponent) -> some View {
+        let allFamilies: Set<ComponentsFamily> = .init(document.families)
+        let allAllowedFamilies = allFamilies//.filter { !$0.family.excludedFamilies.contains(familyName) }
+        let sections = createSections(families: allAllowedFamilies, meta: meta)
+        let disabledSections = createSections(families: allFamilies.subtracting(allAllowedFamilies), meta: meta)
+        ComponentDependenciesSheet(
+            familyName: "",
+            sections: sections,
+            disabledSections: disabledSections,
+            onOpenFamilySettings: {
+                viewModel.showingDependencySheet = false
+//                viewModel.select(familyName: familyName)
+            },
+            onDismiss: {
+                viewModel.showingDependencySheet = false
+            }).frame(minHeight: 600)
+    }
+
     @ViewBuilder private func remoteDependencySheet(component: Component) -> some View {
         RemoteComponentDependenciesSheet(
             rows: document.remoteComponents.filter { remoteComponent in
