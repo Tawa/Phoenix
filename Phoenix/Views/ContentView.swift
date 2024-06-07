@@ -339,9 +339,9 @@ struct ContentView: View {
     @ViewBuilder private func metaComponentView(for metaComponent: Binding<MetaComponent>) -> some View {
         MetaComponentView(
             component: metaComponent,
-            relationViewData: document.componentRelationViewData(componentName: Name(given: metaComponent.wrappedValue.name, family: "")),
+            relationViewData: document.metaComponentRelationViewData(metaComponentName: metaComponent.wrappedValue.name),
             relationViewDataToComponentNamed: { dependencyName, selectedValues in
-                document.relationViewData(fromComponentName: Name(given: metaComponent.wrappedValue.name, family: ""),
+                document.relationViewData(fromMetaName: metaComponent.wrappedValue.name,
                                           toComponentName: dependencyName,
                                           selectedValues: selectedValues)
             },

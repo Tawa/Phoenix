@@ -69,7 +69,7 @@ struct MetaComponentView: View {
     }
     
     @ViewBuilder private func componentDependencyView(for dependency: Binding<ComponentDependency>) -> some View {
-        RelationView(
+        MetaRelationView(
             defaultDependencies: dependency.targetTypes,
             title: titleForComponentNamed(dependency.wrappedValue.name),
             viewData: relationViewDataToComponentNamed(dependency.wrappedValue.name, dependency.wrappedValue.targetTypes),

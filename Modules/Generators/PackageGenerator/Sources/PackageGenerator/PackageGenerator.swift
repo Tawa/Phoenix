@@ -85,7 +85,7 @@ public struct PackageGenerator: PackageGeneratorProtocol {
     }
 
     private func createMetaSourcesFolderIfNecessary(at url: URL, name: String) throws {
-        let path = try createFolderIfNecessary(folder: "MetasMocksSample", at: url, withName: name)
+        _ = try createFolderIfNecessary(folder: "MetasMocksSample", at: url, withName: name)
     }
 
     private func symlinkMetaPackageSources(from url: URL, name: String) throws {

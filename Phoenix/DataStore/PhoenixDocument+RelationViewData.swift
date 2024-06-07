@@ -40,6 +40,13 @@ extension PhoenixDocument {
         )
     }
 
+    func metaComponentRelationViewData(metaComponentName: String) -> RelationViewData {
+        return .init(
+            types: dependencyTypes(selectedValues: [:]),
+            selectionValues: [""]
+        )
+    }
+
     func familyRelationViewData(familyName: String) -> RelationViewData {
         let family = family(named: familyName)
         
@@ -73,6 +80,19 @@ extension PhoenixDocument {
             types: dependencyTypes(selectedValues: selectedValues)
                 .filter { value in fromComponent?.modules.keys.contains(where: { value.value.name == $0 }) ?? false },
             selectionValues: [""]
+        )
+    }
+
+    func relationViewData(
+        fromMetaName: String,
+        toComponentName: Name,
+        selectedValues: [PackageTargetType: String]
+    ) -> RelationViewData {
+//        let fromComponent = meta(named: fromMetaName)
+        let toComponent = component(named: toComponentName)
+        return .init(
+            types: dependencyTypes(selectedValues: selectedValues),
+            selectionValues: toComponent?.modules.keys.sorted() ?? []
         )
     }
 }
