@@ -79,7 +79,7 @@ public struct MetaComponentPackageProvider: MetaComponentPackageProviderProtocol
                 ],
                 swiftVersion: projectConfiguration.swiftVersion
             ),
-            path: projectConfiguration.macrosFolderName + "/" + metaComponent.name
+            path: projectConfiguration.metasFolderName + "/" + metaComponent.name
         )
     }
 }

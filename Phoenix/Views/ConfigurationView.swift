@@ -62,6 +62,11 @@ struct ConfigurationView: View {
                     TextField("Macros", text: $configuration.macrosFolderName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
+                HStack {
+                    Text("Metas Folder Name")
+                    TextField("Metas", text: $configuration.metasFolderName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
                 Divider()
                 HStack(spacing: 8) {
                     columnView {

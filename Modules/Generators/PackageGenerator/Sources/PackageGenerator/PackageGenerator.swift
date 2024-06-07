@@ -37,9 +37,8 @@ public struct PackageGenerator: PackageGeneratorProtocol {
                 try createMacroSourcesFolderIfNecessary(at: url, name: target.name)
                 try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .meta:
-                return
-//                try createMetaSourcesFolderIfNecessary(at: url, name: target.name)
-//                try symlinkMetaPackageSources(from: url, name: target.name)
+                try createMetaSourcesFolderIfNecessary(at: url, name: target.name)
+                try symlinkMetaPackageSources(from: url, name: target.name)
             }
         }
         //here we make sure all the child dependencies are added?
