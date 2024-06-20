@@ -37,7 +37,7 @@ public struct PackageGenerator: PackageGeneratorProtocol {
                 try createMacroSourcesFolderIfNecessary(at: url, name: target.name)
                 try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .meta:
-                try createMetaSourcesFolderIfNecessary(at: url, name: target.name)
+                try recreateMetaSourcesFolder(at: url, name: target.name)
                 try symlinkMetaPackageSources(inFolder: "Sources", from: url, for: target)
             }
         }
@@ -83,8 +83,8 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         try createMacroPackageSourceFile(name: name, atPath: path)
     }
 
-    private func createMetaSourcesFolderIfNecessary(at url: URL, name: String) throws {
-        _ = try createFolderIfNecessary(folder: "Sources", at: url, withName: name)
+    private func recreateMetaSourcesFolder(at url: URL, name: String) throws {
+        _ = try recreateFolder(folder: "Sources", at: url, withName: name)
     }
 
     private func symlinkMetaPackageSources(inFolder: String, from url: URL, for target: Target) throws {
@@ -93,11 +93,12 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         let shell = Shell(verbose: true)
 
         for dependency in target.dependencies {
-            if case let .module(path, name) = dependency {
-                let destPath = URL(string: path)!
-                    .appendingPathComponent("Sources/\(name)")//Modules/Features/TwoFeature/Sources/TwoFeature
-                try shell.execute("ln -s \(destPath) \(atPath)")
-            }
+            print(dependency)
+//            if case let .module(path, name) = dependency {
+//                let destPath = URL(string: path)!
+//                    .appendingPathComponent("Sources/\(name)")//Modules/Features/TwoFeature/Sources/TwoFeature
+//                try shell.execute("ln -s \(destPath) \(atPath)")
+//            }
         }
 //        let destPath = "/Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Mocks/Features/TwoFeatureMock/Sources/TwoFeatureMock"
 //        let atPath = "/Users/kateryna.nerush/Developer/lab/_Phoenix-sample/Phoenix/Modules/Metas/TwoFeatureMock"
@@ -123,6 +124,20 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         if !fileManager.fileExists(atPath: path) {
             try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
         }
+        return path
+    }
+
+    private func recreateFolder(folder: String, at url: URL, withName name: String) throws -> String {
+        var path = url.path
+        // Delete package folder
+        if fileManager.fileExists(atPath: path) {
+            try fileManager.removeItem(atPath: path)
+        }
+        // Create package folder
+        try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
+        // Create sources folder
+        path = url.appendingPathComponent(folder).appendingPathComponent(name, isDirectory: true).path
+        try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true)
         return path
     }
 
