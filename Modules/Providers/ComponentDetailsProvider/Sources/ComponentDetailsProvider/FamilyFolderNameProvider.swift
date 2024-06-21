@@ -2,9 +2,7 @@ import ComponentDetailsProviderContract
 import PhoenixDocument
 
 public struct FamilyFolderNameProvider: FamilyFolderNameProviderProtocol {
-    public init() {
-
-    }
+    public init() {}
 
     public func folderName(forFamily familyName: String) -> String {
         if familyName.hasSuffix("y") {

@@ -12,7 +12,6 @@ extension Container {
 
     static let componentPackageProvider = Factory(Container.shared) {
         ComponentPackageProvider(
-            packageFolderNameProvider: packageFolderNameProvider(),
             packageNameProvider: packageNameProvider(),
             packagePathProvider: packagePathProvider()
         ) as ComponentPackageProviderProtocol
@@ -29,7 +28,9 @@ extension Container {
     }
     
     static let metaComponentPackageProvider = Factory(Container.shared) {
-        MetaComponentPackageProvider() as MetaComponentPackageProviderProtocol
+        MetaComponentPackageProvider(
+            packageNameProvider: packageNameProvider(),
+            packagePathProvider: packagePathProvider()) as MetaComponentPackageProviderProtocol
     }
     
     static let documentPackagesProvider = Factory(Container.shared) {

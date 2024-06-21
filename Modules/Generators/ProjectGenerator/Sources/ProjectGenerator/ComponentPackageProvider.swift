@@ -44,14 +44,12 @@ extension Sequence where Element: Hashable {
 }
 
 public struct ComponentPackageProvider: ComponentPackageProviderProtocol {
-    private let packageFolderNameProvider: PackageFolderNameProviderProtocol
     private let packageNameProvider: PackageNameProviderProtocol
     private let packagePathProvider: PackagePathProviderProtocol
     
-    public init(packageFolderNameProvider: PackageFolderNameProviderProtocol,
+    public init(
                 packageNameProvider: PackageNameProviderProtocol,
                 packagePathProvider: PackagePathProviderProtocol) {
-        self.packageFolderNameProvider = packageFolderNameProvider
         self.packageNameProvider = packageNameProvider
         self.packagePathProvider = packagePathProvider
     }

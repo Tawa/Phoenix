@@ -3,9 +3,7 @@ import ProjectGeneratorContract
 import SwiftPackage
 
 public struct MacroComponentPackageProvider: MacroComponentPackageProviderProtocol {
-    public init() {
-        
-    }
+    public init() {}
     
     public func package(for macroComponent: MacroComponent,
                         projectConfiguration: ProjectConfiguration) -> PackageWithPath {

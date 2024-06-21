@@ -1,29 +1,40 @@
 import PhoenixDocument
 import ProjectGeneratorContract
 import SwiftPackage
+import ComponentDetailsProviderContract
 
 public struct MetaComponentPackageProvider: MetaComponentPackageProviderProtocol {
-    public init() {
-        
-    }
+    private let packageNameProvider: PackageNameProviderProtocol
+    private let packagePathProvider: PackagePathProviderProtocol
+    
+    public init(
+        packageNameProvider: PackageNameProviderProtocol,
+        packagePathProvider: PackagePathProviderProtocol) {
+            self.packageNameProvider = packageNameProvider
+            self.packagePathProvider = packagePathProvider
+        }
     
     public func package(for metaComponent: MetaComponent,
                         projectConfiguration: ProjectConfiguration) -> PackageWithPath {
         let name = metaComponent.name
         let localDependencies = metaComponent.localDependencies
         print("dependencies: \(localDependencies)")
+        var dependencies: [Dependency] = []
+        
         localDependencies.forEach { dependency in
-            let name = dependency.name.given
             let type = dependency.targetTypes.keys.first!.name
-            print("name: \(name)")
-            print("type: \(type)")
+            let dependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == type })!
+            dependencies.insert(
+                .module(path: packagePathProvider.path(for: dependency.name,
+                                                       of: Family(name: dependency.name.family),
+                                                       packageConfiguration: dependencyConfiguration,
+                                                       relativeToConfiguration: dependencyConfiguration),
+                        name: packageNameProvider.packageName(forComponentName: dependency.name,
+                                                              of: Family(name: dependency.name.family),
+                                                              packageConfiguration: dependencyConfiguration)),
+                at: 0)
         }
-        // we want to calculate a dependencies array [.module(path: , name: )] // path should be relative!!!
-        // here is just a local sample
-        let dependencies: [Dependency] = [.module(path: "/Users/nuno.pereira/Desktop/cp/HelloFresh/Modules/Contracts/Repositories/ApplyOneOffRepositoryContract", name: "ApplyOneOffRepositoryContract"),
-                                          .module(path: "/Users/nuno.pereira/Desktop/cp/HelloFresh/Modules/Contracts/Features/AutoSaveFeatureContract", name: "AutoSaveFeatureContract"),
-                                          .module(path: "/Users/nuno.pereira/Desktop/cp/HelloFresh/Modules/Contracts/Repositories/BalanceRepositoryContract", name: "BalanceRepositoryContract")]
-
+        
         return PackageWithPath(
             package: SwiftPackage(
                 name: name,
