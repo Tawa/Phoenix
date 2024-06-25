@@ -15,7 +15,8 @@ let package = Package(
     dependencies: [
         .package(path: "../../Contracts/Generators/PackageGeneratorContract"),
         .package(path: "../../Contracts/Providers/PackageStringProviderContract"),
-        .package(path: "../../Entities/SwiftPackage")
+        .package(path: "../../Entities/SwiftPackage"),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0")
     ],
     targets: [
         .target(
@@ -23,7 +24,8 @@ let package = Package(
             dependencies: [
                 "PackageGeneratorContract",
                 "PackageStringProviderContract",
-                "SwiftPackage"
+                "SwiftPackage",
+                .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         ),
         .testTarget(

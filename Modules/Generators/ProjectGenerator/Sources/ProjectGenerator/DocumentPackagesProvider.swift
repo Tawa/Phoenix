@@ -37,7 +37,8 @@ public struct DocumentPackagesProvider: DocumentPackagesProviderProtocol {
         
         let metaComponentPackages = document.metaComponents.map { metaComponent in
             metaComponentPackageProvider.package(for: metaComponent,
-                                                  projectConfiguration: document.projectConfiguration)
+                                                 projectConfiguration: document.projectConfiguration,
+                                                 componentPackages: componentPackages)
         }
         
         var packagesWithPath: [PackageWithPath] = []

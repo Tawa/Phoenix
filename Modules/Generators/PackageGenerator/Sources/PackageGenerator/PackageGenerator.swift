@@ -84,16 +84,22 @@ public struct PackageGenerator: PackageGeneratorProtocol {
     
     private func symlinkMetaPackageSources(inFolder: String, from url: URL, for target: Target) throws {
         let atPath = url
-            .appendingPathComponent("\(inFolder)/\(target.name)")
+            .appendingPathComponent(inFolder)
+            .appendingPathComponent(target.name)
         let shell = Shell(verbose: true)
         
         for dependency in target.dependencies {
             if case let .module(path, name) = dependency {
                 // Get the absolute URL from relative
-                let relativeURL = URL(string: path, relativeTo: url)!
-                let destPath = relativeURL.absoluteURL
-                    .appendingPathComponent("Sources/\(name)")
-                try shell.execute("ln -s \(destPath) \(atPath)")
+                let absluteDestURL = URL(string: path, relativeTo: url)!.absoluteURL
+                    .appendingPathComponent("Sources")
+                    .appendingPathComponent(name)
+                print("atPath: \(atPath)")
+                print("absluteDestURL: \(absluteDestURL)")
+                print("absluteDestURL.absoluteString: \(absluteDestURL.absoluteString)")
+                let destPath = absluteDestURL.relativePath(from: atPath)!
+                print("destPath: \(destPath)")
+                try shell.execute("ln -s \(destPath) \(atPath.absoluteString)")
             }
         }
     }
@@ -351,4 +357,3 @@ A description of this package.
                                attributes: nil)
     }
 }
-

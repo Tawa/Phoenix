@@ -9,5 +9,6 @@ public protocol MacroComponentPackageProviderProtocol {
 
 public protocol MetaComponentPackageProviderProtocol {
     func package(for metaComponent: MetaComponent,
-                 projectConfiguration: ProjectConfiguration) -> PackageWithPath
+                 projectConfiguration: ProjectConfiguration,
+                 componentPackages: [PackageWithPath]) -> PackageWithPath
 }
