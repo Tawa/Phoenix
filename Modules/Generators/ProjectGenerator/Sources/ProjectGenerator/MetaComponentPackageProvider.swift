@@ -18,51 +18,23 @@ public struct MetaComponentPackageProvider: MetaComponentPackageProviderProtocol
                         projectConfiguration: ProjectConfiguration,
                         componentPackages: [PackageWithPath]) -> PackageWithPath {
         let name = metaComponent.name
-        let localDependencies = metaComponent.localDependencies
-        var dependencies: [Dependency] = [
-            .module(
-                path: "../../Mocks/UseCases/BalanceUseCasesMock",
-                name: "BalanceUseCasesMock"
-            ),
-            .module(
-                path: "../../Mocks/Repositories/BalanceRepositoryMock",
-                name: "BalanceRepositoryMock"
-            ),
-            .module(
-                path: "../../Mocks/Features/AutoSaveFeatureMock",
-                name: "AutoSaveFeatureMock"
-            )
-        ]
-
-//        localDependencies.forEach { dependency in
-//            let type = dependency.targetTypes.keys.first!.name
-//            let dependencyConfiguration = projectConfiguration.packageConfigurations.first(where: { $0.name == type })!
-//            dependencies.insert(
-//                .module(path: packagePathProvider.path(for: dependency.name,
-//                                                       of: Family(name: dependency.name.family),
-//                                                       packageConfiguration: dependencyConfiguration,
-//                                                       relativeToConfiguration: dependencyConfiguration),
-//                        name: packageNameProvider.packageName(forComponentName: dependency.name,
-//                                                              of: Family(name: dependency.name.family),
-//                                                              packageConfiguration: dependencyConfiguration)),
-//                at: 0)
-//        }
-
-
-//        componentPackages.forEach { componentPackage in
-//            print(">")
-//            print(componentPackage.package.name)
-//        }
+        let localDependencies: [ComponentDependency] = metaComponent.localDependencies
+        var dependencies: [Dependency] = []
 
         localDependencies.forEach { dependency in
-            	
-            let name = "\(dependency.name.full)\(dependency.targetTypes.first!.key.name)"
-            let dep = componentPackages.first(where: { $0.package.name == name })
-            print(name)
-            print(dependency.targetTypes)
-            print("dependencies: \(dep?.package.dependencies)")
+            let dependencyName = dependency.name.full 
+            let filtered = dependency.targetTypes.filter({ $0.value == "Contract" })
+            filtered.forEach {
+                let dependencyFamily = $0.key.name
+                let packageName = "\(dependencyName)\(dependencyFamily)"
+                let componentPackage = componentPackages.first { $0.package.name == packageName}
+                if let packageDependencies = componentPackage?.package.dependencies {
+                    packageDependencies.forEach { packageDependency in
+                        dependencies.append(packageDependency)
+                    }
+                }
+            }
         }
-
 
         return PackageWithPath(
             package: SwiftPackage(

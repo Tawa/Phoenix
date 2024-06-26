@@ -2,6 +2,8 @@ import PackageGeneratorContract
 import PackageStringProviderContract
 import Foundation
 import SwiftPackage
+import PhoenixDocument
+import ProjectGeneratorContract
 
 extension SwiftPackage {
     var isMacroPackage: Bool {
@@ -19,7 +21,7 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         self.packageStringProvider = packageStringProvider
     }
     
-    public func generate(package: SwiftPackage, at url: URL) throws {
+    public func generate(package: SwiftPackage, at url: URL, packages: [PackageWithPath], meta: MetaComponent?) throws {
         try createPackageFolderIfNecessary(at: url)
         
         try package.targets.forEach { target in
@@ -38,7 +40,7 @@ public struct PackageGenerator: PackageGeneratorProtocol {
                 try createResourceFoldersIfNecessary(inFolder: "Sources", at: url, for: target)
             case .meta:
                 try recreateMetaSourcesFolder(at: url, name: target.name)
-                try symlinkMetaPackageSources(inFolder: "Sources", from: url, for: target)
+                try symlinkMetaPackageSources(inFolder: "Sources", from: url, for: target, packages: packages, meta: meta)
             }
         }
         //here we make sure all the child dependencies are added?
@@ -82,24 +84,32 @@ public struct PackageGenerator: PackageGeneratorProtocol {
         _ = try recreateFolder(folder: "Sources", at: url, withName: name)
     }
     
-    private func symlinkMetaPackageSources(inFolder: String, from url: URL, for target: Target) throws {
+    private func symlinkMetaPackageSources(inFolder: String, from url: URL, for target: Target, packages: [PackageWithPath], meta: MetaComponent?) throws {
         let atPath = url
             .appendingPathComponent(inFolder)
             .appendingPathComponent(target.name)
         let shell = Shell(verbose: true)
         
-        for dependency in target.dependencies {
-            if case let .module(path, name) = dependency {
-                // Get the absolute URL from relative
-                let absluteDestURL = URL(string: path, relativeTo: url)!.absoluteURL
-                    .appendingPathComponent("Sources")
-                    .appendingPathComponent(name)
-                print("atPath: \(atPath)")
-                print("absluteDestURL: \(absluteDestURL)")
-                print("absluteDestURL.absoluteString: \(absluteDestURL.absoluteString)")
-                let destPath = absluteDestURL.relativePath(from: atPath)!
-                print("destPath: \(destPath)")
-                try shell.execute("ln -s \(destPath) \(atPath.absoluteString)")
+        guard let localDependencies = meta?.localDependencies else { return }
+        var filteredDependencyPaths: [String] = []
+        for dependency in localDependencies {
+            dependency.targetTypes.forEach { targetType in
+                if targetType.value == "Contract" {
+                    let dependencyName = "\(dependency.name.full)\(targetType.key.name)"
+                    if let dependencyPackage = packages.first(where: { $0.package.name == dependencyName }) {
+                        filteredDependencyPaths.append(dependencyPackage.path)
+                        let dependencyPackagePath = dependencyPackage.path
+                        let dependencyPackageURL = url
+                            .deletingLastPathComponent()
+                            .deletingLastPathComponent()
+                            .appendingPathComponent(dependencyPackagePath)
+                            .appendingPathComponent(inFolder)
+                            .appendingPathComponent(dependencyName)
+                            .absoluteURL
+                        let dependencyPath = dependencyPackageURL.relativePath(from: atPath)!
+                        _ = try? shell.execute("ln -s \(dependencyPath) \(atPath.absoluteString)")
+                    }
+                }
             }
         }
     }
