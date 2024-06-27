@@ -207,13 +207,6 @@ struct \(name) {
                                attributes: nil)
     }
     
-    private func createSourceFileSymlink(atPath path: String,
-                                         withDestinationPath destPath: String) throws {
-        guard isDirectoryEmpty(atPath: path) else { return }
-        
-        try fileManager.createSymbolicLink(atPath:  path, withDestinationPath: destPath)
-    }
-    
     private func createMacroSourceFile(name: String, atPath path: String) throws {
         guard isDirectoryEmpty(atPath: path) else { return }
         

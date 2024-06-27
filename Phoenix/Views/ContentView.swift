@@ -511,7 +511,6 @@ struct ContentView: View {
             disabledSections: disabledSections,
             onOpenFamilySettings: {
                 viewModel.showingDependencySheet = false
-//                viewModel.select(familyName: familyName)
             },
             onDismiss: {
                 viewModel.showingDependencySheet = false

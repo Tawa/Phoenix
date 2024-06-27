@@ -88,7 +88,6 @@ extension PhoenixDocument {
         toComponentName: Name,
         selectedValues: [PackageTargetType: String]
     ) -> RelationViewData {
-//        let fromComponent = meta(named: fromMetaName)
         let toComponent = component(named: toComponentName)
         return .init(
             types: dependencyTypes(selectedValues: selectedValues),
